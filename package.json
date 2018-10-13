@@ -4,6 +4,22 @@
   "scripts": {
     "build": "echo TODO"
   },
+
+  "husky": {
+    "hooks": {
+      "pre-commit": "echo 'Not yet implemented for commit'",
+      "pre-push": "echo 'Not yet implemented'"
+    }
+  },
+
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ]
+  },
+
   "devDependencies": {
     "husky": "^1.1.2",
     "lerna": "^3.3.0",
