@@ -4,5 +4,20 @@
   "description": "Shared tools and configurations.",
   "author": "Hayden McParlane",
   "license": "MIT",
-  "private": true
+  "private": true,
+
+  "husky": {
+    "hooks": {
+      "pre-commit": "echo 'Not yet implemented'",
+      "pre-push": "echo 'Not yet implemented'"
+    }
+  },
+
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ]
+  }
 }
