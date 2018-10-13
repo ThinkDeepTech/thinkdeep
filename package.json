@@ -45,7 +45,7 @@
     "packages/*"
   ],
   "publishConfig": {
-    "registry": "thinkdeep"
+    "registry": "https://www.npmjs.com/org/thinkdeep"
   },
   "private": true
 }
