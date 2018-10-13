@@ -1,4 +1,4 @@
-import { render } from "lit-html";
+import { render } from 'lit-html';
 
 /**
  * Stamps the template into the DOM.
@@ -6,8 +6,8 @@ import { render } from "lit-html";
  * representing the test fixture markup.
  * @returns {Object|null} - DOM node after component has been stamped into document or null;
  */
-const stamp = async fixture => {
-  const div = document.createElement("div");
+export const stamp = async fixture => {
+  const div = document.createElement('div');
   render(fixture, div);
   const component = div.firstElementChild;
   document.body.appendChild(component);
@@ -20,11 +20,6 @@ const stamp = async fixture => {
  * fixtures are stamped.
  * @param {HTMLElement} component - Component to be removed.
  */
-const remove = component => {
+export const remove = component => {
   if (component.parentNode) component.parentNode.removeChild(component);
-};
-
-module.exports = {
-  stamp,
-  remove
 };

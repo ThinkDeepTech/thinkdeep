@@ -29,8 +29,10 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "^7.1.2",
+    "@babel/core": "^7.1.0",
+    "@babel/plugin-transform-runtime": "^7.1.0",
     "@babel/preset-env": "^7.1.0",
+    "@babel/runtime": "^7.0.0",
     "@thinkdeep/deep-button": "^0.0.1",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
@@ -70,5 +72,8 @@
   "publishConfig": {
     "registry": "https://www.npmjs.com/org/thinkdeep"
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "log4js": "^3.0.6"
+  }
 }
