@@ -1,6 +1,6 @@
 {
   "name": "thinkdeep",
-  "author": "Hayden McParlane hayden.mcparlane@gmail.com",
+  "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin/in/haydenmcp)",
   "scripts": {
     "monorepo:start": "webpack-dev-server",
     "monorepo:stop": "echo 'Not yet implemented'",
@@ -36,6 +36,7 @@
     "lint-staged": "^7.3.0",
     "null-loader": "^0.1.1",
     "prettier": "1.14.3",
+    "@thinkdeep/deep-button": "^0.0.1",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.9"
@@ -43,5 +44,8 @@
   "workspaces": [
     "packages/*"
   ],
+  "publishConfig": {
+    "registry": "thinkdeep"
+  },
   "private": true
 }
