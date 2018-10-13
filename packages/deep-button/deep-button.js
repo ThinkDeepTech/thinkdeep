@@ -1,14 +1,10 @@
-import { html, LitElement } from "@polymer/lit-element/lit-element";
+import { html, LitElement } from "@polymer/lit-element";
 
 export class DeepButton extends LitElement {
-  _render() {
+  render() {
     return html`
       <button>${this.label}</button>
     `;
-  }
-  constructor() {
-    super();
-    this.label = "";
   }
   static get properties() {
     return {
