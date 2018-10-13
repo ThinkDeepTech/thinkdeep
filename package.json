@@ -1,0 +1,13 @@
+{
+  "name": "thinkdeep",
+  "author": "Hayden McParlane hayden.mcparlane@gmail.com",
+  "scripts": {
+    "build": "echo TODO"
+  },
+  "devDependencies": {
+    "lerna": "^3.3.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}
