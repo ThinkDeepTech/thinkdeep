@@ -2,9 +2,11 @@
   "name": "thinkdeep",
   "author": "Hayden McParlane hayden.mcparlane@gmail.com",
   "scripts": {
+    "monorepo:start": "webpack-dev-server",
+    "monorepo:stop": "echo 'Not yet implemented'",
     "monorepo:setup": "yarn install",
     "monorepo:restore": "yarn run monorepo:nuke; yarn run monorepo:setup",
-    "monorepo:nuke": "lerna clean --yes; rm -rf node_modules; rm -f yarn.lock; rm -f package-lock.json"
+    "monorepo:nuke": "lerna clean --yes; rm -rf node_modules yarn.lock package-lock.json"
   },
   "husky": {
     "hooks": {
@@ -20,14 +22,23 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
     "babel-eslint": "^10.0.1",
+    "babel-loader": "^8.0.4",
+    "copy-webpack-plugin": "^4.5.3",
     "eslint": "^5.7.0",
     "eslint-config-prettier": "^3.1.0",
     "eslint-config-vaadin": "^0.2.7",
+    "html-webpack-plugin": "^3.2.0",
     "husky": "^1.1.2",
     "lerna": "^3.3.0",
     "lint-staged": "^7.3.0",
-    "prettier": "1.14.3"
+    "null-loader": "^0.1.1",
+    "prettier": "1.14.3",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.9"
   },
   "workspaces": [
     "packages/*"
