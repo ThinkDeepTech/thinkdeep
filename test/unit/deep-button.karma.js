@@ -1,5 +1,5 @@
 import { html } from "@polymer/lit-element";
-import "@thinkdeep/deep-button";
+// import "@thinkdeep/deep-button";
 import { stamp, remove } from "@thinkdeep/tools/testing";
 
 const template = html`

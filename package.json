@@ -10,7 +10,7 @@
     "monorepo:test": "yarn run components:test && yarn run microservices:test",
     "components:test": "yarn run components:test:unit && yarn run components:test:integration",
     "components:test:integration": "echo 'not yet implemented'",
-    "components:test:unit": "echo 'not yet implemented'",
+    "components:test:unit": "karma start",
     "microservices:test": "yarn run microservices:test:unit && yarn run microservices:test:integration",
     "microservices:test:integration": "echo 'not yet implemented'",
     "microservices:test:unit": "echo 'not yet implemented'"
@@ -34,6 +34,7 @@
     "@thinkdeep/deep-button": "^0.0.1",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
+    "chai": "^4.2.0",
     "clean-webpack-plugin": "^0.1.19",
     "copy-webpack-plugin": "^4.5.3",
     "eslint": "^5.7.0",
