@@ -3,6 +3,7 @@
   "author": "Hayden McParlane hayden.mcparlane@gmail.com",
   "scripts": {
     "monorepo:setup": "yarn install",
+    "monorepo:restore": "yarn run monorepo:nuke; yarn run monorepo:setup",
     "monorepo:nuke": "lerna clean --yes; rm -rf node_modules; rm -f yarn.lock; rm -f package-lock.json"
   },
 
