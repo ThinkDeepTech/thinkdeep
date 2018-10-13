@@ -6,14 +6,12 @@
     "monorepo:restore": "yarn run monorepo:nuke; yarn run monorepo:setup",
     "monorepo:nuke": "lerna clean --yes; rm -rf node_modules; rm -f yarn.lock; rm -f package-lock.json"
   },
-
   "husky": {
     "hooks": {
-      "pre-commit": "echo 'Not yet implemented for commit'",
+      "pre-commit": "lint-staged",
       "pre-push": "echo 'Not yet implemented'"
     }
   },
-
   "lint-staged": {
     "*.js": [
       "eslint --fix",
@@ -21,7 +19,6 @@
       "git add"
     ]
   },
-
   "devDependencies": {
     "husky": "^1.1.2",
     "lerna": "^3.3.0",

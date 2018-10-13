@@ -4,5 +4,9 @@
   "description": "Shared tools and configurations.",
   "author": "Hayden McParlane",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "eslint": "^5.7.0",
+    "eslint-plugin-polymer": "^0.2.1"
+  }
 }
