@@ -2,7 +2,8 @@
   "name": "thinkdeep",
   "author": "Hayden McParlane hayden.mcparlane@gmail.com",
   "scripts": {
-    "build": "echo TODO"
+    "monorepo:setup": "yarn install",
+    "monorepo:nuke": "lerna clean --yes; rm -rf node_modules; rm -f yarn.lock; rm -f package-lock.json"
   },
 
   "husky": {
