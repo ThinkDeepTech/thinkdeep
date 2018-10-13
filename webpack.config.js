@@ -5,6 +5,7 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
 const path = require("path");
+const { rules } = require("@thingdeep/tools/config/webpack.shared.config");
 
 const OUTPUT_DIR = path.resolve(__dirname, "build");
 const AUTOGEN_DIR = path.resolve(OUTPUT_DIR, "vendor");
@@ -22,16 +23,7 @@ module.exports = {
     hot: true
   },
   module: {
-    rules: [
-      {
-        test: /\.js$/,
-        loader: "babel-loader",
-        exclude: /node_modules\/(?!(@webcomponents\/shadycss|lit-html|@polymer|@vaadin|@thinkdeep)\/).*/,
-        options: {
-          cacheDirectory: true
-        }
-      }
-    ]
+    rules
   },
   plugins: [
     new CleanWebpackPlugin(dirsToClean),
