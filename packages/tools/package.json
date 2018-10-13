@@ -8,7 +8,7 @@
 
   "husky": {
     "hooks": {
-      "pre-commit": "echo 'Not yet implemented'",
+      "pre-commit": "echo 'Not yet implemented for commit'",
       "pre-push": "echo 'Not yet implemented'"
     }
   },
