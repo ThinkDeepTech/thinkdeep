@@ -1,1 +1,1 @@
-import "@thinkdeep/deep-knowledge-center";
+import "@thinkdeep/deep-button";
