@@ -6,7 +6,14 @@
     "monorepo:stop": "echo 'Not yet implemented'",
     "monorepo:setup": "yarn install",
     "monorepo:restore": "yarn run monorepo:nuke; yarn run monorepo:setup",
-    "monorepo:nuke": "lerna clean --yes; rm -rf node_modules yarn.lock package-lock.json"
+    "monorepo:nuke": "lerna clean --yes; rm -rf node_modules yarn.lock package-lock.json",
+    "monorepo:test": "yarn run components:test && yarn run microservices:test",
+    "components:test": "yarn run components:test:unit && yarn run components:test:integration",
+    "components:test:integration": "echo 'not yet implemented'",
+    "components:test:unit": "echo 'not yet implemented'",
+    "microservices:test": "yarn run microservices:test:unit && yarn run microservices:test:integration",
+    "microservices:test:integration": "echo 'not yet implemented'",
+    "microservices:test:unit": "echo 'not yet implemented'"
   },
   "husky": {
     "hooks": {
