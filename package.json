@@ -7,18 +7,18 @@
     "monorepo:setup": "yarn install",
     "monorepo:restore": "yarn run monorepo:nuke; yarn run monorepo:setup",
     "monorepo:nuke": "lerna clean --yes; rm -rf node_modules yarn.lock package-lock.json",
-    "monorepo:test": "yarn run components:test && yarn run microservices:test",
-    "components:test": "yarn run components:test:unit && yarn run components:test:integration",
-    "components:test:integration": "echo 'not yet implemented'",
-    "components:test:unit": "karma start",
-    "microservices:test": "yarn run microservices:test:unit && yarn run microservices:test:integration",
-    "microservices:test:integration": "echo 'not yet implemented'",
-    "microservices:test:unit": "echo 'not yet implemented'"
+    "monorepo:test": "yarn run component:test && yarn run microservice:test",
+    "component:test": "yarn run component:test:unit && yarn run component:test:integration",
+    "component:test:integration": "echo 'not yet implemented'",
+    "component:test:unit": "karma start karma.config.js",
+    "microservice:test": "yarn run microservice:test:unit && yarn run microservice:test:integration",
+    "microservice:test:integration": "echo 'not yet implemented'",
+    "microservice:test:unit": "echo 'not yet implemented'"
   },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "echo 'Not yet implemented'"
+      "pre-push": "yarn run monorepo:test"
     }
   },
   "lint-staged": {
