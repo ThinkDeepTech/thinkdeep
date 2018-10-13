@@ -46,10 +46,10 @@ module.exports = config => {
         pattern: 'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
         watched: false
       },
-      'test/unit/index.js'
+      './utils/test.unit.bootstrap.js'
     ],
     preprocessors: {
-      'test/unit/index.js': ['webpack', 'sourcemap']
+      './utils/test.unit.bootstrap.js': ['webpack', 'sourcemap']
     },
     reporters: ['dots', 'coverage-istanbul'],
     port: 9876,
@@ -63,10 +63,10 @@ module.exports = config => {
       skipFilesWithNoCoverage: true,
       thresholds: {
         global: {
-          statements: 90,
-          lines: 90,
-          branches: 90,
-          functions: 90
+          statements: 80,
+          lines: 80,
+          branches: 80,
+          functions: 80
         }
       }
     },

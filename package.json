@@ -2,23 +2,19 @@
   "name": "thinkdeep",
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin/in/haydenmcp)",
   "scripts": {
-    "monorepo:start": "webpack-dev-server",
-    "monorepo:stop": "echo 'Not yet implemented'",
-    "monorepo:setup": "yarn install",
-    "monorepo:restore": "yarn run monorepo:nuke; yarn run monorepo:setup",
-    "monorepo:nuke": "lerna clean --yes; rm -rf node_modules yarn.lock package-lock.json",
-    "monorepo:test": "yarn run component:test && yarn run microservice:test",
-    "component:test": "yarn run component:test:unit && yarn run component:test:integration",
-    "component:test:integration": "echo 'not yet implemented'",
-    "component:test:unit": "karma start karma.config.js",
-    "microservice:test": "yarn run microservice:test:unit && yarn run microservice:test:integration",
-    "microservice:test:integration": "echo 'not yet implemented'",
-    "microservice:test:unit": "echo 'not yet implemented'"
+    "start": "webpack-dev-server",
+    "stop": "echo 'Not yet implemented'",
+    "setup": "yarn install",
+    "restore": "yarn run nuke; yarn run setup",
+    "nuke": "lerna clean --yes; rm -rf node_modules yarn.lock package-lock.json",
+    "test": "yarn run test:unit && yarn run test:integration",
+    "test:unit": "karma start karma.config.js",
+    "test:integration": "echo 'not yet implemented'"
   },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "yarn run monorepo:test"
+      "pre-push": "echo 'not yet implemented'"
     }
   },
   "lint-staged": {
@@ -46,6 +42,7 @@
     "husky": "^1.1.2",
     "istanbul-instrumenter-loader": "^3.0.1",
     "karma": "^3.0.0",
+    "karma-chai-as-promised": "^0.1.2",
     "karma-chrome-launcher": "^2.2.0",
     "karma-coverage-istanbul-reporter": "^2.0.4",
     "karma-firefox-launcher": "^1.1.0",

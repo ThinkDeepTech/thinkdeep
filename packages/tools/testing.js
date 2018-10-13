@@ -1,4 +1,4 @@
-import { render } from 'lit-html';
+import { render, TemplateResult } from 'lit-html';
 
 /**
  * Stamps the template into the DOM.
@@ -7,6 +7,9 @@ import { render } from 'lit-html';
  * @returns {Object|null} - DOM node after component has been stamped into document or null;
  */
 export const stamp = async fixture => {
+  if (!(fixture instanceof TemplateResult)) {
+    throw new TypeError('A fixture must be a TemplateResult');
+  }
   const div = document.createElement('div');
   render(fixture, div);
   const component = div.firstElementChild;

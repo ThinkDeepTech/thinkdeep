@@ -1,20 +1,20 @@
-"use-strict";
+'use-strict';
 
-const CleanWebpackPlugin = require("clean-webpack-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const webpack = require("webpack");
-const path = require("path");
-const { rules } = require("@thingdeep/tools/config/webpack.shared.config");
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
+const path = require('path');
+const { rules } = require('@thinkdeep/tools/config/webpack.shared.config').module;
 
-const OUTPUT_DIR = path.resolve(__dirname, "build");
-const AUTOGEN_DIR = path.resolve(OUTPUT_DIR, "vendor");
+const OUTPUT_DIR = path.resolve(__dirname, 'build');
+const AUTOGEN_DIR = path.resolve(OUTPUT_DIR, 'vendor');
 
 const dirsToClean = [OUTPUT_DIR];
 
 module.exports = {
-  entry: "./demo/all.js",
-  mode: "development",
+  entry: './demo/all.js',
+  mode: 'development',
   output: {
     path: OUTPUT_DIR
   },
@@ -29,20 +29,18 @@ module.exports = {
     new CleanWebpackPlugin(dirsToClean),
     new CopyWebpackPlugin([
       {
-        from: path.resolve(
-          "node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"
-        ),
+        from: path.resolve('node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js'),
         to: path.resolve(AUTOGEN_DIR)
       },
       {
         from: path.resolve(
-          "node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"
+          'node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js'
         ),
         to: path.resolve(AUTOGEN_DIR)
       }
     ]),
     new HtmlWebpackPlugin({
-      template: path.resolve("./demo/index.html")
+      template: path.resolve('./demo/index.html')
     }),
     new webpack.HotModuleReplacementPlugin()
   ]
