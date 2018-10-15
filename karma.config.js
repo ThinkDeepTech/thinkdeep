@@ -1,14 +1,9 @@
 const path = require('path');
-const { getLogger } = require('log4js');
 const { rules } = require('@thinkdeep/tools/config/webpack.shared.config').module;
-
-const logger = getLogger('debug');
 
 module.exports = config => {
   const browsers = ['ChromeHeadlessNoSandbox', 'FirefoxHeadless'];
   if (process.platform.includes('win32')) browsers.push('IE');
-
-  logger.debug('Configuring Karma');
 
   config.set({
     basePath: path.resolve(__dirname),
@@ -109,6 +104,4 @@ module.exports = config => {
       noInfo: true
     }
   });
-
-  logger.debug('Finished with configuration');
 };
