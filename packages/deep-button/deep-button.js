@@ -1,4 +1,4 @@
-import { html, LitElement } from "@polymer/lit-element";
+import { html, LitElement } from '@polymer/lit-element';
 
 export class DeepButton extends LitElement {
   render() {
@@ -12,5 +12,4 @@ export class DeepButton extends LitElement {
     };
   }
 }
-
-window.customElements.define("deep-button", DeepButton);
+window.customElements.define('deep-button', DeepButton);
