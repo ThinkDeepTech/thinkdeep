@@ -11,7 +11,7 @@ module.exports = config => {
     browsers,
     customLaunchers: {
       ChromeHeadlessNoSandbox: {
-        base: 'ChromeHeadless',
+        base: 'ChromeHleadless',
         flags: ['--disable-gpu', '--no-sandbox']
       },
       FirefoxHeadless: {
