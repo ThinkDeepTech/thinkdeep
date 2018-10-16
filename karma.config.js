@@ -20,16 +20,16 @@ module.exports = config => {
       }
     },
     plugins: [
-      require('./node_modules/karma-mocha'),
-      require('./node_modules/karma-sinon-chai'),
-      require('./node_modules/karma-webpack'),
-      require('./node_modules/karma-mocha-reporter'),
-      require('./node_modules/karma-firefox-launcher'),
       require('./node_modules/karma-chrome-launcher'),
-      require('./node_modules/karma-sourcemap-loader'),
+      require('./node_modules/karma-coverage-istanbul-reporter'),
+      require('./node_modules/karma-firefox-launcher'),
       require('./node_modules/karma-ie-launcher'),
+      require('./node_modules/karma-mocha'),
+      require('./node_modules/karma-mocha-reporter'),
       require('./node_modules/karma-sourcemap-loader'),
-      require('./node_modules/karma-coverage-istanbul-reporter')
+      require('./node_modules/karma-sinon-chai'),
+      require('./node_modules/karma-sourcemap-loader'),
+      require('./node_modules/karma-webpack')
     ],
     frameworks: ['mocha', 'sinon-chai'],
     files: [
@@ -41,10 +41,10 @@ module.exports = config => {
         pattern: 'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
         watched: false
       },
-      './utils/unit.test.bootstrap.js'
+      './utils/test.unit.bootstrap.js'
     ],
     preprocessors: {
-      './utils/unit.test.bootstrap.js': ['webpack', 'sourcemap']
+      './utils/test.unit.bootstrap.js': ['webpack', 'sourcemap']
     },
     reporters: ['dots', 'coverage-istanbul'],
     port: 9876,
