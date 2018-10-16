@@ -4,7 +4,7 @@ import { render, TemplateResult } from 'lit-html';
  * Stamps the template into the DOM.
  * @param {TemplateResult} fixture - LitElement TemplateResult containing DOM
  * representing the test fixture markup.
- * @returns {Object|null} - DOM node after component has been stamped into document or null;
+ * @returns {HTMLElement} - DOM node after component has been stamped into document.
  */
 export const stamp = async fixture => {
   if (!(fixture instanceof TemplateResult)) {
@@ -15,7 +15,7 @@ export const stamp = async fixture => {
   const component = div.firstElementChild;
   document.body.appendChild(component);
   await component.updateComplete;
-  return component || null;
+  return component;
 };
 
 /**

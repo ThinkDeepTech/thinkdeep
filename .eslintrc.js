@@ -14,6 +14,7 @@ module.exports = {
     beforeEach: false,
     afterEach: false,
     it: false,
-    expect: false
+    expect: false,
+    sinon: false
   }
 };
