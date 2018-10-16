@@ -22,12 +22,6 @@ describe('deep-button', () => {
     expect(component.localName).to.equal('deep-button');
   });
 
-  describe('lifecycle', () => {
-    describe('render', () => {
-      it('should include a button', () => {});
-    });
-  });
-
   describe('features', () => {
     it('should allow user to set label through the attribute', () => {
       expect(component.label).to.equal('customized');
