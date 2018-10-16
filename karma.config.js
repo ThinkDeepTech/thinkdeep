@@ -41,10 +41,10 @@ module.exports = config => {
         pattern: 'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
         watched: false
       },
-      './utils/test.unit.bootstrap.js'
+      './utils/unit.test.bootstrap.js'
     ],
     preprocessors: {
-      './utils/test.unit.bootstrap.js': ['webpack', 'sourcemap']
+      './utils/unit.test.bootstrap.js': ['webpack', 'sourcemap']
     },
     reporters: ['dots', 'coverage-istanbul'],
     port: 9876,
