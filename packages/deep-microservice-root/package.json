@@ -5,7 +5,6 @@
   "main": "index.js",
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin.com/in/haydenmcp)",
   "license": "MIT",
-  "private": true,
   "dependencies": {
     "node-fetch": "^2.2.0"
   }

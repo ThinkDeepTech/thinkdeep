@@ -66,9 +66,9 @@
     "packages/*"
   ],
   "publishConfig": {
-    "registry": "https://www.npmjs.com/org/thinkdeep"
+    "registry": "https://www.npmjs.com/org/thinkdeep",
+    "access": "public"
   },
-  "private": true,
   "dependencies": {
     "log4js": "^3.0.6"
   }

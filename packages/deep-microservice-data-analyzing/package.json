@@ -4,6 +4,5 @@
   "description": "Microservice running analyses on data.",
   "main": "index.js",
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin.com/in/haydenmcp)",
-  "license": "MIT",
-  "private": true
+  "license": "MIT"
 }

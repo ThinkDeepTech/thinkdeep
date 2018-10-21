@@ -3,6 +3,5 @@
   "version": "0.0.3",
   "description": "Shared tools and configurations.",
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin.com/in/haydenmcp)",
-  "license": "MIT",
-  "private": true
+  "license": "MIT"
 }
