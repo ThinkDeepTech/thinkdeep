@@ -66,7 +66,6 @@
     "packages/*"
   ],
   "publishConfig": {
-    "registry": "https://www.npmjs.com/org/thinkdeep",
     "access": "public"
   },
   "dependencies": {
