@@ -1,6 +1,6 @@
 {
   "name": "@thinkdeep/deep-microservice-root",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Root microservice providing access to all other microservices through schema stitching.",
   "main": "index.js",
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin.com/in/haydenmcp)",

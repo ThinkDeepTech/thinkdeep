@@ -1,6 +1,6 @@
 {
   "name": "@thinkdeep/deep-microservice-logging",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Logging microservice.",
   "main": "index.js",
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin.com/in/haydenmcp)",
