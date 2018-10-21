@@ -9,7 +9,8 @@
     "nuke": "lerna clean --yes; rm -rf node_modules yarn.lock package-lock.json",
     "test": "yarn run test:unit && yarn run test:integration",
     "test:unit": "karma start karma.config.js",
-    "test:integration": "echo 'not yet implemented'"
+    "test:integration": "echo 'not yet implemented'",
+    "publish": "lerna publish"
   },
   "husky": {
     "hooks": {
