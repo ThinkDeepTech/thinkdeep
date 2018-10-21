@@ -1,0 +1,9 @@
+{
+  "name": "@thinkdeep/deep-microservice-data-wrangling",
+  "version": "0.0.2",
+  "description": "Data wrangling microservice",
+  "main": "index.js",
+  "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin.com/in/haydenmcp)",
+  "license": "MIT",
+  "private": true
+}
