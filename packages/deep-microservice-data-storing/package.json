@@ -1,6 +1,6 @@
 {
   "name": "@thinkdeep/deep-microservice-data-storing",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Data storage microservice. Provides access to data that's already gone through wrangling.",
   "main": "index.js",
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin.com/in/haydenmcp)",
