@@ -8,8 +8,10 @@
     "restore": "yarn run nuke; yarn run setup",
     "nuke": "lerna clean --yes; rm -rf node_modules yarn.lock package-lock.json",
     "test": "yarn run test:unit && yarn run test:integration",
-    "test:unit": "karma start karma.config.js",
+    "test:unit": "yarn run test:unit:component && yarn run test:unit:microservice",
     "test:integration": "echo 'not yet implemented'",
+    "test:unit:component": "karma start karma.config.js",
+    "test:unit:microservice": "mocha --recursive \"./packages/*microservice*/**/*.unit.js\"",
     "publish": "lerna publish"
   },
   "husky": {
