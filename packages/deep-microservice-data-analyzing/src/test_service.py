@@ -14,7 +14,7 @@ def test_service_should_allow_user_to_set_host_name():
             'name': 'different'
         }
     })
-    assert service.config['host']['name'] == 'differents'
+    assert service.config['host']['name'] == 'different'
 
 def test_service_should_allow_user_to_set_host_port():
     service = Service({
