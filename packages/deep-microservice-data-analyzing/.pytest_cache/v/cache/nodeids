@@ -1,0 +1,4 @@
+[
+  "src/test_service.py::test_service_name_should_default_to_localhost",
+  "src/test_service.py::test_service_port_should_default_to_3000"
+]

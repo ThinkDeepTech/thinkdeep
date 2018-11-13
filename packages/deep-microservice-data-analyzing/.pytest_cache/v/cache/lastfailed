@@ -1,0 +1,7 @@
+{
+  "service/test_index.py": true,
+  "service/test_index.py::test_service_type": true,
+  "test/index.py": true,
+  "test/index.unit.py": true,
+  "test/test_index.py::test_sample": true
+}
