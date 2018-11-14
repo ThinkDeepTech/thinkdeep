@@ -19,9 +19,9 @@ jobs:
                 keys:
                     - v1-dependencies-{{ checksum "package.json" }}
 
-            - run: apt-get install python3
+            - run: sudo apt-get install python3
 
-            - run: apt-get install python3-pip
+            - run: sudo apt-get install python3-pip
 
             - run: yarn run setup
 
