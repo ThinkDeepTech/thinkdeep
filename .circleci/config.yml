@@ -3,6 +3,7 @@ jobs:
     build:
         docker:
             - image: circleci/node:9.10-browsers
+            - image: circleci/python:3.6.4
 
         working_directory: ~/repo
 
