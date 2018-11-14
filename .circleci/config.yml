@@ -3,7 +3,6 @@ jobs:
     build:
         docker:
             - image: circleci/node:9.10-browsers
-            - image: circleci/python:3.6.4
 
         working_directory: ~/repo
 
@@ -20,8 +19,12 @@ jobs:
                 keys:
                     - v1-dependencies-{{ checksum "package.json" }}
 
+            - run: apt-get install python3
+
+            - run: apt-get install python3-pip
+
             - run: yarn run setup
 
-            - run: pip install pytest
+            - run: pip3 install pytest
 
             - run: yarn run test
