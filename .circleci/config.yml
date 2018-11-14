@@ -25,6 +25,8 @@ jobs:
 
             - run: pip3 install --user pytest
 
+            - run: alias python=python3
+
             - run: yarn run setup
 
             - run: yarn run test
