@@ -23,9 +23,11 @@ jobs:
 
             - run: sudo apt-get install python3-pip
 
-            - run: pip3 install --user pytest
-
             - run: alias python=python3
+
+            - run: alias pip=pip3
+
+            - run: pip install pytest
 
             - run: yarn run setup
 
