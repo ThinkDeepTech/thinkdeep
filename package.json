@@ -11,7 +11,7 @@
     "test:unit": "yarn run test:unit:component && yarn run test:unit:microservice",
     "test:integration": "echo 'not yet implemented'",
     "test:unit:component": "karma start karma.config.js",
-    "test:unit:microservice": "mocha --recursive \"./packages/*microservice*/**/*.unit.js\"",
+    "test:unit:microservice": "lerna exec -- npm run test",
     "publish": "lerna publish"
   },
   "husky": {

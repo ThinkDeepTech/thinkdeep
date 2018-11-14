@@ -1,7 +1,6 @@
 {
   "service/test_index.py": true,
   "service/test_index.py::test_service_type": true,
-  "src/test_service.py::test_service_should_allow_user_to_set_host_name": true,
   "test/index.py": true,
   "test/index.unit.py": true,
   "test/test_index.py::test_sample": true
