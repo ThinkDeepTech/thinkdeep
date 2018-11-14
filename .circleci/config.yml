@@ -25,9 +25,7 @@ jobs:
 
             - run: alias python=python3
 
-            - run: alias pip=pip3
-
-            - run: pip install pytest
+            - run: pip3 install pytest
 
             - run: yarn run setup
 
