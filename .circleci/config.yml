@@ -23,8 +23,8 @@ jobs:
 
             - run: sudo apt-get install python3-pip
 
-            - run: yarn run setup
+            - run: pip3 install --user pytest
 
-            - run: pip3 install pytest
+            - run: yarn run setup
 
             - run: yarn run test
