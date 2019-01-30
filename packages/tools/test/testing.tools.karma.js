@@ -9,7 +9,7 @@ describe('testing tools:', () => {
         done();
       });
     });
-    it('should accept a TemplateResult', done => {
+    it('should produce an HtmlElement from a TemplateResult', done => {
       stamp(html`<button></button>`).then(component => {
         expect(component instanceof HTMLElement).to.equal(true);
         done();

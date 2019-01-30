@@ -1,13 +1,12 @@
 {
   "name": "@thinkdeep/deep-button",
   "main": "deep-button.js",
+  "version": "0.0.8",
   "dependencies": {
     "@polymer/lit-element": "^0.6.2"
   },
   "devDependencies": {
     "@webcomponents/webcomponentsjs": "^2.0.0",
     "wct-browser-legacy": "^1.0.0"
-  },
-  "private": true,
-  "version": "0.0.1"
+  }
 }

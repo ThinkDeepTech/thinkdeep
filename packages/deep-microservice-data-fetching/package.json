@@ -1,7 +1,8 @@
 {
-  "name": "@thinkdeep/tools",
+  "name": "@thinkdeep/deep-microservice-data-fetching",
   "version": "0.0.8",
-  "description": "Shared tools and configurations.",
+  "description": "Data fetching microservice",
+  "main": "index.js",
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin.com/in/haydenmcp)",
   "license": "MIT"
 }

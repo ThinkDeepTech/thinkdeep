@@ -8,8 +8,11 @@
     "restore": "yarn run nuke; yarn run setup",
     "nuke": "lerna clean --yes; rm -rf node_modules yarn.lock package-lock.json",
     "test": "yarn run test:unit && yarn run test:integration",
-    "test:unit": "karma start karma.config.js",
-    "test:integration": "echo 'not yet implemented'"
+    "test:unit": "yarn run test:unit:component && yarn run test:unit:microservice",
+    "test:integration": "echo 'not yet implemented'",
+    "test:unit:component": "karma start karma.config.js",
+    "test:unit:microservice": "lerna exec -- npm run test",
+    "publish": "lerna publish"
   },
   "husky": {
     "hooks": {
@@ -29,7 +32,6 @@
     "@babel/plugin-transform-runtime": "^7.1.0",
     "@babel/preset-env": "^7.1.0",
     "@babel/runtime": "^7.0.0",
-    "@thinkdeep/deep-button": "^0.0.1",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
     "clean-webpack-plugin": "^0.1.19",
@@ -65,10 +67,10 @@
     "packages/*"
   ],
   "publishConfig": {
-    "registry": "https://www.npmjs.com/org/thinkdeep"
+    "access": "public"
   },
-  "private": true,
   "dependencies": {
     "log4js": "^3.0.6"
-  }
+  },
+  "private": true
 }

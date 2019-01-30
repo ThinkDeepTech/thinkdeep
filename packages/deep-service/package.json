@@ -1,0 +1,11 @@
+{
+  "name": "@thinkdeep/deep-service",
+  "version": "0.0.8",
+  "description": "Core shared between deep services. This reduces service drift from one to the next. Because it's core it's also imperative that this core be heavily tested.",
+  "main": "index.js",
+  "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin.com/in/haydenmcp)",
+  "license": "MIT",
+  "dependencies": {
+    "apollo-server-koa": "^2.1.0"
+  }
+}

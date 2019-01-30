@@ -19,6 +19,14 @@ jobs:
                 keys:
                     - v1-dependencies-{{ checksum "package.json" }}
 
+            - run: sudo apt-get install python3
+
+            - run: sudo apt-get install python3-pip
+
+            - run: sudo pip3 install pytest
+
+            - run: alias python=python3
+
             - run: yarn run setup
 
             - run: yarn run test
