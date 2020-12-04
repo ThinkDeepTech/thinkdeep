@@ -1,15 +1,14 @@
-import { html, LitElement } from '@polymer/lit-element';
+import { html, LitElement, property, customElement } from '@polymer/lit-element';
 
-export class DeepButton extends LitElement {
+/* eslint-disable no-unused-vars */
+@customElement('deep-button')
+class DeepButton extends LitElement {
+  @property({ type: String })
+  label = '';
+
   render() {
     return html`
       <button>${this.label}</button>
     `;
   }
-  static get properties() {
-    return {
-      label: String
-    };
-  }
 }
-window.customElements.define('deep-button', DeepButton);
