@@ -5,8 +5,7 @@
   "main": "index.js",
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin.com/in/haydenmcp)",
   "scripts": {
-    "install": "echo 'Not yet implemented but will be python install cmd'",
-    "test": "pytest"
+    "install": "echo 'Not yet implemented but will be python install cmd'"
   },
   "license": "MIT"
 }
