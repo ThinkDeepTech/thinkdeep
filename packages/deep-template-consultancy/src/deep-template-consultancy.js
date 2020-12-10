@@ -1,7 +1,5 @@
 import { html, LitElement, customElement, property } from 'lit-element';
 
-import '@polymer/app-layout/';
-
 /* eslint-disable no-unused-vars */
 @customElement('deep-template-consultancy')
 class DeepTemplateConsultancy extends LitElement {
@@ -13,6 +11,18 @@ class DeepTemplateConsultancy extends LitElement {
 
   render() {
     return html`
+
+      <deep-grid>
+        <deep-column>
+
+        </deep-column>
+        <deep-column>
+
+        </deep-column>
+        <deep-column>
+
+        </deep-column>
+      </deep-grid>
 
       <!-- TODO: Include bubble-button-like behavior for floating menu -->
       <deep-navbar></deep-navbar>
