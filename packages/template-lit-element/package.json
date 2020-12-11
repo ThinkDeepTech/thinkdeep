@@ -1,5 +1,5 @@
 {
-  "name": "@thinkdeep/<package-name>",
+  "name": "@thinkdeep/package-name",
   "version": "<version here>",
   "description": "Template to copy and paste for new custom elements using lit element.",
   "keywords": [
