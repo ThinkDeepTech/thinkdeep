@@ -2,11 +2,11 @@ import resolve from 'rollup-plugin-node-resolve';
 import babel from 'rollup-plugin-babel';
 
 export default {
-  input: ['src/index.js'],
+  input: ['./deep-navbar.js'],
   output: {
     file: 'build/index.js',
     format: 'es',
-    sourcemap: true
+    sourcemap: true,
   },
-  plugins: [resolve(), babel()]
+  plugins: [resolve(), babel()],
 };

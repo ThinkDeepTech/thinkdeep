@@ -11,7 +11,6 @@ class PackageName extends LitElement {
 
   render() {
     return html`
-
       ${this.styles}
 
       <!-- TODO: Markup -->
