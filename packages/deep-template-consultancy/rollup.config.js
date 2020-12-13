@@ -1,12 +1,3 @@
-import resolve from 'rollup-plugin-node-resolve';
-import babel from 'rollup-plugin-babel';
+import defaults from '@thinkdeep/tools/build';
 
-export default {
-  input: ['./deep-template-consultancy.js'],
-  output: {
-    file: 'build/index.js',
-    format: 'es',
-    sourcemap: true,
-  },
-  plugins: [resolve(), babel()],
-};
+export default defaults;

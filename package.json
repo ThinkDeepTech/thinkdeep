@@ -2,8 +2,7 @@
   "name": "thinkdeep",
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin/in/haydenmcp)",
   "scripts": {
-    "dev": "lerna run dev",
-    "build": "lerna run build"
+    "setup": "sudo npm install --global yarn && yarn install;"
   },
   "husky": {
     "hooks": {

@@ -3,5 +3,37 @@
   "version": "0.0.8",
   "description": "Shared tools and configurations.",
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin.com/in/haydenmcp)",
-  "license": "MIT"
+  "license": "MIT",
+  "keywords": [
+    "LitElement",
+    "polymer"
+  ],
+  "homepage": "https://github.com/ThinkDeepTech/thinkdeep#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThinkDeepTech/thinkdeep.git"
+  },
+  "scripts": {
+    "dev": "TODO",
+    "copyindex": "cp index.html build",
+    "copywc": "cp -r ../../node_modules/@webcomponents/webcomponentsjs/bundles build && cp ../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js build",
+    "build": "rm -rf build && mkdir build && npm run copyindex && npm run copywc && rollup -wc"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/parser": "^7.12.7",
+    "@babel/plugin-proposal-class-properties": "^7.2.3",
+    "@babel/plugin-proposal-decorators": "^7.2.3",
+    "rollup": "^1.1.0",
+    "rollup-plugin-babel": "^4.3.0",
+    "rollup-plugin-node-resolve": "^4.0.0",
+    "rollup-plugin-serve": "^1.1.0",
+    "serve": "^10.1.1"
+  },
+  "dependencies": {
+    "@polymer/app-layout": "^3.1.0",
+    "@webcomponents/webcomponentsjs": "^2.5.0",
+    "lit-element": "^2.4.0"
+  },
+  "private": true
 }

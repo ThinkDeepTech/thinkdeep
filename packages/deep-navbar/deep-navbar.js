@@ -8,6 +8,6 @@ class DeepNavbar extends LitElement {
   }
 
   render() {
-    return html` ${this.styles} Hello World`;
+    return html` ${this.styles} `;
   }
 }
