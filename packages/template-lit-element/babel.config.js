@@ -1,3 +1,3 @@
-import defaultConfig from '@thinkdeep/tools/babel.config';
+const config = require('@thinkdeep/tools/babel.config');
 
-module.exports = defaultConfig;
+module.exports = config;

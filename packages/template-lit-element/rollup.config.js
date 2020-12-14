@@ -1,3 +1,3 @@
-import defaults from '@thinkdeep/tools/build';
+const { defaultConfiguration } = require('@thinkdeep/tools/build.js');
 
-export default defaults;
+module.exports = defaultConfiguration(__dirname);
