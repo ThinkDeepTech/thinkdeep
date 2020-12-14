@@ -19,3 +19,11 @@ as follows:
 
 ## Tasks
 - [ ] Track yarn-completions and support of ':'. If available, incorporate.
+- [ ] Research and configure all tools.
+    - [ ] Lerna
+    - [ ] Karma
+    - [ ] Yarn
+    - [ ] Mocha Chai
+    - [ ] Circle CI
+    - [ ] Polymer 3
+- [ ] Extend deep elements into Qt world for consistency across UIs.

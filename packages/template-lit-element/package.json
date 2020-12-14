@@ -1,0 +1,27 @@
+{
+  "name": "@thinkdeep/template-lit-element",
+  "version": "0.0.8",
+  "description": "Template to copy and paste for new custom elements using lit element.",
+  "keywords": [
+    "LitElement",
+    "polymer"
+  ],
+  "author": "haydenmcp <hayden.mcparlane@gmail.com>",
+  "homepage": "https://github.com/ThinkDeepTech/thinkdeep#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThinkDeepTech/thinkdeep.git"
+  },
+  "scripts": {
+    "dev": "TODO",
+    "copyindex": "cp index.html build",
+    "copywc": "cp -r ../../node_modules/@webcomponents/webcomponentsjs/bundles build && cp ../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js build",
+    "build": "rm -rf build && mkdir build && npm run copyindex && npm run copywc && rollup -c"
+  },
+  "dependencies": {
+    "@polymer/app-layout": "^3.1.0",
+    "@webcomponents/webcomponentsjs": "^2.5.0",
+    "lit-element": "^2.4.0"
+  },
+  "private": true
+}

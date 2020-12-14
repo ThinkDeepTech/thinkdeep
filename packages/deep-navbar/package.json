@@ -1,13 +1,12 @@
 {
-  "name": "@thinkdeep/tools",
-  "version": "0.0.8",
-  "description": "Shared tools and configurations.",
-  "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin.com/in/haydenmcp)",
-  "license": "MIT",
+  "name": "@thinkdeep/deep-navbar",
+  "version": "v0.0.8",
+  "description": "Template to copy and paste for new custom elements using lit element.",
   "keywords": [
     "LitElement",
     "polymer"
   ],
+  "author": "haydenmcp <hayden.mcparlane@gmail.com>",
   "homepage": "https://github.com/ThinkDeepTech/thinkdeep#readme",
   "repository": {
     "type": "git",
@@ -17,7 +16,7 @@
     "dev": "TODO",
     "copyindex": "cp index.html build",
     "copywc": "cp -r ../../node_modules/@webcomponents/webcomponentsjs/bundles build && cp ../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js build",
-    "build": "rm -rf build && mkdir build && npm run copyindex && npm run copywc && rollup -wc"
+    "build": "rm -rf build && mkdir build && npm run copyindex && npm run copywc && rollup -c"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",

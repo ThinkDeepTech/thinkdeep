@@ -2,22 +2,12 @@
   "name": "thinkdeep",
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin/in/haydenmcp)",
   "scripts": {
-    "start": "webpack-dev-server",
-    "stop": "echo 'Not yet implemented'",
-    "setup": "yarn install",
-    "restore": "yarn run nuke; yarn run setup",
-    "nuke": "lerna clean --yes; rm -rf node_modules yarn.lock package-lock.json",
-    "test": "yarn run test:unit && yarn run test:integration",
-    "test:unit": "yarn run test:unit:component && yarn run test:unit:microservice",
-    "test:integration": "echo 'not yet implemented'",
-    "test:unit:component": "karma start karma.config.js",
-    "test:unit:microservice": "lerna exec -- npm run test",
-    "publish": "lerna publish"
+    "setup": "sudo npm install --global yarn && yarn install;"
   },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "yarn run test"
+      "pre-push": "lerna run test"
     }
   },
   "lint-staged": {
@@ -28,9 +18,12 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "^7.1.0",
+    "@babel/core": "^7.12.10",
+    "@babel/parser": "^7.12.7",
+    "@babel/plugin-proposal-class-properties": "^7.2.3",
+    "@babel/plugin-proposal-decorators": "^7.2.3",
     "@babel/plugin-transform-runtime": "^7.1.0",
-    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-env": "^7.12.10",
     "@babel/runtime": "^7.0.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
@@ -39,7 +32,6 @@
     "eslint": "^5.7.0",
     "eslint-config-prettier": "^3.1.0",
     "eslint-config-vaadin": "^0.2.7",
-    "html-webpack-plugin": "^3.2.0",
     "husky": "^1.1.2",
     "istanbul-instrumenter-loader": "^3.0.1",
     "karma": "^3.0.0",
@@ -51,17 +43,13 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-sinon-chai": "^2.0.2",
     "karma-sourcemap-loader": "^0.3.7",
-    "karma-webpack": "^4.0.0-rc.2",
     "lerna": "^3.3.0",
     "lint-staged": "^7.3.0",
-    "mocha": "^5.2.0",
-    "null-loader": "^0.1.1",
-    "prettier": "1.14.3",
-    "sinon": "^6.3.4",
-    "sinon-chai": "^3.2.0",
-    "webpack": "^4.20.2",
-    "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.9"
+    "rollup": "^1.1.0",
+    "rollup-plugin-babel": "^4.3.0",
+    "rollup-plugin-node-resolve": "^4.0.0",
+    "rollup-plugin-serve": "^1.1.0",
+    "serve": "^10.1.1"
   },
   "workspaces": [
     "packages/*"
@@ -70,7 +58,10 @@
     "access": "public"
   },
   "dependencies": {
-    "log4js": "^3.0.6"
+    "@babel/cli": "^7.12.10",
+    "@babel/node": "^7.12.10",
+    "log4js": "^3.0.6",
+    "prettier": "^2.2.1"
   },
   "private": true
 }
