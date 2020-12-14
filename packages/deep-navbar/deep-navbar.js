@@ -8,6 +8,10 @@ class DeepNavbar extends LitElement {
   }
 
   render() {
-    return html` ${this.styles} `;
+    return html`
+      ${this.styles}
+
+      <p>In navbar</p>
+    `;
   }
 }

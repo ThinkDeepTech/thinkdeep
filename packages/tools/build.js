@@ -1,5 +1,6 @@
 const resolve = require('rollup-plugin-node-resolve');
 const babel = require('rollup-plugin-babel');
+const serve = require('rollup-plugin-serve');
 
 /**
  *  Get the default build configuration.
@@ -21,7 +22,7 @@ function defaultConfiguration(packagePath) {
       format: 'cjs',
       sourcemap: true,
     },
-    plugins: [resolve(), babel()],
+    plugins: [resolve(), babel(), serve('build')],
   };
 }
 
