@@ -1,6 +1,6 @@
-const resolve = require('rollup-plugin-node-resolve');
-const babel = require('rollup-plugin-babel');
-const serve = require('rollup-plugin-serve');
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import babel from '@rollup/plugin-babel';
+import eslint from '@rollup/plugin-eslint';
 
 /**
  *  Get the default build configuration.
@@ -9,23 +9,17 @@ const serve = require('rollup-plugin-serve');
  * @return {Object} - Default package configuration for Rollup.
  */
 function defaultConfiguration(packagePath) {
-  if (!packagePath.length) return {};
-
-  //  TODO: Avoid assumption that package name and entry filename will match.
-  const parts = packagePath.split('/');
-  const packageName = parts[parts.length - 1];
-
   return {
-    input: [packagePath + '/' + packageName + '.js'],
+    input: [packagePath + '/index.js'],
     output: {
       file: 'build/index.js',
-      format: 'cjs',
+      format: 'es',
       sourcemap: true,
     },
-    plugins: [resolve(), babel(), serve('build')],
+    plugins: [nodeResolve(), eslint(), babel()],
   };
 }
 
-module.exports = {
-  defaultConfiguration,
+export default {
+  defaultConfiguration: defaultConfiguration,
 };
