@@ -1,3 +1,6 @@
-const config = require('@thinkdeep/tools/babel.config');
+const plugins = [
+  '@babel/plugin-proposal-class-properties',
+  ['@babel/proposal-decorators', { decoratorsBeforeExport: true }],
+];
 
-module.exports = config;
+module.exports = { plugins };

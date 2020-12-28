@@ -1,10 +1,19 @@
 {
   "name": "@thinkdeep/deep-template-consultancy",
-  "version": "0.0.8",
-  "author": "Hayden McParlane",
-  "license": "MIT",
+  "version": "v0.0.8",
+  "description": "Template to copy and paste for new custom elements using lit element.",
+  "keywords": [
+    "LitElement",
+    "polymer"
+  ],
+  "author": "haydenmcp <hayden.mcparlane@gmail.com>",
+  "homepage": "https://github.com/ThinkDeepTech/thinkdeep#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThinkDeepTech/thinkdeep.git"
+  },
   "scripts": {
-    "dev": "TODO",
+    "dev": "serve build",
     "copyindex": "cp index.html build",
     "copywc": "cp -r ../../node_modules/@webcomponents/webcomponentsjs/bundles build && cp ../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js build",
     "build": "rm -rf build && mkdir build && npm run copyindex && npm run copywc && rollup -c"
@@ -14,6 +23,10 @@
     "@babel/parser": "^7.12.7",
     "@babel/plugin-proposal-class-properties": "^7.2.3",
     "@babel/plugin-proposal-decorators": "^7.2.3",
+    "@babel/preset-env": "^7.12.11",
+    "@polymer/app-layout": "^3.1.0",
+    "@rollup/plugin-eslint": "^8.0.1",
+    "@rollup/plugin-node-resolve": "^11.0.1",
     "rollup": "^1.1.0",
     "rollup-plugin-babel": "^4.3.0",
     "rollup-plugin-node-resolve": "^4.0.0",
@@ -21,9 +34,15 @@
     "serve": "^10.1.1"
   },
   "dependencies": {
+    "@babel/plugin-transform-runtime": "^7.12.10",
+    "@babel/runtime": "^7.12.5",
     "@polymer/app-layout": "^3.1.0",
+    "@rollup/plugin-babel": "^5.2.2",
     "@webcomponents/webcomponentsjs": "^2.5.0",
-    "lit-element": "^2.4.0"
+    "lit-element": "^2.4.0",
+    "rollup-plugin-copy": "^3.3.0",
+    "rollup-plugin-minify-html-literals": "^1.2.5",
+    "rollup-plugin-terser": "^7.0.2"
   },
   "private": true
 }

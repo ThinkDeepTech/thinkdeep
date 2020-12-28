@@ -5,7 +5,7 @@ const plugins = [
 
 const presets = ['@babel/env'];
 
-export default {
+module.exports = {
   presets,
   plugins,
 };

@@ -1,9 +1,18 @@
-import { html, LitElement, property, customElement } from 'lit-element';
+import { html, LitElement, property, customElement, css } from 'lit-element';
+import '@polymer/app-layout/app-header-layout/app-header-layout.js';
 
 /* eslint-disable no-unused-vars */
 @customElement('deep-navbar')
 class DeepNavbar extends LitElement {
   @property({ type: String }) name = 'thing';
+
+  static get styles() {
+    return css`
+      div {
+        color: red;
+      }
+    `;
+  }
 
   render() {
     return html`
