@@ -1,1 +1,1 @@
-import '@thinkdeep/deep-navbar/deep-navbar.js';
+import './deep-navbar.js';

@@ -11,6 +11,7 @@ const copyConfig = {
   targets: [
     { src: '../../node_modules/@webcomponents', dest: './build/node_modules' },
     { src: './index.html', dest: 'build' },
+    { src: './deep-navbar.js', dest: 'build' },
   ],
 };
 
