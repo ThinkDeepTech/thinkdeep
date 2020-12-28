@@ -16,7 +16,7 @@ const copyConfig = {
 };
 
 export default {
-  input: [__dirname + '/index.js'],
+  input: ['./index.js'],
   output: {
     file: 'build/index.js',
     format: 'es',
@@ -26,20 +26,6 @@ export default {
     eslint(),
     babel({
       babelHelpers: 'bundled',
-      plugins: [
-        '@babel/plugin-proposal-class-properties',
-        ['@babel/proposal-decorators', { decoratorsBeforeExport: true }],
-      ],
-      presets: [
-        [
-          '@babel/preset-env',
-          {
-            targets: {
-              esmodules: true,
-            },
-          },
-        ],
-      ],
     }),
     copy(copyConfig),
     nodeResolve(),

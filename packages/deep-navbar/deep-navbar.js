@@ -1,7 +1,6 @@
-import { html, LitElement, customElement } from 'lit-element';
+import { html, LitElement } from 'lit-element';
 
 /* eslint-disable no-unused-vars */
-customElement('deep-navbar');
 class DeepNavbar extends LitElement {
   render() {
     return html`
@@ -11,3 +10,5 @@ class DeepNavbar extends LitElement {
     `;
   }
 }
+
+customElements.define('deep-navbar', DeepNavbar);
