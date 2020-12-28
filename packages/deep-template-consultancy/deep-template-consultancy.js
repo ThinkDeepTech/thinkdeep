@@ -13,6 +13,8 @@ class DeepTemplateConsultancy extends LitElement {
     return html`
       ${this.styles}
 
+      <p>Some text</p>
+
       <deep-navbar></deep-navbar>
       <deep-banner></deep-banner>
       <deep-section></deep-section>

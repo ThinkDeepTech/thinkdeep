@@ -3,4 +3,9 @@ const plugins = [
   ['@babel/proposal-decorators', { decoratorsBeforeExport: true }],
 ];
 
-module.exports = { plugins };
+const presets = ['@babel/env'];
+
+export default {
+  presets,
+  plugins,
+};
