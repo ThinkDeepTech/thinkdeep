@@ -1,15 +1,14 @@
 import { html, LitElement, property, customElement, css } from 'lit-element';
-import '@polymer/app-layout/app-header-layout/app-header-layout.js';
 
 /* eslint-disable no-unused-vars */
-@customElement('deep-navbar')
-class DeepNavbar extends LitElement {
-  @property({ type: String }) name = 'thing';
+@customElement('deep-grid-layout')
+class DeepGridLayout extends LitElement {
+  @property({ type: Number }) numColumns = 12;
 
   static get styles() {
     return css`
       div {
-        color: red;
+        display: grid;
       }
     `;
   }
@@ -17,7 +16,9 @@ class DeepNavbar extends LitElement {
   render() {
     return html`
       <div>
-        <p>In navbar. ${this.name}</p>
+        <p>First</p>
+        <p>Second</p>
+        <p>Third</p>
       </div>
     `;
   }

@@ -1,8 +1,11 @@
+/* eslint-disable no-unused-vars */
+
 import { css, html, LitElement, customElement, property } from 'lit-element';
+
+import { Button } from 'smart-webcomponents/source/smart.elements';
 
 import '@thinkdeep/deep-navbar';
 
-/* eslint-disable no-unused-vars */
 @customElement('deep-template-consultancy')
 class DeepTemplateConsultancy extends LitElement {
   @property({ type: Array }) sections = [
@@ -25,16 +28,13 @@ class DeepTemplateConsultancy extends LitElement {
     return html`
       ${this.styles}
 
+      <!-- TODO: Figure out layout and implement (i.e, grid layout, what arch style) -->
+
       <deep-navbar></deep-navbar>
       <deep-banner></deep-banner>
       <deep-section></deep-section>
 
-      ${this.sections.map(
-        (section) => html`
-          <h2 class="section">${section.name}</h2>
-          <p>Some paragraph text</p>
-        `
-      )}
+      <smart-button class="raised">Button</smart-button>
 
       <deep-footer></deep-footer>
     `;
