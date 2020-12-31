@@ -16,7 +16,8 @@
     "dev": "serve build",
     "copyindex": "cp index.html build",
     "copywc": "cp -r ../../node_modules/@webcomponents/webcomponentsjs/bundles build && cp ../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js build",
-    "build": "rm -rf build && mkdir build && npm run copyindex && npm run copywc && rollup -c"
+    "build": "rm -rf build && mkdir build && npm run copyindex && npm run copywc && rollup -c",
+    "test": "TODO"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
@@ -27,6 +28,8 @@
     "@polymer/app-layout": "^3.1.0",
     "@rollup/plugin-eslint": "^8.0.1",
     "@rollup/plugin-node-resolve": "^11.0.1",
+    "karma": "^5.2.3",
+    "karma-cli": "^2.0.0",
     "rollup": "^1.1.0",
     "rollup-plugin-babel": "^4.3.0",
     "rollup-plugin-node-resolve": "^4.0.0",

@@ -21,17 +21,22 @@ class DeepTemplateConsultancy extends LitElement {
   ];
 
   static get styles() {
-    return css``;
+    return css`
+      :host {
+        display: grid;
+        grid-template-columns: repeat(1fr, 12);
+        background-color: red;
+        color: red;
+      }
+    `;
   }
 
   render() {
     return html`
-      ${this.styles}
-
-      <!-- TODO: Figure out layout and implement (i.e, grid layout, what arch style) -->
-
       <deep-navbar></deep-navbar>
+
       <deep-banner></deep-banner>
+
       <deep-section></deep-section>
 
       <smart-button class="raised">Button</smart-button>
