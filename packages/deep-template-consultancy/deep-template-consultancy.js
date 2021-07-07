@@ -9,7 +9,7 @@ class DeepTemplateConsultancy extends LitElement {
     return css`
       :host {
         display: grid;
-        grid-template-columns: repeat(1fr, 10);
+        grid-template-rows: repeat(12, 1fr);
         background-color: yellow;
       }
       div {
@@ -25,7 +25,10 @@ class DeepTemplateConsultancy extends LitElement {
       <deep-navbar></deep-navbar>
       <div>Something</div>
       <deep-banner></deep-banner>
-      <div>Magical</div>
+      <div>
+        Magical
+        <p>something</p>
+      </div>
       <deep-section></deep-section>
       <div>Third Thing</div>
       <deep-footer></deep-footer>
