@@ -8,17 +8,15 @@ class DeepNavbar extends LitElement {
 
   static get styles() {
     return css`
-      div {
+      .navbar {
+        height: 100px;
+        width: auto;
         background-color: red;
       }
     `;
   }
 
   render() {
-    return html`
-      <div>
-        <p>In navbar. Name: ${this.name}</p>
-      </div>
-    `;
+    return html` <div class="navbar">In navbar. Name: ${this.name}</div> `;
   }
 }

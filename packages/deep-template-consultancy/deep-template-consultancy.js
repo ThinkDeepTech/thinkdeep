@@ -7,13 +7,13 @@ import '@thinkdeep/deep-navbar';
 class DeepTemplateConsultancy extends LitElement {
   static get styles() {
     return css`
-      :host {
+      .page {
         display: grid;
         grid-template-rows: repeat(12, 1fr);
         background-color: yellow;
       }
       div {
-        background-color: gray;
+        background-color: green;
       }
     `;
   }
@@ -22,16 +22,17 @@ class DeepTemplateConsultancy extends LitElement {
     return html`
       ${this.styles}
 
-      <deep-navbar></deep-navbar>
-      <div>Something</div>
-      <deep-banner></deep-banner>
-      <div>
-        Magical
-        <p>something</p>
+      <div class="page">
+        <deep-navbar></deep-navbar>
+        <deep-banner></deep-banner>
+        <div>
+          Magical
+          <p>something</p>
+        </div>
+        <deep-section></deep-section>
+        <div>Third Thing</div>
+        <deep-footer></deep-footer>
       </div>
-      <deep-section></deep-section>
-      <div>Third Thing</div>
-      <deep-footer></deep-footer>
     `;
   }
 }
