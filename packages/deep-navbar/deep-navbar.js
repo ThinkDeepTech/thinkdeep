@@ -25,11 +25,13 @@ class DeepNavbar extends LitElement {
         background-color: red;
       }
 
+      .menu-items {
+        grid-column-start:
+      }
+
       .menu-item {
-        align-self: flex-end;
         height: 100%:
         width: auto;
-        grid-column-start: 4;
       }
     `;
   }
@@ -39,7 +41,12 @@ class DeepNavbar extends LitElement {
       <div class="navbar">
         <div class="logo">${this.logo}</div>
 
-        ${this.menuItems.map((item) => html`<button class="menu-item">${item.label}</button>`)}
+        <div
+          class="menu-items"
+          style=".menu-items { grid-template-start: ${this.menuItems.length} } "
+        >
+          ${this.menuItems.map((item) => html`<button class="menu-item">${item.label}</button>`)}
+        </div>
       </div>
     `;
   }
