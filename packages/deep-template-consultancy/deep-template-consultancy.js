@@ -1,19 +1,33 @@
-import { css, html, LitElement, customElement } from 'lit-element';
+import { css, html, LitElement } from 'lit-element';
 
 import '@thinkdeep/deep-navbar';
 
 /* eslint-disable no-unused-vars */
-@customElement('deep-template-consultancy')
 class DeepTemplateConsultancy extends LitElement {
+  static get properties() {
+    return {
+      menuItems: { type: Array },
+    };
+  }
+
+  constructor() {
+    super();
+    this.menuItems = [
+      {
+        label: 'About',
+      },
+      {
+        label: 'Contact Me',
+      },
+    ];
+  }
+
   static get styles() {
     return css`
-      .page {
+      :host {
         display: grid;
         grid-template-rows: repeat(12, 1fr);
         background-color: yellow;
-      }
-      div {
-        background-color: green;
       }
     `;
   }
@@ -22,17 +36,12 @@ class DeepTemplateConsultancy extends LitElement {
     return html`
       ${this.styles}
 
-      <div class="page">
-        <deep-navbar></deep-navbar>
-        <deep-banner></deep-banner>
-        <div>
-          Magical
-          <p>something</p>
-        </div>
-        <deep-section></deep-section>
-        <div>Third Thing</div>
-        <deep-footer></deep-footer>
-      </div>
+      <deep-navbar logo="//Path to logo.jpg" menu-items="${this.menuItems}"></deep-navbar>
+      <deep-banner></deep-banner>
+      <deep-section></deep-section>
+      <deep-footer></deep-footer>
     `;
   }
 }
+
+customElements.define('deep-template-consultancy', DeepTemplateConsultancy);
