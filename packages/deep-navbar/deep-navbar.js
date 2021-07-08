@@ -12,7 +12,14 @@ class DeepNavbar extends LitElement {
 
   constructor() {
     super();
-    this.menuItems = [];
+    this.menuItems = [
+      {
+        label: 'Home',
+      },
+      {
+        label: 'About',
+      },
+    ];
   }
 
   static get styles() {
@@ -25,13 +32,17 @@ class DeepNavbar extends LitElement {
         background-color: red;
       }
 
-      .menu-items {
-        grid-column-start:
+      .logo {
+        grid-column-start: 1;
+        grid-column-end: 1;
       }
 
       .menu-item {
-        height: 100%:
-        width: auto;
+        height: 100%;
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
       }
     `;
   }
@@ -41,12 +52,7 @@ class DeepNavbar extends LitElement {
       <div class="navbar">
         <div class="logo">${this.logo}</div>
 
-        <div
-          class="menu-items"
-          style=".menu-items { grid-template-start: ${this.menuItems.length} } "
-        >
-          ${this.menuItems.map((item) => html`<button class="menu-item">${item.label}</button>`)}
-        </div>
+        ${this.menuItems.map((item) => html`<button class="menu-item">${item.label}</button>`)}
       </div>
     `;
   }
