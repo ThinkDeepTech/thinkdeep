@@ -1,12 +1,15 @@
 import { css, html, LitElement } from 'lit-element';
 
 import '@thinkdeep/deep-navbar';
+import '@thinkdeep/deep-template-consultancy/deep-consultancy-home';
+import { Router } from '@vaadin/router';
 
 /* eslint-disable no-unused-vars */
-class DeepTemplateConsultancy extends LitElement {
+export class DeepTemplateConsultancy extends LitElement {
   static get properties() {
     return {
       menuItems: { type: Array },
+      location: { type: Object },
     };
   }
 
@@ -15,14 +18,23 @@ class DeepTemplateConsultancy extends LitElement {
     this.menuItems = [
       {
         label: 'Home',
-      },
-      {
-        label: 'About',
-      },
-      {
-        label: 'Contact',
+        path: '/',
       },
     ];
+
+    this.location = Router.location;
+
+    const targetViewingArea = document.getElementById('content');
+    const router = new Router(targetViewingArea);
+    router.setRoutes([
+      {
+        path: '/',
+        component: './deep-consultancy-home',
+        action: async () => {
+          await import('./deep-consultancy-home');
+        },
+      },
+    ]);
   }
 
   static get styles() {
@@ -32,11 +44,11 @@ class DeepTemplateConsultancy extends LitElement {
         grid-template-rows: repeat(7, 1fr);
         grid-template-areas:
           'header'
-          'banner'
-          'banner'
-          'banner'
-          'banner'
-          'banner'
+          'content'
+          'content'
+          'content'
+          'content'
+          'content'
           'footer';
         background-color: yellow;
       }
@@ -45,8 +57,8 @@ class DeepTemplateConsultancy extends LitElement {
         grid-area: header;
       }
 
-      deep-banner {
-        grid-area: banner;
+      #content {
+        grid-area: content;
       }
 
       deep-footer {
@@ -59,13 +71,11 @@ class DeepTemplateConsultancy extends LitElement {
     return html`
       ${this.styles}
 
-      <deep-navbar
-        class="navbar"
-        logo="//Path to logo.jpg"
-        .menuItems="${this.menuItems}"
-      ></deep-navbar>
-      <deep-banner class="banner">Banner</deep-banner>
-      <deep-footer class="footer">Footer</deep-footer>
+      <deep-navbar class="navbar" logo="//logo.jpg" .menuItems="${this.menuItems}"></deep-navbar>
+
+      <div id="content"></div>
+
+      <deep-footer>Footer</deep-footer>
     `;
   }
 }

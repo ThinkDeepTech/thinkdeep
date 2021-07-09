@@ -1,7 +1,7 @@
 import { html, LitElement, css } from 'lit-element';
 
 /* eslint-disable no-unused-vars */
-class DeepNavbar extends LitElement {
+export class DeepNavbar extends LitElement {
   static get properties() {
     return {
       logo: { type: String },
@@ -49,12 +49,12 @@ class DeepNavbar extends LitElement {
 
         ${this.menuItems.map(
           (item, index) =>
-            html`<button
+            html`<a
               class="menu-item"
               style="grid-column-start: ${-1 * this.menuItems.length - 1 + index};"
             >
               ${item.label}
-            </button>`
+            </a>`
         )}
       </div>
     `;
