@@ -1,5 +1,4 @@
 import { html, LitElement, css } from 'lit-element';
-import '@polymer/app-layout/app-header-layout/app-header-layout.js';
 
 /* eslint-disable no-unused-vars */
 class DeepNavbar extends LitElement {
