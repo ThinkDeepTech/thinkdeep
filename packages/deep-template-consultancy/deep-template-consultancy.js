@@ -30,7 +30,32 @@ class DeepTemplateConsultancy extends LitElement {
       :host {
         display: grid;
         grid-template-rows: repeat(12, 1fr);
+        grid-template-areas:
+          'header'
+          'banner'
+          'banner'
+          'banner'
+          'banner'
+          'banner'
+          'banner'
+          'banner'
+          'banner'
+          'banner'
+          'banner'
+          'footer';
         background-color: yellow;
+      }
+
+      deep-navbar {
+        grid-area: header;
+      }
+
+      deep-banner {
+        grid-area: banner;
+      }
+
+      deep-footer {
+        grid-area: footer;
       }
     `;
   }
@@ -39,9 +64,13 @@ class DeepTemplateConsultancy extends LitElement {
     return html`
       ${this.styles}
 
-      <deep-navbar logo="//Path to logo.jpg" .menuItems="${this.menuItems}"></deep-navbar>
-      <deep-banner></deep-banner>
-      <deep-footer></deep-footer>
+      <deep-navbar
+        class="navbar"
+        logo="//Path to logo.jpg"
+        .menuItems="${this.menuItems}"
+      ></deep-navbar>
+      <deep-banner class="banner">Banner</deep-banner>
+      <deep-footer class="footer">Footer</deep-footer>
     `;
   }
 }
