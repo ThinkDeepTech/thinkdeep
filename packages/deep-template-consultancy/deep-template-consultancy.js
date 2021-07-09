@@ -29,14 +29,9 @@ class DeepTemplateConsultancy extends LitElement {
     return css`
       :host {
         display: grid;
-        grid-template-rows: repeat(12, 1fr);
+        grid-template-rows: repeat(7, 1fr);
         grid-template-areas:
           'header'
-          'banner'
-          'banner'
-          'banner'
-          'banner'
-          'banner'
           'banner'
           'banner'
           'banner'
