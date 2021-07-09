@@ -14,10 +14,13 @@ class DeepTemplateConsultancy extends LitElement {
     super();
     this.menuItems = [
       {
+        label: 'Home',
+      },
+      {
         label: 'About',
       },
       {
-        label: 'Contact Me',
+        label: 'Contact',
       },
     ];
   }
@@ -36,9 +39,8 @@ class DeepTemplateConsultancy extends LitElement {
     return html`
       ${this.styles}
 
-      <deep-navbar logo="//Path to logo.jpg" menu-items="${this.menuItems}"></deep-navbar>
+      <deep-navbar logo="//Path to logo.jpg" .menuItems="${this.menuItems}"></deep-navbar>
       <deep-banner></deep-banner>
-      <deep-section></deep-section>
       <deep-footer></deep-footer>
     `;
   }

@@ -11,17 +11,8 @@ class DeepNavbar extends LitElement {
 
   constructor() {
     super();
-    this.menuItems = [
-      {
-        label: 'Home',
-      },
-      {
-        label: 'About',
-      },
-      {
-        label: 'Contact Me',
-      },
-    ];
+    this.logo = '';
+    this.menuItems = [];
   }
 
   static get styles() {
@@ -37,6 +28,8 @@ class DeepNavbar extends LitElement {
       .logo {
         grid-column-start: 1;
         grid-column-end: 1;
+        align-self: center;
+        text-align: center;
       }
 
       .menu-item {
