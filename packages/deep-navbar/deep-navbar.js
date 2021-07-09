@@ -19,6 +19,9 @@ class DeepNavbar extends LitElement {
       {
         label: 'About',
       },
+      {
+        label: 'Contact Me',
+      },
     ];
   }
 
@@ -52,7 +55,15 @@ class DeepNavbar extends LitElement {
       <div class="navbar">
         <div class="logo">${this.logo}</div>
 
-        ${this.menuItems.map((item) => html`<button class="menu-item">${item.label}</button>`)}
+        ${this.menuItems.map(
+          (item, index) =>
+            html`<button
+              class="menu-item"
+              style="grid-column-start: ${-1 * this.menuItems.length - 1 + index};"
+            >
+              ${item.label}
+            </button>`
+        )}
       </div>
     `;
   }
