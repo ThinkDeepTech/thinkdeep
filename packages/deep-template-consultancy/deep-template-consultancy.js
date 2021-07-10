@@ -3,11 +3,14 @@ import { css, html, LitElement } from 'lit-element';
 import '@thinkdeep/deep-navbar';
 import { Router } from '@vaadin/router';
 
+import '@thinkdeep/deep-template-consultancy/deep-consultancy-home';
+import '@thinkdeep/deep-template-consultancy/deep-consultancy-about';
+
 /* eslint-disable no-unused-vars */
 export class DeepTemplateConsultancy extends LitElement {
   static get properties() {
     return {
-      menuItems: { type: Array },
+      routes: { type: Array },
       location: { type: Object },
     };
   }
@@ -16,14 +19,18 @@ export class DeepTemplateConsultancy extends LitElement {
     super();
 
     this.location = Router.location;
-    this.menuItems = [
+    this.routes = [
       {
-        label: 'Home',
         path: '/',
+        name: 'home',
+        label: 'Home',
+        component: 'deep-consultancy-home',
       },
       {
-        label: 'About',
         path: '/about',
+        name: 'about',
+        label: 'About',
+        component: 'deep-consultancy-about',
       },
     ];
   }
@@ -33,16 +40,8 @@ export class DeepTemplateConsultancy extends LitElement {
 
     const targetViewingArea = this.shadowRoot.getElementById('content');
     const router = new Router(targetViewingArea);
-    router.setRoutes([
-      {
-        path: '/',
-        name: 'home',
-        component: 'deep-consultancy-home',
-        action: async () => {
-          await import('@thinkdeep/deep-template-consultancy/deep-consultancy-home');
-        },
-      },
-    ]);
+    const routes = this.routes;
+    router.setRoutes(routes);
   }
 
   static get styles() {
@@ -79,7 +78,7 @@ export class DeepTemplateConsultancy extends LitElement {
     return html`
       ${this.styles}
 
-      <deep-navbar class="navbar" logo="//logo.jpg" .menuItems="${this.menuItems}"></deep-navbar>
+      <deep-navbar class="navbar" logo="//logo.jpg" .routes="${this.routes}"></deep-navbar>
 
       <main role="main" id="content"></main>
 

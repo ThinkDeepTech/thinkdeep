@@ -5,14 +5,14 @@ export class DeepNavbar extends LitElement {
   static get properties() {
     return {
       logo: { type: String },
-      menuItems: { type: Array },
+      routes: { type: Array },
     };
   }
 
   constructor() {
     super();
     this.logo = '';
-    this.menuItems = [];
+    this.routes = [];
   }
 
   static get styles() {
@@ -47,11 +47,12 @@ export class DeepNavbar extends LitElement {
       <div class="navbar">
         <div class="logo">${this.logo}</div>
 
-        ${this.menuItems.map(
+        ${this.routes.map(
           (item, index) =>
             html`<a
               class="menu-item"
-              style="grid-column-start: ${-1 * this.menuItems.length - 1 + index};"
+              style="grid-column-start: ${-1 * this.routes.length - 1 + index};"
+              href="${item.path}"
             >
               ${item.label}
             </a>`
