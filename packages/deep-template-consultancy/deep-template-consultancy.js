@@ -61,7 +61,6 @@ export class DeepTemplateConsultancy extends LitElement {
           'content'
           'content'
           'footer';
-        background-color: yellow;
       }
 
       deep-navbar {
@@ -82,9 +81,7 @@ export class DeepTemplateConsultancy extends LitElement {
     return html`
       ${this.styles}
 
-      <deep-navbar class="navbar" logo="//logo.jpg" .routes="${this.routes}">
-        ${this.routes.map((item) => html` <deep-menu-item name="${item.name}"></deep-menu-item>`)}
-      </deep-navbar>
+      <deep-navbar class="navbar" logo="//logo.jpg" .routes="${this.routes}"></deep-navbar>
 
       <main id="content"></main>
 
