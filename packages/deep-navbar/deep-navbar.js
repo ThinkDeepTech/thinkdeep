@@ -54,7 +54,7 @@ export class DeepNavbar extends LitElement {
               style="grid-column-start: ${-1 * this.routes.length - 1 + index};"
               href="${item.path}"
             >
-              ${item.label}
+              ${item.name}
             </a>`
         )}
       </div>

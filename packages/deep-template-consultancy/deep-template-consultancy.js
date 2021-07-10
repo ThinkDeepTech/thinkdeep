@@ -3,8 +3,9 @@ import { css, html, LitElement } from 'lit-element';
 import '@thinkdeep/deep-navbar';
 import { Router } from '@vaadin/router';
 
-import '@thinkdeep/deep-template-consultancy/deep-consultancy-home';
-import '@thinkdeep/deep-template-consultancy/deep-consultancy-about';
+import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-home';
+import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-about';
+import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-not-found';
 
 /* eslint-disable no-unused-vars */
 export class DeepTemplateConsultancy extends LitElement {
@@ -23,14 +24,17 @@ export class DeepTemplateConsultancy extends LitElement {
       {
         path: '/',
         name: 'home',
-        label: 'Home',
-        component: 'deep-consultancy-home',
+        component: 'deep-consultancy-page-home',
       },
       {
         path: '/about',
         name: 'about',
-        label: 'About',
-        component: 'deep-consultancy-about',
+        component: 'deep-consultancy-page-about',
+      },
+      {
+        path: '(.*)',
+        name: 'page-not-found',
+        component: 'deep-consultancy-page-not-found',
       },
     ];
   }
@@ -78,7 +82,9 @@ export class DeepTemplateConsultancy extends LitElement {
     return html`
       ${this.styles}
 
-      <deep-navbar class="navbar" logo="//logo.jpg" .routes="${this.routes}"></deep-navbar>
+      <deep-navbar class="navbar" logo="//logo.jpg" .routes="${this.routes}">
+        ${this.routes.map((item) => html` <deep-menu-item name="${item.name}"></deep-menu-item>`)}
+      </deep-navbar>
 
       <main id="content"></main>
 
