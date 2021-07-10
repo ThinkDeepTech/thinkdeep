@@ -1,24 +1,65 @@
-import { html, LitElement, property, customElement, css } from 'lit-element';
-import '@polymer/app-layout/app-header-layout/app-header-layout.js';
+import { html, LitElement, css } from 'lit-element';
 
 /* eslint-disable no-unused-vars */
-@customElement('deep-navbar')
-class DeepNavbar extends LitElement {
-  @property({ type: String }) name = 'thing';
+export class DeepNavbar extends LitElement {
+  static get properties() {
+    return {
+      logo: { type: String },
+      routes: { type: Array },
+    };
+  }
+
+  constructor() {
+    super();
+    this.logo = '';
+    this.routes = [];
+  }
 
   static get styles() {
     return css`
-      div {
-        color: red;
+      .navbar {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        height: 100px;
+        width: auto;
+        background-color: red;
+      }
+
+      .logo {
+        grid-column-start: 1;
+        grid-column-end: 1;
+        align-self: center;
+        text-align: center;
+      }
+
+      .menu-item {
+        height: 100%;
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
       }
     `;
   }
 
   render() {
     return html`
-      <div>
-        <p>In navbar. Name: ${this.name}</p>
+      <div class="navbar">
+        <div class="logo">${this.logo}</div>
+
+        ${this.routes.map(
+          (item, index) =>
+            html`<a
+              class="menu-item"
+              style="grid-column-start: ${-1 * this.routes.length - 1 + index};"
+              href="${item.path}"
+            >
+              ${item.label}
+            </a>`
+        )}
       </div>
     `;
   }
 }
+
+customElements.define('deep-navbar', DeepNavbar);

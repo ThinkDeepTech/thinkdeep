@@ -4,10 +4,12 @@ import eslint from '@rollup/plugin-eslint';
 
 export default {
   input: ['./index.js'],
-  output: {
-    file: 'build/index.js',
-    format: 'es',
-    sourcemap: true,
-  },
+  output: [
+    {
+      file: 'build/index.js',
+      format: 'es',
+      sourcemap: true,
+    },
+  ],
   plugins: [nodeResolve(), eslint(), babel({ babelHelpers: 'bundled' })],
 };
