@@ -12,9 +12,9 @@ module.exports = function (config) {
 
     // plugins to use
     plugins: [
+      'karma-requirejs',
       'karma-mocha',
       'karma-chai',
-      'karma-requirejs',
       'karma-babel-preprocessor',
       'karma-chrome-launcher',
       'karma-firefox-launcher',
@@ -22,8 +22,9 @@ module.exports = function (config) {
 
     // list of files / patterns to load in the browser
     files: [
+      'test-main.js',
       { pattern: '**/*.js ', included: false },
-      { pattern: 'test/*.js', included: false },
+      { pattern: 'test/**/*.js', included: false },
     ],
 
     // list of files / patterns to exclude
@@ -34,7 +35,7 @@ module.exports = function (config) {
     preprocessors: {
       'test-main.js': ['babel'],
       '**/*.js': ['babel'],
-      'test/*.js': ['babel'],
+      'test/**/*.js': ['babel'],
     },
 
     babelPreprocessor: {
@@ -53,7 +54,7 @@ module.exports = function (config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://www.npmjs.com/search?q=keywords:karma-reporter
-    reporters: ['dots'],
+    reporters: ['progress'],
 
     // web server port
     port: 9876,
@@ -63,7 +64,7 @@ module.exports = function (config) {
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_INFO,
+    logLevel: config.LOG_DEBUG,
 
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: false,
