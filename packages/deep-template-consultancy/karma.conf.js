@@ -8,12 +8,13 @@ module.exports = function (config) {
 
     // frameworks to use
     // available frameworks: https://www.npmjs.com/search?q=keywords:karma-adapter
-    frameworks: ['mocha', 'chai'],
+    frameworks: ['requirejs', 'mocha', 'chai'],
 
     // plugins to use
     plugins: [
       'karma-mocha',
       'karma-chai',
+      'karma-requirejs',
       'karma-babel-preprocessor',
       'karma-chrome-launcher',
       'karma-firefox-launcher',
@@ -22,7 +23,7 @@ module.exports = function (config) {
     // list of files / patterns to load in the browser
     files: [
       { pattern: '**/*.js ', included: false },
-      { pattern: 'test/**/*.js', included: false },
+      { pattern: 'test/*.js', included: false },
     ],
 
     // list of files / patterns to exclude
@@ -31,8 +32,9 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://www.npmjs.com/search?q=keywords:karma-preprocessor
     preprocessors: {
+      'test-main.js': ['babel'],
       '**/*.js': ['babel'],
-      'test/**/*.js': ['babel'],
+      'test/*.js': ['babel'],
     },
 
     babelPreprocessor: {
@@ -51,7 +53,7 @@ module.exports = function (config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://www.npmjs.com/search?q=keywords:karma-reporter
-    reporters: ['progress'],
+    reporters: ['dots'],
 
     // web server port
     port: 9876,
@@ -61,14 +63,14 @@ module.exports = function (config) {
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_DEBUG,
+    logLevel: config.LOG_INFO,
 
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: false,
 
     // start these browsers
     // available browser launchers: https://www.npmjs.com/search?q=keywords:karma-launcher
-    browsers: ['Chrome', 'Firefox'],
+    browsers: ['Chrome', 'ChromeHeadless', 'Firefox', 'FirefoxHeadless'],
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
@@ -77,5 +79,8 @@ module.exports = function (config) {
     // Concurrency level
     // how many browser instances should be started simultaneously
     concurrency: Infinity,
+
+    browserNoActivityTimeout: 60000,
+    browserDisconnectTimeout: 60000,
   });
 };
