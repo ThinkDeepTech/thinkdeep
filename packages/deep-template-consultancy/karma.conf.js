@@ -4,7 +4,7 @@
 module.exports = function (config) {
   config.set({
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
+    basePath: './',
 
     // frameworks to use
     // available frameworks: https://www.npmjs.com/search?q=keywords:karma-adapter
@@ -24,18 +24,18 @@ module.exports = function (config) {
     files: [
       'test-main.js',
       { pattern: '**/*.js ', included: false },
-      { pattern: 'test/**/*.js', included: false },
+      { pattern: 'test/**/*.test.js', included: false },
     ],
 
     // list of files / patterns to exclude
-    exclude: ['node_modules', '**/node_modules/**/*.js'],
+    exclude: ['node_modules', '**/node_modules/**/*.js', '**/*.conf.js'],
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://www.npmjs.com/search?q=keywords:karma-preprocessor
     preprocessors: {
       'test-main.js': ['babel'],
       '**/*.js': ['babel'],
-      'test/**/*.js': ['babel'],
+      'test/**/*.test.js': ['babel'],
     },
 
     babelPreprocessor: {
@@ -43,12 +43,12 @@ module.exports = function (config) {
         presets: ['@babel/preset-env'],
         sourceMap: 'inline',
       },
-      filename: function (file) {
-        return file.originalPath.replace(/\.js$/, '.es5.js');
-      },
-      sourceFileName: function (file) {
-        return file.originalPath;
-      },
+      // filename: function (file) {
+      //   return file.originalPath.replace(/\.js$/, '.es5.js');
+      // },
+      // sourceFileName: function (file) {
+      //   return file.originalPath;
+      // },
     },
 
     // test results reporter to use
@@ -67,7 +67,7 @@ module.exports = function (config) {
     logLevel: config.LOG_DEBUG,
 
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: false,
+    autoWatch: true,
 
     // start these browsers
     // available browser launchers: https://www.npmjs.com/search?q=keywords:karma-launcher
