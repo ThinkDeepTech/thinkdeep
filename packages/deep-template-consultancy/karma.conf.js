@@ -17,11 +17,16 @@ module.exports = function (config) {
       'karma-babel-preprocessor',
       'karma-chrome-launcher',
       'karma-firefox-launcher',
+      'karma-edge-launcher',
+      'karma-coverage',
       'karma-browserify',
     ],
 
     // list of files / patterns to load in the browser
-    files: ['test/**/*.test.js'],
+    files: [
+      // '../../node_modules/@thinkdeep/tools/testing.js',
+      'test/**/*.test.js',
+    ],
 
     // list of files / patterns to exclude
     exclude: ['node_modules'],
@@ -29,13 +34,24 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://www.npmjs.com/search?q=keywords:karma-preprocessor
     preprocessors: {
-      'test/**/*.test.js': ['browserify', 'babel'],
+      // '../../node_modules/@thinkdeep/tools/testing.js': ['browserify'],
+      'test/**/*.test.js': ['browserify', 'coverage'],
+    },
+
+    browserify: {
+      transform: [['babelify', { presets: ['@babel/preset-env'] }]],
+      extensions: ['.js'],
     },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://www.npmjs.com/search?q=keywords:karma-reporter
-    reporters: ['progress'],
+    reporters: ['progress', 'coverage'],
+
+    coverageReporter: {
+      reporters: [{ type: 'html', subdir: 'html' }],
+      dir: 'coverage/',
+    },
 
     // web server port
     port: 9876,
@@ -52,7 +68,7 @@ module.exports = function (config) {
 
     // start these browsers
     // available browser launchers: https://www.npmjs.com/search?q=keywords:karma-launcher
-    browsers: ['firefox_private', 'Chrome'],
+    browsers: ['firefox_private', 'Chrome', 'Edge'],
 
     customLaunchers: {
       firefox_private: {
