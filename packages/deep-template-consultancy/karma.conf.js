@@ -1,3 +1,7 @@
+// const babel = require('@rollup/plugin-babel');
+const { nodeResolve } = require('@rollup/plugin-node-resolve');
+const eslint = require('@rollup/plugin-eslint');
+
 // Karma configuration
 // Generated on Tue Jul 13 2021 08:03:13 GMT-0400 (Eastern Daylight Time)
 
@@ -12,35 +16,54 @@ module.exports = function (config) {
 
     // plugins to use
     plugins: [
+      'karma-browserify',
       'karma-mocha',
       'karma-chai',
       'karma-babel-preprocessor',
+      'karma-rollup-preprocessor',
       'karma-chrome-launcher',
       'karma-firefox-launcher',
       'karma-edge-launcher',
       'karma-coverage',
-      'karma-browserify',
     ],
 
     // list of files / patterns to load in the browser
     files: [
-      // '../../node_modules/@thinkdeep/tools/testing.js',
-      'test/**/*.test.js',
+      { pattern: 'node_modules/@thinkdeep/tools/testing.js', type: 'module', nocache: true },
+      { pattern: './**/*.js', type: 'module', nocache: true },
+      { pattern: './test/**/*.test.js', type: 'module', nocache: true },
     ],
 
     // list of files / patterns to exclude
-    exclude: ['node_modules'],
+    exclude: ['./build/**/*.js', 'node_modules', './test-main.js', './**/*.config.js'],
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://www.npmjs.com/search?q=keywords:karma-preprocessor
     preprocessors: {
-      // '../../node_modules/@thinkdeep/tools/testing.js': ['browserify'],
-      'test/**/*.test.js': ['browserify', 'coverage'],
+      './**/*.js': ['babel'],
+      'node_modules/@thinkdeep/tools/testing.js': ['babel'],
+      './test/**/*.test.js': ['babel', 'coverage'],
     },
 
-    browserify: {
-      transform: [['babelify', { presets: ['@babel/preset-env'] }]],
-      extensions: ['.js'],
+    babelPreprocessor: {
+      options: {
+        presets: ['@babel/preset-env'],
+      },
+    },
+
+    rollupPreprocessor: {
+      /**
+       * This is just a normal Rollup config object,
+       * except that `input` is handled for you.
+       */
+      output: [
+        {
+          file: 'build/index.js',
+          format: 'es',
+          sourcemap: true,
+        },
+      ],
+      plugins: [nodeResolve(), eslint()],
     },
 
     // test results reporter to use
@@ -80,7 +103,7 @@ module.exports = function (config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: true,
+    singleRun: false,
 
     // Concurrency level
     // how many browser instances should be started simultaneously

@@ -8,11 +8,10 @@ module.exports = function (config) {
 
     // frameworks to use
     // available frameworks: https://www.npmjs.com/search?q=keywords:karma-adapter
-    frameworks: ['requirejs', 'browserify', 'mocha', 'chai'],
+    frameworks: ['browserify', 'mocha', 'chai'],
 
     // plugins to use
     plugins: [
-      'karma-requirejs',
       'karma-mocha',
       'karma-chai',
       'karma-babel-preprocessor',

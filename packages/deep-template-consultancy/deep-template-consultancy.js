@@ -3,9 +3,9 @@ import { css, html, LitElement } from 'lit-element';
 import '@thinkdeep/deep-navbar';
 import { Router } from '@vaadin/router';
 
-import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-home';
-import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-about';
-import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-not-found';
+import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-home.js';
+import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-about.js';
+import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-not-found.js';
 
 /* eslint-disable no-unused-vars */
 export class DeepTemplateConsultancy extends LitElement {

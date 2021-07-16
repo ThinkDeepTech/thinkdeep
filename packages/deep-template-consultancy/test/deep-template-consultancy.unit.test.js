@@ -1,4 +1,4 @@
-// import { stamp, remove } from '@thinkdeep/tools/testing';
+// import {stamp, remove} from  '@thinkdeep/tools/testing.js';
 
 describe('deep-template-consultancy', () => {
   it('should correctly find this test', () => {
