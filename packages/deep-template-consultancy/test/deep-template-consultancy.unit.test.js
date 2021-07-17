@@ -12,7 +12,7 @@ describe('deep-template-consultancy', () => {
   it('should set the home path to /', () => {
     const routes = element.routes;
     var target = null;
-    for (const route in routes) if (route.name.contains('home')) target = route;
+    for (const route in routes) if (route.name.includes('home')) target = route;
 
     expect(target.path).to.equal('/');
   });
