@@ -1,7 +1,19 @@
-// import {stamp, remove} from  '@thinkdeep/tools/testing.js';
+import chai from 'chai';
+const expect = chai.expect;
+
+import '@thinkdeep/deep-template-consultancy/deep-template-consultancy.js';
 
 describe('deep-template-consultancy', () => {
-  it('should correctly find this test', () => {
-    expect(true).to.equal(true);
+  let element;
+  beforeEach(() => {
+    element = document.createElement('deep-template-consultancy');
+  });
+
+  it('should set the home path to /', () => {
+    const routes = element.routes;
+    var target = null;
+    for (const route in routes) if (route.name.contains('home')) target = route;
+
+    expect(target.path).to.equal('/');
   });
 });

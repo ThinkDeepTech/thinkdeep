@@ -1,7 +1,4 @@
-// const babel = require('@rollup/plugin-babel');
-const { nodeResolve } = require('@rollup/plugin-node-resolve');
-const eslint = require('@rollup/plugin-eslint');
-
+const buble = require('@rollup/plugin-buble');
 // Karma configuration
 // Generated on Tue Jul 13 2021 08:03:13 GMT-0400 (Eastern Daylight Time)
 
@@ -29,20 +26,22 @@ module.exports = function (config) {
 
     // list of files / patterns to load in the browser
     files: [
-      { pattern: 'node_modules/@thinkdeep/tools/testing.js', type: 'module', nocache: true },
+      { pattern: '../../node_modules/lit-html/**/*.js', type: 'module', nocache: true },
+      { pattern: '../../node_modules/lit-element/**/*.js', type: 'module', nocache: true },
+      { pattern: '../../node_modules/@thinkdeep/tools/testing.js', type: 'module', nocache: true },
       { pattern: './**/*.js', type: 'module', nocache: true },
-      { pattern: './test/**/*.test.js', type: 'module', nocache: true },
     ],
 
     // list of files / patterns to exclude
-    exclude: ['./build/**/*.js', 'node_modules', './test-main.js', './**/*.config.js'],
+    exclude: ['./build/**/*.js', './test-main.js', './**/*.config.js'],
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://www.npmjs.com/search?q=keywords:karma-preprocessor
     preprocessors: {
-      './**/*.js': ['babel'],
-      'node_modules/@thinkdeep/tools/testing.js': ['babel'],
-      './test/**/*.test.js': ['babel', 'coverage'],
+      '../../node_modules/lit-element/**/*.js': ['babel'],
+      '../../node_modules/lit-html/**/*.js': ['babel'],
+      '../../node_modules/@thinkdeep/tools/testing.js': ['babel'],
+      './**/*.js': ['rollup', 'babel'],
     },
 
     babelPreprocessor: {
@@ -63,7 +62,7 @@ module.exports = function (config) {
           sourcemap: true,
         },
       ],
-      plugins: [nodeResolve(), eslint()],
+      plugins: [buble()],
     },
 
     // test results reporter to use
@@ -103,7 +102,7 @@ module.exports = function (config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false,
+    singleRun: true,
 
     // Concurrency level
     // how many browser instances should be started simultaneously

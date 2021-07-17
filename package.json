@@ -2,12 +2,13 @@
   "name": "thinkdeep",
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin/in/haydenmcp)",
   "scripts": {
-    "setup": "sudo npm install --global yarn && yarn install;"
+    "setup": "sudo npm install --global yarn && yarn install",
+    "tests": "lerna run tests"
   },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "lerna run test"
+      "pre-push": "lerna run tests"
     }
   },
   "lint-staged": {
@@ -34,6 +35,7 @@
     "eslint-config-vaadin": "^0.2.7",
     "husky": "^1.1.2",
     "istanbul-instrumenter-loader": "^3.0.1",
+    "jest": "^27.0.6",
     "karma": "^6.3.4",
     "karma-chrome-launcher": "^3.1.0",
     "karma-coverage-istanbul-reporter": "^2.0.4",
@@ -61,6 +63,7 @@
     "@babel/cli": "^7.12.10",
     "@babel/node": "^7.12.10",
     "chai": "^4.3.4",
+    "es-dev-server": "^2.1.0",
     "karma-babel-preprocessor": "^8.0.1",
     "karma-chai": "^0.1.0",
     "karma-cli": "^2.0.0",
