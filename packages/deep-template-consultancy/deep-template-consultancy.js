@@ -3,8 +3,9 @@ import { css, html, LitElement } from 'lit-element';
 import '@thinkdeep/deep-navbar';
 import { Router } from '@vaadin/router';
 
-import '@thinkdeep/deep-template-consultancy/deep-consultancy-home';
-import '@thinkdeep/deep-template-consultancy/deep-consultancy-about';
+import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-home.js';
+import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-about.js';
+import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-not-found.js';
 
 /* eslint-disable no-unused-vars */
 export class DeepTemplateConsultancy extends LitElement {
@@ -23,14 +24,17 @@ export class DeepTemplateConsultancy extends LitElement {
       {
         path: '/',
         name: 'home',
-        label: 'Home',
-        component: 'deep-consultancy-home',
+        component: 'deep-consultancy-page-home',
       },
       {
         path: '/about',
         name: 'about',
-        label: 'About',
-        component: 'deep-consultancy-about',
+        component: 'deep-consultancy-page-about',
+      },
+      {
+        path: '(.*)',
+        name: 'page-not-found',
+        component: 'deep-consultancy-page-not-found',
       },
     ];
   }
@@ -57,7 +61,6 @@ export class DeepTemplateConsultancy extends LitElement {
           'content'
           'content'
           'footer';
-        background-color: yellow;
       }
 
       deep-navbar {

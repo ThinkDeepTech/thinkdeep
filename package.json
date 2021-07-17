@@ -2,12 +2,13 @@
   "name": "thinkdeep",
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin/in/haydenmcp)",
   "scripts": {
-    "setup": "sudo npm install --global yarn && yarn install;"
+    "setup": "sudo npm install --global yarn && yarn install",
+    "tests": "lerna run tests"
   },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "lerna run test"
+      "pre-push": "lerna run tests"
     }
   },
   "lint-staged": {
@@ -34,12 +35,13 @@
     "eslint-config-vaadin": "^0.2.7",
     "husky": "^1.1.2",
     "istanbul-instrumenter-loader": "^3.0.1",
-    "karma": "^3.0.0",
-    "karma-chrome-launcher": "^2.2.0",
+    "jest": "^27.0.6",
+    "karma": "^6.3.4",
+    "karma-chrome-launcher": "^3.1.0",
     "karma-coverage-istanbul-reporter": "^2.0.4",
-    "karma-firefox-launcher": "^1.1.0",
+    "karma-firefox-launcher": "^2.1.1",
     "karma-ie-launcher": "^1.0.0",
-    "karma-mocha": "^1.3.0",
+    "karma-mocha": "^2.0.1",
     "karma-mocha-reporter": "^2.2.5",
     "karma-sinon-chai": "^2.0.2",
     "karma-sourcemap-loader": "^0.3.7",
@@ -60,8 +62,18 @@
   "dependencies": {
     "@babel/cli": "^7.12.10",
     "@babel/node": "^7.12.10",
+    "chai": "^4.3.4",
+    "es-dev-server": "^2.1.0",
+    "karma-babel-preprocessor": "^8.0.1",
+    "karma-chai": "^0.1.0",
+    "karma-cli": "^2.0.0",
+    "karma-requirejs": "^1.1.0",
+    "karma-rollup-plugin": "^0.2.4",
+    "karma-rollup-preprocessor": "^7.0.7",
     "log4js": "^3.0.6",
-    "prettier": "^2.2.1"
+    "mocha": "^9.0.2",
+    "prettier": "^2.2.1",
+    "requirejs": "^2.3.6"
   },
   "private": true
 }

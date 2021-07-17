@@ -32,7 +32,7 @@ export class DeepNavbar extends LitElement {
         text-align: center;
       }
 
-      .menu-item {
+      a {
         height: 100%;
         width: 100%;
         text-align: center;
@@ -50,11 +50,10 @@ export class DeepNavbar extends LitElement {
         ${this.routes.map(
           (item, index) =>
             html`<a
-              class="menu-item"
               style="grid-column-start: ${-1 * this.routes.length - 1 + index};"
               href="${item.path}"
             >
-              ${item.label}
+              ${item.name}
             </a>`
         )}
       </div>
