@@ -1,10 +1,3 @@
-// const buble = require('@rollup/plugin-buble');
-// const { nodeResolve } = require('@rollup/plugin-node-resolve');
-// const babel = require('@rollup/plugin-babel');
-// const eslint = require('@rollup/plugin-eslint');
-
-// const babelConfig = require('./babel.config');
-
 // Karma configuration
 // Generated on Tue Jul 13 2021 08:03:13 GMT-0400 (Eastern Daylight Time)
 
@@ -23,16 +16,15 @@ module.exports = function (config) {
     esm: {
       // if you are using 'bare module imports' you will need this option
       nodeResolve: true,
+      preserveSymlinks: true,
+      babel: true,
     },
 
     // list of files / patterns to load in the browser
-    files: [
-      { pattern: './**/*.js', type: 'module', nocache: true, included: true },
-      { pattern: './test/**/*.js', type: 'module', nocache: true, included: true },
-    ],
+    files: [{ pattern: './test/**/*.js', type: 'module', nocache: true }],
 
     // list of files / patterns to exclude
-    exclude: ['build/bundles/**/*.js', '../**/*.config.js'],
+    exclude: [],
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
