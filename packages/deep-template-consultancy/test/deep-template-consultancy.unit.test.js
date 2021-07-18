@@ -1,12 +1,12 @@
-// import { html } from 'lit-element';
-// import { stamp, remove } from '@thinkdeep/tools/testing';
-import { expect } from '@esm-bundle/chai';
-// import '@thinkdeep/deep-template-consultancy/deep-template-consultancy.js';
+import { html, fixture, expect } from '@open-wc/testing';
+import '@thinkdeep/deep-template-consultancy/deep-template-consultancy.js';
 
 describe('deep-template-consultancy', () => {
-  it('should set the home path to /', () => {
+  it('should include a navigation bar', async () => {
+    const element = await fixture(html`<deep-template-consultancy></deep-template-consultancy>`);
     // let element = stamp(html`<deep-template-consultancy></deep-template-consultancy>`);
-    // console.log(document.body);
-    expect(true).to.equal(true);
+    // let navbar = element.querySelectorAll('deep-navbar');
+    // expect(navbar).not.to.equal(undefined);
+    expect(element.routes.length).not.to.equal(0);
   });
 });

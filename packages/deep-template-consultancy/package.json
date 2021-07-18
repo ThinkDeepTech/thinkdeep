@@ -14,7 +14,9 @@
   },
   "scripts": {
     "dev": "web-dev-server --node-resolve --watch --open --app-index build/index.html",
-    "test": "web-test-runner \"test/**/*.test.js\" --node-resolve --puppeteer",
+    "dev:watch": "web-dev-server --open build/ --node-resolve --watch",
+    "tests": "web-test-runner \"test/**/*.test.js\" --node-resolve --puppeteer --coverage",
+    "tests:watch": "web-test-runner \"test/**/*.test.js\" --node-resolve --puppeteer --watch --coverage",
     "copyindex": "cp index.html build",
     "copywc": "cp -r ../../node_modules/@webcomponents/webcomponentsjs/bundles build && cp ../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js build",
     "build": "rm -rf build && mkdir build && npm run copyindex && npm run copywc && rollup -c"
@@ -44,6 +46,8 @@
     "@babel/runtime": "^7.12.5",
     "@esm-bundle/chai": "^4.3.4",
     "@open-wc/karma-esm": "^4.0.0",
+    "@open-wc/testing": "^2.5.33",
+    "@open-wc/testing-helpers": "^1.8.12",
     "@rollup/plugin-babel": "^5.2.2",
     "@rollup/plugin-buble": "^0.21.3",
     "@vaadin/router": "^1.7.4",
