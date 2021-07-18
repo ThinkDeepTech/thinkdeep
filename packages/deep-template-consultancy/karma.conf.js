@@ -1,4 +1,3 @@
-const buble = require('@rollup/plugin-buble');
 // Karma configuration
 // Generated on Tue Jul 13 2021 08:03:13 GMT-0400 (Eastern Daylight Time)
 
@@ -9,61 +8,41 @@ module.exports = function (config) {
 
     // frameworks to use
     // available frameworks: https://www.npmjs.com/search?q=keywords:karma-adapter
-    frameworks: ['browserify', 'mocha', 'chai'],
+    frameworks: ['esm', 'mocha', 'chai', 'browserify'],
 
     // plugins to use
-    plugins: [
-      'karma-browserify',
-      'karma-mocha',
-      'karma-chai',
-      'karma-babel-preprocessor',
-      'karma-rollup-preprocessor',
-      'karma-chrome-launcher',
-      'karma-firefox-launcher',
-      'karma-edge-launcher',
-      'karma-coverage',
-    ],
+    plugins: [require.resolve('@open-wc/karma-esm'), 'karma-*'],
 
-    // list of files / patterns to load in the browser
-    files: [
-      { pattern: '../../node_modules/lit-html/**/*.js', type: 'module', nocache: true },
-      { pattern: '../../node_modules/lit-element/**/*.js', type: 'module', nocache: true },
-      { pattern: '../../node_modules/@thinkdeep/tools/testing.js', type: 'module', nocache: true },
-      { pattern: './**/*.js', type: 'module', nocache: true },
-    ],
-
-    // list of files / patterns to exclude
-    exclude: ['./build/**/*.js', './test-main.js', './**/*.config.js'],
-
-    // preprocess matching files before serving them to the browser
-    // available preprocessors: https://www.npmjs.com/search?q=keywords:karma-preprocessor
-    preprocessors: {
-      '../../node_modules/lit-element/**/*.js': ['babel'],
-      '../../node_modules/lit-html/**/*.js': ['babel'],
-      '../../node_modules/@thinkdeep/tools/testing.js': ['babel'],
-      './**/*.js': ['rollup', 'babel'],
-    },
-
-    babelPreprocessor: {
-      options: {
+    esm: {
+      // if you are using 'bare module imports' you will need this option
+      nodeResolve: true,
+      preserveSymlinks: true,
+      babel: false,
+      coverage: true,
+      customBabelConfig: {
+        plugins: [
+          ['@babel/plugin-proposal-decorators', { legacy: true }],
+          ['@babel/plugin-proposal-class-properties', { loose: true }],
+        ],
         presets: ['@babel/preset-env'],
       },
     },
 
-    rollupPreprocessor: {
-      /**
-       * This is just a normal Rollup config object,
-       * except that `input` is handled for you.
-       */
-      output: [
-        {
-          file: 'build/index.js',
-          format: 'es',
-          sourcemap: true,
-        },
-      ],
-      plugins: [buble()],
+    // list of files / patterns to load in the browser
+    files: [{ pattern: 'test/**/*.test.js', type: 'module', nocache: true }],
+
+    mime: {
+      'text/javascript': ['js'],
     },
+
+    // preprocess matching files before serving them to the browser
+    // available preprocessors: https://www.npmjs.com/search?q=keywords:karma-preprocessor
+    preprocessors: {
+      // 'test/**/*.test.js': [],
+    },
+
+    // list of files / patterns to exclude
+    exclude: [],
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
@@ -102,7 +81,7 @@ module.exports = function (config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: true,
+    singleRun: false,
 
     // Concurrency level
     // how many browser instances should be started simultaneously

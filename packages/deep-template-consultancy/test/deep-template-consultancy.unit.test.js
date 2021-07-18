@@ -1,15 +1,12 @@
-import chai from 'chai';
-const expect = chai.expect;
-
+import { html, fixture, expect } from '@open-wc/testing';
 import '@thinkdeep/deep-template-consultancy/deep-template-consultancy.js';
 
 describe('deep-template-consultancy', () => {
-  let element;
-  beforeEach(() => {
-    element = document.createElement('deep-template-consultancy');
-  });
-
-  it('should set the home path to /', () => {
-    expect(element).not.to.equal(undefined);
+  it('should include a navigation bar', async () => {
+    const element = await fixture(html`<deep-template-consultancy></deep-template-consultancy>`);
+    // let element = stamp(html`<deep-template-consultancy></deep-template-consultancy>`);
+    // let navbar = element.querySelectorAll('deep-navbar');
+    // expect(navbar).not.to.equal(undefined);
+    expect(element.routes.length).not.to.equal(0);
   });
 });
