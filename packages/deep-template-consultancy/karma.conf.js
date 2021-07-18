@@ -8,7 +8,7 @@ module.exports = function (config) {
 
     // frameworks to use
     // available frameworks: https://www.npmjs.com/search?q=keywords:karma-adapter
-    frameworks: ['esm', 'mocha', 'chai'],
+    frameworks: ['esm', 'mocha', 'chai', 'browserify'],
 
     // plugins to use
     plugins: [require.resolve('@open-wc/karma-esm'), 'karma-*'],
@@ -17,11 +17,29 @@ module.exports = function (config) {
       // if you are using 'bare module imports' you will need this option
       nodeResolve: true,
       preserveSymlinks: true,
-      babel: true,
+      babel: false,
+      coverage: true,
+      customBabelConfig: {
+        plugins: [
+          ['@babel/plugin-proposal-decorators', { legacy: true }],
+          ['@babel/plugin-proposal-class-properties', { loose: true }],
+        ],
+        presets: ['@babel/preset-env'],
+      },
     },
 
     // list of files / patterns to load in the browser
-    files: [{ pattern: './test/**/*.js', type: 'module', nocache: true }],
+    files: [{ pattern: 'test/**/*.test.js', type: 'module', nocache: true }],
+
+    mime: {
+      'text/javascript': ['js'],
+    },
+
+    // preprocess matching files before serving them to the browser
+    // available preprocessors: https://www.npmjs.com/search?q=keywords:karma-preprocessor
+    preprocessors: {
+      // 'test/**/*.test.js': [],
+    },
 
     // list of files / patterns to exclude
     exclude: [],
@@ -63,7 +81,7 @@ module.exports = function (config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: true,
+    singleRun: false,
 
     // Concurrency level
     // how many browser instances should be started simultaneously
