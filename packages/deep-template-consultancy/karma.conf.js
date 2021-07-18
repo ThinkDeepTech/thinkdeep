@@ -1,4 +1,10 @@
-const buble = require('@rollup/plugin-buble');
+// const buble = require('@rollup/plugin-buble');
+// const { nodeResolve } = require('@rollup/plugin-node-resolve');
+// const babel = require('@rollup/plugin-babel');
+// const eslint = require('@rollup/plugin-eslint');
+
+// const babelConfig = require('./babel.config');
+
 // Karma configuration
 // Generated on Tue Jul 13 2021 08:03:13 GMT-0400 (Eastern Daylight Time)
 
@@ -9,61 +15,24 @@ module.exports = function (config) {
 
     // frameworks to use
     // available frameworks: https://www.npmjs.com/search?q=keywords:karma-adapter
-    frameworks: ['browserify', 'mocha', 'chai'],
+    frameworks: ['esm', 'mocha', 'chai'],
 
     // plugins to use
-    plugins: [
-      'karma-browserify',
-      'karma-mocha',
-      'karma-chai',
-      'karma-babel-preprocessor',
-      'karma-rollup-preprocessor',
-      'karma-chrome-launcher',
-      'karma-firefox-launcher',
-      'karma-edge-launcher',
-      'karma-coverage',
-    ],
+    plugins: [require.resolve('@open-wc/karma-esm'), 'karma-*'],
+
+    esm: {
+      // if you are using 'bare module imports' you will need this option
+      nodeResolve: true,
+    },
 
     // list of files / patterns to load in the browser
     files: [
-      { pattern: '../../node_modules/lit-html/**/*.js', type: 'module', nocache: true },
-      { pattern: '../../node_modules/lit-element/**/*.js', type: 'module', nocache: true },
-      { pattern: '../../node_modules/@thinkdeep/tools/testing.js', type: 'module', nocache: true },
-      { pattern: './**/*.js', type: 'module', nocache: true },
+      { pattern: './**/*.js', type: 'module', nocache: true, included: true },
+      { pattern: './test/**/*.js', type: 'module', nocache: true, included: true },
     ],
 
     // list of files / patterns to exclude
-    exclude: ['./build/**/*.js', './test-main.js', './**/*.config.js'],
-
-    // preprocess matching files before serving them to the browser
-    // available preprocessors: https://www.npmjs.com/search?q=keywords:karma-preprocessor
-    preprocessors: {
-      '../../node_modules/lit-element/**/*.js': ['babel'],
-      '../../node_modules/lit-html/**/*.js': ['babel'],
-      '../../node_modules/@thinkdeep/tools/testing.js': ['babel'],
-      './**/*.js': ['rollup', 'babel'],
-    },
-
-    babelPreprocessor: {
-      options: {
-        presets: ['@babel/preset-env'],
-      },
-    },
-
-    rollupPreprocessor: {
-      /**
-       * This is just a normal Rollup config object,
-       * except that `input` is handled for you.
-       */
-      output: [
-        {
-          file: 'build/index.js',
-          format: 'es',
-          sourcemap: true,
-        },
-      ],
-      plugins: [buble()],
-    },
+    exclude: ['build/bundles/**/*.js', '../**/*.config.js'],
 
     // test results reporter to use
     // possible values: 'dots', 'progress'

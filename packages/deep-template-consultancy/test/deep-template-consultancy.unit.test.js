@@ -1,15 +1,15 @@
-import chai from 'chai';
-const expect = chai.expect;
+// import { html } from 'lit-element';
+// import { stamp, remove } from '@thinkdeep/tools/testing';
 
-import '@thinkdeep/deep-template-consultancy/deep-template-consultancy.js';
+// import chai from 'chai';
+// const expect = chai.expect;
+
+// import '@thinkdeep/deep-template-consultancy/deep-template-consultancy.js';
 
 describe('deep-template-consultancy', () => {
-  let element;
-  beforeEach(() => {
-    element = document.createElement('deep-template-consultancy');
-  });
-
-  it('should set the home path to /', () => {
-    expect(element).not.to.equal(undefined);
+  it('should set the home path to /', (done) => {
+    // let element = stamp(html`<deep-template-consultancy></deep-template-consultancy>`);
+    // console.log(document.body);
+    // expect(menuItems.length).to.equal(4);
   });
 });
