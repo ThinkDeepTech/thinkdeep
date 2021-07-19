@@ -33,7 +33,7 @@ export class DeepTemplateConsultancy extends LitElement {
       },
       {
         path: '(.*)',
-        name: 'page-not-found',
+        name: 'not-found',
         component: 'deep-consultancy-page-not-found',
       },
     ];

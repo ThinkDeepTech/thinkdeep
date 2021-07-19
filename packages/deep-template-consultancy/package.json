@@ -13,8 +13,8 @@
     "url": "git+https://github.com/ThinkDeepTech/thinkdeep.git"
   },
   "scripts": {
-    "dev": "web-dev-server --config web-dev-server.config.js",
-    "dev:watch": "web-dev-server --config web-dev-server.config.js --watch",
+    "dev": "web-dev-server --config ./web-dev-server.config.js",
+    "dev:watch": "web-dev-server --config ./web-dev-server.config.js --watch",
     "tests": "web-test-runner \"test/**/*.test.js\" --node-resolve --coverage --playwright --browsers chromium firefox",
     "tests:watch": "web-test-runner \"test/**/*.test.js\" --node-resolve --watch --coverage --playwright --browsers chromium firefox",
     "copyindex": "cp index.html build",

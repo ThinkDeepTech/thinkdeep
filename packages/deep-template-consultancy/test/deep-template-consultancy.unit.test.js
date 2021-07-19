@@ -1,4 +1,4 @@
-import { html, litFixtureSync, elementUpdated, expect } from '@open-wc/testing';
+import { html, litFixtureSync, elementUpdated, expect, assert } from '@open-wc/testing';
 import '@thinkdeep/deep-template-consultancy/deep-template-consultancy.js';
 
 /**
@@ -32,9 +32,15 @@ function clickMenuItem(element, route) {
 function findPage(element, pageTagName) {
   const pageComponents = element.querySelectorAll('*');
 
-  var target = null;
+  var target = {};
   for (const page of pageComponents)
-    if (page.tagName.toLowerCase() === pageTagName.toLowerCase()) target = page;
+    if (
+      page?.tagName?.toLowerCase &&
+      page.tagName &&
+      pageTagName &&
+      page.tagName.toLowerCase() === pageTagName.toLowerCase()
+    )
+      target = page;
 
   return target;
 }
@@ -67,17 +73,37 @@ describe('deep-template-consultancy', () => {
     const navbar = element.shadowRoot.querySelector('deep-navbar');
     clickMenuItem(navbar, homeRoute);
     elementUpdated(contentArea).then((additionalUpdatesNeeded) => {
-      const homePage = findPage(contentArea, homeRoute.component.toLowerCase());
+      const homePage = findPage(contentArea, homeRoute.component);
       const initialTextContent = homePage.shadowRoot.textContent;
 
       const aboutRoute = findRoute(element.routes, 'about');
       clickMenuItem(navbar, aboutRoute);
       elementUpdated(contentArea).then((additionalUpdatesNeeded) => {
-        const aboutPage = findPage(contentArea, aboutRoute.component.toLowerCase());
+        const aboutPage = findPage(contentArea, aboutRoute.component);
         const alteredTextContent = aboutPage.shadowRoot.textContent;
 
         expect(initialTextContent).not.to.equal(alteredTextContent);
       });
+    });
+  });
+
+  it('should navigate to the 404 not found page if an unknown page is requested', async () => {
+    const contentArea = element.shadowRoot.getElementById('content');
+    const notFoundPage = findRoute(element.routes, 'page-not-found');
+    const newLocation = Location.href + '/somethingentirelyrandom';
+    Location.href = newLocation;
+    elementUpdated(contentArea).then((additionalUpdatesNeeded) => {
+      const currentPage = findPage(contentArea, notFoundPage.component);
+      const alteredTextContent = currentPage?.shadowRoot?.textContent;
+
+      if (alteredTextContent === undefined)
+        assert.fail(
+          'The page that was returned was not the expected 404 not found page. It was undefined.'
+        );
+
+      expect(alteredTextContent).to.include(
+        "We couldn't find what you were looking for. Are you sure the URL is correct?"
+      );
     });
   });
 });
