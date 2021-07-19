@@ -1,5 +1,4 @@
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import babel from '@rollup/plugin-babel';
 import eslint from '@rollup/plugin-eslint';
 
 export default {
@@ -11,5 +10,5 @@ export default {
       sourcemap: true,
     },
   ],
-  plugins: [nodeResolve(), eslint(), babel({ babelHelpers: 'bundled' })],
+  plugins: [nodeResolve(), eslint()],
 };
