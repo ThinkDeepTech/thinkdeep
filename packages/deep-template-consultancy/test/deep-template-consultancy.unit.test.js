@@ -55,6 +55,11 @@ describe('deep-template-consultancy', () => {
     expect(target.length).to.equal(1);
   });
 
+  it('should include a footer at the bottom of the page', () => {
+    const target = element.shadowRoot.querySelectorAll('deep-footer');
+    expect(target.length).to.equal(1);
+  });
+
   it('should update the main window when a menu item is clicked', async () => {
     const contentArea = element.shadowRoot.getElementById('content');
 
