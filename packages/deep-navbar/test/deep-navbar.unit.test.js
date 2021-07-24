@@ -30,18 +30,20 @@ const routes = [
 describe('deep-navbar', () => {
   it('should display menu items with falsy hidden property', async () => {
     const element = await litFixtureSync(html` <deep-navbar .routes=${routes}></deep-navbar> `);
-    const menuItems = element.shadowRoot.querySelectorAll('a');
+    const menuItems = element?.shadowRoot?.querySelectorAll('a') || [];
 
     // For each displaying menu item, find its route and verify that its not hidden
     for (const menuItem of menuItems)
       for (const route of routes)
         if (menuItem.getAttribute('href').toLowerCase() === route.path.toLowerCase())
           expect(!!route.hidden).to.equal(false);
+
+    expect(menuItems.length).to.be.greaterThanOrEqual(1);
   });
 
   it('should hide navbar items labelled with hidden = true', async () => {
     const element = await litFixtureSync(html` <deep-navbar .routes=${routes}></deep-navbar> `);
-    const menuItems = element.shadowRoot.querySelectorAll('a');
+    const menuItems = element?.shadowRoot?.querySelectorAll('a') || [];
     let numHiddenLinks = 0;
     for (const route of routes) if (route.hidden) numHiddenLinks += 1;
     expect(menuItems.length).to.equal(routes.length - numHiddenLinks);
