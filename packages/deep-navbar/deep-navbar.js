@@ -19,10 +19,11 @@ export class DeepNavbar extends LitElement {
     return css`
       .navbar {
         display: grid;
+        grid-gap: 0.5rem;
         grid-template-columns: repeat(12, 1fr);
         height: 100px;
         width: auto;
-        background-color: blue;
+        background-color: var(--primary-color, #7a9e9f);
       }
 
       .logo {
@@ -34,7 +35,7 @@ export class DeepNavbar extends LitElement {
 
       a {
         height: 100%;
-        width: 100%;
+        width: minmax(125px, auto);
         text-align: center;
         justify-content: center;
         align-items: center;
