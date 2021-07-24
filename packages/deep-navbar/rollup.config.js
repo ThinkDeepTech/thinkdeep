@@ -1,33 +1,31 @@
-// import { defaultConfiguration } from '@thinkdeep/tools/build.js';
+import merge from 'deepmerge';
+// use createSpaConfig for bundling a Single Page App
+import { createSpaConfig } from '@open-wc/building-rollup';
 
-// export default defaultConfiguration( __dirname );
+// use createBasicConfig to do regular JS to JS bundling
+// import { createBasicConfig } from '@open-wc/building-rollup';
 
-import { nodeResolve } from '@rollup/plugin-node-resolve';
-import babel from '@rollup/plugin-babel';
-import eslint from '@rollup/plugin-eslint';
-import copy from 'rollup-plugin-copy';
+const baseConfig = createSpaConfig({
+  // use the outputdir option to modify where files are output
+  outputDir: 'build',
 
-const copyConfig = {
-  targets: [
-    { src: '../../node_modules/@webcomponents', dest: './build/node_modules' },
-    { src: './index.html', dest: 'build' },
-    { src: './deep-navbar.js', dest: 'build' },
-  ],
-};
+  // if you need to support older browsers, such as IE11, set the legacyBuild
+  // option to generate an additional build just for this browser
+  // legacyBuild: true,
 
-export default {
-  input: ['./index.js'],
-  output: {
-    file: 'build/index.js',
-    format: 'es',
-    sourcemap: true,
-  },
-  plugins: [
-    eslint(),
-    babel({
-      babelHelpers: 'bundled',
-    }),
-    copy(copyConfig),
-    nodeResolve(),
-  ],
-};
+  // development mode creates a non-minified build for debugging or development
+  developmentMode: process.env.ROLLUP_WATCH === 'true',
+
+  // set to true to inject the service worker registration into your index.html
+  injectServiceWorker: false,
+});
+
+export default merge(baseConfig, {
+  // if you use createSpaConfig, you can use your index.html as entrypoint,
+  // any <script type="module"> inside will be bundled by rollup
+  input: './index.html',
+
+  // alternatively, you can use your JS as entrypoint for rollup and
+  // optionally set a HTML template manually
+  // input: './app.js',
+});
