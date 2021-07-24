@@ -62,6 +62,7 @@
   "dependencies": {
     "@babel/cli": "^7.12.10",
     "@babel/node": "^7.12.10",
+    "@web/dev-server-esbuild": "^0.2.12",
     "chai": "^4.3.4",
     "es-dev-server": "^2.1.0",
     "karma-babel-preprocessor": "^8.0.1",

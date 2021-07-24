@@ -13,13 +13,11 @@
     "url": "git+https://github.com/ThinkDeepTech/thinkdeep.git"
   },
   "scripts": {
-    "dev": "web-dev-server --config ./web-dev-server.config.js",
-    "dev:watch": "web-dev-server --config ./web-dev-server.config.js --watch",
-    "tests": "web-test-runner \"test/**/*.test.js\" --node-resolve --coverage --playwright --browsers chromium firefox",
-    "tests:watch": "web-test-runner \"test/**/*.test.js\" --node-resolve --watch --coverage --playwright --browsers chromium firefox",
-    "copyindex": "cp index.html build",
-    "copywc": "cp -r ../../node_modules/@webcomponents/webcomponentsjs/bundles build && cp ../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js build",
-    "build": "rm -rf build && mkdir build && npm run copyindex && npm run copywc && rollup -c"
+    "dev": "web-dev-server --config ./web-dev-server.config.js --esbuild-target auto",
+    "dev:watch": "web-dev-server --config ./web-dev-server.config.js --watch --esbuild-target auto",
+    "tests": "web-test-runner \"test/**/*.test.js\" --node-resolve --coverage --playwright --browsers chromium firefox --preserveSymlinks",
+    "tests:watch": "web-test-runner \"test/**/*.test.js\" --node-resolve --watch --coverage --playwright --browsers chromium firefox --preserveSymlinks",
+    "build": "rimraf build && rollup -c rollup.config.js"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
@@ -45,6 +43,7 @@
     "@babel/preset-env": "^7.14.7",
     "@babel/runtime": "^7.12.5",
     "@esm-bundle/chai": "^4.3.4",
+    "@open-wc/building-rollup": "^1.10.0",
     "@open-wc/karma-esm": "^4.0.0",
     "@open-wc/testing": "^2.5.33",
     "@open-wc/testing-helpers": "^1.8.12",
@@ -62,6 +61,7 @@
     "babelify": "^10.0.0",
     "browserify": "^17.0.0",
     "chai": "^4.3.4",
+    "deepmerge": "^4.2.2",
     "es-dev-server": "^2.1.0",
     "karma": "^6.3.4",
     "karma-babel-preprocessor": "^8.0.1",
@@ -77,6 +77,7 @@
     "lit-element": "^2.5.1",
     "mocha": "^9.0.2",
     "requirejs": "^2.3.6",
+    "rimraf": "^3.0.2",
     "rollup-plugin-copy": "^3.3.0",
     "rollup-plugin-minify-html-literals": "^1.2.5",
     "rollup-plugin-terser": "^7.0.2",
