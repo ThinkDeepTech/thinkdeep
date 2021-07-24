@@ -13,10 +13,11 @@
     "url": "git+https://github.com/ThinkDeepTech/thinkdeep.git"
   },
   "scripts": {
-    "dev": "serve build",
-    "copyindex": "cp index.html build",
-    "copywc": "cp -r ../../node_modules/@webcomponents/webcomponentsjs/bundles build && cp ../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js build",
-    "build": "rm -rf build && mkdir build && npm run copyindex && npm run copywc && rollup -c"
+    "dev": "web-dev-server --config ./web-dev-server.config.js --esbuild-target auto",
+    "dev:watch": "web-dev-server --config ./web-dev-server.config.js --watch --esbuild-target auto",
+    "tests": "web-test-runner \"test/**/*.test.js\" --node-resolve --coverage --playwright --browsers chromium firefox --preserveSymlinks",
+    "tests:watch": "web-test-runner \"test/**/*.test.js\" --node-resolve --watch --coverage --playwright --browsers chromium firefox --preserveSymlinks",
+    "build": "rimraf build && rollup -c rollup.config.js"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",

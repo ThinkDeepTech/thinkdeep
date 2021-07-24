@@ -19,7 +19,7 @@ export class DeepNavbar extends LitElement {
     return css`
       .navbar {
         display: grid;
-        grid-gap: 0.5rem;
+        grid-gap: 0.6rem;
         grid-template-columns: repeat(12, 1fr);
         height: 100px;
         width: auto;
