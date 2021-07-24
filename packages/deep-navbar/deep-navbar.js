@@ -52,15 +52,16 @@ export class DeepNavbar extends LitElement {
       <div class="navbar">
         <div class="logo">${this.logo}</div>
 
-        ${this.routes.map(
-          (item, index) =>
-            html`<a
-              style="grid-column-start: ${-1 * this.routes.length - 1 + index};"
-              href="${item.path}"
-              ?hidden="${item.hidden}"
-            >
-              ${item.name}
-            </a>`
+        ${this.routes.map((item, index) =>
+          item.hidden
+            ? html``
+            : html`<a
+                style="grid-column-start: ${-1 * this.routes.length - 1 + index};"
+                href="${item.path}"
+                ?hidden="${item.hidden}"
+              >
+                ${item.name}
+              </a>`
         )}
       </div>
     `;
