@@ -6,6 +6,6 @@ const replace = fromRollup(rollupReplace);
 module.exports = {
   nodeResolve: true,
   open: true,
-  appIndex: './build/index.html',
+  appIndex: './index.html',
   plugins: [replace({ include: ['**/*.js'], __environment__: '"development"' })],
 };
