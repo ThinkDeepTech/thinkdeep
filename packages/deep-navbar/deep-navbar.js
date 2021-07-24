@@ -40,6 +40,10 @@ export class DeepNavbar extends LitElement {
         justify-content: center;
         align-items: center;
       }
+
+      a[hidden] {
+        display: none;
+      }
     `;
   }
 
@@ -53,6 +57,7 @@ export class DeepNavbar extends LitElement {
             html`<a
               style="grid-column-start: ${-1 * this.routes.length - 1 + index};"
               href="${item.path}"
+              ?hidden="${item.hidden}"
             >
               ${item.name}
             </a>`
