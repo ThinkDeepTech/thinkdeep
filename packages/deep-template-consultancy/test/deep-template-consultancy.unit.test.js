@@ -103,9 +103,7 @@ describe('deep-template-consultancy', () => {
           'The page that was returned w as not the expected 404 not found page. It was undefined.'
         );
 
-      expect(alteredTextContent).to.include(
-        "We couldn't find what you were looking for. Are you sure the URL is correct?"
-      );
+      expect(alteredTextContent.toLowerCase()).to.include('page not found');
       clickMenuItem(navbar, homeRoute);
       done();
     });
