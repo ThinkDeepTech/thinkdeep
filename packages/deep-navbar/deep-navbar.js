@@ -22,7 +22,7 @@ export class DeepNavbar extends LitElement {
         grid-template-columns: repeat(12, 1fr);
         height: 100px;
         width: auto;
-        background-color: lightgreen;
+        background-color: blue;
       }
 
       .logo {

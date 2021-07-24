@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit-element';
 
 export class DeepConsultancyPageAbout extends LitElement {
   render() {
-    return html` <div>In About Page</div> `;
+    return html` <div>Better super di doooper</div> `;
   }
 }
 
