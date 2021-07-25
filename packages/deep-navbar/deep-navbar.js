@@ -57,7 +57,7 @@ export class DeepNavbar extends LitElement {
     return html`
       <div class="navbar">
         <div class="logo">
-          <img src="${this.logo}" />
+          <img src="${this.logo}" ?hidden="${this.logo.length == 0}" />
         </div>
 
         ${this.routes.map(

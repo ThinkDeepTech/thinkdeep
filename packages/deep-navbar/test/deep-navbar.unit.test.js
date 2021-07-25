@@ -55,4 +55,11 @@ describe('deep-navbar', () => {
     const img = element?.shadowRoot?.querySelector('.logo > img');
     expect(img.getAttribute('src')).to.equal(assetPath);
   });
+
+  it('should hide the logo on an empty string input', async () => {
+    const assetPath = '';
+    const element = await litFixtureSync(html` <deep-navbar logo="${assetPath}"></deep-navbar> `);
+    const img = element?.shadowRoot?.querySelector('.logo > img[hidden]');
+    expect(img.hidden).to.equal(true);
+  });
 });
