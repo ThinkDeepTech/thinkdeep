@@ -82,7 +82,7 @@ export class DeepTemplateConsultancy extends LitElement {
     return html`
       ${this.styles}
 
-      <deep-navbar class="navbar" logo="//logo.jpg" .routes="${this.routes}"></deep-navbar>
+      <deep-navbar class="navbar" logo="./img/logo.svg" .routes="${this.routes}"></deep-navbar>
 
       <main id="content"></main>
 
