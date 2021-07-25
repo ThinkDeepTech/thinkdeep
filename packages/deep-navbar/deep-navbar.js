@@ -31,18 +31,24 @@ export class DeepNavbar extends LitElement {
         grid-column-end: 1;
         align-self: center;
         text-align: center;
+        height: inherit;
+        width: inherit;
       }
 
       a {
         height: 100%;
         width: minmax(125px, auto);
         text-align: center;
-        justify-content: center;
-        align-items: center;
       }
 
       a[hidden] {
         display: none;
+        visibility: hidden;
+      }
+
+      img {
+        height: 100%;
+        width: auto;
       }
     `;
   }
@@ -50,18 +56,18 @@ export class DeepNavbar extends LitElement {
   render() {
     return html`
       <div class="navbar">
-        <div class="logo">${this.logo}</div>
+        <div class="logo">
+          <img src="${this.logo}" />
+        </div>
 
-        ${this.routes.map((item, index) =>
-          item.hidden
-            ? html``
-            : html`<a
-                style="grid-column-start: ${-1 * this.routes.length - 1 + index};"
-                href="${item.path}"
-                ?hidden="${item.hidden}"
-              >
-                ${item.name}
-              </a>`
+        ${this.routes.map(
+          (item, index) => html`<a
+            style="grid-column-start: ${-1 * this.routes.length - 1 + index};"
+            href="${item.path}"
+            ?hidden="${item.hidden}"
+          >
+            ${item.name}
+          </a>`
         )}
       </div>
     `;
