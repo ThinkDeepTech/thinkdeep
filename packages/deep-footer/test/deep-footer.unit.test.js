@@ -7,7 +7,7 @@ describe('deep-footer', () => {
     element = await litFixtureSync(html`<deep-footer></deep-footer>`);
   });
 
-  it('should include copywrite date', async () => {
+  it('should include copywrite date', () => {
     const copywrite = element.shadowRoot.querySelector('.copyright');
     expect(copywrite.textContent).to.contain('\u00A9');
   });
