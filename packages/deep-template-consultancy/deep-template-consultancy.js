@@ -1,5 +1,6 @@
 import { css, html, LitElement } from 'lit-element';
 
+import '@thinkdeep/deep-footer';
 import '@thinkdeep/deep-navbar';
 import { Router } from '@vaadin/router';
 
@@ -53,7 +54,7 @@ export class DeepTemplateConsultancy extends LitElement {
     return css`
       :host {
         display: grid;
-        grid-template-rows: repeat(7, 1fr);
+        grid-template-rows: repeat(6, 1fr);
         grid-template-areas:
           'header'
           'content'
@@ -74,6 +75,10 @@ export class DeepTemplateConsultancy extends LitElement {
 
       deep-footer {
         grid-area: footer;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
       }
     `;
   }
@@ -86,7 +91,7 @@ export class DeepTemplateConsultancy extends LitElement {
 
       <main id="content"></main>
 
-      <deep-footer>Footer</deep-footer>
+      <deep-footer></deep-footer>
     `;
   }
 }
