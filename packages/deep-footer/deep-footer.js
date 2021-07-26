@@ -2,6 +2,17 @@ import { html, LitElement, css } from 'lit-element';
 
 /* eslint-disable no-unused-vars */
 export class DeepFooter extends LitElement {
+  static get properties() {
+    return {
+      company: { type: String },
+    };
+  }
+
+  constructor() {
+    super();
+    this.company = '';
+  }
+
   static get styles() {
     return css`
       :host {
@@ -24,7 +35,7 @@ export class DeepFooter extends LitElement {
   render() {
     return html`
       <div class="copyright">
-        ${'\u00A9' + ' '} ${new Date().getFullYear()}. All rights reserved.
+        ${this.company.length > 0 ? '\u00A9' + this.company + ', ' + new Date().getFullYear() : ''}.
       </div>
     `;
   }

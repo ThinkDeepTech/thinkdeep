@@ -91,7 +91,7 @@ export class DeepTemplateConsultancy extends LitElement {
 
       <main id="content"></main>
 
-      <deep-footer></deep-footer>
+      <deep-footer company="Thinkdeep"></deep-footer>
     `;
   }
 }
