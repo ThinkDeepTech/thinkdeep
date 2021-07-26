@@ -36,7 +36,7 @@ export class DeepNavbar extends LitElement {
       }
 
       a {
-        height: 100%;
+        height: inherit;
         width: minmax(125px, auto);
         text-align: center;
       }
