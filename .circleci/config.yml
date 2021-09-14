@@ -15,7 +15,7 @@ jobs:
 
             - save_cache:
                 paths:
-                    - null
+                    - ""
                 key: v1-dependencies-{{ checksum "package.json" }}
 
             # Download and cache dependencies
