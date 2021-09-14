@@ -15,8 +15,8 @@
   "scripts": {
     "dev": "web-dev-server --config ./web-dev-server.config.js --esbuild-target auto",
     "dev:watch": "web-dev-server --config ./web-dev-server.config.js --watch --esbuild-target auto",
-    "tests": "web-test-runner \"test/**/*.test.js\" --node-resolve --coverage --playwright --browsers chromium firefox --preserveSymlinks --port 10001",
-    "tests:watch": "web-test-runner \"test/**/*.test.js\" --node-resolve --watch --coverage --playwright --browsers chromium firefox --preserveSymlinks --port 10001",
+    "tests": "web-test-runner --coverage --playwright --browsers chromium firefox",
+    "tests:watch": "web-test-runner  --coverage --playwright --browsers chromium firefox --watch",
     "build": "rimraf build && rollup -c rollup.config.js"
   },
   "devDependencies": {
