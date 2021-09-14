@@ -6,9 +6,9 @@ function sharedConfig(port = 8000) {
   return {
     files: 'test/**/*.test.js',
     nodeResolve: true,
-    // coverage: true,
-    // playwright: true,
-    // browsers: ['chromium', 'firefox'],
+    coverage: true,
+    playwright: true,
+    browsers: ['chromium', 'firefox'],
     // preserveSymlinks: true,
     // concurrency: 1,
     // port,
