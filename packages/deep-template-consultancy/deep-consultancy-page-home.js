@@ -1,8 +1,11 @@
-import { html, LitElement } from 'lit-element';
+import { html, css, LitElement } from 'lit-element';
 
 export class DeepConsultancyPageHome extends LitElement {
+  static get styles() {
+    return css``;
+  }
   render() {
-    return html` <div>On Home Page Absolutely NEW!</div> `;
+    return html``;
   }
 }
 
