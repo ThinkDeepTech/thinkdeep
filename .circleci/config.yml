@@ -31,9 +31,9 @@ jobs:
 
             - run: alias python=python3
 
-            - run: echo "Node Version\n"
-
             - run: node --version
+
+            - run: yarn --version
 
             - run: yarn run setup
 
