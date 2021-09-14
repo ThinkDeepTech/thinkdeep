@@ -6,15 +6,15 @@ function sharedConfig(port = 8000) {
   return {
     files: 'test/**/*.test.js',
     nodeResolve: true,
-    coverage: true,
-    playwright: true,
-    browsers: ['chromium', 'firefox'],
-    preserveSymlinks: true,
-    concurrency: 1,
-    port,
+    // coverage: true,
+    // playwright: true,
+    // browsers: ['chromium', 'firefox'],
+    // preserveSymlinks: true,
+    // concurrency: 1,
+    // port,
   };
 }
 
-module.exports = sharedConfig;
+export default sharedConfig;
 
 // "tests": "web-test-runner \"test/**/*.test.js\" --node-resolve --coverage --playwright --browsers chromium firefox --preserveSymlinks --port 10002",

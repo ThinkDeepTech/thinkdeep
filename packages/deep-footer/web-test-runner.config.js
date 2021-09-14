@@ -1,3 +1,3 @@
-const sharedConfigs = require('@thinkdeep/tools/web-test-runner.config');
+import sharedConfigs from '@thinkdeep/tools/web-test-runner.config';
 
-module.exports = sharedConfigs(10001);
+export default sharedConfigs(10001);
