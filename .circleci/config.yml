@@ -5,6 +5,8 @@ jobs:
     build:
         docker:
             - image: 'cimg/node:13.12-browser'
+        steps:
+            - browser-tools/install-browser-tools
 
         working_directory: ~/repo
 
