@@ -4,7 +4,6 @@
 Monorepo containing thinkdeep elements and microservices.
 
 ## Global Dependencies
-- Polymer CLI
 - Lerna
 - Yarn
 
@@ -25,5 +24,3 @@ as follows:
     - [ ] Yarn
     - [ ] Mocha Chai
     - [ ] Circle CI
-    - [ ] Polymer 3
-- [ ] Extend deep elements into Qt world for consistency across UIs.
