@@ -21,15 +21,14 @@ export class DeepNavbar extends LitElement {
         display: grid;
         grid-gap: 0.6rem;
         grid-template-columns: repeat(12, 1fr);
-        height: 100px;
+        height: 100%;
         width: auto;
-        background-color: var(--primary-color, #7a9e9f);
+        background-color: var(--primary-color, #558b2f);
       }
 
       .logo {
         grid-column-start: 1;
         grid-column-end: 1;
-        align-self: center;
         text-align: center;
         height: inherit;
         width: inherit;

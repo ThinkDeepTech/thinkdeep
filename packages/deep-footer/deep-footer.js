@@ -21,7 +21,7 @@ export class DeepFooter extends LitElement {
         grid-template-columns: repeat(3, 1fr);
         width: inherit;
         height: 150px;
-        background-color: var(--primary-color, #7a9e9f);
+        background-color: var(--primary-color, #558b2f);
       }
 
       .copyright {
@@ -34,9 +34,9 @@ export class DeepFooter extends LitElement {
 
   render() {
     return html`
-      <div class="copyright">
-        ${this.company.length > 0 ? '\u00A9' + this.company + ', ' + new Date().getFullYear() : ''}.
-      </div>
+      <slot name="helpful-links"></slot>
+      <slot name="address"></slot>
+      <slot name="copyright"></slot>
     `;
   }
 }

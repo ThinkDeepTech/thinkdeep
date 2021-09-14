@@ -50,6 +50,7 @@
     "@rollup/plugin-babel": "^5.2.2",
     "@rollup/plugin-buble": "^0.21.3",
     "@rollup/plugin-replace": "^3.0.0",
+    "@smarthtmlelements/smarthtmlelements-core": "^1.1.1",
     "@thinkdeep/deep-footer": "^0.0.8",
     "@thinkdeep/deep-navbar": "^0.0.8",
     "@vaadin/router": "^1.7.4",

@@ -12,6 +12,8 @@ import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-not-found.js'
 export class DeepTemplateConsultancy extends LitElement {
   static get properties() {
     return {
+      companyName: { type: String },
+      address: { type: Object },
       routes: { type: Array },
       location: { type: Object },
     };
@@ -20,6 +22,15 @@ export class DeepTemplateConsultancy extends LitElement {
   constructor() {
     super();
 
+    this.companyName = 'Thinkdeep';
+    this.address = {
+      streetNumber: 349,
+      streetName: 'Oliver Street',
+      cityName: 'Forliven',
+      provinceCode: 'ON',
+      countryName: 'Canada',
+      zipCode: 'N5A 7S1',
+    };
     this.location = Router.location;
     this.routes = [
       {
@@ -54,7 +65,7 @@ export class DeepTemplateConsultancy extends LitElement {
     return css`
       :host {
         display: grid;
-        grid-template-rows: repeat(6, 1fr);
+        grid-template-rows: repeat(7, 1fr);
         grid-template-areas:
           'header'
           'content'
@@ -71,14 +82,11 @@ export class DeepTemplateConsultancy extends LitElement {
 
       #content {
         grid-area: content;
+        background-color: var(--primary-color, #c8e6c9);
       }
 
       deep-footer {
         grid-area: footer;
-        position: fixed;
-        left: 0;
-        bottom: 0;
-        width: 100%;
       }
     `;
   }
@@ -87,11 +95,35 @@ export class DeepTemplateConsultancy extends LitElement {
     return html`
       ${this.styles}
 
-      <deep-navbar class="navbar" logo="./img/logo.svg" .routes="${this.routes}"></deep-navbar>
+      <deep-navbar
+        class="navbar"
+        logo="./img/electrum-dark-icon.svg"
+        .routes="${this.routes}"
+      ></deep-navbar>
 
       <main id="content"></main>
 
-      <deep-footer company="Thinkdeep"></deep-footer>
+      <deep-footer>
+        <div slot="helpful-links">
+          <ul>
+            ${this.routes.map((route) =>
+              route.hidden ? html`` : html`<li><a href="${route.path}">${route.name}</a></li>`
+            )}
+          </ul>
+        </div>
+        <div slot="address">
+          <p>
+            We're located at <br />
+            ${this.address.streetNumber} ${this.address.streetName}, ${this.address.cityName},
+            ${this.address.provinceCode}, ${this.address.countryName} ${this.address.zipCode}
+          </p>
+        </div>
+        <div slot="copyright">
+          ${this.companyName.length > 0
+            ? '\u00A9' + this.companyName + ', ' + new Date().getFullYear()
+            : ''}.
+        </div>
+      </deep-footer>
     `;
   }
 }
