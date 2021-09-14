@@ -7,7 +7,7 @@ function sharedConfig(port = 8000) {
     files: 'test/**/*.test.js',
     nodeResolve: true,
     coverage: true,
-    playwright: true,
+    // playwright: true,
     browsers: ['chromium', 'firefox'],
     // preserveSymlinks: true,
     // concurrency: 1,
