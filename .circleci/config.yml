@@ -4,7 +4,7 @@ orbs:
 jobs:
     build:
         docker:
-            - image: 'cimg/node:16.8.0-browser'
+            - image: 'cimg/node:13.12-browser'
 
         working_directory: ~/repo
 
@@ -28,6 +28,8 @@ jobs:
             - run: sudo pip3 install pytest
 
             - run: alias python=python3
+
+            - run: echo "Node Version\n"
 
             - run: node --version
 
