@@ -9,9 +9,9 @@ jobs:
         working_directory: ~/repo
 
         steps:
-            - checkout
-
             - browser-tools/install-browser-tools
+
+            - checkout
 
             - save_cache:
                 paths:
