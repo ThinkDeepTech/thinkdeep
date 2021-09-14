@@ -1,8 +1,10 @@
 version: 2
+orbs:
+    browser-tools: circleci/browser-tools@1.2.2
 jobs:
     build:
         docker:
-            - image: circleci/node:9.10-browsers
+            - image: 'cimg/node:16.8.0-browser'
 
         working_directory: ~/repo
 
@@ -27,6 +29,8 @@ jobs:
 
             - run: alias python=python3
 
+            - run: node --version
+
             - run: yarn run setup
 
-            - run: yarn run test
+            - run: yarn run tests
