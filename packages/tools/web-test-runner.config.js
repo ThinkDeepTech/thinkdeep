@@ -15,6 +15,6 @@ function sharedConfig(port = 8000) {
   };
 }
 
-export default sharedConfig;
+module.exports = sharedConfig;
 
 // "tests": "web-test-runner \"test/**/*.test.js\" --node-resolve --coverage --playwright --browsers chromium firefox --preserveSymlinks --port 10002",
