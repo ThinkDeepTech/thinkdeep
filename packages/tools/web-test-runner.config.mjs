@@ -11,7 +11,7 @@ function sharedConfig(port = 8000) {
     // browsers: ['chromium', 'firefox'],
     // preserveSymlinks: true,
     // concurrency: 1,
-    // port,
+    port,
   };
 }
 
