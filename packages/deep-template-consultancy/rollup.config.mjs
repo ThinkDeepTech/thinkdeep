@@ -1,5 +1,5 @@
 import merge from 'deepmerge';
-import baseConfig from '@thinkdeep/tools/rollup.config';
+import baseConfig from "../../node_modules/@thinkdeep/tools/rollup.config.mjs";
 
 export default merge(baseConfig, {
   // if you use createSpaConfig, you can use your index.html as entrypoint,
