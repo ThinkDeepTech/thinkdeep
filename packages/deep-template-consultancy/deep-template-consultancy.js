@@ -63,8 +63,6 @@ export class DeepTemplateConsultancy extends LitElement {
 
   static get styles() {
     return css`
-      @import '@thinkdeep/deep-styles/shared-styles.css';
-
       :host {
         display: grid;
         grid-template-rows: repeat(7, 1fr);
