@@ -20,12 +20,10 @@ const baseConfig = createSpaConfig({
   injectServiceWorker: false,
 });
 
-console.log(process.cwd());
-
 export default merge(createSpaConfig, {
   input: 'index.html',
   extensions: [
     '.js', '.mjs'
   ],
-  plugins: [nodeResolve(), eslint(), babel({ babelHelpers: 'bundled', rootMode: "upward", configFile: "babel.config.mjs" }), html()],
+  plugins: [nodeResolve(), eslint(), babel({ babelHelpers: 'bundled', rootMode: "upward" }), html()],
 });
