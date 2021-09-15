@@ -1,4 +1,9 @@
-const createSpaConfig = require('@open-wc/building-rollup').createSpaConfig;
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import babel from '@rollup/plugin-babel';
+import eslint from '@rollup/plugin-eslint';
+import html from '@web/rollup-plugin-html';
+import merge from 'deepmerge';
+import { createSpaConfig } from '@open-wc/building-rollup';
 
 const baseConfig = createSpaConfig({
   // use the outputdir option to modify where files are output
@@ -15,4 +20,11 @@ const baseConfig = createSpaConfig({
   injectServiceWorker: false,
 });
 
-module.exports = baseConfig;
+
+export default merge(createSpaConfig, {
+  input: 'index.html',
+  extensions: [
+    '.js', '.mjs'
+  ],
+  plugins: [nodeResolve(), eslint(), babel({ babelHelpers: 'bundled', root: ".", rootMode: "upward", configFile: "./babel.config.mjs" }), html()],
+});
