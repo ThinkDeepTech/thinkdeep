@@ -15,8 +15,8 @@
   "scripts": {
     "dev": "web-dev-server --config ./web-dev-server.config.js --esbuild-target auto",
     "dev:watch": "web-dev-server --config ./web-dev-server.config.js --watch --esbuild-target auto",
-    "tests": "web-test-runner --coverage --playwright --browsers chromium firefox",
-    "tests:watch": "web-test-runner  --coverage --playwright --browsers chromium firefox --watch",
+    "tests": "web-test-runner --playwright --browsers chromium firefox",
+    "tests:watch": "web-test-runner --playwright --browsers chromium firefox --watch",
     "build": "rimraf build && rollup -c rollup.config.js"
   },
   "devDependencies": {
