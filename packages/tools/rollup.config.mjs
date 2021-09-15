@@ -26,5 +26,5 @@ export default merge(createSpaConfig, {
   extensions: [
     '.js', '.mjs'
   ],
-  plugins: [nodeResolve(), eslint(), babel({ babelHelpers: 'bundled', root: ".", rootMode: "upward", configFile: "./babel.config.mjs" }), html()],
+  plugins: [nodeResolve(), eslint(), babel({ babelHelpers: 'bundled', root: ".", rootMode: "upward", configFile: "babel.config.mjs" }), html()],
 });
