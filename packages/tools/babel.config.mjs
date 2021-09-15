@@ -4,9 +4,11 @@ const plugins = [
   '@babel/plugin-transform-modules-commonjs',
 ];
 
-module.exports = {
+export default {
   plugins,
-  presets: ['@babel/preset-env'],
+  presets: [
+    [ '@babel/preset-env', { modules: false } ]
+  ],
   targets: {
     chrome: '91',
     firefox: '91',

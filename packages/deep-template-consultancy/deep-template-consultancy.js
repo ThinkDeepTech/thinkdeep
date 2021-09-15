@@ -63,6 +63,8 @@ export class DeepTemplateConsultancy extends LitElement {
 
   static get styles() {
     return css`
+      @import '@thinkdeep/deep-styles/shared-styles.css';
+
       :host {
         display: grid;
         grid-template-rows: repeat(7, 1fr);
@@ -82,7 +84,7 @@ export class DeepTemplateConsultancy extends LitElement {
 
       #content {
         grid-area: content;
-        background-color: var(--primary-color, #c8e6c9);
+        background-color: var(--primary-color, #c8e6c9); // TODO: Implement fallback colors;
       }
 
       deep-footer {
@@ -103,6 +105,7 @@ export class DeepTemplateConsultancy extends LitElement {
 
       <main id="content"></main>
 
+      <!-- TODO: Separation of concerns -->
       <deep-footer>
         <div slot="helpful-links">
           <ul>

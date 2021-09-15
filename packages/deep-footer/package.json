@@ -13,11 +13,11 @@
     "url": "git+https://github.com/ThinkDeepTech/thinkdeep.git"
   },
   "scripts": {
-    "dev": "web-dev-server --config ./web-dev-server.config.js --esbuild-target auto",
-    "dev:watch": "web-dev-server --config ./web-dev-server.config.js --watch --esbuild-target auto",
+    "dev": "web-dev-server --config ./web-dev-server.config.mjs --esbuild-target auto",
+    "dev:watch": "web-dev-server --config ./web-dev-server.config.mjs --watch --esbuild-target auto",
     "tests": "web-test-runner --playwright --browsers chromium firefox",
     "tests:watch": "web-test-runner  --playwright --browsers chromium firefox --watch",
-    "build": "rimraf build && rollup -c rollup.config.js"
+    "build": "rimraf build && rollup -c rollup.config.mjs"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",

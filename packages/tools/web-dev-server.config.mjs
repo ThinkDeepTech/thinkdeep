@@ -1,9 +1,9 @@
-const rollupReplace = require('@rollup/plugin-replace');
-const { fromRollup } = require('@web/dev-server-rollup');
+import rollupReplace from '@rollup/plugin-replace';
+import { fromRollup } from '@web/dev-server-rollup';
 
 const replace = fromRollup(rollupReplace);
 
-module.exports = {
+export default {
   nodeResolve: true,
   open: true,
   appIndex: './index.html',

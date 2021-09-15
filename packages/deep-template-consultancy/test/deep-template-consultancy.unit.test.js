@@ -124,6 +124,7 @@ describe('deep-template-consultancy', () => {
     it('should list the address', () => {
       const section = element.shadowRoot.querySelector('div[slot="address"]');
       const address = section.querySelector('p');
+
       expect(address.textContent).to.contain(element.address.streetNumber);
       expect(address.textContent).to.contain(element.address.streetName);
       expect(address.textContent).to.contain(element.address.cityName);
