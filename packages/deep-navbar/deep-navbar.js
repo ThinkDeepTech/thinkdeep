@@ -1,5 +1,7 @@
 import { html, LitElement, css } from 'lit-element';
 
+import defaultStyles from '@thinkdeep/deep-styles/default-styles';
+
 /* eslint-disable no-unused-vars */
 export class DeepNavbar extends LitElement {
   static get properties() {
@@ -16,40 +18,43 @@ export class DeepNavbar extends LitElement {
   }
 
   static get styles() {
-    return css`
-      .navbar {
-        display: grid;
-        grid-gap: 0.6rem;
-        grid-template-columns: repeat(12, 1fr);
-        height: 100%;
-        width: auto;
-        background-color: var(--primary-color, #558b2f);
-      }
+    return [
+      defaultStyles,
+      css`
+        .navbar {
+          display: grid;
+          grid-gap: 0.6rem;
+          grid-template-columns: repeat(12, 1fr);
+          height: 100%;
+          width: auto;
+          background-color: var(--primary-color, #558b2f);
+        }
 
-      .logo {
-        grid-column-start: 1;
-        grid-column-end: 1;
-        text-align: center;
-        height: inherit;
-        width: inherit;
-      }
+        .logo {
+          grid-column-start: 1;
+          grid-column-end: 1;
+          text-align: center;
+          height: inherit;
+          width: inherit;
+        }
 
-      a {
-        height: inherit;
-        width: minmax(125px, auto);
-        text-align: center;
-      }
+        a {
+          height: inherit;
+          width: minmax(125px, auto);
+          text-align: center;
+        }
 
-      a[hidden] {
-        display: none;
-        visibility: hidden;
-      }
+        a[hidden] {
+          display: none;
+          visibility: hidden;
+        }
 
-      img {
-        height: 100%;
-        width: auto;
-      }
-    `;
+        img {
+          height: 100%;
+          width: auto;
+        }
+      `,
+    ];
   }
 
   render() {

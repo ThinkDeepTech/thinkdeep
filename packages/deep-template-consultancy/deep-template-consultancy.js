@@ -7,6 +7,7 @@ import { Router } from '@vaadin/router';
 import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-home.js';
 import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-about.js';
 import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-not-found.js';
+import defaultStyles from '@thinkdeep/deep-styles/default-styles.js';
 
 /* eslint-disable no-unused-vars */
 export class DeepTemplateConsultancy extends LitElement {
@@ -62,33 +63,35 @@ export class DeepTemplateConsultancy extends LitElement {
   }
 
   static get styles() {
-    return css`
-      :host {
-        display: grid;
-        grid-template-rows: repeat(7, 1fr);
-        grid-template-areas:
-          'header'
-          'content'
-          'content'
-          'content'
-          'content'
-          'content'
-          'footer';
-      }
+    return [
+      defaultStyles,
+      css`
+        :host {
+          display: grid;
+          grid-template-rows: repeat(6, 1fr);
+          grid-template-areas:
+            'header'
+            'content'
+            'content'
+            'content'
+            'content'
+            'footer';
+        }
 
-      deep-navbar {
-        grid-area: header;
-      }
+        deep-navbar {
+          grid-area: header;
+        }
 
-      #content {
-        grid-area: content;
-        background-color: var(--primary-color, #c8e6c9); // TODO: Implement fallback colors;
-      }
+        #content {
+          grid-area: content;
+          background-color: var(--primary-color-light, #eceff1); // TODO: Implement fallback colors;
+        }
 
-      deep-footer {
-        grid-area: footer;
-      }
-    `;
+        deep-footer {
+          grid-area: footer;
+        }
+      `,
+    ];
   }
 
   render() {
