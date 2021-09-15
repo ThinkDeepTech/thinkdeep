@@ -127,7 +127,6 @@ describe('deep-template-consultancy', () => {
 
       expect(address.textContent).to.contain(element.address.streetNumber);
       expect(address.textContent).to.contain(element.address.streetName);
-
       expect(address.textContent).to.contain(element.address.cityName);
       expect(address.textContent).to.contain(element.address.provinceCode);
       expect(address.textContent).to.contain(element.address.countryName);
