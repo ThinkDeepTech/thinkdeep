@@ -2,6 +2,7 @@
   "name": "thinkdeep",
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin/in/haydenmcp)",
   "scripts": {
+    "build": "lerna run build",
     "tests": "lerna run tests"
   },
   "husky": {
