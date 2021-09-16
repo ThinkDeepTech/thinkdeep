@@ -36,10 +36,12 @@ export class DeepFooter extends LitElement {
 
         a:visited {
           text-decoration: none;
+          color: var(--secondary-color-dark, #000000);
         }
 
         a:hover {
           text-decoration: none;
+          color: var(--secondary-color-light, #000000);
         }
 
         a:active {
