@@ -54,7 +54,7 @@ describe('deep-navbar', () => {
     const element = await litFixtureSync(
       html` <deep-navbar .companyName="${companyName}"></deep-navbar> `
     );
-    const logo = element?.shadowRoot?.querySelector('.logo');
+    const logo = element?.shadowRoot?.querySelector('slot[name="logo"]');
     expect(logo.innerHTML).to.contain(companyName);
   });
 });
