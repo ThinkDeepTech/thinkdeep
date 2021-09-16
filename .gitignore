@@ -1,6 +1,3 @@
-# Firebase
-.firebase/
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -172,3 +169,6 @@ typings/
 
 # next.js build output
 .next
+
+# Firebase
+.firebase/
