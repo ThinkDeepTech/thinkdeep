@@ -35,6 +35,7 @@ export class DeepFooter extends LitElement {
           width: 100%;
           height: minmax(250px, auto);
           background-color: var(--primary-color, #558b2f);
+          color: var(--secondary-color, black);
         }
 
         a {

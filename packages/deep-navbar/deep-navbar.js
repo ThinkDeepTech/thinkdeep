@@ -40,6 +40,7 @@ export class DeepNavbar extends LitElement {
           height: 100%;
           width: 100%;
           text-align: center;
+          color: var(--secondary-color, black);
         }
 
         a:link {
@@ -48,10 +49,12 @@ export class DeepNavbar extends LitElement {
 
         a:visited {
           text-decoration: none;
+          color: var(--secondary-color-dark, black);
         }
 
         a:hover {
           text-decoration: none;
+          color: var(--secondary-color-light, black);
         }
 
         a:active {
