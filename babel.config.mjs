@@ -1,7 +1,6 @@
 const plugins = [
   '@babel/plugin-proposal-class-properties',
-  ['@babel/proposal-decorators', { decoratorsBeforeExport: true }],
-  '@babel/plugin-transform-modules-commonjs',
+  ['@babel/proposal-decorators', { decoratorsBeforeExport: true }]
 ];
 
 const config = {
