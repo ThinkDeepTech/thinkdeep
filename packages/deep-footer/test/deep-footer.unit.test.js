@@ -2,15 +2,25 @@ import { html, litFixtureSync, expect } from '@open-wc/testing';
 import '@thinkdeep/deep-footer/deep-footer.js';
 
 describe('footer', () => {
+  const companyName = 'Thinkdeep';
+  const routes = [
+    { name: 'home', path: '/' },
+    { name: 'about', path: '/about' },
+    { name: 'contact', path: '/contact' },
+  ];
+  const address = {
+    streetNumber: 59,
+    streetName: 'Wikamore Street',
+    cityName: 'Chandougal',
+    provinceCode: 'ON',
+    countryName: 'Canada',
+    zipCode: 'N5A7S1',
+  };
+
   let element;
   beforeEach(async () => {
     element = await litFixtureSync(html`
-      <deep-footer
-        .companyName="Thinkdeep"
-        .routes="[{'name': 'home', 'path': '/'}, {'name': 'about', 'path': '/about'}, {'name': 'contact', 'path': 'contact'}]"
-        .address="{'streetNumber': '59', 'streetName': 'Wikamore Street', 'cityName': 'Chandougal', 'provinceName': 'ON', 'countryName': 'Canada', 'zipCode': 'N5A 7S1'}"
-      >
-      </deep-footer>
+      <deep-footer .companyName=${companyName} .routes=${routes} .address=${address}> </deep-footer>
     `);
   });
 
