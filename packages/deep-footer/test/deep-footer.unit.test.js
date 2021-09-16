@@ -1,4 +1,4 @@
-import { litFixtureSync, html } from '@open-wc/testing-helpers';
+import { html, litFixtureSync, expect } from '@open-wc/testing';
 import '@thinkdeep/deep-footer/deep-footer.js';
 
 describe('footer', () => {
