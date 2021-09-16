@@ -45,4 +45,6 @@ jobs:
 
             - run: which firebase
 
-            - run: firebase login:ci --non-interactive
+            - run: firebase login:ci --no-localhost
+
+            - run: firebase deploy
