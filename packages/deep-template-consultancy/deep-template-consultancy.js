@@ -7,7 +7,6 @@ import { Router } from '@vaadin/router';
 import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-home.js';
 import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-about.js';
 import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-not-found.js';
-import defaultStyles from '@thinkdeep/deep-styles/default-styles.js';
 
 /* eslint-disable no-unused-vars */
 export class DeepTemplateConsultancy extends LitElement {
@@ -64,7 +63,6 @@ export class DeepTemplateConsultancy extends LitElement {
 
   static get styles() {
     return [
-      defaultStyles,
       css`
         :host {
           display: grid;
@@ -79,12 +77,13 @@ export class DeepTemplateConsultancy extends LitElement {
         }
 
         deep-navbar {
+          background-color: var(--primary-color, #90a4ae);
           grid-area: header;
         }
 
         #content {
           grid-area: content;
-          background-color: var(--primary-color-light, #eceff1); // TODO: Implement fallback colors;
+          background-color: var(--secondary-color, #eceff1); // TODO: Implement fallback colors;
         }
 
         deep-footer {

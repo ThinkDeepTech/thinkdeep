@@ -1,7 +1,5 @@
 import { html, LitElement, css } from 'lit-element';
 
-import defaultStyles from '@thinkdeep/deep-styles/default-styles';
-
 /* eslint-disable no-unused-vars */
 export class DeepNavbar extends LitElement {
   static get properties() {
@@ -19,7 +17,6 @@ export class DeepNavbar extends LitElement {
 
   static get styles() {
     return [
-      defaultStyles,
       css`
         .navbar {
           display: grid;

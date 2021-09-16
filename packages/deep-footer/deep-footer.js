@@ -1,7 +1,5 @@
 import { html, LitElement, css } from 'lit-element';
 
-import defaultStyles from '@thinkdeep/deep-styles/default-styles';
-
 /* eslint-disable no-unused-vars */
 export class DeepFooter extends LitElement {
   static get properties() {
@@ -17,7 +15,6 @@ export class DeepFooter extends LitElement {
 
   static get styles() {
     return [
-      defaultStyles,
       css`
         :host {
           display: grid;
