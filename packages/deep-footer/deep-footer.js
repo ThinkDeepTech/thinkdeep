@@ -4,13 +4,25 @@ import { html, LitElement, css } from 'lit-element';
 export class DeepFooter extends LitElement {
   static get properties() {
     return {
-      company: { type: String },
+      companyName: { type: String },
+      address: { type: Object },
+      routes: { type: Array },
     };
   }
 
   constructor() {
     super();
-    this.company = '';
+
+    this.companyName = '';
+    this.address = {
+      streetNumber: '',
+      streetName: '',
+      cityName: '',
+      provinceName: '',
+      countryName: '',
+      zipCode: '',
+    };
+    this.routes = [];
   }
 
   static get styles() {
@@ -20,15 +32,40 @@ export class DeepFooter extends LitElement {
           display: grid;
           grid-gap: 0.6rem;
           grid-template-columns: repeat(3, 1fr);
-          width: inherit;
-          height: 150px;
+          width: 100%;
+          height: minmax(250px, auto);
           background-color: var(--primary-color, #558b2f);
+          color: var(--secondary-color, black);
         }
 
-        .copyright {
-          grid-column-start: 3;
-          grid-row-start: 3;
-          text-align: center;
+        a {
+          display: block;
+          height: 20px;
+          width: 100%;
+          padding: 4px;
+          color: var(--secondary-color, #000000);
+        }
+
+        a:link {
+          text-decoration: none;
+        }
+
+        a:visited {
+          text-decoration: none;
+          color: var(--secondary-color-dark, #000000);
+        }
+
+        a:hover {
+          text-decoration: none;
+          color: var(--secondary-color-light, #000000);
+        }
+
+        a:active {
+          text-decoration: none;
+        }
+
+        a[hidden] {
+          visibility: hidden;
         }
       `,
     ];
@@ -36,9 +73,24 @@ export class DeepFooter extends LitElement {
 
   render() {
     return html`
-      <slot name="helpful-links"></slot>
+      <div class="helpful-links">
+        ${this.routes.map((route) =>
+          route.hidden ? html`` : html` <a href="${route.path}">${route.name}</a> `
+        )}
+      </div>
+      <div class="address">
+        ${this.address.streetNumber} ${this.address.streetName}, ${this.address.cityName},
+        ${this.address.provinceCode}, ${this.address.countryName} ${this.address.zipCode}
+      </div>
+      <div class="copyright">
+        ${this.companyName.length > 0
+          ? '\u00A9' + this.companyName + ', ' + new Date().getFullYear()
+          : ''}.
+      </div>
+
+      <!-- <slot name="helpful-links"></slot>
       <slot name="address"></slot>
-      <slot name="copyright"></slot>
+      <slot name="copyright"></slot> -->
     `;
   }
 }

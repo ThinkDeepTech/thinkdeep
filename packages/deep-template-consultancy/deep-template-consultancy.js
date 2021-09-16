@@ -106,28 +106,11 @@ export class DeepTemplateConsultancy extends LitElement {
 
       <main id="content"></main>
 
-      <!-- TODO: Separation of concerns -->
-      <deep-footer>
-        <div slot="helpful-links">
-          <ul>
-            ${this.routes.map((route) =>
-              route.hidden ? html`` : html`<li><a href="${route.path}">${route.name}</a></li>`
-            )}
-          </ul>
-        </div>
-        <div slot="address">
-          <p>
-            We're located at <br />
-            ${this.address.streetNumber} ${this.address.streetName}, ${this.address.cityName},
-            ${this.address.provinceCode}, ${this.address.countryName} ${this.address.zipCode}
-          </p>
-        </div>
-        <div slot="copyright">
-          ${this.companyName.length > 0
-            ? '\u00A9' + this.companyName + ', ' + new Date().getFullYear()
-            : ''}.
-        </div>
-      </deep-footer>
+      <deep-footer
+        .routes="${this.routes}"
+        .address="${this.address}"
+        .companyName="${this.companyName}"
+      ></deep-footer>
     `;
   }
 }
