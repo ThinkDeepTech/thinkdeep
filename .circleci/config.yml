@@ -45,6 +45,8 @@ jobs:
 
             - run: which firebase
 
+            - run: echo $FIREBASE_TOKEN
+
             - run: firebase --non-interactive login:ci --no-localhost
 
             - run: firebase deploy
