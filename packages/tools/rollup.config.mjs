@@ -22,6 +22,9 @@ const baseConfig = createSpaConfig({
 
 export default merge(createSpaConfig, {
   input: 'index.html',
+  output: {
+    dir: 'build'
+  },
   extensions: [
     '.js', '.mjs'
   ],

@@ -87,6 +87,7 @@ export class DeepTemplateConsultancy extends LitElement {
         }
 
         deep-footer {
+          background-color: var(--primary-color, #90a4ae);
           grid-area: footer;
         }
       `,

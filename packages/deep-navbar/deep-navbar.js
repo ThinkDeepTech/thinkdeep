@@ -36,9 +36,26 @@ export class DeepNavbar extends LitElement {
         }
 
         a {
-          height: inherit;
-          width: minmax(125px, auto);
+          display: block;
+          height: 100%;
+          width: 100%;
           text-align: center;
+        }
+
+        a:link {
+          text-decoration: none;
+        }
+
+        a:visited {
+          text-decoration: none;
+        }
+
+        a:hover {
+          text-decoration: none;
+        }
+
+        a:active {
+          text-decoration: none;
         }
 
         a[hidden] {
@@ -62,7 +79,7 @@ export class DeepNavbar extends LitElement {
         </div>
 
         ${this.routes.map(
-          (item, index) => html`<a
+          (item, index) => html` <a
             style="grid-column-start: ${-1 * this.routes.length - 1 + index};"
             href="${item.path}"
             ?hidden="${item.hidden}"
