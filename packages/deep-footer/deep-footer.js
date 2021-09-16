@@ -10,6 +10,21 @@ export class DeepFooter extends LitElement {
     };
   }
 
+  constructor() {
+    super();
+
+    this.companyName = '';
+    this.address = {
+      streetNumber: '',
+      streetName: '',
+      cityName: '',
+      provinceName: '',
+      countryName: '',
+      zipCode: '',
+    };
+    this.routes = [];
+  }
+
   static get styles() {
     return [
       css`
