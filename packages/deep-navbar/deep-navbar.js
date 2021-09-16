@@ -4,14 +4,14 @@ import { html, LitElement, css } from 'lit-element';
 export class DeepNavbar extends LitElement {
   static get properties() {
     return {
-      logo: { type: String },
+      companyName: { type: String },
       routes: { type: Array },
     };
   }
 
   constructor() {
     super();
-    this.logo = '';
+    this.companyName = '';
     this.routes = [];
   }
 
@@ -27,7 +27,7 @@ export class DeepNavbar extends LitElement {
           background-color: var(--primary-color, #558b2f);
         }
 
-        .logo {
+        slot[name='logo'] {
           grid-column-start: 1;
           grid-column-end: 1;
           text-align: center;
@@ -77,9 +77,9 @@ export class DeepNavbar extends LitElement {
   render() {
     return html`
       <div class="navbar">
-        <div class="logo">
-          <img src="${this.logo}" ?hidden="${this.logo.length == 0}" />
-        </div>
+        <slot name="logo">
+          <h1>${this.companyName}</h1>
+        </slot>
 
         ${this.routes.map(
           (item, index) => html` <a
