@@ -10,7 +10,8 @@ import { Router } from '@vaadin/router';
  */
 function findRoute(routes, pageName) {
   var target = null;
-  for (const route of routes) if (route.name.includes(pageName)) target = route;
+  for (const route of routes)
+    if (route.name.toLowerCase().includes(pageName.toLowerCase())) target = route;
   return target;
 }
 
@@ -91,7 +92,7 @@ describe('deep-template-consultancy', () => {
 
   it('should navigate to the 404 not found page if an unknown page is requested', (done) => {
     const contentArea = element.shadowRoot.getElementById('content');
-    const notFoundPage = findRoute(element.routes, 'not-found');
+    const notFoundPage = findRoute(element.routes, 'Page Not Found');
     Router.go('/doesntexist');
 
     elementUpdated(contentArea).then((additionalUpdatesNeeded) => {
@@ -105,6 +106,7 @@ describe('deep-template-consultancy', () => {
 
       expect(alteredTextContent.toLowerCase()).to.include('page not found');
       clickMenuItem(navbar, homeRoute);
+      Router.go('/Home');
       done();
     });
   });
