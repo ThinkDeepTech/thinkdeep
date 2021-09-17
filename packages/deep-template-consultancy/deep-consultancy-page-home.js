@@ -1,11 +1,38 @@
 import { html, css, LitElement } from 'lit-element';
 
 export class DeepConsultancyPageHome extends LitElement {
+  static get properties() {
+    return {
+      slogan: { type: String },
+    };
+  }
+
+  constructor() {
+    super();
+
+    this.slogan = '';
+  }
+
   static get styles() {
-    return css``;
+    return css`
+    .banner {
+      background: url('img/nordwood-themes-unsplash.jpg') no-repeat center center fixed;
+      background-size: cover;
+      height: 600px;
+      width: 100%;
+    }
+    .slogan {
+      position: absolute;
+      top: 50vw;
+      left 50vw;
+    }
+    `;
   }
   render() {
-    return html``;
+    return html`
+      <div class="banner"></div>
+      ${this.slogan.length > 0 ? html`<h3 class="slogan">${this.slogan}</h3>` : html``}
+    `;
   }
 }
 
