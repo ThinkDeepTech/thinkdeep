@@ -22,7 +22,7 @@ export class DeepTemplateConsultancy extends LitElement {
   constructor() {
     super();
 
-    this.companyName = 'Thinkdeep';
+    this.companyName = 'ACME';
     this.address = {
       streetNumber: 349,
       streetName: 'Oliver Street',
@@ -36,16 +36,19 @@ export class DeepTemplateConsultancy extends LitElement {
       {
         path: '/',
         name: 'home',
+        label: 'Home',
         component: 'deep-consultancy-page-home',
       },
       {
         path: '/about',
         name: 'about',
+        label: 'About',
         component: 'deep-consultancy-page-about',
       },
       {
         path: '(.*)',
         name: 'page-not-found',
+        label: 'Page Not Found',
         component: 'deep-consultancy-page-not-found',
         hidden: true,
       },
@@ -74,6 +77,7 @@ export class DeepTemplateConsultancy extends LitElement {
             'content'
             'content'
             'footer';
+          font-family: PrimaryFont;
         }
 
         deep-navbar {
@@ -83,7 +87,8 @@ export class DeepTemplateConsultancy extends LitElement {
 
         #content {
           grid-area: content;
-          background-color: var(--secondary-color, #eceff1); // TODO: Implement fallback colors;
+          background-color: var(--secondary-color, #eceff1);
+          color: black;
         }
 
         deep-footer {

@@ -18,11 +18,13 @@ export class DeepNavbar extends LitElement {
   static get styles() {
     return [
       css`
-        .navbar {
+        nav {
           display: grid;
           grid-gap: 0.6rem;
           grid-template-columns: repeat(12, 1fr);
-          height: 100%;
+          align-items: center;
+
+          height: 100px;
           width: auto;
           background-color: var(--primary-color, #558b2f);
         }
@@ -30,7 +32,6 @@ export class DeepNavbar extends LitElement {
         slot[name='logo'] {
           grid-column-start: 1;
           grid-column-end: 1;
-          text-align: center;
           height: inherit;
           width: inherit;
         }
@@ -39,7 +40,6 @@ export class DeepNavbar extends LitElement {
           display: block;
           height: 100%;
           width: 100%;
-          text-align: center;
           color: var(--secondary-color, black);
         }
 
@@ -65,18 +65,13 @@ export class DeepNavbar extends LitElement {
           display: none;
           visibility: hidden;
         }
-
-        img {
-          height: 100%;
-          width: auto;
-        }
       `,
     ];
   }
 
   render() {
     return html`
-      <div class="navbar">
+      <nav>
         <slot name="logo">
           <h1>${this.companyName}</h1>
         </slot>
@@ -87,10 +82,10 @@ export class DeepNavbar extends LitElement {
             href="${item.path}"
             ?hidden="${item.hidden}"
           >
-            ${item.name}
+            ${item.label}
           </a>`
         )}
-      </div>
+      </nav>
     `;
   }
 }
