@@ -9,17 +9,17 @@ jobs:
         working_directory: ~/repo
 
         steps:
-            - run: pwd
-
             - run: git clone https://github.com/ThinkDeepTech/thinkdeep.git
-
-            - run: ls -l
 
             - run: cd thinkdeep
 
             - run: yarn install
 
+            - run: cd packages/deep-template-consultancy
+
             - run: yarn run build
+
+            - run: cd ../..
 
             - run: curl -sL https://firebase.tools | bash
 
