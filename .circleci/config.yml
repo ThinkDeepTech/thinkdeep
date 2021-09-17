@@ -10,9 +10,7 @@ jobs:
 
         steps:
 
-            - run: which git
-
-            - run: git clone git@github.com:ThinkDeepTech/thinkdeep.git
+            - run: git clone https://github.com/ThinkDeepTech/thinkdeep.git
 
             - run: cd thinkdeep
 
