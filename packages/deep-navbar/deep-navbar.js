@@ -18,10 +18,13 @@ export class DeepNavbar extends LitElement {
   static get styles() {
     return [
       css`
+        :host {
+          height: 150px;
+        }
         nav {
           display: grid;
           grid-gap: 0.6rem;
-          grid-template-columns: repeat(12, 1fr);
+          grid-template-columns: repeat(14, 1fr);
           align-items: center;
 
           height: inherit;
@@ -98,11 +101,9 @@ export class DeepNavbar extends LitElement {
    */
   _menuItem(route, index) {
     return route
-      ? html` <!-- NOTE: The 12 in this comes from the fact that the nav grid is defined having 12 fractional units.
-        Changing that will impact this positioning. -->
-          <div style="grid-column-start: ${12 - index};">
-            <a href="${route.path}"> ${route.name} </a>
-          </div>`
+      ? html` <div style="grid-column-start: ${14 - index};">
+          <a href="${route.path}"> ${route.name} </a>
+        </div>`
       : html``;
   }
 }
