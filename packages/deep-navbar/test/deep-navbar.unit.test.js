@@ -1,7 +1,7 @@
-import { html, litFixtureSync, expect /* assert */ } from '@open-wc/testing';
+import { html, litFixtureSync, expect } from '@open-wc/testing';
 import '@thinkdeep/deep-navbar/deep-navbar';
 
-const routes = [
+const visibleRoutes = [
   {
     path: '/',
     name: 'home',
@@ -11,8 +11,16 @@ const routes = [
     path: '/about',
     name: 'about',
     component: 'deep-consultancy-page-about',
-    hidden: undefined,
   },
+  {
+    path: '/something',
+    name: 'something',
+    component: 'girbles',
+    hidden: false,
+  },
+];
+
+const hiddenRoutes = [
   {
     path: '(.*)',
     name: 'page-not-found',
@@ -26,6 +34,8 @@ const routes = [
     hidden: true,
   },
 ];
+
+const routes = visibleRoutes.concat(hiddenRoutes);
 
 describe('deep-navbar', () => {
   it('should display menu items with falsy hidden property', async () => {
@@ -58,22 +68,22 @@ describe('deep-navbar', () => {
     expect(logo.innerHTML).to.contain(companyName);
   });
 
-  describe('_menuItems', () => {
-    it('should not include hidden routes in output', () => {
-      // assert.fail();
+  describe('_visibleMenuItems', () => {
+    it('should not include hidden routes', async () => {
+      const element = await litFixtureSync(html` <deep-navbar .routes=${routes}></deep-navbar> `);
+      const visibleMenuItems = element.shadowRoot.querySelectorAll('a');
+      expect(visibleMenuItems.length).to.equal(visibleRoutes.length);
     });
 
-    it('should include visible routes', () => {
-      // assert.fail();
-    });
-  });
+    it('should correctly order the routes for display', async () => {
+      const element = await litFixtureSync(html` <deep-navbar .routes=${routes}></deep-navbar> `);
+      const visibleMenuItems = element.shadowRoot.querySelectorAll('a');
 
-  describe('_menuItem', () => {
-    it('should produce a menu item for each route passed that is visible', () => {
-      // assert.fail();
-    });
-    it('should return empty if the route is invalid', () => {
-      // assert.fail();
+      for (let i = 0; i < visibleMenuItems.length; i++) {
+        const menuItem = visibleMenuItems[i];
+        const route = routes[i];
+        expect(menuItem.innerHTML).to.contain(route.name);
+      }
     });
   });
 });

@@ -24,7 +24,7 @@ export class DeepNavbar extends LitElement {
           grid-template-columns: repeat(12, 1fr);
           align-items: center;
 
-          height: 100px;
+          height: inherit;
           width: auto;
           background-color: var(--primary-color, #558b2f);
         }
@@ -37,9 +37,6 @@ export class DeepNavbar extends LitElement {
         }
 
         a {
-          display: block;
-          height: 100%;
-          width: 100%;
           color: var(--secondary-color, black);
         }
 
@@ -76,7 +73,7 @@ export class DeepNavbar extends LitElement {
           <h1>${this.companyName}</h1>
         </slot>
 
-        ${this._menuItems(this.routes)}
+        ${this._visibleMenuItems(this.routes)}
       </nav>
     `;
   }
@@ -86,19 +83,27 @@ export class DeepNavbar extends LitElement {
    * @param {Array} routes - Vaadin routes.
    * @return {TemplateResult} Markup associated with routes.
    */
-  _menuItems(routes) {
-    return routes.map((route, index) => (route.hidden ? html`` : this._menuItem(route)));
+  _visibleMenuItems(routes) {
+    // NOTE: The -1 * index in the function below is done to reverse the routes array.
+    return routes.map((route, index) =>
+      route.hidden ? html`` : this._menuItem(route, -1 * index)
+    );
   }
 
   /**
    * Retrieve the route as menu item markup.
    * @param {Object} route - Route to be converted.
+   * @param {Number} index - Index order at which the route is located in the routes array.
    * @return {TemplateResult} Markup associated with menu item.
    */
-  _menuItem(route) {
-    return html` <div>
-      <a href="${route.path}"> ${route.label} </a>
-    </div>`;
+  _menuItem(route, index) {
+    return route
+      ? html` <!-- NOTE: The 12 in this comes from the fact that the nav grid is defined having 12 fractional units.
+        Changing that will impact this positioning. -->
+          <div style="grid-column-start: ${12 - index};">
+            <a href="${route.path}"> ${route.name} </a>
+          </div>`
+      : html``;
   }
 }
 

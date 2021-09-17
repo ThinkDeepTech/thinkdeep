@@ -35,20 +35,17 @@ export class DeepTemplateConsultancy extends LitElement {
     this.routes = [
       {
         path: '/',
-        name: 'home',
-        label: 'Home',
+        name: 'Home',
         component: 'deep-consultancy-page-home',
       },
       {
-        path: '/about',
-        name: 'about',
-        label: 'About',
+        path: '/About',
+        name: 'About',
         component: 'deep-consultancy-page-about',
       },
       {
         path: '(.*)',
-        name: 'page-not-found',
-        label: 'Page Not Found',
+        name: 'Page Not Found',
         component: 'deep-consultancy-page-not-found',
         hidden: true,
       },
