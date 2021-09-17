@@ -4,42 +4,39 @@ import { html, LitElement, css } from 'lit-element';
 export class DeepNavbar extends LitElement {
   static get properties() {
     return {
-      logo: { type: String },
+      companyName: { type: String },
       routes: { type: Array },
     };
   }
 
   constructor() {
     super();
-    this.logo = '';
+    this.companyName = '';
     this.routes = [];
   }
 
   static get styles() {
     return [
       css`
-        .navbar {
+        nav {
           display: grid;
           grid-gap: 0.6rem;
           grid-template-columns: repeat(12, 1fr);
-          height: 100%;
+          align-items: center;
+
+          height: inherit;
           width: auto;
           background-color: var(--primary-color, #558b2f);
         }
 
-        .logo {
+        slot[name='logo'] {
           grid-column-start: 1;
           grid-column-end: 1;
-          text-align: center;
           height: inherit;
           width: inherit;
         }
 
         a {
-          display: block;
-          height: 100%;
-          width: 100%;
-          text-align: center;
           color: var(--secondary-color, black);
         }
 
@@ -65,33 +62,48 @@ export class DeepNavbar extends LitElement {
           display: none;
           visibility: hidden;
         }
-
-        img {
-          height: 100%;
-          width: auto;
-        }
       `,
     ];
   }
 
   render() {
     return html`
-      <div class="navbar">
-        <div class="logo">
-          <img src="${this.logo}" ?hidden="${this.logo.length == 0}" />
-        </div>
+      <nav>
+        <slot name="logo">
+          <h1>${this.companyName}</h1>
+        </slot>
 
-        ${this.routes.map(
-          (item, index) => html` <a
-            style="grid-column-start: ${-1 * this.routes.length - 1 + index};"
-            href="${item.path}"
-            ?hidden="${item.hidden}"
-          >
-            ${item.name}
-          </a>`
-        )}
-      </div>
+        ${this._visibleMenuItems(this.routes)}
+      </nav>
     `;
+  }
+
+  /**
+   * Retrieve the markup for the visible menu items.
+   * @param {Array} routes - Vaadin routes.
+   * @return {TemplateResult} Markup associated with routes.
+   */
+  _visibleMenuItems(routes) {
+    // NOTE: The -1 * index in the function below is done to reverse the routes array.
+    return routes.map((route, index) =>
+      route.hidden ? html`` : this._menuItem(route, -1 * index)
+    );
+  }
+
+  /**
+   * Retrieve the route as menu item markup.
+   * @param {Object} route - Route to be converted.
+   * @param {Number} index - Index order at which the route is located in the routes array.
+   * @return {TemplateResult} Markup associated with menu item.
+   */
+  _menuItem(route, index) {
+    return route
+      ? html` <!-- NOTE: The 12 in this comes from the fact that the nav grid is defined having 12 fractional units.
+        Changing that will impact this positioning. -->
+          <div style="grid-column-start: ${12 - index};">
+            <a href="${route.path}"> ${route.name} </a>
+          </div>`
+      : html``;
   }
 }
 

@@ -1,7 +1,7 @@
 import { html, litFixtureSync, expect } from '@open-wc/testing';
 import '@thinkdeep/deep-navbar/deep-navbar';
 
-const routes = [
+const visibleRoutes = [
   {
     path: '/',
     name: 'home',
@@ -11,8 +11,16 @@ const routes = [
     path: '/about',
     name: 'about',
     component: 'deep-consultancy-page-about',
-    hidden: undefined,
   },
+  {
+    path: '/something',
+    name: 'something',
+    component: 'girbles',
+    hidden: false,
+  },
+];
+
+const hiddenRoutes = [
   {
     path: '(.*)',
     name: 'page-not-found',
@@ -26,6 +34,8 @@ const routes = [
     hidden: true,
   },
 ];
+
+const routes = visibleRoutes.concat(hiddenRoutes);
 
 describe('deep-navbar', () => {
   it('should display menu items with falsy hidden property', async () => {
@@ -49,17 +59,31 @@ describe('deep-navbar', () => {
     expect(menuItems.length).to.equal(routes.length - numHiddenLinks);
   });
 
-  it('should display an image at the logo specified logo path', async () => {
-    const assetPath = 'path/to/some/logo.svg';
-    const element = await litFixtureSync(html` <deep-navbar logo="${assetPath}"></deep-navbar> `);
-    const img = element?.shadowRoot?.querySelector('.logo > img');
-    expect(img.getAttribute('src')).to.equal(assetPath);
+  it('should default to using the company name in the logo when not slotted', async () => {
+    const companyName = 'Thinkdeep';
+    const element = await litFixtureSync(
+      html` <deep-navbar .companyName="${companyName}"></deep-navbar> `
+    );
+    const logo = element?.shadowRoot?.querySelector('slot[name="logo"]');
+    expect(logo.innerHTML).to.contain(companyName);
   });
 
-  it('should hide the logo on an empty string input', async () => {
-    const assetPath = '';
-    const element = await litFixtureSync(html` <deep-navbar logo="${assetPath}"></deep-navbar> `);
-    const img = element?.shadowRoot?.querySelector('.logo > img[hidden]');
-    expect(img.hidden).to.equal(true);
+  describe('_visibleMenuItems', () => {
+    it('should not include hidden routes', async () => {
+      const element = await litFixtureSync(html` <deep-navbar .routes=${routes}></deep-navbar> `);
+      const visibleMenuItems = element.shadowRoot.querySelectorAll('a');
+      expect(visibleMenuItems.length).to.equal(visibleRoutes.length);
+    });
+
+    it('should correctly order the routes for display', async () => {
+      const element = await litFixtureSync(html` <deep-navbar .routes=${routes}></deep-navbar> `);
+      const visibleMenuItems = element.shadowRoot.querySelectorAll('a');
+
+      for (let i = 0; i < visibleMenuItems.length; i++) {
+        const menuItem = visibleMenuItems[i];
+        const route = routes[i];
+        expect(menuItem.innerHTML).to.contain(route.name);
+      }
+    });
   });
 });
