@@ -29,10 +29,7 @@ export class DeepConsultancyPageHome extends LitElement {
     `;
   }
   render() {
-    return html`
-      <div class="banner"></div>
-      ${this.slogan.length > 0 ? html`<h3 class="slogan">${this.slogan}</h3>` : html``}
-    `;
+    return html` <div class="banner"></div> `;
   }
 }
 

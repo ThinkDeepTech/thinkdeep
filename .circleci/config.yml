@@ -2,6 +2,19 @@ version: 2.1
 orbs:
     browser-tools: circleci/browser-tools@1.2.2
 jobs:
+    deploy:
+        docker:
+            - image: 'cimg/node:14.17.6-browsers'
+
+        working_directory: ~/repo
+
+        steps:
+            - run: curl -sL https://firebase.tools | bash
+
+            - run: which firebase
+
+            - run: firebase --token $FIREBASE_TOKEN deploy
+
     build:
         docker:
             - image: 'cimg/node:14.17.6-browsers'
@@ -41,8 +54,14 @@ jobs:
 
             - run: yarn run build
 
-            - run: curl -sL https://firebase.tools | bash
-
-            - run: which firebase
-
-            - run: firebase --token $FIREBASE_TOKEN deploy
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
