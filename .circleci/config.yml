@@ -9,6 +9,8 @@ jobs:
         working_directory: ~/repo
 
         steps:
+            - run: apt-cache search git-all
+
             - run: sudo apt install git-all
 
             - run: which git
@@ -59,13 +61,23 @@ jobs:
             - run: yarn run build
 
 workflows:
+
   version: 2
+
   deploy:
+
     jobs:
+
       - build
+
       - deploy:
+
           requires:
+
             - build
+
           filters:
+
             branches:
+
               only: master
