@@ -76,17 +76,29 @@ export class DeepNavbar extends LitElement {
           <h1>${this.companyName}</h1>
         </slot>
 
-        ${this.routes.map(
-          (item, index) => html` <a
-            style="grid-column-start: ${-1 * this.routes.length - 1 + index};"
-            href="${item.path}"
-            ?hidden="${item.hidden}"
-          >
-            ${item.label}
-          </a>`
-        )}
+        ${this._menuItems(this.routes)}
       </nav>
     `;
+  }
+
+  /**
+   * Retrieve the markup for the visible menu items.
+   * @param {Array} routes - Vaadin routes.
+   * @return {TemplateResult} Markup associated with routes.
+   */
+  _menuItems(routes) {
+    return routes.map((route, index) => (route.hidden ? html`` : this._menuItem(route)));
+  }
+
+  /**
+   * Retrieve the route as menu item markup.
+   * @param {Object} route - Route to be converted.
+   * @return {TemplateResult} Markup associated with menu item.
+   */
+  _menuItem(route) {
+    return html` <div>
+      <a href="${route.path}"> ${route.label} </a>
+    </div>`;
   }
 }
 
