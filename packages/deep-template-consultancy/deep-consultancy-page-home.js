@@ -16,7 +16,7 @@ export class DeepConsultancyPageHome extends LitElement {
   static get styles() {
     return css`
     .banner {
-      background: url('img/nordwood-themes-unsplash.jpg') no-repeat center center fixed;
+      background: url('img/nasa-unsplash.jpg') no-repeat center center fixed;
       background-size: cover;
       height: 600px;
       width: 100%;
