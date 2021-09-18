@@ -19,7 +19,7 @@ export class DeepNavbar extends LitElement {
     return [
       css`
         :host {
-          height: 150px;
+          height: 100%;
         }
         nav {
           display: grid;

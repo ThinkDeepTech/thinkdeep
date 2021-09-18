@@ -43,7 +43,7 @@ export class DeepFooter extends LitElement {
           display: block;
           height: 20px;
           width: 100%;
-          padding: 4px;
+          margin: 8px;
           color: var(--secondary-color, #000000);
         }
 
@@ -69,11 +69,9 @@ export class DeepFooter extends LitElement {
           visibility: hidden;
         }
 
-        .address {
-          text-align: center;
-        }
-
+        .address,
         .copyright {
+          margin: 3vh;
           text-align: center;
         }
       `,
