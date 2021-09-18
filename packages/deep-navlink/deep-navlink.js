@@ -55,7 +55,7 @@ export class DeepNavLink extends LitElement {
   }
 
   render() {
-    return this.route.path
+    return this.route.path != undefined
       ? html` <p>
           <a href="${this.route.path}"> ${this.route.name} </a>
         </p>`

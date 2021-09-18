@@ -17,10 +17,11 @@ describe('deep-navlink', () => {
   });
 
   it('should display nothing if route is empty', async () => {
-    const element = await litFixtureSync(html`
-      <deep-navlink .route="${emptyRoute}"></deep-navlink>
-    `);
-    expect(element.shadowRoot.childNodes.length).to.equal(0);
+    const element = await litFixtureSync(
+      html` <deep-navlink .route="${emptyRoute}"></deep-navlink> `
+    );
+    const link = element.shadowRoot.querySelector('a');
+    expect(link).to.equal(null);
   });
 
   it('should display a link', async () => {
