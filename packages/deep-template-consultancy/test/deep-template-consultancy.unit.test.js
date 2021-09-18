@@ -1,6 +1,6 @@
 import { html, litFixtureSync, elementUpdated, expect, assert } from '@open-wc/testing';
 import '@thinkdeep/deep-template-consultancy/deep-template-consultancy.js';
-import { Router } from '@vaadin/router';
+// import { Router } from '@vaadin/router';
 
 /**
  * Find the matching routing component.
@@ -21,15 +21,14 @@ function findRoute(routes, pageName) {
  * @param {Object} - Route object used by @vaadin/router
  */
 function clickMenuItem(element, route) {
-  var menuItems = element.shadowRoot.querySelectorAll('a');
-  for (const menuItem of menuItems)
-    if (menuItem.getAttribute('href') === route.path) menuItem.click();
+  var navlinks = element.shadowRoot.querySelectorAll('deep-navlink');
+  for (const navlink of navlinks) if (navlink.route.path === route.path) navlink.click();
 }
 
 /**
  * Find a nested page element.
- * @param {HTMLElement} - Page content element in which to locate page components.
- * @param {String} - Name of the page being fetched.
+ * @param {HTMLElement} element - Page content element in which to locate page components.
+ * @param {String} pageTagName - Name of the page being fetched.
  */
 function findPage(element, pageTagName) {
   const pageComponents = element.querySelectorAll('*');
@@ -38,7 +37,6 @@ function findPage(element, pageTagName) {
   for (const page of pageComponents)
     if (
       page?.tagName?.toLowerCase &&
-      page.tagName &&
       pageTagName &&
       page.tagName.toLowerCase() === pageTagName.toLowerCase()
     )
@@ -55,10 +53,6 @@ describe('deep-template-consultancy', () => {
     navbar = element.shadowRoot.querySelector('deep-navbar');
   });
 
-  it('should include the home route as /', () => {
-    expect(homeRoute.path).to.equal('/');
-  });
-
   it('should include a navbar at the top of the page', () => {
     const target = element.shadowRoot.querySelectorAll('deep-navbar');
     expect(target.length).to.equal(1);
@@ -69,45 +63,42 @@ describe('deep-template-consultancy', () => {
     expect(target.length).to.equal(1);
   });
 
-  it('should update the main window when a menu item is clicked', (done) => {
+  it('should update the main window when a menu item is clicked', async () => {
     const contentArea = element.shadowRoot.getElementById('content');
+
+    await elementUpdated(contentArea);
 
     clickMenuItem(navbar, homeRoute);
-    elementUpdated(contentArea).then((additionalUpdatesNeeded) => {
-      const homePage = findPage(contentArea, homeRoute.component);
-      const initialTextContent = homePage.shadowRoot.textContent;
+    await elementUpdated(contentArea);
+    const homePage = findPage(contentArea, homeRoute.component);
 
-      const aboutRoute = findRoute(element.routes, 'about');
-      clickMenuItem(navbar, aboutRoute);
-      elementUpdated(contentArea).then((additionalUpdatesNeeded) => {
-        const aboutPage = findPage(contentArea, aboutRoute.component);
-        const alteredTextContent = aboutPage.shadowRoot.textContent;
+    const initialTextContent = homePage?.shadowRoot?.textContent;
+    if (initialTextContent === undefined) assert.fail('Initial text content was undefined.');
 
-        expect(initialTextContent).not.to.equal(alteredTextContent);
-        clickMenuItem(navbar, homeRoute);
-        done();
-      });
-    });
+    const aboutRoute = findRoute(element.routes, 'about');
+    clickMenuItem(navbar, aboutRoute);
+
+    await elementUpdated(contentArea);
+    const aboutPage = findPage(contentArea, aboutRoute.component);
+    const alteredTextContent = aboutPage?.shadowRoot?.textContent;
+    if (alteredTextContent === undefined) assert.fail('Altered text content was undefined.');
+
+    expect(initialTextContent).not.to.equal(alteredTextContent);
   });
 
-  it('should navigate to the 404 not found page if an unknown page is requested', (done) => {
-    const contentArea = element.shadowRoot.getElementById('content');
-    const notFoundPage = findRoute(element.routes, 'Page Not Found');
-    Router.go('/doesntexist');
+  // it('should navigate to the 404 not found page if an unknown page is requested', async () => {
+  //   const contentArea = element.shadowRoot.getElementById('content');
+  //   const notFoundPage = findRoute(element.routes, 'Page Not Found');
+  //   Router.go('/doesntexist');
 
-    elementUpdated(contentArea).then((additionalUpdatesNeeded) => {
-      const currentPage = findPage(contentArea, notFoundPage.component);
-      const alteredTextContent = currentPage?.shadowRoot?.textContent;
+  //   await elementUpdated(contentArea);
 
-      if (alteredTextContent === undefined)
-        assert.fail(
-          'The page that was returned w as not the expected 404 not found page. It was undefined.'
-        );
+  //   const currentPage = findPage(contentArea, notFoundPage.component);
+  //   const alteredTextContent = currentPage?.shadowRoot?.textContent;
 
-      expect(alteredTextContent.toLowerCase()).to.include('page not found');
-      clickMenuItem(navbar, homeRoute);
-      Router.go('/Home');
-      done();
-    });
-  });
+  //   if (alteredTextContent === undefined)
+  //     assert.fail('The page that was returned was not the expected 404 not found page.');
+
+  //   expect(alteredTextContent.toLowerCase()).to.include('page not found');
+  // });
 });

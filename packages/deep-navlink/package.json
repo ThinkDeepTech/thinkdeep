@@ -1,10 +1,9 @@
 {
-  "name": "@thinkdeep/deep-navbar",
-  "version": "v0.0.8",
-  "description": "Template to copy and paste for new custom elements using lit element.",
+  "name": "@thinkdeep/deep-navlink",
+  "version": "0.0.8",
+  "description": "Links for use in navbars.",
   "keywords": [
-    "LitElement",
-    "polymer"
+    "WebComponents"
   ],
   "author": "haydenmcp <hayden.mcparlane@gmail.com>",
   "homepage": "https://github.com/ThinkDeepTech/thinkdeep#readme",
@@ -27,9 +26,8 @@
     "@babel/preset-env": "^7.12.11",
     "@rollup/plugin-eslint": "^8.0.1",
     "@rollup/plugin-node-resolve": "^11.0.1",
-    "@thinkdeep/deep-styles": "^0.0.8",
-    "@thinkdeep/deep-navlink": "^0.0.8",
     "@thinkdeep/tools": "^0.0.8",
+    "@thinkdeep/deep-styles": "^0.0.8",
     "jest": "^27.0.6",
     "rollup": "^1.1.0",
     "rollup-plugin-babel": "^4.3.0",

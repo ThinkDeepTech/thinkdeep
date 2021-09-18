@@ -36,13 +36,14 @@ export class DeepFooter extends LitElement {
           height: minmax(250px, auto);
           background-color: var(--primary-color, #558b2f);
           color: var(--secondary-color, black);
+          box-shadow: 0 50vh 0 50vh var(--primary-color, #000000);
         }
 
         a {
           display: block;
           height: 20px;
           width: 100%;
-          padding: 4px;
+          margin: 8px;
           color: var(--secondary-color, #000000);
         }
 
@@ -67,6 +68,12 @@ export class DeepFooter extends LitElement {
         a[hidden] {
           visibility: hidden;
         }
+
+        .address,
+        .copyright {
+          margin: 3vh;
+          text-align: center;
+        }
       `,
     ];
   }
@@ -79,8 +86,10 @@ export class DeepFooter extends LitElement {
         )}
       </div>
       <div class="address">
-        ${this.address.streetNumber} ${this.address.streetName}, ${this.address.cityName},
-        ${this.address.provinceCode}, ${this.address.countryName} ${this.address.zipCode}
+        ${this.address.streetNumber} ${this.address.streetName} <br />
+        ${this.address.cityName}, ${this.address.provinceCode} <br />
+        ${this.address.countryName} <br />
+        ${this.address.zipCode}
       </div>
       <div class="copyright">
         ${this.companyName.length > 0

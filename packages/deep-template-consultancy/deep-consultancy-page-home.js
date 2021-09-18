@@ -7,29 +7,72 @@ export class DeepConsultancyPageHome extends LitElement {
     };
   }
 
-  constructor() {
-    super();
-
-    this.slogan = '';
-  }
-
   static get styles() {
     return css`
-    .banner {
-      background: url('img/nasa-unsplash.jpg') no-repeat center center fixed;
-      background-size: cover;
-      height: 600px;
-      width: 100%;
-    }
-    .slogan {
-      position: absolute;
-      top: 50vw;
-      left 50vw;
-    }
+      :host {
+        position: relative;
+      }
+
+      .banner {
+        background: url('img/nasa-unsplash.jpg') no-repeat center center fixed;
+        background-size: cover;
+        height: 600px;
+        width: 100%;
+      }
+
+      .headline {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: translate(50%, 300%);
+        z-order: 100;
+        width: 50vw;
+        height: 10vh;
+        text-align: center;
+      }
+
+      .contact-us {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: translate(150%, 500%);
+        height: 8vh;
+        width: 25vw;
+      }
+
+      @media screen and (max-width: 480px) {
+        .headline {
+          position: absolute;
+          top: 0;
+          left: 0;
+          transform: translate(50%, 300%);
+          z-order: 100;
+          width: 50vw;
+          height: 10vh;
+          text-align: center;
+        }
+      }
+
+      @media screen and (min-width: 481px) and (max-width: 769px) {
+        .headline {
+          position: absolute;
+          top: 0;
+          left: 0;
+          transform: translate(50%, 300%);
+          z-order: 100;
+          width: 50vw;
+          height: 10vh;
+          text-align: center;
+        }
+      }
     `;
   }
   render() {
-    return html` <div class="banner"></div> `;
+    return html`
+      <div class="banner"></div>
+      <h1 class="headline">Tech solved.</h1>
+      <button class="contact-us" type="button">Email Us</button>
+    `;
   }
 }
 
