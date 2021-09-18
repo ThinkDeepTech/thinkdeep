@@ -1,5 +1,7 @@
 import { html, LitElement, css } from 'lit-element';
 
+import '@thinkdeep/deep-navlink/deep-navlink';
+
 /* eslint-disable no-unused-vars */
 export class DeepNavbar extends LitElement {
   static get properties() {
@@ -38,33 +40,6 @@ export class DeepNavbar extends LitElement {
           height: inherit;
           width: inherit;
         }
-
-        a {
-          color: var(--secondary-color, black);
-        }
-
-        a:link {
-          text-decoration: none;
-        }
-
-        a:visited {
-          text-decoration: none;
-          color: var(--secondary-color-dark, black);
-        }
-
-        a:hover {
-          text-decoration: none;
-          color: var(--secondary-color-light, black);
-        }
-
-        a:active {
-          text-decoration: none;
-        }
-
-        a[hidden] {
-          display: none;
-          visibility: hidden;
-        }
       `,
     ];
   }
@@ -100,11 +75,10 @@ export class DeepNavbar extends LitElement {
    * @return {TemplateResult} Markup associated with menu item.
    */
   _menuItem(route, index) {
-    return route
-      ? html` <div style="grid-column-start: ${14 - index};">
-          <a href="${route.path}"> ${route.name} </a>
-        </div>`
-      : html``;
+    return html`<deep-navlink
+      .route="${route}"
+      style="grid-column-start: ${14 - index};"
+    ></deep-navlink>`;
   }
 }
 

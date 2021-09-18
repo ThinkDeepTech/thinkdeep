@@ -14,11 +14,52 @@ export class DeepNavLink extends LitElement {
   }
 
   static get styles() {
-    return css``;
+    return css`
+      :host {
+        height: inherit;
+        width: inherit;
+      }
+
+      a {
+        color: var(--secondary-color, black);
+      }
+
+      a:link {
+        text-decoration: none;
+      }
+
+      a:visited {
+        text-decoration: none;
+        color: var(--secondary-color-dark, black);
+      }
+
+      a:hover {
+        text-decoration: none;
+        color: var(--secondary-color-light, black);
+      }
+
+      a:active {
+        text-decoration: none;
+      }
+
+      a[hidden] {
+        display: none;
+        visibility: hidden;
+      }
+
+      p {
+        margin-top: 7vh;
+        text-align: center;
+      }
+    `;
   }
 
   render() {
-    return html``;
+    return this.route.path
+      ? html` <p>
+          <a href="${this.route.path}"> ${this.route.name} </a>
+        </p>`
+      : html``;
   }
 }
 customElements.define('deep-navlink', DeepNavLink);
