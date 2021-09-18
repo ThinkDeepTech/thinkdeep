@@ -54,12 +54,26 @@ export class DeepNavLink extends LitElement {
     `;
   }
 
+  async firstUpdated() {
+    // Give the browser a chance to paint
+    await new Promise((r) => setTimeout(r, 0));
+    this.addEventListener('click', this._handleClick);
+  }
+
   render() {
     return this.route.path != undefined
       ? html` <p>
           <a href="${this.route.path}"> ${this.route.name} </a>
         </p>`
       : html``;
+  }
+
+  /**
+   * Pass the click to the anchor tag.
+   */
+  _handleClick(e) {
+    const anchor = this.shadowRoot.querySelector('a');
+    anchor.click();
   }
 }
 customElements.define('deep-navlink', DeepNavLink);

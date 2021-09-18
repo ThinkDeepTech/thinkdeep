@@ -8,7 +8,7 @@ function sharedConfig(port = 8000) {
     nodeResolve: true,
     coverage: true,
     preserveSymlinks: true,
-    concurrency: 10,
+    concurrency: 1,
     port,
   };
 }
