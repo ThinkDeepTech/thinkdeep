@@ -22,26 +22,42 @@ export class DeepConsultancyPageHome extends LitElement {
 
       .headline {
         position: absolute;
-        top: 250px;
-        left: 300px;
+        top: 0;
+        left: 0;
+        transform: translate(50%, 300%);
         z-order: 100;
         width: 50vw;
         height: 10vh;
+        text-align: center;
       }
 
       .contact-us {
         position: absolute;
-        top: 350px;
-        left: 375px;
+        top: 0;
+        left: 0;
+        transform: translate(150%, 500%);
         height: 8vh;
         width: 25vw;
+      }
+
+      @media screen and (max-width: 768px) {
+        .headline {
+          position: absolute;
+          top: 0;
+          left: 0;
+          transform: translate(50%, 200%);
+          z-order: 100;
+          width: 50vw;
+          height: 10vh;
+          text-align: center;
+        }
       }
     `;
   }
   render() {
     return html`
       <div class="banner"></div>
-      <h1 class="headline">Give us a problem, we'll give a solution.</h1>
+      <h1 class="headline">Tech solved.</h1>
       <button class="contact-us" type="button">Email Us</button>
     `;
   }
