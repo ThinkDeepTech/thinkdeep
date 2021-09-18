@@ -2,6 +2,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import babel from '@rollup/plugin-babel';
 import eslint from '@rollup/plugin-eslint';
 import html from '@web/rollup-plugin-html';
+import copy from 'rollup-plugin-copy'
 import merge from 'deepmerge';
 import { createSpaConfig } from '@open-wc/building-rollup';
 
@@ -28,5 +29,16 @@ export default merge(createSpaConfig, {
   extensions: [
     '.js', '.mjs'
   ],
-  plugins: [nodeResolve(), eslint(), babel({ babelHelpers: 'bundled', rootMode: "upward" }), html()],
+  plugins: [
+    nodeResolve(),
+    eslint(),
+    babel({ babelHelpers: 'bundled', rootMode: "upward" }),
+    html(),
+    copy({
+      targets: [
+        { src: 'img/**/*', dest: 'build/img' },
+        { src: 'font/**/*', dest: 'build/font' }
+      ]
+    })
+  ],
 });
