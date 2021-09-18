@@ -38,25 +38,10 @@ const hiddenRoutes = [
 const routes = visibleRoutes.concat(hiddenRoutes);
 
 describe('deep-navbar', () => {
-  it('should display menu items with falsy hidden property', async () => {
-    const element = await litFixtureSync(html` <deep-navbar .routes=${routes}></deep-navbar> `);
-    const menuItems = element?.shadowRoot?.querySelectorAll('a:not([hidden])') || [];
-
-    // For each displaying menu item, find its route and verify that its not hidden
-    for (const menuItem of menuItems)
-      for (const route of routes)
-        if (menuItem.getAttribute('href').toLowerCase() === route.path.toLowerCase())
-          expect(!!route.hidden).to.equal(false);
-
-    expect(menuItems.length).to.be.greaterThanOrEqual(1);
-  });
-
   it('should hide navbar items labelled with hidden = true', async () => {
     const element = await litFixtureSync(html` <deep-navbar .routes=${routes}></deep-navbar> `);
-    const menuItems = element?.shadowRoot?.querySelectorAll('a:not([hidden])') || [];
-    let numHiddenLinks = 0;
-    for (const route of routes) if (route.hidden) numHiddenLinks += 1;
-    expect(menuItems.length).to.equal(routes.length - numHiddenLinks);
+    const menuItems = element?.shadowRoot?.querySelectorAll('deep-navlink') || [];
+    expect(menuItems.length).to.equal(visibleRoutes.length);
   });
 
   it('should default to using the company name in the logo when not slotted', async () => {
@@ -71,19 +56,22 @@ describe('deep-navbar', () => {
   describe('_visibleMenuItems', () => {
     it('should not include hidden routes', async () => {
       const element = await litFixtureSync(html` <deep-navbar .routes=${routes}></deep-navbar> `);
-      const visibleMenuItems = element.shadowRoot.querySelectorAll('a');
+      const visibleMenuItems = element.shadowRoot.querySelectorAll('deep-navlink');
       expect(visibleMenuItems.length).to.equal(visibleRoutes.length);
     });
 
     it('should correctly order the routes for display', async () => {
       const element = await litFixtureSync(html` <deep-navbar .routes=${routes}></deep-navbar> `);
-      const visibleMenuItems = element.shadowRoot.querySelectorAll('a');
+      const visibleMenuItems = element.shadowRoot.querySelectorAll('deep-navlink');
 
       for (let i = 0; i < visibleMenuItems.length; i++) {
         const menuItem = visibleMenuItems[i];
+        const container = menuItem.shadowRoot.querySelector('p');
         const route = routes[i];
-        expect(menuItem.innerHTML).to.contain(route.name);
+        expect(container.innerHTML).to.contain(route.name);
       }
+
+      expect(visibleMenuItems.length).to.be.greaterThan(0);
     });
   });
 });

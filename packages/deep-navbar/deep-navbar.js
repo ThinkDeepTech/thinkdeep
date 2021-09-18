@@ -26,7 +26,7 @@ export class DeepNavbar extends LitElement {
         nav {
           display: grid;
           grid-gap: 0.6rem;
-          grid-template-columns: repeat(14, 1fr);
+          grid-template-columns: repeat(12, 1fr);
           align-items: center;
 
           height: inherit;
@@ -58,11 +58,13 @@ export class DeepNavbar extends LitElement {
 
   /**
    * Retrieve the markup for the visible menu items.
+   *
+   * NOTE: The -1 in the function below is done to reverse the routes array.
+   *
    * @param {Array} routes - Vaadin routes.
    * @return {TemplateResult} Markup associated with routes.
    */
   _visibleMenuItems(routes) {
-    // NOTE: The -1 * index in the function below is done to reverse the routes array.
     return routes.map((route, index) =>
       route.hidden ? html`` : this._menuItem(route, -1 * index)
     );
@@ -77,7 +79,7 @@ export class DeepNavbar extends LitElement {
   _menuItem(route, index) {
     return html`<deep-navlink
       .route="${route}"
-      style="grid-column-start: ${14 - index};"
+      style="grid-column-start: ${12 - index};"
     ></deep-navlink>`;
   }
 }
