@@ -7,29 +7,43 @@ export class DeepConsultancyPageHome extends LitElement {
     };
   }
 
-  constructor() {
-    super();
-
-    this.slogan = '';
-  }
-
   static get styles() {
     return css`
-    .banner {
-      background: url('img/nasa-unsplash.jpg') no-repeat center center fixed;
-      background-size: cover;
-      height: 600px;
-      width: 100%;
-    }
-    .slogan {
-      position: absolute;
-      top: 50vw;
-      left 50vw;
-    }
+      :host {
+        position: relative;
+      }
+
+      .banner {
+        background: url('img/nasa-unsplash.jpg') no-repeat center center fixed;
+        background-size: cover;
+        height: 600px;
+        width: 100%;
+      }
+
+      .headline {
+        position: absolute;
+        top: 250px;
+        left: 300px;
+        z-order: 100;
+        width: 50vw;
+        height: 10vh;
+      }
+
+      .contact-us {
+        position: absolute;
+        top: 350px;
+        left: 375px;
+        height: 8vh;
+        width: 25vw;
+      }
     `;
   }
   render() {
-    return html` <div class="banner"></div> `;
+    return html`
+      <div class="banner"></div>
+      <h1 class="headline">Give us a problem, we'll give a solution.</h1>
+      <button class="contact-us" type="button">Email Us</button>
+    `;
   }
 }
 

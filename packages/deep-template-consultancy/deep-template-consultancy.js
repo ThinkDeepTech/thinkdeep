@@ -74,7 +74,6 @@ export class DeepTemplateConsultancy extends LitElement {
             'content'
             'content'
             'footer';
-          font-family: PrimaryFont;
         }
 
         deep-navbar {
@@ -84,8 +83,7 @@ export class DeepTemplateConsultancy extends LitElement {
 
         #content {
           grid-area: content;
-          background-color: var(--secondary-color, #eceff1);
-          color: black;
+          background-color: var(--primary-color, #eceff1);
         }
 
         deep-footer {

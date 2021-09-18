@@ -33,8 +33,8 @@ export class DeepNavbar extends LitElement {
         }
 
         slot[name='logo'] {
-          grid-column-start: 1;
-          grid-column-end: 1;
+          grid-column-start: 2;
+          grid-column-end: 2;
           height: inherit;
           width: inherit;
         }
