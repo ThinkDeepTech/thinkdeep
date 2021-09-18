@@ -13,6 +13,8 @@ jobs:
 
             - run: cd thinkdeep
 
+            - run: ls -l
+
             - run: yarn install
 
             - run: cd packages/deep-template-consultancy
