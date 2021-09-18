@@ -68,6 +68,14 @@ export class DeepFooter extends LitElement {
         a[hidden] {
           visibility: hidden;
         }
+
+        .address {
+          text-align: center;
+        }
+
+        .copyright {
+          text-align: center;
+        }
       `,
     ];
   }
@@ -80,8 +88,10 @@ export class DeepFooter extends LitElement {
         )}
       </div>
       <div class="address">
-        ${this.address.streetNumber} ${this.address.streetName}, ${this.address.cityName},
-        ${this.address.provinceCode}, ${this.address.countryName} ${this.address.zipCode}
+        ${this.address.streetNumber} ${this.address.streetName} <br />
+        ${this.address.cityName}, ${this.address.provinceCode} <br />
+        ${this.address.countryName} <br />
+        ${this.address.zipCode}
       </div>
       <div class="copyright">
         ${this.companyName.length > 0
