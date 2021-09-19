@@ -2,12 +2,12 @@ module.exports = {
   env: {
     browser: true,
     es6: true,
-    node: true
+    node: true,
   },
   extends: ['vaadin', 'prettier'],
   parser: 'babel-eslint',
   parserOptions: {
-    sourceType: 'module'
+    sourceType: 'module',
   },
   globals: {
     describe: false,
@@ -15,6 +15,6 @@ module.exports = {
     afterEach: false,
     it: false,
     expect: false,
-    sinon: false
-  }
+    sinon: false,
+  },
 };

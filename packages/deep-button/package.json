@@ -1,7 +1,7 @@
 {
-  "name": "@thinkdeep/deep-navlink",
+  "name": "@thinkdeep/deep-button",
   "version": "0.0.8",
-  "description": "Links for use in navbars.",
+  "description": "",
   "keywords": [
     "WebComponents"
   ],

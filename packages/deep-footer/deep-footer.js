@@ -1,12 +1,12 @@
-import { html, LitElement, css } from 'lit-element';
+import {html, LitElement, css} from 'lit-element';
 
 /* eslint-disable no-unused-vars */
 export class DeepFooter extends LitElement {
   static get properties() {
     return {
-      companyName: { type: String },
-      address: { type: Object },
-      routes: { type: Array },
+      companyName: {type: String},
+      address: {type: Object},
+      routes: {type: Array},
     };
   }
 
@@ -43,7 +43,8 @@ export class DeepFooter extends LitElement {
           display: block;
           height: 20px;
           width: 100%;
-          margin: 8px;
+          margin: 1vh;
+          padding-top: 2vh;
           color: var(--secondary-color, #000000);
         }
 
@@ -74,6 +75,10 @@ export class DeepFooter extends LitElement {
           margin: 3vh;
           text-align: center;
         }
+
+        .helpful-links {
+          margin-left: 4vw;
+        }
       `,
     ];
   }
@@ -82,7 +87,9 @@ export class DeepFooter extends LitElement {
     return html`
       <div class="helpful-links">
         ${this.routes.map((route) =>
-          route.hidden ? html`` : html` <a href="${route.path}">${route.name}</a> `
+          route.hidden
+            ? html``
+            : html` <a href="${route.path}">${route.name}</a> `
         )}
       </div>
       <div class="address">
@@ -91,16 +98,22 @@ export class DeepFooter extends LitElement {
         ${this.address.countryName} <br />
         ${this.address.zipCode}
       </div>
-      <div class="copyright">
-        ${this.companyName.length > 0
-          ? '\u00A9' + this.companyName + ', ' + new Date().getFullYear()
-          : ''}.
-      </div>
-
-      <!-- <slot name="helpful-links"></slot>
-      <slot name="address"></slot>
-      <slot name="copyright"></slot> -->
+      <div class="copyright">${this._copyright(this.companyName)}.</div>
     `;
+  }
+
+  /**
+   * Get copyright.
+   *
+   * Company name will be incoporated in a copyright string.
+   *
+   * @param {String} companyName - Name of the company.
+   * @return {String} - The copyright or ''.
+   */
+  _copyright(companyName) {
+    return this.companyName.length > 0
+      ? '\u00A9' + this.companyName + ', ' + new Date().getFullYear()
+      : '';
   }
 }
 
