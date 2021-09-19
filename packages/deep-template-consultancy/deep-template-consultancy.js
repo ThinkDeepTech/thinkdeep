@@ -1,8 +1,8 @@
-import { css, html, LitElement } from 'lit-element';
+import {css, html, LitElement} from 'lit-element';
 
 import '@thinkdeep/deep-footer';
 import '@thinkdeep/deep-navbar';
-import { Router } from '@vaadin/router';
+import {Router} from '@vaadin/router';
 
 import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-home.js';
 import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-about.js';
@@ -12,10 +12,10 @@ import '@thinkdeep/deep-template-consultancy/deep-consultancy-page-not-found.js'
 export class DeepTemplateConsultancy extends LitElement {
   static get properties() {
     return {
-      companyName: { type: String },
-      address: { type: Object },
-      routes: { type: Array },
-      location: { type: Object },
+      companyName: {type: String},
+      address: {type: Object},
+      routes: {type: Array},
+      location: {type: Object},
     };
   }
 
@@ -66,12 +66,9 @@ export class DeepTemplateConsultancy extends LitElement {
       css`
         :host {
           display: grid;
-          grid-template-rows: repeat(6, 1fr);
+          grid-template-rows: auto 1fr auto;
           grid-template-areas:
             'header'
-            'content'
-            'content'
-            'content'
             'content'
             'footer';
           background-color: var(--primary-color, #000000);

@@ -32,7 +32,7 @@ export class DeepConsultancyPageHome extends LitElement {
         text-align: center;
       }
 
-      .contact {
+      deep-button {
         position: absolute;
         top: 0;
         left: 0;
@@ -41,39 +41,13 @@ export class DeepConsultancyPageHome extends LitElement {
         width: 25vw;
         z-order: 100;
       }
-
-      @media screen and (max-width: 480px) {
-        .headline {
-          position: absolute;
-          top: 0;
-          left: 0;
-          transform: translate(50%, 300%);
-          z-order: 100;
-          width: 50vw;
-          height: 10vh;
-          text-align: center;
-        }
-      }
-
-      @media screen and (min-width: 481px) and (max-width: 769px) {
-        .headline {
-          position: absolute;
-          top: 0;
-          left: 0;
-          transform: translate(50%, 300%);
-          z-order: 100;
-          width: 50vw;
-          height: 10vh;
-          text-align: center;
-        }
-      }
     `;
   }
   render() {
     return html`
       <div class="banner"></div>
       <h1 class="headline">Tech solved.</h1>
-      <deep-button class="contact">Contact Us</deep-button>
+      <deep-button>Contact Us</deep-button>
     `;
   }
 }
