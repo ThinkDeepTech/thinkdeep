@@ -74,20 +74,19 @@ export class DeepTemplateConsultancy extends LitElement {
             'content'
             'content'
             'footer';
+          background-color: var(--primary-color, #000000);
         }
 
         deep-navbar {
-          background-color: var(--primary-color, #90a4ae);
           grid-area: header;
+          height: 16vh;
         }
 
         #content {
           grid-area: content;
-          background-color: var(--primary-color, #eceff1);
         }
 
         deep-footer {
-          background-color: var(--primary-color, #90a4ae);
           grid-area: footer;
         }
       `,

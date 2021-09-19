@@ -34,11 +34,13 @@ export class DeepNavbar extends LitElement {
           background-color: var(--primary-color, #558b2f);
         }
 
-        slot[name='logo'] {
-          grid-column-start: 2;
-          grid-column-end: 2;
-          height: inherit;
-          width: inherit;
+        deep-navlink {
+          padding-right: 4vw;
+        }
+
+        slot[name='logo'],
+        .logo {
+          padding-left: 4vw;
         }
       `,
     ];
@@ -48,7 +50,7 @@ export class DeepNavbar extends LitElement {
     return html`
       <nav>
         <slot name="logo">
-          <h1>${this.companyName}</h1>
+          <h1 class="logo">${this.companyName}</h1>
         </slot>
 
         ${this._visibleMenuItems(this.routes)}
