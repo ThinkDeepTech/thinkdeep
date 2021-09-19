@@ -9,6 +9,7 @@ function sharedConfig(port = 8000) {
     coverage: true,
     preserveSymlinks: true,
     concurrency: 1,
+    browserStartTimeout: 60000,
     port,
   };
 }
