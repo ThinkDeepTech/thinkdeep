@@ -15,8 +15,8 @@
   "scripts": {
     "dev": "web-dev-server --config ./web-dev-server.config.mjs --esbuild-target auto",
     "dev:watch": "web-dev-server --config ./web-dev-server.config.mjs --watch --esbuild-target auto",
-    "tests": "web-test-runner --playwright --browsers chromium firefox",
-    "tests:watch": "web-test-runner  --playwright --browsers chromium firefox --watch",
+    "tests": "web-test-runner",
+    "tests:watch": "web-test-runner--watch",
     "build": "rimraf build && rollup -c rollup.config.mjs"
   },
   "devDependencies": {
@@ -53,6 +53,7 @@
     "@rollup/plugin-image": "^2.1.1",
     "@rollup/plugin-replace": "^3.0.0",
     "@smarthtmlelements/smarthtmlelements-core": "^1.1.1",
+    "@thinkdeep/deep-button": "^0.0.8",
     "@thinkdeep/deep-footer": "^0.0.8",
     "@thinkdeep/deep-navbar": "^0.0.8",
     "@vaadin/router": "^1.7.4",

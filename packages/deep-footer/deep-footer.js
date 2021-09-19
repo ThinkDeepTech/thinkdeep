@@ -1,12 +1,12 @@
-import { html, LitElement, css } from 'lit-element';
+import {html, LitElement, css} from 'lit-element';
 
 /* eslint-disable no-unused-vars */
 export class DeepFooter extends LitElement {
   static get properties() {
     return {
-      companyName: { type: String },
-      address: { type: Object },
-      routes: { type: Array },
+      companyName: {type: String},
+      address: {type: Object},
+      routes: {type: Array},
     };
   }
 
@@ -75,6 +75,10 @@ export class DeepFooter extends LitElement {
           margin: 3vh;
           text-align: center;
         }
+
+        .helpful-links {
+          margin-left: 4vw;
+        }
       `,
     ];
   }
@@ -83,7 +87,9 @@ export class DeepFooter extends LitElement {
     return html`
       <div class="helpful-links">
         ${this.routes.map((route) =>
-          route.hidden ? html`` : html` <a href="${route.path}">${route.name}</a> `
+          route.hidden
+            ? html``
+            : html` <a href="${route.path}">${route.name}</a> `
         )}
       </div>
       <div class="address">

@@ -1,4 +1,4 @@
-import { html, LitElement, css } from 'lit-element';
+import {html, LitElement, css} from 'lit-element';
 
 import '@thinkdeep/deep-navlink/deep-navlink';
 
@@ -6,8 +6,8 @@ import '@thinkdeep/deep-navlink/deep-navlink';
 export class DeepNavbar extends LitElement {
   static get properties() {
     return {
-      companyName: { type: String },
-      routes: { type: Array },
+      companyName: {type: String},
+      routes: {type: Array},
     };
   }
 

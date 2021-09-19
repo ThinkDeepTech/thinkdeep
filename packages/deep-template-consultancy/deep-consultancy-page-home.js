@@ -1,9 +1,10 @@
-import { html, css, LitElement } from 'lit-element';
+import {html, css, LitElement} from 'lit-element';
+import '@thinkdeep/deep-button/deep-button';
 
 export class DeepConsultancyPageHome extends LitElement {
   static get properties() {
     return {
-      slogan: { type: String },
+      slogan: {type: String},
     };
   }
 
@@ -31,13 +32,14 @@ export class DeepConsultancyPageHome extends LitElement {
         text-align: center;
       }
 
-      .contact-us {
+      .contact {
         position: absolute;
         top: 0;
         left: 0;
         transform: translate(150%, 500%);
         height: 8vh;
         width: 25vw;
+        z-order: 100;
       }
 
       @media screen and (max-width: 480px) {
@@ -71,7 +73,7 @@ export class DeepConsultancyPageHome extends LitElement {
     return html`
       <div class="banner"></div>
       <h1 class="headline">Tech solved.</h1>
-      <button class="contact-us" type="button">Email Us</button>
+      <deep-button class="contact">Contact Us</deep-button>
     `;
   }
 }
