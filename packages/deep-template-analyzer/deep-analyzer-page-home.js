@@ -1,5 +1,5 @@
 import {html, css, LitElement} from 'lit-element';
-import {i18nMixin} from 'lit-element-i18n';
+import {i18nMixin, translate} from 'lit-element-i18n';
 import '@thinkdeep/deep-button/deep-button';
 
 export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
@@ -21,10 +21,10 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
         top: 0;
         left: 0;
         transform: translate(50%, 275%);
-        z-order: 100;
         width: 50vw;
         height: 10vh;
         text-align: center;
+        z-index: 1;
       }
 
       deep-button {
@@ -34,19 +34,19 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
         transform: translate(150%, 500%);
         height: 8vh;
         width: 25vw;
-        z-order: 100;
+        z-index: 1;
       }
     `;
   }
 
   firstUpdated() {
     this.i18nInit();
-    this.addResources('en', 'translations', {
+    this.addResources('en-US', 'translations', {
       headline: 'Explore data.',
       buttonText: 'Get Started',
     });
 
-    this.addResources('fr', 'translations', {
+    this.addResources('en', 'translations', {
       headline: 'Something different here',
       buttonText: 'Get Started Differently?',
     });
@@ -55,8 +55,8 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
   render() {
     return html`
       <div class="banner"></div>
-      <h1 class="headline">${this.translate('translations:headline')}</h1>
-      <deep-button>${this.translate('translations:buttonText')}</deep-button>
+      <h1 class="headline">${translate('translations:headline')}</h1>
+      <deep-button>${translate('translations:buttonText')}</deep-button>
     `;
   }
 }

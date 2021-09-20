@@ -26,10 +26,10 @@ export class DeepConsultancyPageHome extends LitElement {
         top: 0;
         left: 0;
         transform: translate(50%, 300%);
-        z-order: 100;
         width: 50vw;
         height: 10vh;
         text-align: center;
+        z-index: 1;
       }
 
       deep-button {
@@ -39,7 +39,7 @@ export class DeepConsultancyPageHome extends LitElement {
         transform: translate(150%, 500%);
         height: 8vh;
         width: 25vw;
-        z-order: 100;
+        z-index: 1;
       }
     `;
   }
