@@ -7,5 +7,7 @@ export default {
   nodeResolve: true,
   open: true,
   appIndex: './index.html',
-  plugins: [replace({ include: ['**/*.js'], __environment__: '"development"' })],
+  plugins: [
+    replace({ include: ['**/*.js'], __environment__: '"development"',
+  })],
 };

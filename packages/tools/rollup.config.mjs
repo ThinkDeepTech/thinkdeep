@@ -37,7 +37,8 @@ export default merge(createSpaConfig, {
     copy({
       targets: [
         { src: 'img/**/*', dest: 'build/img' },
-        { src: 'font/**/*', dest: 'build/font' }
+        { src: 'font/**/*', dest: 'build/font' },
+        { src: 'locales/**/*', dest: 'build/locales'}
       ]
     })
   ],

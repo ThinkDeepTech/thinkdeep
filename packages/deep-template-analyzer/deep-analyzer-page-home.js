@@ -1,13 +1,8 @@
 import {html, css, LitElement} from 'lit-element';
+import {i18nMixin} from 'lit-element-i18n';
 import '@thinkdeep/deep-button/deep-button';
 
-export class DeepConsultancyPageHome extends LitElement {
-  static get properties() {
-    return {
-      slogan: {type: String},
-    };
-  }
-
+export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
   static get styles() {
     return css`
       :host {
@@ -25,7 +20,7 @@ export class DeepConsultancyPageHome extends LitElement {
         position: absolute;
         top: 0;
         left: 0;
-        transform: translate(50%, 300%);
+        transform: translate(50%, 275%);
         width: 50vw;
         height: 10vh;
         text-align: center;
@@ -43,13 +38,26 @@ export class DeepConsultancyPageHome extends LitElement {
       }
     `;
   }
+
+  async firstUpdated() {
+    super.firstUpdated();
+    await this.i18nInit({
+      'en-US': {
+        translations: await import('./locales/en-US/common.js').default,
+      },
+      'en-CA': {
+        translations: await import('./locales/en-CA/common.js').default,
+      },
+    });
+  }
+
   render() {
     return html`
       <div class="banner"></div>
-      <h1 class="headline">Tech solved.</h1>
-      <deep-button>Contact Us</deep-button>
+      <h1 class="headline">${this.translate('translations:headline')}</h1>
+      <deep-button>${this.translate('translations:buttonText')}</deep-button>
     `;
   }
 }
 
-customElements.define('deep-consultancy-page-home', DeepConsultancyPageHome);
+customElements.define('deep-analyzer-page-home', DeepAnalyzerPageHome);
