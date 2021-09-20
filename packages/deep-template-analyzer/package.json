@@ -15,7 +15,7 @@
     "dev": "web-dev-server --config ./web-dev-server.config.mjs --esbuild-target auto",
     "dev:watch": "web-dev-server --config ./web-dev-server.config.mjs --watch --esbuild-target auto",
     "tests": "web-test-runner",
-    "tests:watch": "web-test-runner--watch",
+    "tests:watch": "web-test-runner --watch",
     "build": "rimraf build && rollup -c rollup.config.mjs"
   },
   "devDependencies": {
@@ -68,6 +68,9 @@
     "chai": "^4.3.4",
     "deepmerge": "^4.2.2",
     "es-dev-server": "^2.1.0",
+    "i18next": "^20.6.1",
+    "i18next-browser-languagedetector": "^6.1.2",
+    "i18next-wc": "^1.1.0",
     "karma": "^6.3.4",
     "karma-babel-preprocessor": "^8.0.1",
     "karma-browserify": "^8.0.0",
@@ -80,6 +83,7 @@
     "karma-rollup-plugin": "^0.2.4",
     "karma-rollup-preprocessor": "^7.0.7",
     "lit-element": "^2.5.1",
+    "lit-element-i18n": "git@github.com:ThinkDeepTech/thinkdeep.git",
     "mocha": "^9.0.2",
     "requirejs": "^2.3.6",
     "rimraf": "^3.0.2",

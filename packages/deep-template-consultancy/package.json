@@ -16,7 +16,7 @@
     "dev": "web-dev-server --config ./web-dev-server.config.mjs --esbuild-target auto",
     "dev:watch": "web-dev-server --config ./web-dev-server.config.mjs --watch --esbuild-target auto",
     "tests": "web-test-runner",
-    "tests:watch": "web-test-runner--watch",
+    "tests:watch": "web-test-runner --watch",
     "build": "rimraf build && rollup -c rollup.config.mjs"
   },
   "devDependencies": {

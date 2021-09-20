@@ -1,4 +1,5 @@
 import {css, html, LitElement} from 'lit-element';
+import {i18nMixin} from 'lit-element-i18n';
 
 import '@thinkdeep/deep-footer';
 import '@thinkdeep/deep-navbar';
@@ -9,7 +10,7 @@ import '@thinkdeep/deep-template-analyzer/deep-analyzer-page-about.js';
 import '@thinkdeep/deep-template-analyzer/deep-analyzer-page-not-found.js';
 
 /* eslint-disable no-unused-vars */
-export class DeepTemplateAnalyzer extends LitElement {
+export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
   static get properties() {
     return {
       companyName: {type: String},

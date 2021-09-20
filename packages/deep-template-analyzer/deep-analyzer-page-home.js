@@ -1,13 +1,8 @@
 import {html, css, LitElement} from 'lit-element';
+import {i18nMixin} from 'lit-element-i18n';
 import '@thinkdeep/deep-button/deep-button';
 
-export class DeepAnalyzerPageHome extends LitElement {
-  static get properties() {
-    return {
-      slogan: {type: String},
-    };
-  }
-
+export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
   static get styles() {
     return css`
       :host {
@@ -43,11 +38,25 @@ export class DeepAnalyzerPageHome extends LitElement {
       }
     `;
   }
+
+  firstUpdated() {
+    this.i18nInit();
+    this.addResources('en', 'translations', {
+      headline: 'Explore data.',
+      buttonText: 'Get Started',
+    });
+
+    this.addResources('fr', 'translations', {
+      headline: 'Something different here',
+      buttonText: 'Get Started Differently?',
+    });
+  }
+
   render() {
     return html`
       <div class="banner"></div>
-      <h1 class="headline">Explore data.</h1>
-      <deep-button>Get Started</deep-button>
+      <h1 class="headline">${this.translate('translations:headline')}</h1>
+      <deep-button>${this.translate('translations:buttonText')}</deep-button>
     `;
   }
 }
