@@ -5,6 +5,7 @@
   "keywords": [
     "WebComponents"
   ],
+  "type": "module",
   "author": "haydenmcp <hayden.mcparlane@gmail.com>",
   "homepage": "https://github.com/ThinkDeepTech/thinkdeep#readme",
   "repository": {

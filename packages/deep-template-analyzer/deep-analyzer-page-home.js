@@ -39,14 +39,14 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
     `;
   }
 
-  firstUpdated() {
-    this.i18nInit();
+  async firstUpdated() {
+    await this.i18nInit();
     this.addResources('en-US', 'translations', {
       headline: 'Explore data.',
       buttonText: 'Get Started',
     });
 
-    this.addResources('en', 'translations', {
+    this.addResources('en-CA', 'translations', {
       headline: 'Something different here',
       buttonText: 'Get Started Differently?',
     });

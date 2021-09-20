@@ -1,6 +1,6 @@
 export default {
   companyName: 'ACME',
-  companyStreetNumber: 349,
+  companyStreetNumber: '349',
   companyStreetName: 'Oliver Street',
   companyCityName: 'Geordon',
   companyProvinceCode: 'ON',
