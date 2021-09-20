@@ -1,5 +1,5 @@
 import {css, html, LitElement} from 'lit-element';
-import {i18nMixin, translate} from 'lit-element-i18n';
+import {i18nMixin} from 'lit-element-i18n';
 
 import '@thinkdeep/deep-footer';
 import '@thinkdeep/deep-navbar';
@@ -32,36 +32,33 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
   async firstUpdated() {
     super.firstUpdated();
 
-    this.i18nInit();
+    this.i18nInit({
+      'en-US': {
+        translations: (await import('./locales/en-US/common.js')).default,
+      },
+      'en-CA': {
+        translations: (await import('./locales/en-CA/common.js')).default,
+      },
+    });
 
-    const languageUs = await import(
-      './locales/en-US/deep-template-analyzer.mjs'
-    );
-    const languageCa = await import(
-      './locales/en-CA/deep-template-analyzer.mjs'
-    );
-
-    this.addResources('en-US', 'translations', languageUs.default);
-    this.addResources('en-CA', 'translations', languageCa.default);
-
-    this.companyName = translate('translations:companyName');
+    this.companyName = this.translate('translations:companyName');
     this.address = {
-      streetNumber: translate('translations:companyStreetNumber'),
-      streetName: translate('translations:companyStreetName'),
-      cityName: translate('translations:companyCityName'),
-      provinceCode: translate('translations:companyProvinceCode'),
-      countryName: translate('translations:companyCountryName'),
-      zipCode: translate('translations:companyZipCode'),
+      streetNumber: this.translate('translations:companyStreetNumber'),
+      streetName: this.translate('translations:companyStreetName'),
+      cityName: this.translate('translations:companyCityName'),
+      provinceCode: this.translate('translations:companyProvinceCode'),
+      countryName: this.translate('translations:companyCountryName'),
+      zipCode: this.translate('translations:companyZipCode'),
     };
     this.routes = [
       {
         path: '/',
-        name: translate('translations:homePageLabel'),
+        name: this.translate('translations:homePageLabel'),
         component: 'deep-analyzer-page-home',
       },
       {
-        path: '/' + translate('translations:aboutPageLabel'),
-        name: translate('translations:aboutPageLabel'),
+        path: '/' + this.translate('translations:aboutPageLabel'),
+        name: this.translate('translations:aboutPageLabel'),
         component: 'deep-analyzer-page-about',
       },
       {

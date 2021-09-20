@@ -8,4 +8,6 @@ export default {
   companyZipCode: 'N5A7S1',
   homePageLabel: 'Home',
   aboutPageLabel: 'About',
+  headline: 'Explore data.',
+  buttonText: 'Get Started',
 };
