@@ -7,7 +7,7 @@
 
  const browsers = {
   chromium: playwrightLauncher({product: 'chromium', launchOptions: {
-    headless: false,
+    headless: true,
     devtools: true,
     args: ['--incognito'],
   }}),
