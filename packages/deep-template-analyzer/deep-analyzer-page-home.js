@@ -40,6 +40,7 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
   }
 
   async firstUpdated() {
+    super.firstUpdated();
     await this.i18nInit({
       'en-US': {
         translations: await import('./locales/en-US/common.js').default,
