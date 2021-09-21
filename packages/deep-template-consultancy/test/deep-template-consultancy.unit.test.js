@@ -54,7 +54,13 @@ function findPage(element, pageTagName) {
 }
 
 describe('deep-template-consultancy', () => {
-  // this.timeout(3000);
+  /**
+   * NOTE: This was necessary to set the mocha timeout. Not great to have configurations
+   * in the code but there doesn't currently seem to be a way to set this through
+   * web-test-runner.
+   */
+  /* eslint-disable no-invalid-this */
+  this.timeout(3000);
 
   let element, homeRoute, navbar;
   beforeEach(async () => {

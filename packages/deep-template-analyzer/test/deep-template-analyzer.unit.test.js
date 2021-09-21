@@ -60,7 +60,8 @@ describe('deep-template-analyzer', function () {
    * in the code but there doesn't currently seem to be a way to set this through
    * web-test-runner.
    */
-  // this.timeout(5000);
+  /* eslint-disable no-invalid-this */
+  this.timeout(5000);
 
   let element, homeRoute, navbar;
   beforeEach(async () => {
