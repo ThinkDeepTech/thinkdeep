@@ -41,14 +41,18 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
 
   async firstUpdated() {
     super.firstUpdated();
-    await this.i18nInit({
-      'en-US': {
-        translations: await import('./locales/en-US/common.js').default,
+    await this.i18nInit(
+      'translations',
+      {
+        'en-US': {
+          translations: await import('./locales/en-US/common.js').default,
+        },
+        'en-CA': {
+          translations: await import('./locales/en-CA/common.js').default,
+        },
       },
-      'en-CA': {
-        translations: await import('./locales/en-CA/common.js').default,
-      },
-    });
+      'translations'
+    );
   }
 
   render() {

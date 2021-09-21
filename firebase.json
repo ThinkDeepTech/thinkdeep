@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "packages/deep-template-consultancy/build",
+    "public": "packages/deep-template-analyzer/build",
     "ignore": [
       "firebase.json",
       "**/.*",
