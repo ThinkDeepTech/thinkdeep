@@ -1,10 +1,9 @@
 import {css, html, LitElement} from 'lit-element';
 import {i18nMixin} from 'lit-element-i18n';
+import {Router} from '@vaadin/router';
 
 import '@thinkdeep/deep-footer';
 import '@thinkdeep/deep-navbar';
-import {Router} from '@vaadin/router';
-
 import '@thinkdeep/deep-template-analyzer/deep-analyzer-page-home.js';
 import '@thinkdeep/deep-template-analyzer/deep-analyzer-page-about.js';
 import '@thinkdeep/deep-template-analyzer/deep-analyzer-page-not-found.js';

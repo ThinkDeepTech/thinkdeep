@@ -1,10 +1,10 @@
-import { html, css, LitElement } from 'lit-element';
+import {html, css, LitElement} from 'lit-element';
 
 export class DeepNavLink extends LitElement {
   static get properties() {
     return {
       /** Vaadin route */
-      route: { type: Object },
+      route: {type: Object},
     };
   }
   constructor() {
@@ -61,11 +61,9 @@ export class DeepNavLink extends LitElement {
   }
 
   render() {
-    return this.route.path != undefined
-      ? html` <p>
-          <a href="${this.route.path}"> ${this.route.name} </a>
-        </p>`
-      : html``;
+    return html` <p>
+      <a href="${this.route.path}"> ${this.route.name} </a>
+    </p>`;
   }
 
   /**
