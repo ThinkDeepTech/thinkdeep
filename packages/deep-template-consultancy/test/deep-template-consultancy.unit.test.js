@@ -60,6 +60,8 @@ describe('deep-template-consultancy', () => {
       html`<deep-template-consultancy></deep-template-consultancy>`
     );
     await elementUpdated(element);
+    await new Promise((r) => setTimeout(r, 5000));
+
     homeRoute = findRoute(element.routes, 'home');
     navbar = element.shadowRoot.querySelector('deep-navbar');
   });

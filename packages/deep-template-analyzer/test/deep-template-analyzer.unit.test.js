@@ -61,7 +61,7 @@ describe('deep-template-analyzer', function () {
       html`<deep-template-analyzer></deep-template-analyzer>`
     );
     await elementUpdated(element);
-    await new Promise((r) => setTimeout(r, 3000));
+    await new Promise((r) => setTimeout(r, 5000));
 
     homeRoute = findRoute(element.routes, 'home');
     navbar = element.shadowRoot.querySelector('deep-navbar');
