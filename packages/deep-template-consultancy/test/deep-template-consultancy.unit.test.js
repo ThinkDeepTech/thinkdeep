@@ -119,7 +119,9 @@ describe('deep-template-consultancy', () => {
     let currentPage = findPage(contentArea, notFoundPage.component);
     const firstTextContent = currentPage?.shadowRoot?.textContent;
 
-    expect(firstTextContent).to.contain('Page Not Found');
+    expect(firstTextContent.toLowerCase()).to.contain(
+      'Page Not Found'.toLowerCase()
+    );
 
     Router.go('/anotherunknownpath');
     await sleep(3000);
@@ -127,7 +129,9 @@ describe('deep-template-consultancy', () => {
 
     currentPage = findPage(contentArea, notFoundPage.component);
     const secondTextContent = currentPage?.shadowRoot?.textContent;
-    expect(firstTextContent).to.equal(secondTextContent);
+    expect(firstTextContent.toLowerCase()).to.equal(
+      secondTextContent.toLowerCase()
+    );
 
     Router.go('Home');
   });
