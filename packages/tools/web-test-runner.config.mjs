@@ -29,7 +29,7 @@ function sharedConfig(port = 8000) {
     testFramework: {
       config: {
         ui: 'bdd',
-        timeout: '5000',
+        timeout: '10000',
       },
     },
     port,
