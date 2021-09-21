@@ -55,14 +55,6 @@ function findPage(element, pageTagName) {
 }
 
 describe('deep-template-analyzer', function () {
-  /**
-   * NOTE: This was necessary to set the mocha timeout. Not great to have configurations
-   * in the code but there doesn't currently seem to be a way to set this through
-   * web-test-runner.
-   */
-  /* eslint-disable no-invalid-this */
-  this.timeout(5000);
-
   let element, homeRoute, navbar;
   beforeEach(async () => {
     element = await litFixtureSync(

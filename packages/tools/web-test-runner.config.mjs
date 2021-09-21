@@ -26,6 +26,12 @@ function sharedConfig(port = 8000) {
     browserStartTimeout: 60000,
     testsStartTimeout: 20000,
     testsFinishTimeout: 180000,
+    testFramework: {
+      config: {
+        ui: 'bdd',
+        timeout: '5000',
+      },
+    },
     port,
   };
 }
