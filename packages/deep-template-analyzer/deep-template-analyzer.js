@@ -66,7 +66,7 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
       },
       {
         path: '(.*)',
-        name: 'Page Not Found',
+        name: this.translate('translations:notFoundPageLabel'),
         component: 'deep-analyzer-page-not-found',
         hidden: true,
       },
@@ -87,7 +87,7 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
             'header'
             'content'
             'footer';
-          background-color: var(--primary-color, #000000);
+          background-color: var(--primary-color, white);
         }
 
         deep-navbar {

@@ -7,7 +7,7 @@ import {
 } from '@open-wc/testing';
 import '@thinkdeep/deep-template-analyzer/deep-template-analyzer.js';
 import {Router} from '@vaadin/router';
-// import { translate } from 'lit-element-i18n';
+import {translate} from 'lit-element-i18n';
 
 /**
  * Find the matching routing component.
@@ -54,6 +54,14 @@ function findPage(element, pageTagName) {
   return target;
 }
 
+/**
+ * Sleep for the specified number of milliseconds.
+ * @param {Number} milliseconds
+ */
+function sleep(milliseconds) {
+  return new Promise((r) => setTimeout(r, milliseconds));
+}
+
 describe('deep-template-analyzer', function () {
   let element, homeRoute, navbar;
   beforeEach(async () => {
@@ -61,9 +69,12 @@ describe('deep-template-analyzer', function () {
       html`<deep-template-analyzer></deep-template-analyzer>`
     );
     await elementUpdated(element);
-    await new Promise((r) => setTimeout(r, 5000));
+    await sleep(5000);
 
-    homeRoute = findRoute(element.routes, 'home');
+    homeRoute = findRoute(
+      element.routes,
+      translate('translations:homePageLabel')
+    );
     navbar = element.shadowRoot.querySelector('deep-navbar');
   });
 
@@ -90,7 +101,10 @@ describe('deep-template-analyzer', function () {
     if (initialTextContent === undefined)
       assert.fail('Initial text content was undefined.');
 
-    const aboutRoute = findRoute(element.routes, 'about');
+    const aboutRoute = findRoute(
+      element.routes,
+      translate('translations:aboutPageLabel')
+    );
     clickMenuItem(navbar, aboutRoute);
 
     await elementUpdated(contentArea);
@@ -99,24 +113,36 @@ describe('deep-template-analyzer', function () {
     if (alteredTextContent === undefined)
       assert.fail('Altered text content was undefined.');
 
+    clickMenuItem(navbar, homeRoute);
     expect(initialTextContent).not.to.equal(alteredTextContent);
   });
 
   it('should navigate to the 404 not found page if an unknown page is requested', async () => {
     const contentArea = element.shadowRoot.getElementById('content');
-    const notFoundPage = findRoute(element.routes, 'Page Not Found');
+    const notFoundPage = findRoute(
+      element.routes,
+      translate('translations:notFoundPageLabel')
+    );
+
     Router.go('/doesntexist');
+    await sleep(3000);
+    await elementUpdated(element);
 
-    await elementUpdated(contentArea);
+    let currentPage = findPage(contentArea, notFoundPage.component);
+    const firstTextContent = currentPage?.shadowRoot?.textContent;
 
-    const currentPage = findPage(contentArea, notFoundPage.component);
-    const alteredTextContent = currentPage?.shadowRoot?.textContent;
+    expect(firstTextContent).to.contain(
+      translate('translations:notFoundPageContent')
+    );
 
-    if (alteredTextContent === undefined)
-      assert.fail(
-        'The page that was returned was not the expected 404 not found page.'
-      );
+    Router.go('/anotherunknownpath');
+    await sleep(3000);
+    await elementUpdated(element);
 
-    expect(alteredTextContent.toLowerCase()).to.include('page not found');
+    currentPage = findPage(contentArea, notFoundPage.component);
+    const secondTextContent = currentPage?.shadowRoot?.textContent;
+    expect(firstTextContent).to.equal(secondTextContent);
+
+    Router.go(translate('translations:homePageLabel'));
   });
 });

@@ -1,8 +1,23 @@
 import {html, LitElement} from 'lit-element';
+import {i18nMixin} from 'lit-element-i18n';
 
-export class DeepAnalyzerPageNotFound extends LitElement {
+export class DeepAnalyzerPageNotFound extends i18nMixin(LitElement) {
+  async firstUpdated() {
+    super.firstUpdated();
+
+    this.i18nInit('translations', {
+      'en-US': {
+        translations: await import('./locales/en-US/common.js'),
+      },
+      'en-CA': {
+        translations: await import('./locales/en-CA/common.js'),
+      },
+    });
+  }
   render() {
-    return html` <div>Page not found! :-/</div> `;
+    return html`
+      <div>${this.translate('translations:notFoundPageContent')}</div>
+    `;
   }
 }
 

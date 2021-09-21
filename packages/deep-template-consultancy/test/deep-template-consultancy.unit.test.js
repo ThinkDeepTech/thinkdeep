@@ -53,6 +53,14 @@ function findPage(element, pageTagName) {
   return target;
 }
 
+/**
+ * Sleep for the specified number of milliseconds.
+ * @param {Number} milliseconds
+ */
+function sleep(milliseconds) {
+  return new Promise((r) => setTimeout(r, milliseconds));
+}
+
 describe('deep-template-consultancy', () => {
   let element, homeRoute, navbar;
   beforeEach(async () => {
@@ -105,17 +113,22 @@ describe('deep-template-consultancy', () => {
     const contentArea = element.shadowRoot.getElementById('content');
     const notFoundPage = findRoute(element.routes, 'Page Not Found');
     Router.go('/doesntexist');
+    await sleep(3000);
+    await elementUpdated(element);
 
-    await elementUpdated(contentArea);
+    let currentPage = findPage(contentArea, notFoundPage.component);
+    const firstTextContent = currentPage?.shadowRoot?.textContent;
 
-    const currentPage = findPage(contentArea, notFoundPage.component);
-    const alteredTextContent = currentPage?.shadowRoot?.textContent;
+    expect(firstTextContent).to.contain('Page Not Found');
 
-    if (alteredTextContent === undefined)
-      assert.fail(
-        'The page that was returned was not the expected 404 not found page.'
-      );
+    Router.go('/anotherunknownpath');
+    await sleep(3000);
+    await elementUpdated(element);
 
-    expect(alteredTextContent.toLowerCase()).to.include('page not found');
+    currentPage = findPage(contentArea, notFoundPage.component);
+    const secondTextContent = currentPage?.shadowRoot?.textContent;
+    expect(firstTextContent).to.equal(secondTextContent);
+
+    Router.go('Home');
   });
 });

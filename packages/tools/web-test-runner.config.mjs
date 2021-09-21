@@ -22,14 +22,14 @@ function sharedConfig(port = 8000) {
     browsers: Object.values(browsers),
     coverage: true,
     preserveSymlinks: true,
-    concurrency: 10,
+    concurrency: 1,
     browserStartTimeout: 60000,
     testsStartTimeout: 20000,
     testsFinishTimeout: 180000,
     testFramework: {
       config: {
         ui: 'bdd',
-        timeout: '10000',
+        timeout: 10000,
       },
     },
     port,
