@@ -6,7 +6,7 @@
 //   assert,
 // } from '@open-wc/testing';
 // import '@thinkdeep/deep-template-analyzer/deep-template-analyzer.js';
-// import { sleep } from '@thinkdeep/tools/test-helper.mjs';
+// import {sleep} from '@thinkdeep/tools/test-helper.mjs';
 // import {Router} from '@vaadin/router';
 // import {translate} from 'lit-element-i18n';
 

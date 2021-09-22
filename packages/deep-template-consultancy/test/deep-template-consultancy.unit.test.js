@@ -6,7 +6,6 @@
 //   assert,
 // } from '@open-wc/testing';
 // import '@thinkdeep/deep-template-consultancy/deep-template-consultancy.js';
-// import { sleep } from '@thinkdeep/tools/test-helper.mjs';
 // import {Router} from '@vaadin/router';
 
 // /**
@@ -60,9 +59,6 @@
 //     element = await litFixtureSync(
 //       html`<deep-template-consultancy></deep-template-consultancy>`
 //     );
-//     await elementUpdated(element);
-//     sleep(5000);
-
 //     homeRoute = findRoute(element.routes, 'home');
 //     navbar = element.shadowRoot.querySelector('deep-navbar');
 //   });
@@ -106,26 +102,17 @@
 //     const contentArea = element.shadowRoot.getElementById('content');
 //     const notFoundPage = findRoute(element.routes, 'Page Not Found');
 //     Router.go('/doesntexist');
-//     await sleep(3000);
-//     await elementUpdated(element);
 
-//     let currentPage = findPage(contentArea, notFoundPage.component);
-//     const firstTextContent = currentPage?.shadowRoot?.textContent;
+//     await elementUpdated(contentArea);
 
-//     expect(firstTextContent.toLowerCase()).to.contain(
-//       'Page Not Found'.toLowerCase()
-//     );
+//     const currentPage = findPage(contentArea, notFoundPage.component);
+//     const alteredTextContent = currentPage?.shadowRoot?.textContent;
 
-//     Router.go('/anotherunknownpath');
-//     await sleep(3000);
-//     await elementUpdated(element);
+//     if (alteredTextContent === undefined)
+//       assert.fail(
+//         'The page that was returned was not the expected 404 not found page.'
+//       );
 
-//     currentPage = findPage(contentArea, notFoundPage.component);
-//     const secondTextContent = currentPage?.shadowRoot?.textContent;
-//     expect(firstTextContent.toLowerCase()).to.equal(
-//       secondTextContent.toLowerCase()
-//     );
-
-//     Router.go('Home');
+//     expect(alteredTextContent.toLowerCase()).to.include('page not found');
 //   });
 // });
