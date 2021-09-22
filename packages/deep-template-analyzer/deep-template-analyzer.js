@@ -87,7 +87,7 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
             'header'
             'content'
             'footer';
-          background-color: var(--primary-color, white);
+          background-color: var(--primary-color, #babdbe);
         }
 
         deep-navbar {

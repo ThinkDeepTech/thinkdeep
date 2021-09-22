@@ -34,9 +34,9 @@ export class DeepFooter extends LitElement {
           grid-template-columns: repeat(3, 1fr);
           width: 100%;
           height: minmax(250px, auto);
-          background-color: var(--primary-color, #558b2f);
+          background-color: var(--primary-color, #eceff1);
           color: var(--secondary-color, black);
-          box-shadow: 0 50vh 0 50vh var(--primary-color, #000000);
+          box-shadow: 0 50vh 0 50vh var(--primary-color, #eceff1);
         }
 
         a {
