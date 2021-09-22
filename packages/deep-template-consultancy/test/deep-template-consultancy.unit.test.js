@@ -1,6 +1,13 @@
-// import { html, litFixtureSync, elementUpdated, expect, assert } from '@open-wc/testing';
+// import {
+//   html,
+//   litFixtureSync,
+//   elementUpdated,
+//   expect,
+//   assert,
+// } from '@open-wc/testing';
 // import '@thinkdeep/deep-template-consultancy/deep-template-consultancy.js';
-// import { Router } from '@vaadin/router';
+// import { sleep } from '@thinkdeep/tools/test-helper.mjs';
+// import {Router} from '@vaadin/router';
 
 // /**
 //  * Find the matching routing component.
@@ -11,7 +18,8 @@
 // function findRoute(routes, pageName) {
 //   var target = null;
 //   for (const route of routes)
-//     if (route.name.toLowerCase().includes(pageName.toLowerCase())) target = route;
+//     if (route.name.toLowerCase().includes(pageName.toLowerCase()))
+//       target = route;
 //   return target;
 // }
 
@@ -22,7 +30,8 @@
 //  */
 // function clickMenuItem(element, route) {
 //   var navlinks = element.shadowRoot.querySelectorAll('deep-navlink');
-//   for (const navlink of navlinks) if (navlink.route.path === route.path) navlink.click();
+//   for (const navlink of navlinks)
+//     if (navlink.route.path === route.path) navlink.click();
 // }
 
 // /**
@@ -48,7 +57,12 @@
 // describe('deep-template-consultancy', () => {
 //   let element, homeRoute, navbar;
 //   beforeEach(async () => {
-//     element = await litFixtureSync(html`<deep-template-consultancy></deep-template-consultancy>`);
+//     element = await litFixtureSync(
+//       html`<deep-template-consultancy></deep-template-consultancy>`
+//     );
+//     await elementUpdated(element);
+//     sleep(5000);
+
 //     homeRoute = findRoute(element.routes, 'home');
 //     navbar = element.shadowRoot.querySelector('deep-navbar');
 //   });
@@ -73,7 +87,8 @@
 //     const homePage = findPage(contentArea, homeRoute.component);
 
 //     const initialTextContent = homePage?.shadowRoot?.textContent;
-//     if (initialTextContent === undefined) assert.fail('Initial text content was undefined.');
+//     if (initialTextContent === undefined)
+//       assert.fail('Initial text content was undefined.');
 
 //     const aboutRoute = findRoute(element.routes, 'about');
 //     clickMenuItem(navbar, aboutRoute);
@@ -81,7 +96,8 @@
 //     await elementUpdated(contentArea);
 //     const aboutPage = findPage(contentArea, aboutRoute.component);
 //     const alteredTextContent = aboutPage?.shadowRoot?.textContent;
-//     if (alteredTextContent === undefined) assert.fail('Altered text content was undefined.');
+//     if (alteredTextContent === undefined)
+//       assert.fail('Altered text content was undefined.');
 
 //     expect(initialTextContent).not.to.equal(alteredTextContent);
 //   });
@@ -90,15 +106,26 @@
 //     const contentArea = element.shadowRoot.getElementById('content');
 //     const notFoundPage = findRoute(element.routes, 'Page Not Found');
 //     Router.go('/doesntexist');
+//     await sleep(3000);
+//     await elementUpdated(element);
 
-//     await elementUpdated(contentArea);
+//     let currentPage = findPage(contentArea, notFoundPage.component);
+//     const firstTextContent = currentPage?.shadowRoot?.textContent;
 
-//     const currentPage = findPage(contentArea, notFoundPage.component);
-//     const alteredTextContent = currentPage?.shadowRoot?.textContent;
+//     expect(firstTextContent.toLowerCase()).to.contain(
+//       'Page Not Found'.toLowerCase()
+//     );
 
-//     if (alteredTextContent === undefined)
-//       assert.fail('The page that was returned was not the expected 404 not found page.');
+//     Router.go('/anotherunknownpath');
+//     await sleep(3000);
+//     await elementUpdated(element);
 
-//     expect(alteredTextContent.toLowerCase()).to.include('page not found');
+//     currentPage = findPage(contentArea, notFoundPage.component);
+//     const secondTextContent = currentPage?.shadowRoot?.textContent;
+//     expect(firstTextContent.toLowerCase()).to.equal(
+//       secondTextContent.toLowerCase()
+//     );
+
+//     Router.go('Home');
 //   });
 // });

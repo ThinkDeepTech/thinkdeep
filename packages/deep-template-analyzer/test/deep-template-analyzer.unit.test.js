@@ -6,8 +6,9 @@
 //   assert,
 // } from '@open-wc/testing';
 // import '@thinkdeep/deep-template-analyzer/deep-template-analyzer.js';
+// import { sleep } from '@thinkdeep/tools/test-helper.mjs';
 // import {Router} from '@vaadin/router';
-// import { t as translate } from 'i18next';
+// import {translate} from 'lit-element-i18n';
 
 // /**
 //  * Find the matching routing component.
@@ -54,22 +55,28 @@
 //   return target;
 // }
 
-// describe('deep-template-analyzer', () => {
+// describe('deep-template-analyzer', function () {
 //   let element, homeRoute, navbar;
 //   beforeEach(async () => {
 //     element = await litFixtureSync(
 //       html`<deep-template-analyzer></deep-template-analyzer>`
 //     );
-//     homeRoute = findRoute(element.routes, translate('translations:homePageLabel'));
+//     await elementUpdated(element);
+//     await sleep(5000);
+
+//     homeRoute = findRoute(
+//       element.routes,
+//       translate('translations:homePageLabel')
+//     );
 //     navbar = element.shadowRoot.querySelector('deep-navbar');
 //   });
 
-//   it('should include a navbar at the top of the page', () => {
+//   it('should include a navbar at the top of the page', async () => {
 //     const target = element.shadowRoot.querySelectorAll('deep-navbar');
 //     expect(target.length).to.equal(1);
 //   });
 
-//   it('should include a footer at the bottom of the page', () => {
+//   it('should include a footer at the bottom of the page', async () => {
 //     const target = element.shadowRoot.querySelectorAll('deep-footer');
 //     expect(target.length).to.equal(1);
 //   });
@@ -87,7 +94,10 @@
 //     if (initialTextContent === undefined)
 //       assert.fail('Initial text content was undefined.');
 
-//     const aboutRoute = findRoute(element.routes, 'about');
+//     const aboutRoute = findRoute(
+//       element.routes,
+//       translate('translations:aboutPageLabel')
+//     );
 //     clickMenuItem(navbar, aboutRoute);
 
 //     await elementUpdated(contentArea);
@@ -96,24 +106,36 @@
 //     if (alteredTextContent === undefined)
 //       assert.fail('Altered text content was undefined.');
 
+//     clickMenuItem(navbar, homeRoute);
 //     expect(initialTextContent).not.to.equal(alteredTextContent);
 //   });
 
-//   // it('should navigate to the 404 not found page if an unknown page is requested', async () => {
-//   //   const contentArea = element.shadowRoot.getElementById('content');
-//   //   const notFoundPage = findRoute(element.routes, 'Page Not Found');
-//   //   Router.go('/doesntexist');
+//   it('should navigate to the 404 not found page if an unknown page is requested', async () => {
+//     const contentArea = element.shadowRoot.getElementById('content');
+//     const notFoundPage = findRoute(
+//       element.routes,
+//       translate('translations:notFoundPageLabel')
+//     );
 
-//   //   await elementUpdated(contentArea);
+//     Router.go('/doesntexist');
+//     await sleep(3000);
+//     await elementUpdated(element);
 
-//   //   const currentPage = findPage(contentArea, notFoundPage.component);
-//   //   const alteredTextContent = currentPage?.shadowRoot?.textContent;
+//     let currentPage = findPage(contentArea, notFoundPage.component);
+//     const firstTextContent = currentPage?.shadowRoot?.textContent;
 
-//   //   if (alteredTextContent === undefined)
-//   //     assert.fail(
-//   //       'The page that was returned was not the expected 404 not found page.'
-//   //     );
+//     expect(firstTextContent).to.contain(
+//       translate('translations:notFoundPageContent')
+//     );
 
-//   //   expect(alteredTextContent.toLowerCase()).to.include('page not found');
-//   // });
+//     Router.go('/anotherunknownpath');
+//     await sleep(3000);
+//     await elementUpdated(element);
+
+//     currentPage = findPage(contentArea, notFoundPage.component);
+//     const secondTextContent = currentPage?.shadowRoot?.textContent;
+//     expect(firstTextContent).to.equal(secondTextContent);
+
+//     Router.go(translate('translations:homePageLabel'));
+//   });
 // });

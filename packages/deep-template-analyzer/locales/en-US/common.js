@@ -8,6 +8,8 @@ export default {
   companyZipCode: '66381',
   homePageLabel: 'Home2',
   aboutPageLabel: 'About2',
+  notFoundPageLabel: 'PageNotFound2',
   headline: 'Something different here',
   buttonText: 'Get Started Differently?',
+  notFoundPageContent: 'Page Still not found!',
 };

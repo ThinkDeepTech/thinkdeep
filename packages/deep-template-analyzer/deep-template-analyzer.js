@@ -1,10 +1,9 @@
 import {css, html, LitElement} from 'lit-element';
 import {i18nMixin} from 'lit-element-i18n';
+import {Router} from '@vaadin/router';
 
 import '@thinkdeep/deep-footer';
 import '@thinkdeep/deep-navbar';
-import {Router} from '@vaadin/router';
-
 import '@thinkdeep/deep-template-analyzer/deep-analyzer-page-home.js';
 import '@thinkdeep/deep-template-analyzer/deep-analyzer-page-about.js';
 import '@thinkdeep/deep-template-analyzer/deep-analyzer-page-not-found.js';
@@ -67,7 +66,7 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
       },
       {
         path: '(.*)',
-        name: 'Page Not Found',
+        name: this.translate('translations:notFoundPageLabel'),
         component: 'deep-analyzer-page-not-found',
         hidden: true,
       },
@@ -88,7 +87,7 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
             'header'
             'content'
             'footer';
-          background-color: var(--primary-color, #000000);
+          background-color: var(--primary-color, white);
         }
 
         deep-navbar {
