@@ -31,7 +31,7 @@ export class DeepNavbar extends LitElement {
 
           height: inherit;
           width: auto;
-          background-color: var(--primary-color, #eceff1);
+          background-color: var(--primary-color, #757575);
         }
 
         deep-navlink {

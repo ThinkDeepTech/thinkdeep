@@ -19,7 +19,7 @@ export class DeepButton extends LitElement {
         border-radius: 1vw;
         height: inherit;
         width: inherit;
-        background-color: var(--secondary-color, #eceff1);
+        background-color: var(--secondary-color, #757575);
         color: var(--primary-color, black);
         font-weight: bold;
       }
