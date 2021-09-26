@@ -14,6 +14,7 @@
     "url": "git+https://github.com/ThinkDeepTech/thinkdeep.git"
   },
   "scripts": {
+    "setup": "sudo node ./setup.js",
     "dev": "echo TODO",
     "dev:watch": "echo TODO",
     "tests": "mocha",

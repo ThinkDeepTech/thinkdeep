@@ -25,6 +25,7 @@ execute(
 );
 
 execute('lsb_release -cs', (installedDistributionComponents) => {
+  console.log('Finding repositories stored on host...');
   execute(
     'find /etc/apt/ -name *.list | xargs cat | grep  ^[[:space:]]*deb',
     (installedRepositories) => {
@@ -34,16 +35,22 @@ execute('lsb_release -cs', (installedDistributionComponents) => {
         `echo "deb http://apt.postgresql.org/pub/repos/apt/ ${currentlyInstalledDistribution}-pgdg main"`,
         (targetRepositories) => {
           const targetRepository = targetRepositories[0];
+
           let foundRepository = false;
-          for (const installedRepository of installedRepositories) {
+          for (const installedRepository of installedRepositories)
             if (targetRepository === installedRepository)
               foundRepository = true;
+
+          if (foundRepository) {
+            console.log(
+              'Found postgres repository in host so skipping repository install.'
+            );
+            return;
           }
 
-          if (foundRepository) return;
-
+          console.log('Adding postgres repository to host lists...');
           execute(
-            `sudo sh -c "echo '${targetRepository}'" >> /etc/apt/sources.list.d/pgdg.list'`
+            `sudo sh -c "echo '${targetRepository}'" >> /etc/apt/sources.list.d/pgdg.list`
           );
         }
       );
@@ -52,5 +59,9 @@ execute('lsb_release -cs', (installedDistributionComponents) => {
 });
 
 execute('sudo apt-get update', () => {
-  execute('sudo apt-get install -y postgresql postgresql-contrib');
+  console.log('Installing postgres...');
+  execute('sudo apt-get install -y postgresql postgresql-contrib', () => {
+    console.log('Creating database predecos...');
+    execute(`sudo -u postgres createdb -U postgres predecos`);
+  });
 });
