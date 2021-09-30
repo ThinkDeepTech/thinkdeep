@@ -1,15 +1,17 @@
-import {css, html, LitElement} from 'lit-element';
+import {css, html} from 'lit-element';
 import {i18nMixin} from 'lit-element-i18n';
 import {Router} from '@vaadin/router';
 
+import {DeepAuthService} from '@thinkdeep/deep-auth-service/deep-auth-service';
 import '@thinkdeep/deep-footer';
 import '@thinkdeep/deep-navbar';
 import '@thinkdeep/deep-template-analyzer/deep-analyzer-page-home.js';
 import '@thinkdeep/deep-template-analyzer/deep-analyzer-page-about.js';
+import '@thinkdeep/deep-template-analyzer/deep-analyzer-page-login.js';
 import '@thinkdeep/deep-template-analyzer/deep-analyzer-page-not-found.js';
 
 /* eslint-disable no-unused-vars */
-export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
+export class DeepTemplateAnalyzer extends i18nMixin(DeepAuthService) {
   static get properties() {
     return {
       companyName: {type: String},
@@ -63,6 +65,14 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
         path: '/' + this.translate('translations:aboutPageLabel'),
         name: this.translate('translations:aboutPageLabel'),
         component: 'deep-analyzer-page-about',
+      },
+      {
+        path: '/' + this.translate('translations:loginPageLabel'),
+        name: this.translate('translations:loginPageLabel'),
+        component: 'deep-analyzer-page-login',
+        action: () => {
+          this.auth.loginWithPopup();
+        },
       },
       {
         path: '(.*)',

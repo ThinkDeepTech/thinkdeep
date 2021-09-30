@@ -8,6 +8,7 @@ export default {
   companyZipCode: 'N5A7S1',
   homePageLabel: 'Home',
   aboutPageLabel: 'About',
+  loginPageLabel: 'Login',
   notFoundPageLabel: 'Page Not Found',
   headline: 'Explore data.',
   buttonText: 'Get Started',
