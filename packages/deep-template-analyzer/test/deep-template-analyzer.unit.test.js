@@ -30,9 +30,9 @@ function findRoute(routes, pageName) {
  * @param {Object} - Route object used by @vaadin/router
  */
 function clickMenuItem(element, route) {
-  var navlinks = element.shadowRoot.querySelectorAll('vaadin-tab > a');
+  var navlinks = element.querySelectorAll('vaadin-tab > a');
   for (const navlink of navlinks) {
-    if (navlink.route.path === route.path) {
+    if (navlink.href.toLowerCase().includes(route.path.toLowerCase())) {
       navlink.click();
       break;
     }
@@ -72,7 +72,7 @@ describe('deep-template-analyzer', function () {
       element.routes,
       translate('translations:homePageLabel')
     );
-    navbar = element.shadowRoot.querySelector('deep-navbar');
+    navbar = element.shadowRoot.querySelector('[slot="drawer"]');
   });
 
   it('should update the main window when a menu item is clicked', async () => {
