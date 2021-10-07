@@ -31,8 +31,12 @@ function findRoute(routes, pageName) {
  */
 function clickMenuItem(element, route) {
   var navlinks = element.shadowRoot.querySelectorAll('deep-navlink');
-  for (const navlink of navlinks)
-    if (navlink.route.path === route.path) navlink.click();
+  for (const navlink of navlinks) {
+    if (navlink.route.path === route.path) {
+      navlink.click();
+      break;
+    }
+  }
 }
 
 /**
@@ -87,6 +91,7 @@ describe('deep-template-analyzer', function () {
     await elementUpdated(contentArea);
 
     clickMenuItem(navbar, homeRoute);
+    await sleep(2000);
     await elementUpdated(contentArea);
     const homePage = findPage(contentArea, homeRoute.component);
 
@@ -99,8 +104,9 @@ describe('deep-template-analyzer', function () {
       translate('translations:aboutPageLabel')
     );
     clickMenuItem(navbar, aboutRoute);
-
+    await sleep(2000);
     await elementUpdated(contentArea);
+
     const aboutPage = findPage(contentArea, aboutRoute.component);
     const alteredTextContent = aboutPage?.shadowRoot?.textContent;
     if (alteredTextContent === undefined)
