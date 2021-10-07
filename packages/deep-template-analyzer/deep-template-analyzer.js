@@ -1,13 +1,18 @@
 import {css, html, LitElement} from 'lit-element';
-import {i18nMixin} from 'lit-element-i18n';
+import {i18nMixin, translate} from 'lit-element-i18n';
 import {Router} from '@vaadin/router';
 
-// import deepAuthMixin from '@thinkdeep/deep-auth-mixin/deep-auth-mixin';
+import deepAuthMixin from '@thinkdeep/deep-auth-mixin/deep-auth-mixin';
 import '@thinkdeep/deep-footer';
 import '@thinkdeep/deep-navbar';
+import '@vaadin/vaadin-app-layout/vaadin-app-layout';
+import '@vaadin/vaadin-app-layout/vaadin-drawer-toggle';
+// import '@vaadin/vaadin-icon/vaadin-icon';
+import '@vaadin/vaadin-tabs/vaadin-tab';
+import '@vaadin/vaadin-tabs/vaadin-tabs';
 
 /* eslint-disable no-unused-vars */
-export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
+export class DeepTemplateAnalyzer extends i18nMixin(deepAuthMixin(LitElement)) {
   static get properties() {
     return {
       companyName: {type: String},
@@ -19,11 +24,10 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
 
   constructor() {
     super();
-
     this.companyName = '';
     this.address = {};
-    this.location = Router.location;
     this.routes = [];
+    this.location = Router.location;
   }
 
   async firstUpdated() {
@@ -42,39 +46,42 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
       'translations'
     );
 
-    this.companyName = this.translate('translations:companyName');
+    this.companyName = translate('translations:companyName');
     this.address = {
-      streetNumber: this.translate('translations:companyStreetNumber'),
-      streetName: this.translate('translations:companyStreetName'),
-      cityName: this.translate('translations:companyCityName'),
-      provinceCode: this.translate('translations:companyProvinceCode'),
-      countryName: this.translate('translations:companyCountryName'),
-      zipCode: this.translate('translations:companyZipCode'),
+      streetNumber: translate('translations:companyStreetNumber'),
+      streetName: translate('translations:companyStreetName'),
+      cityName: translate('translations:companyCityName'),
+      provinceCode: translate('translations:companyProvinceCode'),
+      countryName: translate('translations:companyCountryName'),
+      zipCode: translate('translations:companyZipCode'),
     };
+
     this.routes = [
       {
         path: '/',
-        name: this.translate('translations:homePageLabel'),
+        name: translate('translations:homePageLabel'),
         component: 'deep-analyzer-page-home',
         action: async () => {
           await import(
             '@thinkdeep/deep-template-analyzer/deep-analyzer-page-home.js'
           );
         },
+        icon: 'vaadin:home',
       },
       {
-        path: '/' + this.translate('translations:aboutPageLabel'),
-        name: this.translate('translations:aboutPageLabel'),
+        path: '/' + translate('translations:aboutPageLabel'),
+        name: translate('translations:aboutPageLabel'),
         component: 'deep-analyzer-page-about',
         action: async () => {
           await import(
             '@thinkdeep/deep-template-analyzer/deep-analyzer-page-about.js'
           );
         },
+        icon: 'vaadin:deindent',
       },
       {
-        path: '/' + this.translate('translations:loginPageLabel'),
-        name: this.translate('translations:loginPageLabel'),
+        path: '/' + translate('translations:loginPageLabel'),
+        name: translate('translations:loginPageLabel'),
         component: 'deep-analyzer-page-login',
         action: async () => {
           await import(
@@ -82,10 +89,11 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
           );
           await this.auth.loginWithRedirect();
         },
+        icon: 'vaadin:user',
       },
       {
         path: '(.*)',
-        name: this.translate('translations:notFoundPageLabel'),
+        name: translate('translations:notFoundPageLabel'),
         component: 'deep-analyzer-page-not-found',
         action: async () => {
           await import(
@@ -105,26 +113,11 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
     return [
       css`
         :host {
-          display: grid;
-          grid-template-rows: auto 1fr auto;
-          grid-template-areas:
-            'header'
-            'content'
-            'footer';
           background-color: var(--primary-color, #a4a4a4);
         }
 
-        deep-navbar {
-          grid-area: header;
-          height: 16vh;
-        }
-
-        #content {
-          grid-area: content;
-        }
-
-        deep-footer {
-          grid-area: footer;
+        vaadin-app-layout {
+          --vaadin-app-layout-drawer-overlay: true;
         }
       `,
     ];
@@ -134,20 +127,37 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
     return html`
       ${this.styles}
 
-      <deep-navbar
-        class="navbar"
-        .companyName="${this.companyName}"
-        .routes="${this.routes}"
-      ></deep-navbar>
+      <vaadin-app-layout>
+        <vaadin-drawer-toggle
+          slot="navbar"
+          touch-optimized
+        ></vaadin-drawer-toggle>
+        <h1 slot="navbar" touch-optimized>${this.companyName}</h1>
+        <vaadin-tabs orientation="vertical" slot="drawer">
+          ${this._routes()}
+        </vaadin-tabs>
 
-      <main id="content"></main>
-
-      <deep-footer
-        .routes="${this.routes}"
-        .address="${this.address}"
-        .companyName="${this.companyName}"
-      ></deep-footer>
+        <main id="content"></main>
+      </vaadin-app-layout>
     `;
+  }
+
+  /**
+   * Get the markup for the routes.
+   */
+  _routes() {
+    return this.routes.map((route) =>
+      route.hidden
+        ? html``
+        : html`
+            <vaadin-tab>
+              <a tabindex="-1" href="${route.path}">
+                <vaadin-icon icon="${route.icon}"></vaadin-icon>
+                <span>${route.name}</span>
+              </a>
+            </vaadin-tab>
+          `
+    );
   }
 }
 
