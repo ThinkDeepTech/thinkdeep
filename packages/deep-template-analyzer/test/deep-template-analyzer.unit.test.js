@@ -30,7 +30,7 @@ function findRoute(routes, pageName) {
  * @param {Object} - Route object used by @vaadin/router
  */
 function clickMenuItem(element, route) {
-  var navlinks = element.shadowRoot.querySelectorAll('deep-navlink');
+  var navlinks = element.shadowRoot.querySelectorAll('vaadin-tab > a');
   for (const navlink of navlinks) {
     if (navlink.route.path === route.path) {
       navlink.click();
@@ -73,16 +73,6 @@ describe('deep-template-analyzer', function () {
       translate('translations:homePageLabel')
     );
     navbar = element.shadowRoot.querySelector('deep-navbar');
-  });
-
-  it('should include a navbar at the top of the page', async () => {
-    const target = element.shadowRoot.querySelectorAll('deep-navbar');
-    expect(target.length).to.equal(1);
-  });
-
-  it('should include a footer at the bottom of the page', async () => {
-    const target = element.shadowRoot.querySelectorAll('deep-footer');
-    expect(target.length).to.equal(1);
   });
 
   it('should update the main window when a menu item is clicked', async () => {
