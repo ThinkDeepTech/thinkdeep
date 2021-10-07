@@ -2,12 +2,12 @@ import {css, html, LitElement} from 'lit-element';
 import {i18nMixin} from 'lit-element-i18n';
 import {Router} from '@vaadin/router';
 
-import deepAuthMixin from '@thinkdeep/deep-auth-mixin/deep-auth-mixin';
+// import deepAuthMixin from '@thinkdeep/deep-auth-mixin/deep-auth-mixin';
 import '@thinkdeep/deep-footer';
 import '@thinkdeep/deep-navbar';
 
 /* eslint-disable no-unused-vars */
-export class DeepTemplateAnalyzer extends i18nMixin(deepAuthMixin(LitElement)) {
+export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
   static get properties() {
     return {
       companyName: {type: String},
