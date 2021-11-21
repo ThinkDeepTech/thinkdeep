@@ -123,36 +123,29 @@ export class DeepTemplateAnalyzer extends i18nMixin(DeepAuthService) {
         <h1 slot="navbar" touch-optimized>${this.companyName}</h1>
         <vaadin-tabs slot="drawer" orientation="vertical">
           <vaadin-tab> ${this.user?.name} </vaadin-tab>
-          ${this._toTabs(this.routes)}
-          <vaadin-tab ?disabled="${!!this.user}" @click="${this.login}">
-            <a> ${translate('translations:loginPageLabel')} </a>
-          </vaadin-tab>
-          <vaadin-tab ?disabled="${!this.user}" @click="${this.logout}">
-            <a> ${translate('translations:logoutPageLabel')} </a>
-          </vaadin-tab>
+          ${this.routes.map((route) =>
+            route.hidden
+              ? html``
+              : html`
+                  <vaadin-tab>
+                    <a href="${route.path}"> ${route.name} </a>
+                  </vaadin-tab>
+                `
+          )}
+          ${!this.user
+            ? html` <vaadin-tab @click="${this.login}">
+                <a> ${translate('translations:loginPageLabel')} </a>
+              </vaadin-tab>`
+            : html`
+                <vaadin-tab @click="${this.logout}">
+                  <a> ${translate('translations:logoutPageLabel')} </a>
+                </vaadin-tab>
+              `}
         </vaadin-tabs>
 
         <main id="content"></main>
       </vaadin-app-layout>
     `;
-  }
-
-  /**
-   * Convert routes to tab markup.
-   *
-   * @param {Array} routes - Routes to convert.
-   * @return {Array} - Tab templates.
-   */
-  _toTabs(routes) {
-    return routes.map((route) =>
-      route.hidden
-        ? html``
-        : html`
-            <vaadin-tab>
-              <a href="${route.path}"> ${route.name} </a>
-            </vaadin-tab>
-          `
-    );
   }
 }
 
