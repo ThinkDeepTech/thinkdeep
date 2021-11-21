@@ -122,7 +122,7 @@ export class DeepTemplateAnalyzer extends i18nMixin(DeepAuthService) {
         ></vaadin-drawer-toggle>
         <h1 slot="navbar" touch-optimized>${this.companyName}</h1>
         <vaadin-tabs slot="drawer" orientation="vertical">
-          <vaadin-tab> <a>${this.user?.name}</a> </vaadin-tab>
+          <vaadin-tab> ${this.user?.name} </vaadin-tab>
           ${this._toTabs(this.routes)}
           <vaadin-tab ?disabled="${!!this.user}" @click="${this.login}">
             <a> ${translate('translations:loginPageLabel')} </a>
