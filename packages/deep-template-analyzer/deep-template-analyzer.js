@@ -1,4 +1,4 @@
-import {css, html, LitElement} from 'lit-element';
+import {css, html} from 'lit-element';
 import {i18nMixin, translate} from 'lit-element-i18n';
 import {Router} from '@vaadin/router';
 
@@ -8,10 +8,10 @@ import '@vaadin/vaadin-app-layout/vaadin-app-layout';
 import '@vaadin/vaadin-app-layout/vaadin-drawer-toggle';
 import '@vaadin/vaadin-tabs/vaadin-tab';
 import '@vaadin/vaadin-tabs/vaadin-tabs';
-import deepAuthMixin from '@thinkdeep/deep-auth-mixin/deep-auth-mixin';
+import {DeepAuthService} from '@thinkdeep/deep-auth-service/deep-auth-service.js';
 
 /* eslint-disable no-unused-vars */
-export class DeepTemplateAnalyzer extends i18nMixin(deepAuthMixin(LitElement)) {
+export class DeepTemplateAnalyzer extends i18nMixin(DeepAuthService) {
   static get properties() {
     return {
       companyName: {type: String},
@@ -77,22 +77,6 @@ export class DeepTemplateAnalyzer extends i18nMixin(deepAuthMixin(LitElement)) {
         },
       },
       {
-        path: '/' + translate('translations:loginPageLabel'),
-        name: translate('translations:loginPageLabel'),
-        component: 'deep-analyzer-page-home',
-        action: async () => {
-          await this.login();
-        },
-      },
-      {
-        path: '/' + translate('translations:logoutPageLabel'),
-        name: translate('translations:logoutPageLabel'),
-        component: 'deep-analyzer-page-home',
-        action: async () => {
-          await this.logout();
-        },
-      },
-      {
         path: '(.*)',
         name: translate('translations:notFoundPageLabel'),
         component: 'deep-analyzer-page-not-found',
@@ -138,7 +122,14 @@ export class DeepTemplateAnalyzer extends i18nMixin(deepAuthMixin(LitElement)) {
         ></vaadin-drawer-toggle>
         <h1 slot="navbar" touch-optimized>${this.companyName}</h1>
         <vaadin-tabs slot="drawer" orientation="vertical">
+          <vaadin-tab> <a>${this.user?.name}</a> </vaadin-tab>
           ${this._toTabs(this.routes)}
+          <vaadin-tab ?disabled="${!!this.user}" @click="${this.login}">
+            <a> ${translate('translations:loginPageLabel')} </a>
+          </vaadin-tab>
+          <vaadin-tab ?disabled="${!this.user}" @click="${this.logout}">
+            <a> ${translate('translations:logoutPageLabel')} </a>
+          </vaadin-tab>
         </vaadin-tabs>
 
         <main id="content"></main>

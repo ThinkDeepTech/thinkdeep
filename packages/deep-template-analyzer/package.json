@@ -54,7 +54,7 @@
     "@rollup/plugin-image": "^2.1.1",
     "@rollup/plugin-replace": "^3.0.0",
     "@smarthtmlelements/smarthtmlelements-core": "^1.1.1",
-    "@thinkdeep/deep-auth-mixin": "^0.0.8",
+    "@thinkdeep/deep-auth-service": "^0.0.8",
     "@thinkdeep/deep-button": "^0.0.8",
     "@thinkdeep/deep-footer": "^0.0.8",
     "@thinkdeep/deep-navbar": "^0.0.8",

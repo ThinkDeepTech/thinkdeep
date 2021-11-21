@@ -1,5 +1,5 @@
 {
-  "name": "@thinkdeep/deep-auth-mixin",
+  "name": "@thinkdeep/deep-auth-service",
   "version": "0.0.8",
   "description": "Package to handle auth services.",
   "type": "module",
