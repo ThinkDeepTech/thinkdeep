@@ -32,7 +32,7 @@ const browsers = {
 // }
 
 export default {
-  files: ['./**/test/**/*.test.js'],
+  files: ['test/**/*.test.js'],
   'root-dir': '.',
   nodeResolve: true,
   browsers: Object.values(browsers),
