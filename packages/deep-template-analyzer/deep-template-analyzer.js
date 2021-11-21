@@ -1,15 +1,17 @@
-import {css, html, LitElement} from 'lit-element';
-import {i18nMixin} from 'lit-element-i18n';
+import {css, html} from 'lit-element';
+import {i18nMixin, translate} from 'lit-element-i18n';
 import {Router} from '@vaadin/router';
 
 import '@thinkdeep/deep-footer';
 import '@thinkdeep/deep-navbar';
-import '@thinkdeep/deep-template-analyzer/deep-analyzer-page-home.js';
-import '@thinkdeep/deep-template-analyzer/deep-analyzer-page-about.js';
-import '@thinkdeep/deep-template-analyzer/deep-analyzer-page-not-found.js';
+import '@vaadin/vaadin-app-layout/vaadin-app-layout';
+import '@vaadin/vaadin-app-layout/vaadin-drawer-toggle';
+import '@vaadin/vaadin-tabs/vaadin-tab';
+import '@vaadin/vaadin-tabs/vaadin-tabs';
+import {DeepAuthService} from '@thinkdeep/deep-auth-service/deep-auth-service.js';
 
 /* eslint-disable no-unused-vars */
-export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
+export class DeepTemplateAnalyzer extends i18nMixin(DeepAuthService) {
   static get properties() {
     return {
       companyName: {type: String},
@@ -21,11 +23,10 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
 
   constructor() {
     super();
-
     this.companyName = '';
     this.address = {};
-    this.location = Router.location;
     this.routes = [];
+    this.location = Router.location;
   }
 
   async firstUpdated() {
@@ -44,30 +45,46 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
       'translations'
     );
 
-    this.companyName = this.translate('translations:companyName');
+    this.companyName = translate('translations:companyName');
     this.address = {
-      streetNumber: this.translate('translations:companyStreetNumber'),
-      streetName: this.translate('translations:companyStreetName'),
-      cityName: this.translate('translations:companyCityName'),
-      provinceCode: this.translate('translations:companyProvinceCode'),
-      countryName: this.translate('translations:companyCountryName'),
-      zipCode: this.translate('translations:companyZipCode'),
+      streetNumber: translate('translations:companyStreetNumber'),
+      streetName: translate('translations:companyStreetName'),
+      cityName: translate('translations:companyCityName'),
+      provinceCode: translate('translations:companyProvinceCode'),
+      countryName: translate('translations:companyCountryName'),
+      zipCode: translate('translations:companyZipCode'),
     };
+
     this.routes = [
       {
         path: '/',
-        name: this.translate('translations:homePageLabel'),
+        name: translate('translations:homePageLabel'),
         component: 'deep-analyzer-page-home',
+        action: async () => {
+          await import(
+            '@thinkdeep/deep-template-analyzer/deep-analyzer-page-home.js'
+          );
+        },
       },
       {
-        path: '/' + this.translate('translations:aboutPageLabel'),
-        name: this.translate('translations:aboutPageLabel'),
+        path: '/' + translate('translations:aboutPageLabel'),
+        name: translate('translations:aboutPageLabel'),
         component: 'deep-analyzer-page-about',
+        action: async () => {
+          await import(
+            '@thinkdeep/deep-template-analyzer/deep-analyzer-page-about.js'
+          );
+        },
       },
       {
         path: '(.*)',
-        name: this.translate('translations:notFoundPageLabel'),
+        name: translate('translations:notFoundPageLabel'),
         component: 'deep-analyzer-page-not-found',
+        action: async () => {
+          await import(
+            '@thinkdeep/deep-template-analyzer/deep-analyzer-page-not-found.js'
+          );
+        },
         hidden: true,
       },
     ];
@@ -83,24 +100,12 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
         :host {
           display: grid;
           grid-template-rows: auto 1fr auto;
-          grid-template-areas:
-            'header'
-            'content'
-            'footer';
+          grid-template-areas: 'content';
           background-color: var(--primary-color, #a4a4a4);
-        }
-
-        deep-navbar {
-          grid-area: header;
-          height: 16vh;
         }
 
         #content {
           grid-area: content;
-        }
-
-        deep-footer {
-          grid-area: footer;
         }
       `,
     ];
@@ -110,19 +115,36 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
     return html`
       ${this.styles}
 
-      <deep-navbar
-        class="navbar"
-        .companyName="${this.companyName}"
-        .routes="${this.routes}"
-      ></deep-navbar>
+      <vaadin-app-layout>
+        <vaadin-drawer-toggle
+          slot="navbar"
+          touch-optimized
+        ></vaadin-drawer-toggle>
+        <h1 slot="navbar" touch-optimized>${this.companyName}</h1>
+        <vaadin-tabs slot="drawer" orientation="vertical">
+          <vaadin-tab> ${this.user?.name} </vaadin-tab>
+          ${this.routes.map((route) =>
+            route.hidden
+              ? html``
+              : html`
+                  <vaadin-tab>
+                    <a href="${route.path}"> ${route.name} </a>
+                  </vaadin-tab>
+                `
+          )}
+          ${!this.user
+            ? html` <vaadin-tab @click="${this.login}">
+                <a> ${translate('translations:loginPageLabel')} </a>
+              </vaadin-tab>`
+            : html`
+                <vaadin-tab @click="${this.logout}">
+                  <a> ${translate('translations:logoutPageLabel')} </a>
+                </vaadin-tab>
+              `}
+        </vaadin-tabs>
 
-      <main id="content"></main>
-
-      <deep-footer
-        .routes="${this.routes}"
-        .address="${this.address}"
-        .companyName="${this.companyName}"
-      ></deep-footer>
+        <main id="content"></main>
+      </vaadin-app-layout>
     `;
   }
 }

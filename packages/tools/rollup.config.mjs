@@ -26,9 +26,6 @@ export default merge(createSpaConfig, {
   output: {
     dir: 'build'
   },
-  extensions: [
-    '.js', '.mjs'
-  ],
   plugins: [
     nodeResolve(),
     eslint(),

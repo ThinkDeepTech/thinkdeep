@@ -1,3 +1,5 @@
-import sharedConfigs from '@thinkdeep/tools/web-test-runner.config.mjs';
+import config from '@thinkdeep/tools/web-test-runner.config.mjs';
 
-export default sharedConfigs(10004);
+config.port = 8002;
+
+export default config;

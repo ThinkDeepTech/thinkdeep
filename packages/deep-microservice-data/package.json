@@ -1,0 +1,40 @@
+{
+  "name": "@thinkdeep/deep-microservice-data",
+  "version": "0.0.8",
+  "description": "> TODO: description",
+  "type": "module",
+  "keywords": [
+    "GraphQL",
+    "Microservices"
+  ],
+  "type": "module",
+  "author": "haydenmcp <hayden.mcparlane@gmail.com>",
+  "homepage": "https://github.com/ThinkDeepTech/thinkdeep#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThinkDeepTech/thinkdeep.git"
+  },
+  "scripts": {
+    "setup": "sudo node ./setup.js",
+    "dev": "echo TODO",
+    "dev:watch": "echo TODO",
+    "tests": "mocha",
+    "tests:watch": "echo TODO",
+    "build": "echo TODO"
+  },
+  "devDependencies": {
+    "serve": "^10.1.1"
+  },
+  "dependencies": {
+    "apollo-datasource": "^3.1.0",
+    "apollo-server": "^3.2.0",
+    "chai": "^4.3.4",
+    "datasource-sql": "^1.5.0",
+    "graphql": "^15.5.1",
+    "mocha": "^9.1.1",
+    "pg": "^8.7.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.6.5"
+  },
+  "private": true
+}

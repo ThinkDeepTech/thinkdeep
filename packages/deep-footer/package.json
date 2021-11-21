@@ -2,11 +2,11 @@
   "name": "@thinkdeep/deep-footer",
   "version": "0.0.8",
   "description": "A thinkdeep themed footer element.",
+  "type": "module",
   "keywords": [
     "LitElement",
     "WebComponents"
   ],
-  "type": "module",
   "author": "haydenmcp <hayden.mcparlane@gmail.com>",
   "homepage": "https://github.com/ThinkDeepTech/thinkdeep#readme",
   "repository": {
@@ -16,8 +16,8 @@
   "scripts": {
     "dev": "web-dev-server --config ./web-dev-server.config.mjs --esbuild-target auto",
     "dev:watch": "web-dev-server --config ./web-dev-server.config.mjs --watch --esbuild-target auto",
-    "tests": "web-test-runner",
-    "tests:watch": "web-test-runner --watch",
+    "tests": "web-test-runner --config ./web-test-runner.config.mjs",
+    "tests:watch": "web-test-runner --config ./web-test-runner.config.mjs --watch",
     "build": "rimraf build && rollup -c rollup.config.mjs"
   },
   "devDependencies": {
