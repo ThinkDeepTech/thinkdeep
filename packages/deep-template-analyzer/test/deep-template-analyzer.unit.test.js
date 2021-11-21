@@ -30,9 +30,9 @@ function findRoute(routes, pageName) {
  * @param {Object} - Route object used by @vaadin/router
  */
 function clickMenuItem(element, route) {
-  var navlinks = element.querySelectorAll('vaadin-tab > a');
+  var navlinks = element.shadowRoot.querySelectorAll('deep-navlink');
   for (const navlink of navlinks) {
-    if (navlink.href.toLowerCase().includes(route.path.toLowerCase())) {
+    if (navlink.route.path === route.path) {
       navlink.click();
       break;
     }
@@ -72,7 +72,17 @@ describe('deep-template-analyzer', function () {
       element.routes,
       translate('translations:homePageLabel')
     );
-    navbar = element.shadowRoot.querySelector('[slot="drawer"]');
+    navbar = element.shadowRoot.querySelector('deep-navbar');
+  });
+
+  it('should include a navbar at the top of the page', async () => {
+    const target = element.shadowRoot.querySelectorAll('deep-navbar');
+    expect(target.length).to.equal(1);
+  });
+
+  it('should include a footer at the bottom of the page', async () => {
+    const target = element.shadowRoot.querySelectorAll('deep-footer');
+    expect(target.length).to.equal(1);
   });
 
   it('should update the main window when a menu item is clicked', async () => {
@@ -114,7 +124,7 @@ describe('deep-template-analyzer', function () {
     );
 
     Router.go('/doesntexist');
-    await sleep(3000);
+    await sleep(2000);
     await elementUpdated(element);
 
     let currentPage = findPage(contentArea, notFoundPage.component);
@@ -125,7 +135,7 @@ describe('deep-template-analyzer', function () {
     );
 
     Router.go('/anotherunknownpath');
-    await sleep(3000);
+    await sleep(2000);
     await elementUpdated(element);
 
     currentPage = findPage(contentArea, notFoundPage.component);

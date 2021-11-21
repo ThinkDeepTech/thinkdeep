@@ -1,6 +1,5 @@
 import {html, css, LitElement} from 'lit-element';
-import {i18nMixin} from 'lit-element-i18n';
-import '@thinkdeep/deep-button/deep-button';
+import {i18nMixin, translate} from 'lit-element-i18n';
 
 export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
   static get styles() {
@@ -58,8 +57,7 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
   render() {
     return html`
       <div class="banner"></div>
-      <h1 class="headline">${this.translate('translations:headline')}</h1>
-      <deep-button>${this.translate('translations:buttonText')}</deep-button>
+      <h1 class="headline">${translate('translations:headline')}</h1>
     `;
   }
 }

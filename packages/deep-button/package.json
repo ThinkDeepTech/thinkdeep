@@ -2,10 +2,10 @@
   "name": "@thinkdeep/deep-button",
   "version": "0.0.8",
   "description": "",
+  "type": "module",
   "keywords": [
     "WebComponents"
   ],
-  "type": "module",
   "author": "haydenmcp <hayden.mcparlane@gmail.com>",
   "homepage": "https://github.com/ThinkDeepTech/thinkdeep#readme",
   "repository": {
@@ -30,7 +30,7 @@
     "@thinkdeep/tools": "^0.0.8",
     "@thinkdeep/deep-styles": "^0.0.8",
     "jest": "^27.0.6",
-    "rollup": "^1.1.0",
+    "rollup": "^2",
     "rollup-plugin-babel": "^4.3.0",
     "rollup-plugin-node-resolve": "^4.0.0",
     "rollup-plugin-serve": "^1.1.0",

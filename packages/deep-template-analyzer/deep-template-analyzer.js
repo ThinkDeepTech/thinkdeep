@@ -2,14 +2,13 @@ import {css, html, LitElement} from 'lit-element';
 import {i18nMixin, translate} from 'lit-element-i18n';
 import {Router} from '@vaadin/router';
 
-import deepAuthMixin from '@thinkdeep/deep-auth-mixin/deep-auth-mixin';
 import '@thinkdeep/deep-footer';
 import '@thinkdeep/deep-navbar';
 import '@vaadin/vaadin-app-layout/vaadin-app-layout';
 import '@vaadin/vaadin-app-layout/vaadin-drawer-toggle';
-// import '@vaadin/vaadin-icon/vaadin-icon';
 import '@vaadin/vaadin-tabs/vaadin-tab';
 import '@vaadin/vaadin-tabs/vaadin-tabs';
+import deepAuthMixin from '@thinkdeep/deep-auth-mixin/deep-auth-mixin';
 
 /* eslint-disable no-unused-vars */
 export class DeepTemplateAnalyzer extends i18nMixin(deepAuthMixin(LitElement)) {
@@ -66,7 +65,6 @@ export class DeepTemplateAnalyzer extends i18nMixin(deepAuthMixin(LitElement)) {
             '@thinkdeep/deep-template-analyzer/deep-analyzer-page-home.js'
           );
         },
-        icon: 'vaadin:home',
       },
       {
         path: '/' + translate('translations:aboutPageLabel'),
@@ -77,19 +75,22 @@ export class DeepTemplateAnalyzer extends i18nMixin(deepAuthMixin(LitElement)) {
             '@thinkdeep/deep-template-analyzer/deep-analyzer-page-about.js'
           );
         },
-        icon: 'vaadin:deindent',
       },
       {
         path: '/' + translate('translations:loginPageLabel'),
         name: translate('translations:loginPageLabel'),
-        component: 'deep-analyzer-page-login',
+        component: 'deep-analyzer-page-home',
         action: async () => {
-          await import(
-            '@thinkdeep/deep-template-analyzer/deep-analyzer-page-login.js'
-          );
-          await this.auth.loginWithRedirect();
+          await this.login();
         },
-        icon: 'vaadin:user',
+      },
+      {
+        path: '/' + translate('translations:logoutPageLabel'),
+        name: translate('translations:logoutPageLabel'),
+        component: 'deep-analyzer-page-home',
+        action: async () => {
+          await this.logout();
+        },
       },
       {
         path: '(.*)',
@@ -113,11 +114,14 @@ export class DeepTemplateAnalyzer extends i18nMixin(deepAuthMixin(LitElement)) {
     return [
       css`
         :host {
+          display: grid;
+          grid-template-rows: auto 1fr auto;
+          grid-template-areas: 'content';
           background-color: var(--primary-color, #a4a4a4);
         }
 
-        vaadin-app-layout {
-          --vaadin-app-layout-drawer-overlay: true;
+        #content {
+          grid-area: content;
         }
       `,
     ];
@@ -133,8 +137,8 @@ export class DeepTemplateAnalyzer extends i18nMixin(deepAuthMixin(LitElement)) {
           touch-optimized
         ></vaadin-drawer-toggle>
         <h1 slot="navbar" touch-optimized>${this.companyName}</h1>
-        <vaadin-tabs orientation="vertical" slot="drawer">
-          ${this._routes()}
+        <vaadin-tabs slot="drawer" orientation="vertical">
+          ${this._toTabs(this.routes)}
         </vaadin-tabs>
 
         <main id="content"></main>
@@ -143,18 +147,18 @@ export class DeepTemplateAnalyzer extends i18nMixin(deepAuthMixin(LitElement)) {
   }
 
   /**
-   * Get the markup for the routes.
+   * Convert routes to tab markup.
+   *
+   * @param {Array} routes - Routes to convert.
+   * @return {Array} - Tab templates.
    */
-  _routes() {
-    return this.routes.map((route) =>
+  _toTabs(routes) {
+    return routes.map((route) =>
       route.hidden
         ? html``
         : html`
             <vaadin-tab>
-              <a tabindex="-1" href="${route.path}">
-                <vaadin-icon icon="${route.icon}"></vaadin-icon>
-                <span>${route.name}</span>
-              </a>
+              <a href="${route.path}"> ${route.name} </a>
             </vaadin-tab>
           `
     );

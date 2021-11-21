@@ -9,8 +9,9 @@ export default {
   homePageLabel: 'Home2',
   aboutPageLabel: 'About2',
   loginPageLabel: 'Login2',
+  logoutPageLabel: 'Logout2',
   notFoundPageLabel: 'PageNotFound2',
   headline: 'Something different here',
-  buttonText: 'Get Started Differently?',
+  buttonText: 'Log In',
   notFoundPageContent: 'Page Still not found!',
 };

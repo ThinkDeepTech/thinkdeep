@@ -16,5 +16,6 @@ module.exports = {
     it: false,
     expect: false,
     sinon: false,
+    globalThis: false,
   },
 };

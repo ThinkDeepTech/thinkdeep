@@ -2,6 +2,7 @@
   "name": "@thinkdeep/deep-microservice-data",
   "version": "0.0.8",
   "description": "> TODO: description",
+  "type": "module",
   "keywords": [
     "GraphQL",
     "Microservices"
