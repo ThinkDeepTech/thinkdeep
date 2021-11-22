@@ -1,14 +1,23 @@
 import {ApolloServer} from 'apollo-server';
 import typeDefs from './schema.mjs';
+import {resolvers} from './resolvers.mjs';
+import PostgresDataSource from './datasources/postgres-datasource.mjs';
 
-// TODO: Actually pull and populate data from DB. Remove stubbing.
-// import PostgresDataSource from './datasources/PostgresDataSource.mjs'
+const knexConfig = {
+  client: 'pg',
+  connection: {
+    database: 'predecos',
+    user: 'postgres',
+    password: '',
+  },
+};
+
+const pg = new PostgresDataSource(knexConfig);
 
 const server = new ApolloServer({
   typeDefs,
-  // dataSources {
-  //     sqlAPI: new PostgresDataSource()
-  // }
+  resolvers,
+  dataSources: () => ({pg}),
 });
 
 server.listen().then(() => {
