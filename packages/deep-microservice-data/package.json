@@ -7,7 +7,6 @@
     "GraphQL",
     "Microservices"
   ],
-  "type": "module",
   "author": "haydenmcp <hayden.mcparlane@gmail.com>",
   "homepage": "https://github.com/ThinkDeepTech/thinkdeep#readme",
   "repository": {
@@ -16,7 +15,7 @@
   },
   "scripts": {
     "setup": "sudo node ./setup.js",
-    "dev": "echo TODO",
+    "dev": "node index.js",
     "dev:watch": "echo TODO",
     "tests": "mocha",
     "tests:watch": "echo TODO",
@@ -30,11 +29,13 @@
     "apollo-server": "^3.2.0",
     "chai": "^4.3.4",
     "datasource-sql": "^1.5.0",
+    "express": "^4.17.1",
     "graphql": "^15.5.1",
-    "mocha": "^9.1.1",
+    "mocha": "^9.1.3",
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.6.5"
+    "sequelize": "^6.6.5",
+    "sinon": "^12.0.1"
   },
   "private": true
 }
