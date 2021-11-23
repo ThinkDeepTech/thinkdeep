@@ -1,11 +1,26 @@
-// import { ApolloServer } from 'apollo-server';
-// import typeDefs from './schema.mjs';
+import {ApolloServer} from 'apollo-server';
+import {PostgresDataSource} from './datasource/postgres-datasource.mjs';
+import {resolvers} from './resolver/all.mjs';
+import {typeDefs} from './schema.mjs';
 
-// import PostgresDataSource from './datasources/PostgresDataSource.mjs'
+const knexConfig = {
+  client: 'pg',
+  connection: process.env.PG_CONNECTION_STRING,
+};
 
-// const server = new ApolloServer({
-//     typeDefs,
-//     dataSources {
-//         sqlAPI: new PostgresDataSource()
-//     }
-// });
+const db = new PostgresDataSource(knexConfig);
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  dataSources: () => ({db}),
+});
+
+server.listen().then(() => {
+  // eslint-disable-next-line
+  console.log(`
+        Server is running!
+        Listening on port 4000
+        Explore at https://studio.apollographql.com/sandbox
+    `);
+});
