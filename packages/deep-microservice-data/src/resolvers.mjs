@@ -1,8 +1,8 @@
 
 const resolvers = {
     Query: {
-        search: (_, {businessName}, { dataSources }) => dataSources.pg.search(businessName)
+        search: (_, {businessName}, { dataSources }) => dataSources.db.search(businessName)
     }
 };
 
-export {resolvers};
+export { resolvers };

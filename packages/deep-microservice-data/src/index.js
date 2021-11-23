@@ -1,26 +1,23 @@
 import {ApolloServer} from 'apollo-server';
-import typeDefs from './schema.mjs';
+import {PostgresDataSource} from './datasources/postgres-datasource.mjs';
 import {resolvers} from './resolvers.mjs';
-import PostgresDataSource from './datasources/postgres-datasource.mjs';
+import {typeDefs} from './schema.mjs';
 
 const knexConfig = {
   client: 'pg',
-  connection: {
-    database: 'predecos',
-    user: 'postgres',
-    password: '',
-  },
+  connection: process.env.PG_CONNECTION_STRING,
 };
 
-const pg = new PostgresDataSource(knexConfig);
+const db = new PostgresDataSource(knexConfig);
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  dataSources: () => ({pg}),
+  dataSources: () => ({db}),
 });
 
 server.listen().then(() => {
+  // TODO: Migrate to logging framework
   // eslint-disable-next-line
   console.log(`
         Server is running!
