@@ -1,4 +1,4 @@
 
-const search = (_, {businessName}, { dataSources }) => dataSources.db.search(businessName);
+const search = (_, {businessName}, { dataSources }) => dataSources.db.searchBusinesses(businessName);
 
 export { search };

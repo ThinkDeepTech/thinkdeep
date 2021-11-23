@@ -17,7 +17,7 @@ describe('search', () => {
         graphqlContext = {
             dataSources: {
                 db: {
-                    search: sinon.spy()
+                    searchBusinesses: sinon.spy()
                 }
             }
         };
@@ -25,12 +25,12 @@ describe('search', () => {
 
     it('should perform the search against the db', () => {
         search(undefined, graphqlArgs, graphqlContext);
-        expect(graphqlContext.dataSources.db.search).to.have.been.calledOnce;
+        expect(graphqlContext.dataSources.db.searchBusinesses).to.have.been.calledOnce;
     });
 
     it('should search for the specified business name', () => {
         search(undefined, graphqlArgs, graphqlContext);
-        const actualBusinessName = graphqlContext.dataSources.db.search.getCall(0).args[0];
+        const actualBusinessName = graphqlContext.dataSources.db.searchBusinesses.getCall(0).args[0];
         expect(graphqlArgs.businessName).to.equal(actualBusinessName);
     });
 });

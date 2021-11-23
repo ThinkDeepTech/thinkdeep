@@ -2,7 +2,7 @@ import { SQLDataSource } from 'datasource-sql';
 
 class PostgresDataSource extends SQLDataSource {
 
-    async search(businessName) {
+    async searchBusinesses(businessName) {
 
         /**
          * Gather all edges related to the desired business.

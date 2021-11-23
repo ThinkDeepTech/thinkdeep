@@ -1,5 +1,5 @@
 
-import { search } from './resolver/search.mjs';
+import { search } from './search.mjs';
 
 const resolvers = {
     Query: {

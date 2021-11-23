@@ -30,9 +30,9 @@ describe('postgres-datasource', () => {
         done();
     });
 
-    describe('search', () => {
+    describe('get economic relationships', () => {
 
-        it('should search the database for all graph edges that relate to the business name', (done) => {
+        it('should search the database for all graph edges that relate to business name', (done) => {
             const expectedBusinessName = 'Some Business';
             tracker.on('query', (query) => {
                 /**
@@ -50,7 +50,7 @@ describe('postgres-datasource', () => {
                 query.response([]);
             });
 
-            dataSource.search(expectedBusinessName);
+            dataSource.searchBusinesses(expectedBusinessName);
         });
 
         it('should perform a case-insensitive search for the business name', (done) => {
@@ -69,7 +69,7 @@ describe('postgres-datasource', () => {
                 }
                 query.response([]);
             });
-            dataSource.search(expectedBusinessName);
+            dataSource.searchBusinesses(expectedBusinessName);
         })
     });
 });
