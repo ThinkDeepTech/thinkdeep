@@ -1,6 +1,6 @@
 import {ApolloServer} from 'apollo-server';
 import {PostgresDataSource} from './datasource/postgres-datasource.mjs';
-import {resolvers} from './resolvers.mjs';
+import {resolvers} from './resolver/all.mjs';
 import {typeDefs} from './schema.mjs';
 
 const knexConfig = {

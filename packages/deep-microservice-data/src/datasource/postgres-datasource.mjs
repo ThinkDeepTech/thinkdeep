@@ -20,7 +20,7 @@ class PostgresDataSource extends SQLDataSource {
             }).
             orWhereIn('second', function() {
                 this.select('id').from('business').where('name', 'like', businessName);
-            });
+            }) || [];
     }
 };
 
