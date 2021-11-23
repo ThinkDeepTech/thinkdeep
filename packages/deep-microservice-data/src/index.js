@@ -1,5 +1,5 @@
 import {ApolloServer} from 'apollo-server';
-import {PostgresDataSource} from './datasources/postgres-datasource.mjs';
+import {PostgresDataSource} from './datasource/postgres-datasource.mjs';
 import {resolvers} from './resolvers.mjs';
 import {typeDefs} from './schema.mjs';
 
@@ -17,7 +17,6 @@ const server = new ApolloServer({
 });
 
 server.listen().then(() => {
-  // TODO: Migrate to logging framework
   // eslint-disable-next-line
   console.log(`
         Server is running!

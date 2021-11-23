@@ -18,8 +18,7 @@
     "dev": "node index.js",
     "dev:watch": "echo TODO",
     "tests": "mocha",
-    "tests:watch": "echo TODO",
-    "build": "echo TODO"
+    "tests:watch": "echo TODO"
   },
   "devDependencies": {
     "serve": "^10.1.1"

@@ -2,23 +2,19 @@ import { gql } from 'apollo-server';
 
 const typeDefs = gql`
 
-    # This union will hold all economic node types. I.e, a business, organization
-    union Node = Business | Person
-
-    type Person {
-        id: ID!
-        name: String!
-        relationships: [Node]
+    enum EntityType {
+        BUSINESS
     }
 
-    type Business {
+    type EconomicEntity {
         id: ID!
         name: String!
-        relationships: [Node]
+        first: Int
+        second: Int
     }
 
     type Query {
-        search(businessName: String!): [Node]!
+        search(businessName: String!): [EconomicEntity]!
     }
 
     # This comment is to track important practices when defining mutations.
