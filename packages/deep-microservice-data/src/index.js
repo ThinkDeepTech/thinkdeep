@@ -2,6 +2,7 @@ import {ApolloServer} from 'apollo-server';
 import {PostgresDataSource} from './datasource/postgres-datasource.mjs';
 import {resolvers} from './resolver/all.mjs';
 import {typeDefs} from './schema.mjs';
+import {EconomyService} from './service/economy-service.mjs';
 
 const knexConfig = {
   client: 'pg',
@@ -9,11 +10,12 @@ const knexConfig = {
 };
 
 const db = new PostgresDataSource(knexConfig);
+const economyService = new EconomyService(db);
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  dataSources: () => ({db}),
+  dataSources: () => ({economyService}),
 });
 
 server.listen().then(() => {

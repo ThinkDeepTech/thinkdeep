@@ -6,15 +6,15 @@ import { PostgresDataSource } from '../../src/datasource/postgres-datasource.mjs
 
 describe('postgres-datasource', () => {
 
-    let dataSource;
+    let subject;
     before((done) => {
-        dataSource =  new PostgresDataSource({ client: 'pg' });
-        mockDb.mock(dataSource.knex);
+        subject =  new PostgresDataSource({ client: 'pg' });
+        mockDb.mock(subject.knex);
         done();
     });
 
     after((done) => {
-        mockDb.unmock(dataSource.knex);
+        mockDb.unmock(subject.knex);
         done();
     });
 
@@ -30,7 +30,7 @@ describe('postgres-datasource', () => {
         done();
     });
 
-    describe('get economic relationships', () => {
+    describe('get business graph', () => {
 
         it('should search the database for all graph edges that relate to business name', (done) => {
             const expectedBusinessName = 'Some Business';
@@ -50,7 +50,7 @@ describe('postgres-datasource', () => {
                 query.response([]);
             });
 
-            dataSource.searchBusinesses(expectedBusinessName);
+            subject.getBusinessGraph(expectedBusinessName);
         });
 
         it('should perform a case-insensitive search for the business name', (done) => {
@@ -69,7 +69,7 @@ describe('postgres-datasource', () => {
                 }
                 query.response([]);
             });
-            dataSource.searchBusinesses(expectedBusinessName);
+            subject.getBusinessGraph(expectedBusinessName);
         })
     });
 });
