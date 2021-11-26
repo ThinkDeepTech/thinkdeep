@@ -8,7 +8,9 @@ const startGatewayService = async () => {
   const port = 4000;
 
   const gateway = new ApolloGateway({
-    serviceList: [{name: 'economy', url: 'http://localhost:4001/graphql'}],
+    serviceList: [
+      {name: 'economy', url: process.env.PREDECOS_MICROSERVICE_ECONOMY_URL},
+    ],
     buildService({name, url}) {
       return new RemoteGraphQLDataSource({
         url,
@@ -33,20 +35,41 @@ const startGatewayService = async () => {
       cache: true,
       rateLimit: true,
       jwksRequestsPerMinute: 5,
-      jwksUri: 'https://predecos.us.auth0.com/.well-known/jwks.json',
+      jwksUri: process.env.PREDECOS_AUTH_JWKS_URI,
     }),
-    audience: 'https://www.predecos.com/api/v1',
-    issuer: 'https://predecos.us.auth0.com/',
+    audience: process.env.PREDECOS_AUTH_AUDIENCE,
+    issuer: process.env.PREDECOS_AUTH_ISSUER,
     algorithms: ['RS256'],
+    getToken: function fromHeaderOrQuerystring(req) {
+      if (
+        req.headers.authorization &&
+        req.headers.authorization.split(' ')[0] === 'Bearer'
+      ) {
+        return req.headers.authorization.split(' ')[1];
+      } else if (req.query && req.query.token) {
+        return req.query.token;
+      }
+      return null;
+    },
   });
 
   const app = express();
 
+  // app.use('/', (req, res, next) => {
+  //   console.log(`
+  //     Headers:
+
+  //     ${JSON.stringify(req.headers)}
+
+  //   `)
+  //   next();
+  // });
+  app.use('/', jwtHandler);
+
   server.applyMiddleware({app});
 
-  app.use(jwtHandler);
+  // app.use(jwtHandler);
 
-  // TODO: Use same listening paradigm for both microservices.
   app.listen({port}, () =>
     // eslint-disable-next-line
     console.log(`Server ready at http://localhost:${port}${server.graphqlPath}`)

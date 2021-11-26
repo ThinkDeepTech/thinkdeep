@@ -2,10 +2,8 @@
 
 > TODO: description
 
-## Usage
-
-```
-const deepMicroserviceGateway = require('@thinkdeep/deep-microservice-gateway');
-
-// TODO: DEMONSTRATE API
-```
+## Environment Variables
+- PREDECOS_AUTH_JWKS_URI
+- PREDECOS_AUTH_AUDIENCE
+- PREDECOS_AUTH_ISSUER
+- PREDECOS_MICROSERVICE_ECONOMY_URL

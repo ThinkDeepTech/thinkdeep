@@ -13,7 +13,7 @@ const port = 4001;
 const startApolloServer = async () => {
   const knexConfig = {
     client: 'pg',
-    connection: process.env.PG_CONNECTION_STRING,
+    connection: process.env.PREDECOS_PG_CONNECTION_STRING,
   };
 
   const db = new PostgresDataSource(knexConfig);
@@ -55,7 +55,6 @@ const startApolloServer = async () => {
   console.log(
     `🚀 Server ready at http://localhost:${port}${server.graphqlPath}`
   );
-  return {server, app};
 };
 
 startApolloServer();
