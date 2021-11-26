@@ -14,10 +14,17 @@ const startGatewayService = async () => {
     buildService({name, url}) {
       return new RemoteGraphQLDataSource({
         url,
-        willSendRequest({request, context}) {
+        willSendRequest(thing) {
+          // TODO
+          // request.http.headers.set(
+          //   'user',
+          //   context.user ? JSON.stringify(context.user) : null
+          // );
+          const request = thing.request;
+          // const context = thing.context;
           request.http.headers.set(
             'user',
-            context.user ? JSON.stringify(context.user) : null
+            request.user ? JSON.stringify(request.user) : null
           );
         },
       });
@@ -40,35 +47,20 @@ const startGatewayService = async () => {
     audience: process.env.PREDECOS_AUTH_AUDIENCE,
     issuer: process.env.PREDECOS_AUTH_ISSUER,
     algorithms: ['RS256'],
-    getToken: function fromHeaderOrQuerystring(req) {
-      if (
-        req.headers.authorization &&
-        req.headers.authorization.split(' ')[0] === 'Bearer'
-      ) {
-        return req.headers.authorization.split(' ')[1];
-      } else if (req.query && req.query.token) {
-        return req.query.token;
-      }
-      return null;
-    },
+    requestProperty: 'user',
   });
 
   const app = express();
 
-  // app.use('/', (req, res, next) => {
-  //   console.log(`
-  //     Headers:
-
-  //     ${JSON.stringify(req.headers)}
-
-  //   `)
-  //   next();
-  // });
   app.use('/', jwtHandler);
 
-  server.applyMiddleware({app});
+  // TODO
+  // app.use('/', (req, res, next) => {
+  //   debugger;
+  //   next();
+  // });
 
-  // app.use(jwtHandler);
+  server.applyMiddleware({app});
 
   app.listen({port}, () =>
     // eslint-disable-next-line

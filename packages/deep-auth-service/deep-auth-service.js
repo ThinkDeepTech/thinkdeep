@@ -16,12 +16,15 @@ export class DeepAuthService extends LitElement {
   }
 
   async firstUpdated() {
+    // NOTE: As of 11.26.2021 Auth0 returns a opaque access token if an audience isn't defined here. This is easy to
+    // mistake for a malformed jwt. Watch out!
     this._auth0 = await createAuth0Client({
       domain: authConfig.domain,
       client_id: authConfig.clientId,
       redirect_uri: globalThis.location.origin,
       useRefreshTokens: true,
       cacheLocation: 'localstorage',
+      audience: authConfig.audience,
     });
 
     const auth0 = this._auth0;

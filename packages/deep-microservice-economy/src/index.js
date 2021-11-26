@@ -24,6 +24,14 @@ const startApolloServer = async () => {
     dataSources: () => ({economyService}),
     context: ({req}) => {
       const user = req.headers.user ? JSON.parse(req.headers.user) : null;
+      // TODO
+      // console.log(`
+
+      // User:
+
+      // ${JSON.stringify(user)}
+
+      // `);
       return {user};
     },
   });
