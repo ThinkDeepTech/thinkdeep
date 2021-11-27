@@ -25,7 +25,6 @@ const startApolloServer = async () => {
       return {user};
     },
   });
-
   await server.start();
 
   const app = express();

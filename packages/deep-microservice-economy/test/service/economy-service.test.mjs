@@ -45,20 +45,28 @@ describe('economy-service', () => {
             expect(dataSource.getBusinessGraph).not.to.have.been.called;
         });
 
-        // it('should return an empty array if operation fails', () => {
-        //     assert.fail('TODO');
-        // });
+        it('should return empty array if user is null', () => {
+            const businessName = 'something';
+            const relationships = subject.getBusinessRelationships(businessName, null);
+            expect(relationships.length).to.equal(0);
+        })
 
-        // it('should validate the user is authorized to access the resource', () => {
-        //     assert.fail('TODO');
-        // });
+        it ('should return empty array if user is empty', () => {
+            const businessName = 'something';
+            const relationships = subject.getBusinessRelationships(businessName, {});
+            expect(relationships.length).to.equal(0);
+        })
 
-        // it('should return an empty array if the user is unauthorized to access resource', () => {
-        //     assert.fail('TODO');
-        // });
+        it('should return empty array if user does not have defined scopes', () => {
+            const businessName = 'something';
+            const relationships = subject.getBusinessRelationships(businessName, { scopes: [] });
+            expect(relationships.length).to.equal(0);
+        })
 
-        // it('should return a graph containing business relationships on success', () => {
-        //     assert.fail('TODO');
-        // });
+        it('should succeed if user has read:all scope', () => {
+            const businessName = 'something';
+            const relationships = subject.getBusinessRelationships(businessName, { scopes: ['read:all'] });
+            expect(subject._dataSource.getBusinessGraph).to.have.been.called;
+        })
     });
 });

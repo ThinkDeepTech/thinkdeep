@@ -1,7 +1,7 @@
 
 const resolvers = {
     Query: {
-        search: (_, {businessName}, { dataSources }) => dataSources.economyService.getBusinessRelationships(businessName)
+        search: (_, {businessName}, { dataSources, user }) => dataSources.economyService.getBusinessRelationships(businessName, user)
     },
     EconomicEntity: {
         _resolveReference(object, { dataSources }) {

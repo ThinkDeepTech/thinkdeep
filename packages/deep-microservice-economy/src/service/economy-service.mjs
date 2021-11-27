@@ -13,13 +13,16 @@ class EconomyService {
     /**
      *  Get the business relationships associated with the named business.
      * @param {String} businessName
+     * @param {Object} user
+     * @return {Array} The desired business relationships in array form or []
      */
-    getBusinessRelationships(businessName) {
+    getBusinessRelationships(businessName, user) {
         if (!businessName || (typeof businessName != 'string')) return [];
 
-        const relationships = this._dataSource.getBusinessGraph(businessName);
+        // TODO: Share permissions objects so that checks can be modified in one place.
+        if (!user?.scopes || !Object.keys(user).length || !user.scopes.includes('read:all')) return [];
 
-        return relationships;
+        return this._dataSource.getBusinessGraph(businessName);
     }
 }
 

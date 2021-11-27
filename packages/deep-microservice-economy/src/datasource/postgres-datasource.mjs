@@ -2,6 +2,13 @@ import { SQLDataSource } from 'datasource-sql';
 
 class PostgresDataSource extends SQLDataSource {
 
+    /**
+     * Fetch the graph representation of the relationships associated with the specified business.
+     *
+     * @param {Object} user - User associated with the account.
+     * @param businessName
+     * @returns {Array} - The business nodes or []
+     */
     async getBusinessGraph(businessName) {
 
         /**
