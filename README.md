@@ -16,7 +16,7 @@ implementation of that template idea.
 
 ## Design Decisions
 
-![High Level Architecture](./predecos-high-level.drawio "High Level Architecture")
+![High Level Architecture](./predecos-high-level.png "High Level Architecture")
 
 ### The Client
 The following are design decisions considered when choosing client technologies.
