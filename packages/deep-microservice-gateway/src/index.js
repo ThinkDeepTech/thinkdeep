@@ -14,17 +14,10 @@ const startGatewayService = async () => {
     buildService({name, url}) {
       return new RemoteGraphQLDataSource({
         url,
-        willSendRequest(thing) {
-          // TODO
-          // request.http.headers.set(
-          //   'user',
-          //   context.user ? JSON.stringify(context.user) : null
-          // );
-          const request = thing.request;
-          // const context = thing.context;
+        willSendRequest({request, context}) {
           request.http.headers.set(
             'user',
-            request.user ? JSON.stringify(request.user) : null
+            context?.req?.user ? JSON.stringify(context?.req?.user) : null
           );
         },
       });
@@ -34,6 +27,7 @@ const startGatewayService = async () => {
   const server = new ApolloServer({
     gateway,
     subscriptions: false,
+    context: ({req, res}) => ({req, res}),
   });
   await server.start();
 
@@ -53,12 +47,6 @@ const startGatewayService = async () => {
   const app = express();
 
   app.use('/', jwtHandler);
-
-  // TODO
-  // app.use('/', (req, res, next) => {
-  //   debugger;
-  //   next();
-  // });
 
   server.applyMiddleware({app});
 
