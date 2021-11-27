@@ -5,8 +5,8 @@ import sinonChai from 'sinon-chai';
 const expect = chai.expect;
 chai.use(sinonChai);
 
-import { EconomyService } from '../../src/service/economy-service.mjs';
-import { PostgresDataSource } from '../../src/datasource/postgres-datasource.mjs';
+import { EconomyService } from '../src/economy-service.mjs';
+import { PostgresDataSource } from '../src/datasource/postgres-datasource.mjs';
 
 describe('economy-service', () => {
 
@@ -59,13 +59,19 @@ describe('economy-service', () => {
 
         it('should return empty array if user does not have defined scopes', () => {
             const businessName = 'something';
-            const relationships = subject.getBusinessRelationships(businessName, { scopes: [] });
+            const relationships = subject.getBusinessRelationships(businessName, { scope: '' });
+            expect(relationships.length).to.equal(0);
+        })
+
+        it('should return empty array if user does not have read:all scope', () => {
+            const businessName = 'something';
+            const relationships = subject.getBusinessRelationships(businessName, { scope: 'openid email' });
             expect(relationships.length).to.equal(0);
         })
 
         it('should succeed if user has read:all scope', () => {
             const businessName = 'something';
-            const relationships = subject.getBusinessRelationships(businessName, { scopes: ['read:all'] });
+            subject.getBusinessRelationships(businessName, { scope: 'read:all' });
             expect(subject._dataSource.getBusinessGraph).to.have.been.called;
         })
     });

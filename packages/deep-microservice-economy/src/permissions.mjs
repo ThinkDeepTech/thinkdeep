@@ -5,7 +5,7 @@
  * @return {Boolean} - True if the user object is valid. False otherwise.
  */
 const isValidUser = (user) => {
-    return user && Object.keys(user).length && user?.scopes?.length;
+    return !!user && !!Object.keys(user).length && !!user?.scope;
 }
 
 /**
@@ -13,8 +13,8 @@ const isValidUser = (user) => {
  * @param {Object} user - User subject.
  * @return {Boolean} - True if the user has read:all scope. False otherwise.
  */
-const hasReadAll = (user) => {
-    return isValidUser(user) && user?.scopes?.includes('read:all');
+const hasReadAllAccess = (user) => {
+    return isValidUser(user) && !!user?.scope?.split(' ').includes('read:all');
 };
 
-export { hasReadAll };
+export { hasReadAllAccess , isValidUser};

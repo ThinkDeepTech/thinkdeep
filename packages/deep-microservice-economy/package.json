@@ -17,7 +17,7 @@
     "setup": "sudo node ./setup.js",
     "dev": "node ./src/index.js",
     "dev:watch": "echo TODO",
-    "tests": "mocha ./test/**/*.test.mjs",
+    "tests": "mocha ./test/**/*.test.mjs ./test/*.test.mjs",
     "tests:watch": "echo TODO"
   },
   "devDependencies": {

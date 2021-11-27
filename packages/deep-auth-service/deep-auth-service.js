@@ -22,9 +22,11 @@ export class DeepAuthService extends LitElement {
       domain: authConfig.domain,
       client_id: authConfig.clientId,
       redirect_uri: globalThis.location.origin,
-      useRefreshTokens: true,
       cacheLocation: 'localstorage',
       audience: authConfig.audience,
+      advancedOptions: {
+        defaultScope: 'openid profile email read:all',
+      },
     });
 
     const auth0 = this._auth0;

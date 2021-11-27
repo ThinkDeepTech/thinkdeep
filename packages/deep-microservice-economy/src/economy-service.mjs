@@ -1,6 +1,6 @@
 
-import { hasReadAll } from './permissions.mjs';
-import { PostgresDataSource } from '../datasource/postgres-datasource.mjs';
+import { hasReadAllAccess } from './permissions.mjs';
+import { PostgresDataSource } from './datasource/postgres-datasource.mjs';
 
 /**
  * Represents a querable model of the economy.
@@ -20,7 +20,7 @@ class EconomyService {
     getBusinessRelationships(businessName, user) {
         if (!businessName || (typeof businessName != 'string')) return [];
 
-        if (!hasReadAll(user)) return [];
+        if (!hasReadAllAccess(user)) return [];
 
         return this._dataSource.getBusinessGraph(businessName);
     }
