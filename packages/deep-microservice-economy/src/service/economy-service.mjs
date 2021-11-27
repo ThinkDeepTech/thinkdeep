@@ -1,4 +1,5 @@
 
+import { hasReadAll } from './permissions.mjs';
 import { PostgresDataSource } from '../datasource/postgres-datasource.mjs';
 
 /**
@@ -19,8 +20,7 @@ class EconomyService {
     getBusinessRelationships(businessName, user) {
         if (!businessName || (typeof businessName != 'string')) return [];
 
-        // TODO: Share permissions objects so that checks can be modified in one place.
-        if (!user?.scopes || !Object.keys(user).length || !user.scopes.includes('read:all')) return [];
+        if (!hasReadAll(user)) return [];
 
         return this._dataSource.getBusinessGraph(businessName);
     }
