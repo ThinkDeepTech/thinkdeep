@@ -25,7 +25,7 @@ describe('economy-service', () => {
         done();
     });
 
-    describe('get business relationships', () => {
+    describe('getBusinessRelationships', () => {
 
         it('should return an empty array if type validation fails', () => {
             const businessName = 1;

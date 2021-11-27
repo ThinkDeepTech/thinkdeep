@@ -30,7 +30,7 @@ describe('postgres-datasource', () => {
         done();
     });
 
-    describe('get business graph', () => {
+    describe('getBusinessGraph', () => {
 
         it('should search the database for all graph edges that relate to business name', (done) => {
             const expectedBusinessName = 'Some Business';
