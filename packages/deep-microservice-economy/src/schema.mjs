@@ -6,14 +6,14 @@ const typeDefs = gql`
         BUSINESS
     }
 
-    type EconomicEntity {
+    type EconomicEntity @key(fields: "id") {
         id: ID!
         name: String!
         first: Int
         second: Int
     }
 
-    type Query {
+    extend type Query {
         search(businessName: String!): [EconomicEntity]!
     }
 
