@@ -46,6 +46,10 @@ const startGatewayService = async () => {
 
   const app = express();
 
+  // NOTE: x-powered-by can allow attackers to determine what technologies are being used by software and
+  // therefore how to attack. Therefore, it's disabled here.
+  app.disable('x-powered-by');
+
   app.use('/', jwtHandler);
 
   server.applyMiddleware({app});
