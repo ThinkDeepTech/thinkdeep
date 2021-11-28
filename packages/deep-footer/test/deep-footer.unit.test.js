@@ -1,12 +1,12 @@
-import { html, litFixtureSync, expect } from '@open-wc/testing';
+import {html, litFixtureSync, expect} from '@open-wc/testing';
 import '@thinkdeep/deep-footer/deep-footer.js';
 
 describe('footer', () => {
   const companyName = 'Thinkdeep';
   const routes = [
-    { name: 'home', path: '/' },
-    { name: 'about', path: '/about' },
-    { name: 'contact', path: '/contact' },
+    {name: 'home', path: '/'},
+    {name: 'about', path: '/about'},
+    {name: 'contact', path: '/contact'},
   ];
   const address = {
     streetNumber: 59,
@@ -20,7 +20,12 @@ describe('footer', () => {
   let element;
   beforeEach(async () => {
     element = await litFixtureSync(html`
-      <deep-footer .companyName=${companyName} .routes=${routes} .address=${address}> </deep-footer>
+      <deep-footer
+        .companyName=${companyName}
+        .routes=${routes}
+        .address=${address}
+      >
+      </deep-footer>
     `);
   });
 
@@ -29,21 +34,22 @@ describe('footer', () => {
     const links = section.querySelectorAll('a');
 
     const visibleRoutes = [];
-    const routes = element.routes;
-    for (const i in routes) if (!routes[i].hidden) visibleRoutes.push(routes[i]);
+    const actualRoutes = element.routes;
+    for (const i in actualRoutes)
+      if (!actualRoutes[i].hidden) visibleRoutes.push(actualRoutes[i]);
 
     expect(links.length).to.equal(visibleRoutes.length);
   });
 
   it('should list the address', () => {
-    const address = element.shadowRoot.querySelector('.address');
+    const actualAddress = element.shadowRoot.querySelector('.address');
 
-    expect(address.textContent).to.contain(element.address.streetNumber);
-    expect(address.textContent).to.contain(element.address.streetName);
-    expect(address.textContent).to.contain(element.address.cityName);
-    expect(address.textContent).to.contain(element.address.provinceCode);
-    expect(address.textContent).to.contain(element.address.countryName);
-    expect(address.textContent).to.contain(element.address.zipCode);
+    expect(actualAddress.textContent).to.contain(element.address.streetNumber);
+    expect(actualAddress.textContent).to.contain(element.address.streetName);
+    expect(actualAddress.textContent).to.contain(element.address.cityName);
+    expect(actualAddress.textContent).to.contain(element.address.provinceCode);
+    expect(actualAddress.textContent).to.contain(element.address.countryName);
+    expect(actualAddress.textContent).to.contain(element.address.zipCode);
   });
 
   it('should include copywrite information', async () => {

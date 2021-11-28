@@ -1,4 +1,4 @@
-import { html, litFixtureSync, expect } from '@open-wc/testing';
+import {html, litFixtureSync, expect} from '@open-wc/testing';
 import '@thinkdeep/deep-navbar/deep-navbar';
 
 const visibleRoutes = [
@@ -39,8 +39,11 @@ const routes = visibleRoutes.concat(hiddenRoutes);
 
 describe('deep-navbar', () => {
   it('should hide navbar items labelled with hidden = true', async () => {
-    const element = await litFixtureSync(html` <deep-navbar .routes=${routes}></deep-navbar> `);
-    const menuItems = element?.shadowRoot?.querySelectorAll('deep-navlink') || [];
+    const element = await litFixtureSync(
+      html` <deep-navbar .routes=${routes}></deep-navbar> `
+    );
+    const menuItems =
+      element?.shadowRoot?.querySelectorAll('deep-navlink') || [];
     expect(menuItems.length).to.equal(visibleRoutes.length);
   });
 
@@ -55,23 +58,12 @@ describe('deep-navbar', () => {
 
   describe('_visibleMenuItems', () => {
     it('should not include hidden routes', async () => {
-      const element = await litFixtureSync(html` <deep-navbar .routes=${routes}></deep-navbar> `);
-      const visibleMenuItems = element.shadowRoot.querySelectorAll('deep-navlink');
+      const element = await litFixtureSync(
+        html` <deep-navbar .routes=${routes}></deep-navbar> `
+      );
+      const visibleMenuItems =
+        element.shadowRoot.querySelectorAll('deep-navlink');
       expect(visibleMenuItems.length).to.equal(visibleRoutes.length);
     });
-
-    // it('should correctly order the routes for display', async () => {
-    //   const element = await litFixtureSync(html` <deep-navbar .routes=${routes}></deep-navbar> `);
-    //   const visibleMenuItems = element.shadowRoot.querySelectorAll('deep-navlink');
-
-    //   for (let i = 0; i < visibleMenuItems.length; i++) {
-    //     const menuItem = visibleMenuItems[i];
-    //     const container = menuItem.shadowRoot.querySelector('p');
-    //     const route = routes[i];
-    //     expect(container.innerHTML).to.contain(route.name);
-    //   }
-
-    //   expect(visibleMenuItems.length).to.be.greaterThan(0);
-    // });
   });
 });

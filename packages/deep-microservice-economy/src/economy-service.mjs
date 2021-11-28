@@ -1,6 +1,5 @@
 
 import { hasReadAllAccess } from './permissions.mjs';
-import { PostgresDataSource } from './datasource/postgres-datasource.mjs';
 
 /**
  * Represents a querable model of the economy.

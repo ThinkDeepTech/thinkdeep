@@ -9,7 +9,12 @@ import {exec} from 'child_process';
  * @param {String} command - System command to execute.
  * @param {Function} callback - Of the form (outputSplitOnNewline) => { //...do stuff }. The callback to execute on the result of successful command execution.
  */
-const execute = (command, callback = (stdout) => {}) => {
+const execute = (
+  command,
+  callback = () => {
+    /** Do nothing */
+  }
+) => {
   exec(command, (error, stdout, stderr) => {
     console.log(stdout);
     console.log(stderr);

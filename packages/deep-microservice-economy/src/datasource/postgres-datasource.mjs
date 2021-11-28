@@ -31,4 +31,4 @@ class PostgresDataSource extends SQLDataSource {
     }
 };
 
-export { PostgresDataSource };
+export { PostgresDataSource }
