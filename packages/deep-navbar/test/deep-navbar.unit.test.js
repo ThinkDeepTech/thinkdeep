@@ -65,22 +65,5 @@ describe('deep-navbar', () => {
         element.shadowRoot.querySelectorAll('deep-navlink');
       expect(visibleMenuItems.length).to.equal(visibleRoutes.length);
     });
-
-    it('should correctly order the routes for display', async () => {
-      const element = await litFixtureSync(
-        html` <deep-navbar .routes=${routes}></deep-navbar> `
-      );
-      const visibleMenuItems =
-        element.shadowRoot.querySelectorAll('deep-navlink');
-
-      for (let i = 0; i < visibleMenuItems.length; i++) {
-        const menuItem = visibleMenuItems[i];
-        const container = menuItem.shadowRoot.querySelector('p');
-        const route = routes[i];
-        expect(container.innerHTML).to.contain(route.name);
-      }
-
-      expect(visibleMenuItems.length).to.be.greaterThan(0);
-    });
   });
 });
