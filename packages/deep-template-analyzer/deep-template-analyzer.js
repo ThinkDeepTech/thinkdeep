@@ -1,4 +1,4 @@
-import {css, html} from 'lit-element';
+import {css, html, LitElement} from 'lit-element';
 import {i18nMixin, translate} from 'lit-element-i18n';
 import {Router} from '@vaadin/router';
 
@@ -8,16 +8,21 @@ import '@vaadin/vaadin-app-layout/vaadin-app-layout';
 import '@vaadin/vaadin-app-layout/vaadin-drawer-toggle';
 import '@vaadin/vaadin-tabs/vaadin-tab';
 import '@vaadin/vaadin-tabs/vaadin-tabs';
-import {DeepAuthService} from '@thinkdeep/deep-auth-service/deep-auth-service.js';
+
+import {getUser} from '@thinkdeep/deep-template-analyzer/user.mjs';
+import {initApolloClient} from './graphql/client.mjs';
+
+// TODO: Update readme with self-signed ssl cert requirements
 
 /* eslint-disable no-unused-vars */
-export class DeepTemplateAnalyzer extends i18nMixin(DeepAuthService) {
+export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
   static get properties() {
     return {
       companyName: {type: String},
       address: {type: Object},
       routes: {type: Array},
       location: {type: Object},
+      user: {type: Object},
     };
   }
 
@@ -27,6 +32,7 @@ export class DeepTemplateAnalyzer extends i18nMixin(DeepAuthService) {
     this.address = {};
     this.routes = [];
     this.location = Router.location;
+    this.user = {};
   }
 
   async firstUpdated() {
@@ -77,6 +83,16 @@ export class DeepTemplateAnalyzer extends i18nMixin(DeepAuthService) {
         },
       },
       {
+        path: `/${translate('translations:summaryPageLabel')}`,
+        name: translate('translations:summaryPageLabel'),
+        component: 'deep-analyzer-page-summary',
+        action: async () => {
+          await import(
+            '@thinkdeep/deep-template-analyzer/deep-analyzer-page-summary'
+          );
+        },
+      },
+      {
         path: '(.*)',
         name: translate('translations:notFoundPageLabel'),
         component: 'deep-analyzer-page-not-found',
@@ -85,6 +101,7 @@ export class DeepTemplateAnalyzer extends i18nMixin(DeepAuthService) {
             '@thinkdeep/deep-template-analyzer/deep-analyzer-page-not-found.js'
           );
         },
+        // TODO: Replacement for hidden included in vaadin? I think I can remember seeing one.
         hidden: true,
       },
     ];
@@ -92,6 +109,9 @@ export class DeepTemplateAnalyzer extends i18nMixin(DeepAuthService) {
     const targetViewingArea = this.shadowRoot.getElementById('content');
     const router = new Router(targetViewingArea);
     router.setRoutes(this.routes);
+
+    this.user = await getUser();
+    initApolloClient();
   }
 
   static get styles() {
@@ -132,12 +152,12 @@ export class DeepTemplateAnalyzer extends i18nMixin(DeepAuthService) {
                   </vaadin-tab>
                 `
           )}
-          ${!this.user
-            ? html` <vaadin-tab @click="${this.login}">
+          ${!this.user.loggedIn
+            ? html` <vaadin-tab @click="${this.user.login}">
                 <a> ${translate('translations:loginPageLabel')} </a>
               </vaadin-tab>`
             : html`
-                <vaadin-tab @click="${this.logout}">
+                <vaadin-tab @click="${this.user.logout}">
                   <a> ${translate('translations:logoutPageLabel')} </a>
                 </vaadin-tab>
               `}

@@ -50,9 +50,17 @@ const startGatewayService = async () => {
   // therefore how to attack. Therefore, it's disabled here.
   app.disable('x-powered-by');
 
-  app.use('/', jwtHandler);
+  // TODO:
+  app.use(jwtHandler);
 
-  server.applyMiddleware({app});
+  server.applyMiddleware({
+    app,
+    cors: {
+      origin: ['https://localhost:8000', 'http://localhost:8000'],
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE',
+      credentials: true,
+    },
+  });
 
   app.listen({port}, () =>
     // eslint-disable-next-line

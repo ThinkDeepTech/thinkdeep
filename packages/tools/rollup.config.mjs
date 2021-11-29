@@ -1,3 +1,4 @@
+import graphql from '@apollo-elements/rollup-plugin-graphql';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import babel from '@rollup/plugin-babel';
 import eslint from '@rollup/plugin-eslint';
@@ -31,6 +32,7 @@ export default merge(createSpaConfig, {
     eslint(),
     babel({ babelHelpers: 'bundled', rootMode: "upward" }),
     html(),
+    graphql(),
     copy({
       targets: [
         { src: 'img/**/*', dest: 'build/img' },
