@@ -22,10 +22,6 @@ describe('user', () => {
       setAuthClientForTesting(authClient);
     });
 
-    // it('should initialize auth instance if it has not yet been used', () => {
-    //     assert.fail();
-    // });
-
     it('should fetch the access token if the user is logged in', async () => {
       authClient.isAuthenticated.returns(Promise.resolve(true));
       await getUser();
@@ -45,28 +41,74 @@ describe('user', () => {
       expect(authClient.getUser).to.have.been.called;
     });
 
-    // it('should allow the user to log in', async () => {
-    //     const user = await getUser();
-    //     await user.login();
-    //     expect(authClient.loginWithRedirect).to.have.been.called;
-    // });
+    it('should allow the user to log in', async () => {
+      const user = await getUser();
+      await user.login();
+      expect(authClient.loginWithRedirect).to.have.been.called;
+    });
 
-    // it('should allow the user to log out', async () => {
-    //     const user = await getUser();
-    //     await user.logout();
-    //     expect(authClient.logout).to.have.been.called;
-    // });
+    it('should allow the user to log out', async () => {
+      const user = await getUser();
+      await user.logout();
+      expect(authClient.logout).to.have.been.called;
+    });
 
-    // it('should throw an error if the audience is not provided', async () => {
+    it('should throw an error if the audience is not provided', (done) => {
+      setAuthClientForTesting(null);
 
-    // });
+      getUser({domain: 'somedomain', clientId: 'someid'}).then(
+        () => {
+          done('getUser did not throw error');
+        },
+        (reason) => {
+          done();
+        }
+      );
+    });
 
-    // it('should throw an error if the domain is not provided', () => {
+    it('should throw an error if the domain is not provided', (done) => {
+      setAuthClientForTesting(null);
 
-    // });
+      getUser({clientId: 'someid', audience: 'someaudience'}).then(
+        () => {
+          done('getUser did not throw error');
+        },
+        (reason) => {
+          done();
+        }
+      );
+    });
 
-    // it('should throw an error if the client id is not provided', () => {
+    it('should throw an error if the client id is not provided', (done) => {
+      setAuthClientForTesting(null);
 
-    // });
+      getUser({domain: 'somedomain', audience: 'someaudience'}).then(
+        () => {
+          done('getUser did not throw error');
+        },
+        (reason) => {
+          done();
+        }
+      );
+    });
+
+    it('should initialize the auth client if domain, clientId and audience are specified', (done) => {
+      setAuthClientForTesting(null);
+
+      getUser({
+        domain: 'somedomain',
+        clientId: 'someclientid',
+        audience: 'someaudience',
+      }).then(
+        () => {
+          done();
+        },
+        (reason) => {
+          done(
+            'getUser threw an error even though domain, clientId and audience were specified'
+          );
+        }
+      );
+    });
   });
 });
