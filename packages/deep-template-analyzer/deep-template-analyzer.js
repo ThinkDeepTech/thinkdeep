@@ -111,7 +111,7 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
     router.setRoutes(this.routes);
 
     this.user = await getUser();
-    initApolloClient();
+    await initApolloClient();
   }
 
   static get styles() {
