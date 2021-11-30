@@ -10,6 +10,7 @@ export default {
   aboutPageLabel: 'About2',
   loginPageLabel: 'Login2',
   logoutPageLabel: 'Logout2',
+  summaryPageLabel: 'Summary2',
   notFoundPageLabel: 'PageNotFound2',
   headline: 'Something different here',
   buttonText: 'Log In',

@@ -20,6 +20,7 @@
     "build": "rimraf build && rollup -c rollup.config.mjs"
   },
   "devDependencies": {
+    "@apollo-elements/rollup-plugin-graphql": "^1.0.3",
     "@babel/core": "^7.2.2",
     "@babel/parser": "^7.12.7",
     "@babel/plugin-proposal-class-properties": "^7.2.3",
@@ -30,6 +31,7 @@
     "@rollup/plugin-node-resolve": "^11.0.1",
     "@thinkdeep/deep-styles": "^0.0.8",
     "@thinkdeep/tools": "^0.0.8",
+    "chai-as-promised": "^7.1.1",
     "jest": "^27.0.6",
     "rollup": "^1.1.0",
     "rollup-plugin-babel": "^4.3.0",
@@ -38,6 +40,7 @@
     "serve": "^10.1.1"
   },
   "dependencies": {
+    "@apollo-elements/lit-apollo": "^4.1.0",
     "@babel/core": "^7.14.6",
     "@babel/plugin-transform-modules-commonjs": "^7.15.4",
     "@babel/plugin-transform-runtime": "^7.12.10",

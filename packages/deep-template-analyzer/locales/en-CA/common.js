@@ -1,3 +1,5 @@
+// TODO: Migrate to json file
+
 export default {
   companyName: 'ACME',
   companyStreetNumber: '349',
@@ -10,6 +12,7 @@ export default {
   aboutPageLabel: 'About',
   loginPageLabel: 'Login',
   logoutPageLabel: 'Logout',
+  summaryPageLabel: 'Summary',
   notFoundPageLabel: 'Page Not Found',
   headline: 'Explore data.',
   buttonText: 'Log In',

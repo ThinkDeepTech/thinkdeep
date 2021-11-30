@@ -8,6 +8,9 @@
 // import '@thinkdeep/deep-template-consultancy/deep-template-consultancy.js';
 // import {Router} from '@vaadin/router';
 
+// // TODO: Test usage of element.requestUpdate. Reference following for info:
+// // https://open-wc.org/guides/knowledge/testing/stubs/
+
 // /**
 //  * Find the matching routing component.
 //  * @param {Object[]} routes - Route array used to represent routes.
@@ -76,9 +79,11 @@
 //   it('should update the main window when a menu item is clicked', async () => {
 //     const contentArea = element.shadowRoot.getElementById('content');
 
+//     contentArea.requestUpdate();
 //     await elementUpdated(contentArea);
 
 //     clickMenuItem(navbar, homeRoute);
+//     contentArea.requestUpdate();
 //     await elementUpdated(contentArea);
 //     const homePage = findPage(contentArea, homeRoute.component);
 
@@ -89,7 +94,9 @@
 //     const aboutRoute = findRoute(element.routes, 'about');
 //     clickMenuItem(navbar, aboutRoute);
 
+//     contentArea.requestUpdate();
 //     await elementUpdated(contentArea);
+
 //     const aboutPage = findPage(contentArea, aboutRoute.component);
 //     const alteredTextContent = aboutPage?.shadowRoot?.textContent;
 //     if (alteredTextContent === undefined)
@@ -103,6 +110,7 @@
 //     const notFoundPage = findRoute(element.routes, 'Page Not Found');
 //     Router.go('/doesntexist');
 
+//     contentArea.requestUpdate();
 //     await elementUpdated(contentArea);
 
 //     const currentPage = findPage(contentArea, notFoundPage.component);
