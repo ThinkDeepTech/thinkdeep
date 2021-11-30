@@ -1,0 +1,24 @@
+{
+  "name": "@thinkdeep/deep-microservice-collection",
+  "version": "0.0.8",
+  "description": "Data collection microservice.",
+  "keywords": [
+    "Python",
+    "GraphQL",
+    "Federation"
+  ],
+  "author": "haydenmcp <hayden.mcparlane@gmail.com>",
+  "homepage": "https://github.com/ThinkDeepTech/thinkdeep#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThinkDeepTech/thinkdeep.git"
+  },
+  "scripts": {
+    "setup": "echo TODO",
+    "dev": "python3 -m flask run",
+    "dev:watch": "echo TODO",
+    "tests": "echo TODO",
+    "tests:watch": "echo TODO"
+  },
+  "private": true
+}

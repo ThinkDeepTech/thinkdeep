@@ -4,6 +4,7 @@
   "description": "> TODO: description",
   "type": "module",
   "keywords": [
+    "Node",
     "GraphQL",
     "Microservices"
   ],
