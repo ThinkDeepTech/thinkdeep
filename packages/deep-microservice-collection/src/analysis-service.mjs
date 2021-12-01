@@ -1,6 +1,5 @@
-import sentimentPackage from 'sentiment';
+import Sentiment from 'sentiment';
 import { hasReadAllAccess } from './permissions.mjs';
-const {Sentiment} = sentimentPackage;
 
 class AnalysisService {
 
@@ -8,17 +7,18 @@ class AnalysisService {
         this._dataSource = twitterDataSource;
     }
 
-    getSentiment(businessName, user) {
+    async getSentiment(businessName, user) {
         if (!businessName || (typeof businessName != 'string')) return [];
 
-        if (!hasReadAllAccess(user)) return [];
+        // if (!hasReadAllAccess(user)) return [];
 
-        const tweets = this._dataSource.getTweets(businessName);
+        const tweets = await this._dataSource.getTweets(businessName);
 
         const sentiments = [];
         for (const tweet of tweets) {
             if (!tweet?.text) continue;
             const result = this._runSentimentAnalysis(tweet.text);
+            result.businessName = businessName;
             sentiments.push(result);
         }
 

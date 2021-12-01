@@ -4,8 +4,9 @@
   "scripts": {
     "setup": "yarn install && lerna run setup",
     "microservices": "concurrently -k npm:microservice:*",
-    "microservice:economy": "nodemon ./packages/deep-microservice-economy/src/index.js",
-    "microservice:gateway": "wait-on tcp:4001 && nodemon ./packages/deep-microservice-gateway/src/index.js",
+    "microservice:collection": "nodemon ./packages/deep-microservice-collection/src/index.mjs",
+    "microservice:economy": "nodemon ./packages/deep-microservice-economy/src/index.mjs",
+    "microservice:gateway": "wait-on tcp:4001 && nodemon ./packages/deep-microservice-gateway/src/index.mjs",
     "nodemon": "nodemon -h",
     "build": "lerna run build",
     "tests": "lerna run tests"

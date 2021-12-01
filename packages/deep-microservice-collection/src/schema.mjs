@@ -4,12 +4,12 @@ const typeDefs = gql`
 
     type Sentiment @key(fields: "businessName") {
         businessName: String!
-        Score: Int,
-        Comparitive: Float
+        score: Int,
+        comparative: Float
     }
 
     extend type Query {
-        getSentiment(businessName: String!): [Sentiment]
+        getSentiment(businessName: String!): [Sentiment!]!
     }
 
     # This comment is to track important practices when defining mutations.

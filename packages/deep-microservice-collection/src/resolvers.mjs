@@ -1,11 +1,12 @@
 
 const resolvers = {
     Query: {
-        search: (_, {businessName}, { dataSources, user }) => dataSources.analysisService.getSentiment(businessName, user)
+        getSentiment: async (_, {businessName}, { dataSources, user }) => await dataSources.analysisService.getSentiment(businessName, user)
     },
     Sentiment: {
-        _resolveReference(object, { dataSources, user }) {
-            return dataSources.analysisService.getSentiment(object.businessName, user);
+        _resolveReference: async (object, { dataSources }) => {
+            // TODO: Update
+            return dataSources.analysisService.getSentiment(object.businessName);
         }
     }
 };
