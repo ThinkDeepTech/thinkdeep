@@ -10,6 +10,7 @@ const startGatewayService = async () => {
   const gateway = new ApolloGateway({
     serviceList: [
       {name: 'economy', url: process.env.PREDECOS_MICROSERVICE_ECONOMY_URL},
+      // {name: 'collection', url: 'http://0.0.0.0:5000/graphql'}
     ],
     buildService({name, url}) {
       return new RemoteGraphQLDataSource({
@@ -50,9 +51,6 @@ const startGatewayService = async () => {
   // therefore how to attack. Therefore, it's disabled here.
   app.disable('x-powered-by');
 
-  // TODO:
-  app.use(jwtHandler);
-
   server.applyMiddleware({
     app,
     cors: {
@@ -61,6 +59,9 @@ const startGatewayService = async () => {
       credentials: true,
     },
   });
+
+  // TODO:
+  app.use(jwtHandler);
 
   app.listen({port}, () =>
     // eslint-disable-next-line
