@@ -6,6 +6,7 @@ class CollectionService {
 
     constructor(twitterDataSource) {
         this._twitterDataSource = twitterDataSource;
+        // TODO:
         // this._kdbDataSource = kdbDataSource;
     }
 
