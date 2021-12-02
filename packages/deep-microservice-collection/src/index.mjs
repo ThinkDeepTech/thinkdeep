@@ -4,18 +4,18 @@ import {TwitterDataSource} from './datasource/twitter-datasource.mjs';
 import express from 'express';
 import {resolvers} from './resolvers.mjs';
 import {typeDefs} from './schema.mjs';
-import {AnalysisService} from './analysis-service.mjs';
+import {CollectionService} from './collection-service.mjs';
 
 const port = 4002;
 
 const startApolloServer = async () => {
 
   const dataSource = new TwitterDataSource();
-  const analysisService = new AnalysisService(dataSource);
+  const collectionService = new CollectionService(dataSource);
 
   const server = new ApolloServer({
     schema: buildSubgraphSchema([{typeDefs, resolvers}]),
-    dataSources: () => ({analysisService}),
+    dataSources: () => ({collectionService}),
     context: ({req}) => {
       const user = req.headers.user ? JSON.parse(req.headers.user) : null;
       return {user};

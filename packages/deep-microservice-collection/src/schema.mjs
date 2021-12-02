@@ -2,14 +2,22 @@ import { gql } from 'apollo-server';
 
 const typeDefs = gql`
 
+    enum EconomicEntityType {
+        BUSINESS
+    }
+
     type Sentiment @key(fields: "businessName") {
         businessName: String!
-        score: Int,
+        score: Int
         comparative: Float
     }
 
-    extend type Query {
-        getSentiment(businessName: String!): [Sentiment!]!
+    type CollectEconomicDataResponse {
+        success: Boolean!
+    }
+
+    extend type Mutation {
+        collectEconomicData(entityName: String!, entityType: EconomicEntityType!): CollectEconomicDataResponse!
     }
 
     # This comment is to track important practices when defining mutations.

@@ -1,12 +1,11 @@
 
 const resolvers = {
-    Query: {
-        getSentiment: async (_, {businessName}, { dataSources, user }) => await dataSources.analysisService.getSentiment(businessName, user)
+    Mutation: {
+        collectEconomicData: async (_, {entityName, entityType}, { dataSources, user }) => await dataSources.collectionService.collectEconomicData(entityName, entityType, user)
     },
     Sentiment: {
-        _resolveReference: async (object, { dataSources }) => {
-            // TODO: Update
-            return dataSources.analysisService.getSentiment(object.businessName);
+        _resolveReference: async ({entityName, entityType}, { dataSources, user }) => {
+            return dataSources.collectionService.collectEconomicData(entityName, entityType, user);
         }
     }
 };
