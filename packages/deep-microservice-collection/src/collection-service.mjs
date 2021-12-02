@@ -7,13 +7,13 @@ class CollectionService {
     constructor(twitterDataSource) {
         this._twitterDataSource = twitterDataSource;
         // this._kdbDataSource = kdbDataSource;
-        this._sentiment = new Sentiment();
     }
 
     async collectEconomicData(entityName, entityType, user) {
-        if (!entityName || (typeof entityName != 'string')) return { success: false};
+        if (!entityName || (typeof entityName != 'string')) return { success: false };
 
-        // TODO
+        if (!entityType || (typeof entityType != 'string')) return { success: false };
+
         if (!hasReadAllAccess(user)) return { success: false};
 
         const strategy = this._getStrategy(entityType).bind(this);
@@ -24,7 +24,8 @@ class CollectionService {
     }
 
     _getStrategy(entityType, businessHandler = this._collectBusinessData) {
-        if (entityType.toLowerCase() === 'business') {
+        const type = entityType.toLowerCase();
+        if (type === 'business') {
             return businessHandler;
         } else {
             throw new Error('The specified economic type was unknown.')
