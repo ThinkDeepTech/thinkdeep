@@ -26,7 +26,6 @@
     "@babel/preset-env": "^7.12.11",
     "@esm-bundle/chai": "^4.3.4",
     "@open-wc/building-rollup": "^1.10.0",
-    "@open-wc/karma-esm": "^4.0.0",
     "@open-wc/testing": "^2.5.33",
     "@open-wc/testing-helpers": "^1.8.12",
     "@rollup/plugin-babel": "^5.2.2",
