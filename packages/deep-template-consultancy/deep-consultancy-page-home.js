@@ -1,4 +1,4 @@
-import {html, css, LitElement} from 'lit-element';
+import {html, css, LitElement} from 'lit';
 import '@thinkdeep/deep-button/deep-button';
 
 export class DeepConsultancyPageHome extends LitElement {

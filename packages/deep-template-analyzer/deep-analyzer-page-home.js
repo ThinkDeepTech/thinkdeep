@@ -1,4 +1,4 @@
-import {html, css, LitElement} from 'lit-element';
+import {html, css, LitElement} from 'lit';
 import {i18nMixin, translate} from 'lit-element-i18n';
 
 export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {

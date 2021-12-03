@@ -1,13 +1,12 @@
-import {css, html, LitElement} from 'lit-element';
-import {i18nMixin, translate} from 'lit-element-i18n';
-import {Router} from '@vaadin/router';
-
 import '@thinkdeep/deep-footer';
 import '@thinkdeep/deep-navbar';
-import '@vaadin/vaadin-app-layout/vaadin-app-layout';
-import '@vaadin/vaadin-app-layout/vaadin-drawer-toggle';
-import '@vaadin/vaadin-tabs/vaadin-tab';
-import '@vaadin/vaadin-tabs/vaadin-tabs';
+import {Router} from '@vaadin/router';
+// import '@vaadin/vaadin-app-layout/vaadin-app-layout';
+// import '@vaadin/vaadin-app-layout/vaadin-drawer-toggle';
+// import '@vaadin/vaadin-tabs/vaadin-tab';
+// import '@vaadin/vaadin-tabs/vaadin-tabs';
+import {css, html, LitElement} from 'lit';
+import {i18nMixin, translate} from 'lit-element-i18n';
 
 import {getUser} from '@thinkdeep/deep-template-analyzer/user.mjs';
 import {initApolloClient} from './graphql/client.mjs';
@@ -83,6 +82,22 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
         },
       },
       {
+        path: `/${translate('translations:loginPageLabel')}`,
+        name: translate('translations:loginPageLabel'),
+        component: 'deep-analyzer-page-home',
+        action: async () => {
+          await this.user.login();
+        },
+      },
+      {
+        path: `/${translate('translations:logoutPageLabel')}`,
+        name: translate('translations:logoutPageLabel'),
+        component: 'deep-analyzer-page-home',
+        action: async () => {
+          await this.user.logout();
+        },
+      },
+      {
         path: `/${translate('translations:summaryPageLabel')}`,
         name: translate('translations:summaryPageLabel'),
         component: 'deep-analyzer-page-summary',
@@ -120,12 +135,24 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
         :host {
           display: grid;
           grid-template-rows: auto 1fr auto;
-          grid-template-areas: 'content';
-          background-color: var(--primary-color, #a4a4a4);
+          grid-template-areas:
+            'header'
+            'content'
+            'footer';
+          background-color: var(--primary-color, #000000);
+        }
+
+        deep-navbar {
+          grid-area: header;
+          height: 16vh;
         }
 
         #content {
           grid-area: content;
+        }
+
+        deep-footer {
+          grid-area: footer;
         }
       `,
     ];
@@ -135,7 +162,7 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
     return html`
       ${this.styles}
 
-      <vaadin-app-layout>
+      <!-- <vaadin-app-layout>
         <vaadin-drawer-toggle
           slot="navbar"
           touch-optimized
@@ -144,27 +171,41 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
         <vaadin-tabs slot="drawer" orientation="vertical">
           <vaadin-tab> ${this.user?.name} </vaadin-tab>
           ${this.routes.map((route) =>
-            route.hidden
-              ? html``
-              : html`
-                  <vaadin-tab>
-                    <a href="${route.path}"> ${route.name} </a>
-                  </vaadin-tab>
-                `
-          )}
+        route.hidden
+          ? html``
+          : html`
+              <vaadin-tab>
+                <a href="${route.path}"> ${route.name} </a>
+              </vaadin-tab>
+            `
+      )}
           ${!this.user.loggedIn
-            ? html` <vaadin-tab @click="${this.user.login}">
-                <a> ${translate('translations:loginPageLabel')} </a>
-              </vaadin-tab>`
-            : html`
-                <vaadin-tab @click="${this.user.logout}">
-                  <a> ${translate('translations:logoutPageLabel')} </a>
-                </vaadin-tab>
-              `}
+        ? html` <vaadin-tab @click="${this.user.login}">
+            <a> ${translate('translations:loginPageLabel')} </a>
+          </vaadin-tab>`
+        : html`
+            <vaadin-tab @click="${this.user.logout}">
+              <a> ${translate('translations:logoutPageLabel')} </a>
+            </vaadin-tab>
+          `}
         </vaadin-tabs>
 
         <main id="content"></main>
-      </vaadin-app-layout>
+      </vaadin-app-layout> -->
+
+      <deep-navbar
+        class="navbar"
+        .companyName="${this.companyName}"
+        .routes="${this.routes}"
+      ></deep-navbar>
+
+      <main id="content"></main>
+
+      <deep-footer
+        .routes="${this.routes}"
+        .address="${this.address}"
+        .companyName="${this.companyName}"
+      ></deep-footer>
     `;
   }
 }

@@ -1,4 +1,4 @@
-import {html, LitElement} from 'lit-element';
+import {html, LitElement} from 'lit';
 import createAuth0Client from '@auth0/auth0-spa-js';
 import authConfig from './auth0_config';
 

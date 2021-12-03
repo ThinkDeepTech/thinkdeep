@@ -105,13 +105,13 @@ describe('analysis-service', () => {
             expect(dataSource.getTweets.withArgs(businessName)).to.have.been.called;
         })
 
-        // it('should store the tweets', async () => {
-        //     assert.fail();
-        // })
+        it('should store the tweets', async () => {
+            assert.fail();
+        })
 
-        // it('should return true if the operation succeeds', async () => {
-        //     assert.fail();
-        // })
+        it('should return true if the operation succeeds', async () => {
+            assert.fail();
+        })
 
     });
 });

@@ -1,4 +1,4 @@
-import {html, LitElement, css} from 'lit-element';
+import {html, LitElement, css} from 'lit';
 
 /* eslint-disable no-unused-vars */
 export class DeepFooter extends LitElement {
