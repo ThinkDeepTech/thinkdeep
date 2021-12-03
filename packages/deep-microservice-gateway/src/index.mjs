@@ -51,6 +51,7 @@ const startGatewayService = async () => {
   // therefore how to attack. Therefore, it's disabled here.
   app.disable('x-powered-by');
 
+
   // TODO:
   app.use(jwtHandler);
 

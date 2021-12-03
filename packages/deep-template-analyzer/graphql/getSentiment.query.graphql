@@ -1,4 +1,0 @@
-query getSentiment($economicEntityName: String!, $economicEntityType: EconomicEntityType!) {
-  entityName
-  sentiments
-}

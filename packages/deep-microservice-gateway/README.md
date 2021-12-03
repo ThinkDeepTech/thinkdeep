@@ -1,10 +1,4 @@
 
-## Environment Variables
-- PREDECOS_AUTH_JWKS_URI
-- PREDECOS_AUTH_AUDIENCE
-- PREDECOS_AUTH_ISSUER
-- PREDECOS_MICROSERVICE_ECONOMY_URL
-
 ## Developer Setup (Ubuntu)
 - Add the following environment variables:
     1. PREDECOS_AUTH_JWKS_URI : Auth0 JWKS Uri

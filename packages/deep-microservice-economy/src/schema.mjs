@@ -2,7 +2,7 @@ import { gql } from 'apollo-server';
 
 const typeDefs = gql`
 
-    enum EntityType {
+    enum EconomicEntityType {
         BUSINESS
     }
 
@@ -13,15 +13,25 @@ const typeDefs = gql`
         second: Int
     }
 
-    extend type Query {
-        search(businessName: String!): [EconomicEntity]!
+    type GetSentimentResponse {
+        entityName: String!
+        sentiments: [Sentiment!]!
     }
 
-    # This comment is to track important practices when defining mutations.
-    # - It's recommended to return a type designed specifically for mutations (i.e, a theoretical AddBusiness(...): UpdateBusinessResponse).
-    # - Return modified objects in response so that UI can apply updates to cache, etc without additional query.
-    # type Mutation {
-    # }
+    type Sentiment {
+        timestamp: Int!
+        score: Int
+        tweets: [Tweet!]!
+    }
+
+    type Tweet {
+        text: String!
+    }
+
+    extend type Query {
+        search(businessName: String!): [EconomicEntity]!,
+        getSentiment(economicEntityName: String!, economicEntityType: EconomicEntityType!): GetSentimentResponse!
+    }
 `;
 
 export { typeDefs };

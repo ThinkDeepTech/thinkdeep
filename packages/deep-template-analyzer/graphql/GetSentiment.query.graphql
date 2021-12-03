@@ -1,0 +1,12 @@
+query GetSentiment($economicEntityName: String!, $economicEntityType: EconomicEntityType!) {
+  getSentiment(economicEntityName: $economicEntityName, economicEntityType: $economicEntityType) {
+    entityName
+    sentiments {
+      timestamp
+      score
+      tweets{
+        text
+      }
+    }
+  }
+}
