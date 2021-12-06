@@ -51,6 +51,42 @@ class EconomyService {
                 }, {
                     text: "I had a good time at this place."
                 }]
+            },{
+                timestamp: 3,
+                score: -0.5,
+                tweets: [{
+                    text: "It was great!"
+                }]
+            },{
+                timestamp: 4,
+                score: 3,
+                tweets: [{
+                    text: "Woohoo"
+                }, {
+                    text: "I had a tough time with the product but it was okay."
+                }, {
+                    text: "What a great product!"
+                },{
+                    text: "Wow, that's awesome!"
+                },{
+                    text: "It was cool. I think I'd go back."
+                }]
+            },{
+                timestamp: 5,
+                score: 4,
+                tweets: [{
+                    text: "I thought it was great."
+                }, {
+                    text: "I'd use their services again."
+                }, {
+                    text: "Such good employees"
+                },{
+                    text: "Wow, that's awesome!"
+                },{
+                    text: "It was cool. I think I'd go back."
+                },{
+                    text: "Awesomeness..."
+                }]
             }]
         };
     }

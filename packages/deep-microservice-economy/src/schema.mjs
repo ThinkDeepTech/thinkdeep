@@ -19,8 +19,8 @@ const typeDefs = gql`
     }
 
     type Sentiment {
-        timestamp: Int!
-        score: Int
+        timestamp: Float!
+        score: Float!
         tweets: [Tweet!]!
     }
 

@@ -1,12 +1,14 @@
 import {ApolloQuery, html} from '@apollo-elements/lit-apollo';
 import '@google-web-components/google-chart';
+import '@thinkdeep/deep-button/deep-button.mjs';
 import '@thinkdeep/deep-card/deep-card.mjs';
+import '@thinkdeep/deep-textbox/deep-textbox.mjs';
 import GetSentiment from './graphql/GetSentiment.query.graphql';
 
 export default class DeepAnalyzerPageSummary extends ApolloQuery {
   static get properties() {
     return {
-      selectedSentiment: {type: Object},
+      selectedSentiments: {type: Array},
     };
   }
 
@@ -20,7 +22,19 @@ export default class DeepAnalyzerPageSummary extends ApolloQuery {
       economicEntityType: 'BUSINESS',
     };
 
-    this.selectedSentiment = {};
+    this.selectedSentiments = [];
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+
+    this.addEventListener('google-chart-select', this._handleChartSelection);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+
+    this.removeEventListener('google-chart-select', this._handleChartSelection);
   }
 
   render() {
@@ -28,6 +42,7 @@ export default class DeepAnalyzerPageSummary extends ApolloQuery {
       <!-- TODO: Translations -->
       Start Collecting:
       <deep-textbox placeholder="Business Name (i.e, Google)"></deep-textbox>
+      <deep-button @click="${this._collectData}">Collect Data</deep-button>
 
       Select Business:
       <select name="business" id="business">
@@ -37,28 +52,50 @@ export default class DeepAnalyzerPageSummary extends ApolloQuery {
       <google-chart
         type="line"
         options='{"title": "Sentiment as a function of time" }'
-        data='[["Year", "Sentiment"],${this.data?.getSentiment?.sentiments.map(
-          (sentiment) => {
-            return JSON.stringify([sentiment.timestamp, sentiment.score]);
-          }
-        )}]'
+        cols='[{"label": "Year", "type": "number"}, {"label": "Sentiment", "type": "number"}]'
+        rows="[${this.data?.getSentiment?.sentiments.map((sentiment) =>
+          JSON.stringify([sentiment.timestamp, sentiment.score])
+        )}]"
       >
       </google-chart>
 
       <!-- TODO: Modify such that not just first but dynamic -->
-      ${this.data?.getSentiment?.sentiments[0]?.tweets?.map(
-        (tweet, index) => html`
-          <deep-card>
-            <h3>Tweet ${index}</h3>
-            <p>${tweet?.text}</p>
-          </deep-card>
-        `
+      ${this.selectedSentiments.map((sentiment) =>
+        sentiment?.tweets?.map(
+          (tweet, index) => html`
+            <deep-card>
+              <h3>Tweet ${index}</h3>
+              <p>${tweet?.text}</p>
+            </deep-card>
+          `
+        )
       )}
-
-      <!-- ${this.data?.search?.map(
-        (business) => html`<p>${business.id} : ${business.name}</p>`
-      )} -->
     `;
+  }
+
+  _handleChartSelection({originalTarget}) {
+    const googleChart = originalTarget;
+
+    this.selectedSentiments = [];
+
+    for (const selection of googleChart.selection) {
+      const selectedRow = selection.row || 0;
+
+      const selectedPoint = googleChart.rows[selectedRow];
+
+      this.data?.getSentiment?.sentiments?.forEach((sentiment) => {
+        if (this._isMatchingSentiment(sentiment, selectedPoint)) {
+          this.selectedSentiments.push(sentiment);
+        }
+      });
+    }
+  }
+
+  _isMatchingSentiment(sentiment, selectedPoint) {
+    return (
+      sentiment.timestamp === selectedPoint[0] &&
+      sentiment.score === selectedPoint[1]
+    );
   }
 }
 
