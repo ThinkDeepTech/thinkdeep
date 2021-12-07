@@ -6,7 +6,7 @@
     "clean": "lerna clean",
     "microservices": "concurrently -k npm:microservice:*",
     "microservice:collection": "nodemon ./packages/deep-microservice-collection/src/index.mjs",
-    "microservice:economy": "nodemon ./packages/deep-microservice-economy/src/index.mjs",
+    "microservice:analysis": "nodemon ./packages/deep-microservice-analysis/src/index.mjs",
     "microservice:gateway": "wait-on tcp:4001 && nodemon ./packages/deep-microservice-gateway/src/index.mjs",
     "nodemon": "nodemon -h",
     "build": "lerna run build",

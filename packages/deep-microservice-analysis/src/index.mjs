@@ -4,7 +4,7 @@ import {PostgresDataSource} from './datasource/postgres-datasource.mjs';
 import express from 'express';
 import {resolvers} from './resolvers.mjs';
 import {typeDefs} from './schema.mjs';
-import {EconomyService} from './economy-service.mjs';
+import {AnalysisService} from './service/analysis-service.mjs';
 
 const port = 4001;
 
@@ -15,11 +15,11 @@ const startApolloServer = async () => {
   };
 
   const db = new PostgresDataSource(knexConfig);
-  const economyService = new EconomyService(db);
+  const analysisService = new AnalysisService(db);
 
   const server = new ApolloServer({
     schema: buildSubgraphSchema([{typeDefs, resolvers}]),
-    dataSources: () => ({economyService}),
+    dataSources: () => ({analysisService}),
     context: ({req}) => {
       const user = req.headers.user ? JSON.parse(req.headers.user) : null;
       return {user};

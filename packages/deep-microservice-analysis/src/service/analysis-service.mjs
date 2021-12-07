@@ -1,10 +1,7 @@
 
-import { hasReadAllAccess } from './permissions.mjs';
+import { hasReadAllAccess } from '../permissions.mjs';
 
-/**
- * Represents a querable model of the economy.
- */
-class EconomyService {
+class AnalysisService {
 
     constructor(dataSource) {
         this._dataSource = dataSource;
@@ -25,14 +22,14 @@ class EconomyService {
     }
 
     getSentiment(economicEntityName, economicEntityType, user) {
-        if (!economicEntityName || (typeof economicEntityName != 'string')) return [];
+        if (!economicEntityName || (typeof economicEntityName != 'string')) return {entityName: economicEntityName};
 
-        if (!economicEntityType || (typeof economicEntityType != 'string')) return [];
+        if (!economicEntityType || (typeof economicEntityType != 'string')) return {entityName: economicEntityName};
 
-        // if (!hasReadAllAccess(user)) return [];
+        if (!hasReadAllAccess(user)) return {entityName: economicEntityName};
 
         return {
-            entityName: 'Google',
+            entityName: economicEntityName,
             sentiments: [{
                 timestamp: 1,
                 score: -3,
@@ -92,4 +89,4 @@ class EconomyService {
     }
 }
 
-export { EconomyService };
+export { AnalysisService };

@@ -9,7 +9,7 @@ const startGatewayService = async () => {
 
   const gateway = new ApolloGateway({
     serviceList: [
-      {name: 'economy', url: process.env.PREDECOS_MICROSERVICE_ECONOMY_URL},
+      {name: 'analysis', url: process.env.PREDECOS_MICROSERVICE_ANALYSIS_URL},
       {name: 'collection', url: process.env.PREDECOS_MICROSERVICE_COLLECTION_URL}
     ],
     buildService({name, url}) {
