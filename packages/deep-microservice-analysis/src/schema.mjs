@@ -14,7 +14,6 @@ const typeDefs = gql`
     }
 
     type GetSentimentResponse {
-        entityName: String!
         sentiments: [Sentiment!]!
     }
 

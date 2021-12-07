@@ -22,14 +22,13 @@ class AnalysisService {
     }
 
     getSentiment(economicEntityName, economicEntityType, user) {
-        if (!economicEntityName || (typeof economicEntityName != 'string')) return {entityName: economicEntityName};
+        if (!economicEntityName || (typeof economicEntityName != 'string')) return {};
 
-        if (!economicEntityType || (typeof economicEntityType != 'string')) return {entityName: economicEntityName};
+        if (!economicEntityType || (typeof economicEntityType != 'string')) return {};
 
-        if (!hasReadAllAccess(user)) return {entityName: economicEntityName};
+        if (!hasReadAllAccess(user)) return {};
 
         return {
-            entityName: economicEntityName,
             sentiments: [{
                 timestamp: 1,
                 score: -3,
