@@ -1,10 +1,12 @@
 
 import { hasReadAllAccess } from '../permissions.mjs';
+import Sentiment from 'sentiment';
 
 class AnalysisService {
 
     constructor(dataSource) {
         this._dataSource = dataSource;
+        this._sentiment = new Sentiment();
     }
 
     /**
@@ -27,6 +29,21 @@ class AnalysisService {
         if (!economicEntityType || (typeof economicEntityType != 'string')) return {};
 
         if (!hasReadAllAccess(user)) return {};
+
+        // const collectionService = new CollectionService();
+
+        // const data = collectionService.getTweets(economicEntityName, economicEntityType, user);
+
+        // const sentiments = [];
+        // for (const tweet of data.tweets) {
+        //     if (!tweet?.text) continue;
+        //     const sentiment = this._sentiment.analyze(tweet.text.toLowerCase());
+        //     sentiments.push(sentiment);
+        // }
+
+        // const success = this.storeAnalyzedData(economicEntityName, economicEntityType, sentiments, user);
+
+        // return { sentiments };
 
         return {
             sentiments: [{

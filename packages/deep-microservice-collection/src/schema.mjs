@@ -10,8 +10,27 @@ const typeDefs = gql`
         success: Boolean!
     }
 
+    type GetTweetsResponse {
+        economicEntityName: String!
+        economicEntityType: String!
+        timeSeries: [TimeSeriesTweets!]!
+    }
+
+    type TimeSeriesTweets {
+        timestamp: Int!
+        tweets: [Tweet!]!
+    }
+
+    type Tweet {
+        text: String!
+    }
+
+    extend type Query {
+        getTweets(economicEntityName: String!, economicEntityType: EconomicEntityType!): GetTweetsResponse!
+    }
+
     extend type Mutation {
-        collectEconomicData(entityName: String!, entityType: EconomicEntityType!): CollectEconomicDataResponse!
+        collectEconomicData(economicEntityName: String!, economicEntityType: EconomicEntityType!): CollectEconomicDataResponse!
     }
 `;
 

@@ -1,0 +1,68 @@
+import {MongoDataSource} from 'apollo-datasource-mongodb';
+
+
+class TweetStore extends MongoDataSource {
+    async readTweets(economicEntityName, economicEntityType) {
+        try {
+            const result = await this.collection.find({
+                economicEntityName: economicEntityName.toLowerCase(),
+                economicEntityType : economicEntityType.toLowerCase()
+            }).toArray();
+
+            return this.reduceTweets(result);
+        } catch (e) {
+            console.log(`
+                An error occurred while reading tweets from the store.
+                Error: ${e.message}
+            `)
+            return [];
+        }
+    }
+    async createTweets(timestamp, economicEntityName, economicEntityType, tweets) {
+        try {
+            await this.collection.insertOne({
+                timestamp,
+                economicEntityName: economicEntityName.toLowerCase(),
+                economicEntityType: economicEntityType.toLowerCase(),
+                tweets
+            });
+            return true;
+        } catch(e) {
+            console.log(`
+                Insertion failed for:
+                    economicEntityName: ${economicEntityName}
+                    economicEntityType: ${economicEntityType}
+                    tweets: ${JSON.stringify(tweets)}
+
+                    error: ${e.message}
+                    `);
+            return false;
+        }
+    }
+
+    reduceTweets(dbData) {
+        debugger;
+
+        // NOTE: All economic entity name and type values should be equivalent so just
+        // take the first values and apply to response.
+        const response = {
+            economicEntityName: dbData[0].economicEntityName,
+            economicEntityType: dbData[0].economicEntityType,
+            timeSeries: []
+        };
+
+        for (const entry of dbData) {
+
+            if (!Object.keys(entry).length || !entry?.timestamp) continue;
+
+            response.timeSeries.push({
+                timestamp: entry.timestamp,
+                tweets: entry.tweets || []
+            })
+        }
+
+        return response;
+    }
+};
+
+export { TweetStore };

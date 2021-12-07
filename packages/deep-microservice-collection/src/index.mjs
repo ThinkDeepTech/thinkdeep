@@ -1,17 +1,46 @@
 import {buildSubgraphSchema} from '@apollo/subgraph';
 import {ApolloServer} from 'apollo-server-express';
-import {TwitterDataSource} from './datasource/twitter-datasource.mjs';
+import {CollectionService} from './collection-service.mjs';
+import {TwitterAPI} from './datasource/twitter-api.mjs';
 import express from 'express';
+import {MongoClient} from 'mongodb';
+import process from 'process';
 import {resolvers} from './resolvers.mjs';
 import {typeDefs} from './schema.mjs';
-import {CollectionService} from './collection-service.mjs';
+import {TweetStore} from './datasource/tweet-store.mjs'
 
 const port = 4002;
 
+const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRING);
+
+const performCleanup = async () => {
+  await mongoClient.close();
+};
+
+const attachExitHandler = async (callback) => {
+  process.on('cleanup', callback);
+  process.on('exit', () => {
+    process.emit('cleanup');
+  });
+  process.on('SIGINT', () => {
+    process.exit(2);
+  });
+  process.on('uncaughtException', () => {
+    process.exit(99);
+  });
+};
+
 const startApolloServer = async () => {
 
-  const dataSource = new TwitterDataSource();
-  const collectionService = new CollectionService(dataSource);
+  attachExitHandler(performCleanup);
+
+  await mongoClient.connect();
+
+  console.log("Connected successfully to server");
+
+  const twitterAPI = new TwitterAPI();
+  const tweetStore = new TweetStore(mongoClient.db('admin').collection('tweets'));
+  const collectionService = new CollectionService(twitterAPI, tweetStore);
 
   const server = new ApolloServer({
     schema: buildSubgraphSchema([{typeDefs, resolvers}]),

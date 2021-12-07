@@ -2,17 +2,17 @@ import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
-import { TwitterDataSource } from '../../src/datasource/twitter-datasource.mjs';
+import { TwitterAPI } from '../../src/datasource/twitter-api.mjs';
 
 chai.use(sinonChai);
 const expect = chai.expect;
 
-describe('twitter-datasource', () => {
+describe('twitter-api', () => {
 
     let subject;
     beforeEach(() => {
-        TwitterDataSource.prototype.get = sinon.stub();
-        subject = new TwitterDataSource();
+        TwitterAPI.prototype.get = sinon.stub();
+        subject = new TwitterAPI();
     });
 
     it('should be targeting the correct base url', () => {

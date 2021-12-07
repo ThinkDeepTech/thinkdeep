@@ -1,13 +1,11 @@
 import moment from 'moment';
 import { hasReadAllAccess } from './permissions.mjs';
-import Sentiment from 'sentiment';
 
 class CollectionService {
 
-    constructor(twitterDataSource) {
-        this._twitterDataSource = twitterDataSource;
-        // TODO:
-        // this._kdbDataSource = kdbDataSource;
+    constructor(twitterAPI, tweetStore) {
+        this._twitterAPI = twitterAPI;
+        this._tweetStore = tweetStore;
     }
 
     async collectEconomicData(entityName, entityType, user) {
@@ -17,11 +15,23 @@ class CollectionService {
 
         if (!hasReadAllAccess(user)) return { success: false};
 
+        // TODO: Commander here to trigger collection utils, promise.all for multiple strategies?
+        // This would, in essence, trigger multiple collection methods such as gathering tweets,
+        // scanning web pages, etc. All of which are data collection methods that should be
+        // mapped to economic entity types.
+
         const strategy = this._getStrategy(entityType).bind(this);
 
         const success = await strategy(entityName);
 
         return { success };
+    }
+
+    async getTweets(economicEntityName, economicEntityType, user, tweetStore = this._tweetStore) {
+
+        if (!hasReadAllAccess(user)) return { economicEntityName, economicEntityType, timeSeries: []};
+
+        return await tweetStore.readTweets(economicEntityName, economicEntityType);
     }
 
     _getStrategy(entityType, businessHandler = this._collectBusinessData) {
@@ -33,11 +43,13 @@ class CollectionService {
         }
     }
 
-    async _collectBusinessData(businessName, twitterDataSource = this._twitterDataSource, sentiment = this._sentiment) {
+    async _collectBusinessData(businessName, twitterAPI = this._twitterAPI, tweetStore = this._tweetStore) {
 
-        const data = await twitterDataSource.getTweets(businessName);
+        const data = await twitterAPI.getTweets(businessName);
 
         const timestamp = moment().unix();
+
+        const success = await tweetStore.createTweets(timestamp, businessName, 'business', data);
 
         // const isStored = await kdbDataSource.store(timestamp, data);
 
@@ -54,11 +66,8 @@ class CollectionService {
 
         // return sentiments;
         // return isStored;
-        return true;
-    }
-
-    _storeSentimentResults(timestamp, businessName, sentiments) {
-        // TODO
+        // return true;
+        return success;
     }
 }
 
