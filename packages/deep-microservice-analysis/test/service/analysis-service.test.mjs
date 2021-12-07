@@ -5,8 +5,8 @@ import sinonChai from 'sinon-chai';
 const expect = chai.expect;
 chai.use(sinonChai);
 
-import { AnalysisService } from '../src/analysis-service.mjs';
-import { PostgresDataSource } from '../src/datasource/postgres-datasource.mjs';
+import { AnalysisService } from '../../src/service/analysis-service.mjs';
+import { PostgresDataSource } from '../../src/datasource/postgres-datasource.mjs';
 
 describe('analysis-service', () => {
 
