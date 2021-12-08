@@ -10,3 +10,4 @@
 - Currently, the database is young. So, execution of setupDB.sql will only partially work.
 - Add the following environment variables:
     1. PREDECOS_PG_CONNECTION_STRING : Ensure this is equal to the postgres connection string associated with the database.
+    1. PREDECOS_MICROSERVICE_COLLECTION_URL

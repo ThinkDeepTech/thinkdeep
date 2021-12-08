@@ -1,8 +1,8 @@
 
 const resolvers = {
     Query: {
-        search: (_, {businessName}, { dataSources, user }) => dataSources.analysisService.getBusinessRelationships(businessName, user),
-        getSentiment: (_, {economicEntityName, economicEntityType}, { dataSources, user}) => dataSources.analysisService.getSentiment(economicEntityName, economicEntityType)
+        search: async (_, {businessName}, { dataSources, user }) => dataSources.analysisService.getBusinessRelationships(businessName, user),
+        getSentiment: async (_, {economicEntityName, economicEntityType}, { dataSources, user}) => await dataSources.analysisService.getSentiment(economicEntityName, economicEntityType, user)
     },
     EconomicEntity: {
         _resolveReference(object, { dataSources }) {

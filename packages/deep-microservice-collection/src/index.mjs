@@ -49,6 +49,7 @@ const startApolloServer = async () => {
       const user = req.headers.user ? JSON.parse(req.headers.user) : null;
       return {user};
     },
+    introspection: true
   });
   await server.start();
 

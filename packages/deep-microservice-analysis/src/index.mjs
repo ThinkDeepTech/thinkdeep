@@ -4,7 +4,7 @@ import {PostgresDataSource} from './datasource/postgres-datasource.mjs';
 import express from 'express';
 import {resolvers} from './resolvers.mjs';
 import {typeDefs} from './schema.mjs';
-import {AnalysisService} from './service/analysis-service.mjs';
+import {AnalysisService} from './analysis-service.mjs';
 
 const port = 4001;
 
