@@ -52,7 +52,9 @@ const startGatewayService = async () => {
   app.disable('x-powered-by');
 
 
-  // TODO:
+  // NOTE: This handler must be present here in order for authorization to correctly operate. If placed
+  // after server.applyMiddleWare(...) it simply doesn't execute. However, the presence of this handler
+  // before server.applyMiddleWare(...) breaks Apollo Explorer.
   app.use(jwtHandler);
 
   server.applyMiddleware({

@@ -16,9 +16,7 @@
   "scripts": {
     "setup": "sudo node ./setup.js",
     "dev": "node ./src/index.js",
-    "dev:watch": "echo TODO",
-    "tests": "mocha ./test/**/*.test.mjs",
-    "tests:watch": "echo TODO"
+    "tests": "mocha ./test/**/*.test.mjs"
   },
   "devDependencies": {
     "chai": "^4.3.4",

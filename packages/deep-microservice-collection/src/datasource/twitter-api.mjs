@@ -20,7 +20,6 @@ class TwitterAPI extends RESTDataSource {
             });
             return this.reduceTweets(payload);
         } catch (e) {
-            // TODO: Tests
             console.log(`An error occurred while fetching tweets from the twitter API: ${e.msg}`);
             return [];
         }

@@ -15,11 +15,6 @@ class CollectionService {
 
         if (!hasReadAllAccess(user)) return { success: false};
 
-        // TODO: Commander here to trigger collection utils, promise.all for multiple strategies?
-        // This would, in essence, trigger multiple collection methods such as gathering tweets,
-        // scanning web pages, etc. All of which are data collection methods that should be
-        // mapped to economic entity types.
-
         const strategy = this._getStrategy(entityType).bind(this);
 
         const success = await strategy(entityName);

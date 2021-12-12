@@ -8,7 +8,7 @@ const replace = fromRollup(rollupReplace);
 export default {
   nodeResolve: true,
 
-  // TODO: Design
+  // TODO: Update readme with self signing process.
   sslKey: '/home/hayden/ssl/ssl-cert.key',
   sslCert: '/home/hayden/ssl/ssl-cert.crt',
   open: true,

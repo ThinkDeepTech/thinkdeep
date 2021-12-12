@@ -41,13 +41,10 @@ class TweetStore extends MongoDataSource {
     }
 
     reduceTweets(dbData) {
-        debugger;
 
         // NOTE: All economic entity name and type values should be equivalent so just
         // take the first values and apply to response.
         const response = {
-            economicEntityName: dbData[0].economicEntityName,
-            economicEntityType: dbData[0].economicEntityType,
             timeSeries: []
         };
 

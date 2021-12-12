@@ -44,6 +44,7 @@ const getUser = async (options = {
         redirect_uri: globalThis.location.origin,
         cacheLocation: 'localstorage',
         audience: audience,
+        scope: 'openid profile email read:all'
     });
 
     if (!auth0) {

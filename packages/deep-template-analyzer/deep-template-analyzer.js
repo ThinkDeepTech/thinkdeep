@@ -11,8 +11,6 @@ import {i18nMixin, translate} from 'lit-element-i18n';
 import {getUser} from '@thinkdeep/deep-template-analyzer/user.mjs';
 import {initApolloClient} from './graphql/client.mjs';
 
-// TODO: Update readme with self-signed ssl cert requirements
-
 /* eslint-disable no-unused-vars */
 export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
   static get properties() {

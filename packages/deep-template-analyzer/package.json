@@ -1,7 +1,7 @@
 {
   "name": "@thinkdeep/deep-template-analyzer",
   "version": "0.0.8",
-  "description": "> TODO: description",
+  "description": "Web application template for data analysis platform.",
   "keywords": [
     "WebComponents"
   ],

@@ -43,7 +43,7 @@ class AnalysisService {
                     }
                 }
             }
-            `, { user });
+            `, { context: { user } });
 
         if (!data?.timeSeries) return { sentiments: [] };
 
