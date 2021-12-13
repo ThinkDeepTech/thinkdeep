@@ -9,7 +9,7 @@ class TweetStore extends MongoDataSource {
                 economicEntityType : economicEntityType.toLowerCase()
             }).toArray();
 
-            return this.reduceTweets(result);
+            return this._reduceTweets(result);
         } catch (e) {
             console.log(`
                 An error occurred while reading tweets from the store.
@@ -40,19 +40,17 @@ class TweetStore extends MongoDataSource {
         }
     }
 
-    reduceTweets(dbData) {
+    _reduceTweets(dbData) {
 
         // NOTE: All economic entity name and type values should be equivalent so just
         // take the first values and apply to response.
-        const response = {
-            timeSeries: []
-        };
+        const response = [];
 
         for (const entry of dbData) {
 
             if (!Object.keys(entry).length || !entry?.timestamp) continue;
 
-            response.timeSeries.push({
+            response.push({
                 timestamp: entry.timestamp,
                 tweets: entry.tweets || []
             })

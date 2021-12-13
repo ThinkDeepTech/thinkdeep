@@ -19,16 +19,16 @@ describe('twitter-api', () => {
         expect(subject.baseURL).to.contain('https://api.twitter.com/2/');
     })
 
-    describe('getTweets', () => {
+    describe('tweets', () => {
         it('should issue a get request', async () => {
-            await subject.getTweets('somebusiness');
+            await subject.tweets('somebusiness');
             expect(subject.get).to.have.been.called;
         })
 
         it('should issue the request to the recent tweets end point', async () => {
             const businessName = 'somebusiness';
             const query = encodeURIComponent(`${businessName} lang:en`);
-            await subject.getTweets(businessName);
+            await subject.tweets(businessName);
             expect(subject.get.withArgs(`tweets/search/recent?query=${query}`)).to.have.been.called;
         })
 
@@ -36,7 +36,7 @@ describe('twitter-api', () => {
             const businessName = 'somebusiness';
             const languageSpec = 'lang:en';
             const query = encodeURIComponent(`${businessName} ${languageSpec}`);
-            await subject.getTweets(businessName);
+            await subject.tweets(businessName);
             expect(subject.get.withArgs(`tweets/search/recent?query=${query}`)).to.have.been.called;
         })
 
@@ -44,7 +44,7 @@ describe('twitter-api', () => {
             const businessName = 'somebusiness';
             const languageSpec = 'lang:en';
             const query = encodeURIComponent(`${businessName} ${languageSpec}`);
-            await subject.getTweets(businessName);
+            await subject.tweets(businessName);
             expect(subject.get.withArgs(`tweets/search/recent?query=${query}`)).to.have.been.called;
         })
     });

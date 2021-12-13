@@ -8,24 +8,27 @@ class TwitterAPI extends RESTDataSource {
         this.initialize({});
     }
 
-    async getTweets(businessName) {
+    async tweets(businessName) {
         if (!businessName || (typeof businessName != 'string')) return [];
 
         try{
+
             const endPoint = `tweets/search/recent?query=${encodeURIComponent(`${businessName} lang:en`)}`;
             const payload = await this.get(endPoint, {}, {
                 headers: {
                     Authorization: `Bearer ${process.env.PREDECOS_TWITTER_BEARER}`
                 }
             });
-            return this.reduceTweets(payload);
+            return this._reduceTweets(payload);
+
         } catch (e) {
+
             console.log(`An error occurred while fetching tweets from the twitter API: ${e.msg}`);
             return [];
         }
     }
 
-    reduceTweets(payload) {
+    _reduceTweets(payload) {
         if (!payload?.data) return [];
 
         return payload.data;

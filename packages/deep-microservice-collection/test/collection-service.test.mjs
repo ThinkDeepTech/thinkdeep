@@ -16,7 +16,7 @@ describe('collection-service', () => {
     let subject;
     beforeEach(() => {
         twitterAPI = new TwitterAPI();
-        TwitterAPI.prototype.getTweets = sinon.stub();
+        TwitterAPI.prototype.tweets = sinon.stub();
 
         tweetStore = new TweetStore({});
         TweetStore.prototype.createTweets = sinon.stub();
@@ -24,6 +24,55 @@ describe('collection-service', () => {
 
         subject = new CollectionService(twitterAPI, tweetStore);
     });
+
+    describe('tweets', async () => {
+
+        it('should return [] if the economicEntityName is empty', async () => {
+            const entityName = "";
+            const user = { scope: 'read:all'};
+            const result = await subject.tweets(entityName, 'business', user);
+            expect(result.length).to.equal(0);
+        })
+
+        it('should return [] if the economicEntityName is not a string', async () => {
+            const entityName = 1;
+            const user = { scope: 'read:all'};
+            const result = await subject.tweets(entityName, 'business', user);
+            expect(result.length).to.equal(0);
+        })
+
+        it('should return [] if the economicEntityType is empty', async () => {
+            const entityType = '';
+            const user = { scope: 'read:all'};
+            const result = await subject.tweets('somename', entityType, user);
+            expect(result.length).to.equal(0);
+        })
+
+        it('should return [] if the economicEntityType is not a string', async () => {
+            const entityType = {};
+            const user = { scope: 'read:all'};
+            const result = await subject.tweets('somename', entityType, user);
+            expect(result.length).to.equal(0);
+        })
+
+        it('should return [] if the provided user does not have the read:all scope', async () => {
+            const user = { scope: 'profile email'};
+            const result = await subject.tweets('somename', 'business', user);
+            expect(result.length).to.equal(0);
+        })
+
+        it('should read the tweets if the user has read:all scope', async () => {
+            const user = { scope: 'read:all'};
+            const result = await subject.tweets('somename', 'business', user);
+            expect(tweetStore.readTweets).to.have.been.called;
+        })
+
+        it('should read tweets from the store', async () => {
+            const user = { scope: 'read:all'};
+            const result = await subject.tweets('somename', 'business', user);
+            expect(tweetStore.readTweets).to.have.been.called;
+        })
+    })
 
     describe('collectEconomicData', () => {
         it('should indicate failure if the entityName is not specified', async () => {
@@ -65,10 +114,10 @@ describe('collection-service', () => {
             expect(result.success).to.equal(false);
         })
 
-        it('should execute the body if the user has read:all scope', () => {
+        it('should execute the body if the user has read:all scope', async () => {
             const user = { scope: 'email profile read:all' };
-            subject.collectEconomicData('someone', 'business', user);
-            expect(twitterAPI.getTweets).to.have.been.called;
+            await subject.collectEconomicData('someone', 'business', user);
+            expect(twitterAPI.tweets).to.have.been.called;
         })
 
         it('should fetch the appropriate strategy for the entityType', async () => {
@@ -77,17 +126,17 @@ describe('collection-service', () => {
 
             const result = await subject.collectEconomicData('someone', 'business', user);
 
-            expect(twitterAPI.getTweets).to.have.been.called;
+            expect(twitterAPI.tweets).to.have.been.called;
             expect(result.success).to.equal(true);
         })
     })
 
-    describe('_getStrategy', () => {
+    describe('_strategy', () => {
 
         it('should fetch the business strategy for entityType business', async () => {
             const entityType = 'BUSINESS';
             const expectedStrategy = async () => { return true; };
-            const actualStrategy = subject._getStrategy(entityType, expectedStrategy);
+            const actualStrategy = subject._strategy(entityType, expectedStrategy);
             expect(expectedStrategy).to.equal(actualStrategy);
         })
 
@@ -95,14 +144,14 @@ describe('collection-service', () => {
             const entityType1 = 'BUSINESS';
             const entityType2 = 'bUsInEss';
             const expectedStrategy = async () => { return true; };
-            const firstStrategy = subject._getStrategy(entityType1, expectedStrategy);
-            const secondStrategy = subject._getStrategy(entityType2, expectedStrategy);
+            const firstStrategy = subject._strategy(entityType1, expectedStrategy);
+            const secondStrategy = subject._strategy(entityType2, expectedStrategy);
             expect(firstStrategy).to.equal(secondStrategy);
         })
 
         it('should throw an error if the entity type is unknown', () => {
             const entityType = 'unknownentity';
-            expect(subject._getStrategy.bind(subject, entityType)).to.throw(Error);
+            expect(subject._strategy.bind(subject, entityType)).to.throw(Error);
         })
 
     });
@@ -112,7 +161,7 @@ describe('collection-service', () => {
         it('should fetch tweets associated with the specified business', async () => {
             const businessName = 'somebusiness';
             await subject._collectBusinessData(businessName, twitterAPI);
-            expect(twitterAPI.getTweets.withArgs(businessName)).to.have.been.called;
+            expect(twitterAPI.tweets.withArgs(businessName)).to.have.been.called;
         })
 
         it('should store the tweets', async () => {

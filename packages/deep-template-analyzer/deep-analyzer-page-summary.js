@@ -53,13 +53,12 @@ export default class DeepAnalyzerPageSummary extends ApolloQuery {
         type="line"
         options='{"title": "Sentiment as a function of time" }'
         cols='[{"label": "Year", "type": "number"}, {"label": "Sentiment", "type": "number"}]'
-        rows="[${this.data?.getSentiment?.sentiments.map((sentiment) =>
+        rows="[${this.data?.sentiments?.map((sentiment) =>
           JSON.stringify([sentiment.timestamp, sentiment.score])
         )}]"
       >
       </google-chart>
 
-      <!-- TODO: Modify such that not just first but dynamic -->
       ${this.selectedSentiments.map((sentiment) =>
         sentiment?.tweets?.map(
           (tweet, index) => html`
@@ -83,7 +82,7 @@ export default class DeepAnalyzerPageSummary extends ApolloQuery {
 
       const selectedPoint = googleChart.rows[selectedRow];
 
-      this.data?.getSentiment?.sentiments?.forEach((sentiment) => {
+      this.data?.sentiments?.forEach((sentiment) => {
         if (this._isMatchingSentiment(sentiment, selectedPoint)) {
           this.selectedSentiments.push(sentiment);
         }

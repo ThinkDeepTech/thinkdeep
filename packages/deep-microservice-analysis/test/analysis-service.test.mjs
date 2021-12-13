@@ -1,4 +1,4 @@
-import chai from 'chai';
+import chai, { assert } from 'chai';
 import mockDb from 'mock-knex';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
@@ -11,78 +11,37 @@ import { PostgresDataSource } from '../src/datasource/postgres-datasource.mjs';
 describe('analysis-service', () => {
 
     let dataSource;
+    let sentimentLib;
+    let collectionBinding;
     let subject;
-    before((done) => {
+    beforeEach((done) => {
         PostgresDataSource.prototype.getBusinessGraph = sinon.spy();
         dataSource = new PostgresDataSource({ client: 'pg' });
         mockDb.mock(dataSource.knex);
-        subject = new AnalysisService(dataSource);
+        sentimentLib = {
+            analyze: sinon.stub()
+        };
+        collectionBinding = {
+            query: {
+                tweets: sinon.stub()
+            }
+        };
+        subject = new AnalysisService(dataSource, sentimentLib, collectionBinding);
         done();
     });
 
-    after((done) => {
+    afterEach((done) => {
         mockDb.unmock(dataSource.knex);
         done();
     });
 
-    describe('getBusinessRelationships', () => {
-
-        it('should return an empty array if type validation fails', async () => {
-            const businessName = 1;
-            const actual = await subject.getBusinessRelationships(businessName);
-            expect(actual.length).to.equal(0);
-        });
-
-        it('should validate that the business name is a string', async () => {
-            const businessName = 1;
-            await subject.getBusinessRelationships(businessName);
-            expect(dataSource.getBusinessGraph).not.to.have.been.called;
-        });
-
-        it('should validate that business name is hydrated (length > 0)', async () => {
-            const businessName = '';
-            await subject.getBusinessRelationships(businessName);
-            expect(dataSource.getBusinessGraph).not.to.have.been.called;
-        });
-
-        it('should return empty array if user is null', async () => {
-            const businessName = 'something';
-            const relationships = await subject.getBusinessRelationships(businessName, null);
-            expect(relationships.length).to.equal(0);
-        })
-
-        it ('should return empty array if user is empty', async () => {
-            const businessName = 'something';
-            const relationships = await subject.getBusinessRelationships(businessName, {});
-            expect(relationships.length).to.equal(0);
-        })
-
-        it('should return empty array if user does not have defined scopes', async () => {
-            const businessName = 'something';
-            const relationships = await subject.getBusinessRelationships(businessName, { scope: '' });
-            expect(relationships.length).to.equal(0);
-        })
-
-        it('should return empty array if user does not have read:all scope', async () => {
-            const businessName = 'something';
-            const relationships = await subject.getBusinessRelationships(businessName, { scope: 'openid email' });
-            expect(relationships.length).to.equal(0);
-        })
-
-        it('should succeed if user has read:all scope', async () => {
-            const businessName = 'something';
-            await subject.getBusinessRelationships(businessName, { scope: 'read:all' });
-            expect(subject._dataSource.getBusinessGraph).to.have.been.called;
-        })
-    })
-
-    describe('getSentiment', () => {
+    describe('sentiments', () => {
 
         it('should return an empty object if economic entity name is empty', async () => {
             const economicEntityName = "";
             const economicEntityType = "BUSINESS";
             const user = { scope: "read:all" };
-            const response = await subject.getSentiment(economicEntityName, economicEntityType, user);
+            const response = await subject.sentiments(economicEntityName, economicEntityType, user);
             expect(Object.keys(response).length).to.equal(0);
         })
 
@@ -90,7 +49,7 @@ describe('analysis-service', () => {
             const economicEntityName = {};
             const economicEntityType = "BUSINESS";
             const user = { scope: "read:all" };
-            const response = await subject.getSentiment(economicEntityName, economicEntityType, user);
+            const response = await subject.sentiments(economicEntityName, economicEntityType, user);
             expect(Object.keys(response).length).to.equal(0);
         })
 
@@ -98,7 +57,7 @@ describe('analysis-service', () => {
             const economicEntityName = "SomeBusinessName";
             const economicEntityType = "";
             const user = { scope: "read:all" };
-            const response = await subject.getSentiment(economicEntityName, economicEntityType, user);
+            const response = await subject.sentiments(economicEntityName, economicEntityType, user);
             expect(Object.keys(response).length).to.equal(0);
         })
 
@@ -106,7 +65,7 @@ describe('analysis-service', () => {
             const economicEntityName = "SomeBusinessName";
             const economicEntityType = [];
             const user = { scope: "read:all" };
-            const response = await subject.getSentiment(economicEntityName, economicEntityType, user);
+            const response = await subject.sentiments(economicEntityName, economicEntityType, user);
             expect(Object.keys(response).length).to.equal(0);
         })
 
@@ -114,17 +73,134 @@ describe('analysis-service', () => {
             const economicEntityName = "SomeBusinessName";
             const economicEntityType = "BUSINESS";
             const user = { scope: "profile email" };
-            const response = await subject.getSentiment(economicEntityName, economicEntityType, user);
+            const response = await subject.sentiments(economicEntityName, economicEntityType, user);
             expect(Object.keys(response).length).to.equal(0);
         })
 
-        // TODO
-        // it('should successfully execute if the user has read:all scope', async () => {
-        //     const economicEntityName = "SomeBusinessName";
-        //     const economicEntityType = "BUSINESS";
-        //     const user = { scope: "profile email read:all" };
-        //     const response = await subject.getSentiment(economicEntityName, economicEntityType, user);
-        //     expect(Object.keys(response).length).not.to.equal(0);
-        // })
+        it('should successfully execute if the user has read:all scope', async () => {
+            const economicEntityName = "SomeBusinessName";
+            const economicEntityType = "BUSINESS";
+            const user = { scope: "profile email read:all" };
+            const tweets = [{
+                timestamp: 1,
+                tweets: [{
+                    text: 'something'
+                }, {
+                    text: 'something else'
+                }]
+            }];
+            collectionBinding.query.tweets.returns(tweets);
+
+            const sentimentResult = {
+                score: 1
+            };
+            sentimentLib.analyze.returns(sentimentResult);
+
+            const response = await subject.sentiments(economicEntityName, economicEntityType, user);
+
+            expect(Object.keys(response).length).not.to.equal(0);
+        })
+
+        it('should fetch data from the collection service', async () => {
+            const economicEntityName = "SomeBusinessName";
+            const economicEntityType = "BUSINESS";
+            const user = { scope: "profile email read:all" };
+            const tweets = [{
+                timestamp: 1,
+                tweets: [{
+                    text: 'something'
+                }, {
+                    text: 'something else'
+                }]
+            }];
+            collectionBinding.query.tweets.returns(tweets);
+
+            const sentimentResult = {
+                score: 1
+            };
+            sentimentLib.analyze.returns(sentimentResult);
+
+            const response = await subject.sentiments(economicEntityName, economicEntityType, user);
+
+            expect(collectionBinding.query.tweets).to.have.been.called;
+        })
+
+        it('should compute the sentiment for each tweet entry returned from the collection microservice', async () => {
+            const economicEntityName = "SomeBusinessName";
+            const economicEntityType = "BUSINESS";
+            const user = { scope: "profile email read:all" };
+            const tweets = [{
+                timestamp: 1,
+                tweets: [{
+                    text: 'something'
+                }, {
+                    text: 'something else'
+                }]
+            }];
+            collectionBinding.query.tweets.returns(tweets);
+
+            const sentimentResult = {
+                score: 1
+            };
+            sentimentLib.analyze.returns(sentimentResult);
+
+            const response = await subject.sentiments(economicEntityName, economicEntityType, user);
+
+            expect(sentimentLib.analyze).to.have.been.called;
+        })
+
     });
+
+    describe('_averageSentiment', () => {
+
+        it('should compute the average sentiment', () => {
+            const data = {
+                timestamp: 1,
+                tweets: [{
+                    text: 'sometext'
+                }, {
+                    text: 'some other text'
+                }]
+            };
+            const firstScore = 4;
+            const secondScore = 5;
+            sentimentLib.analyze.onCall(0).returns({ score: firstScore });
+            sentimentLib.analyze.onCall(1).returns({ score: secondScore })
+
+            const result = subject._averageSentiment(data);
+
+            expect(result.score).to.equal((firstScore + secondScore) / data.tweets.length);
+        })
+
+        it('should add the timestamp to the response', () => {
+            const data = {
+                timestamp: 1,
+                tweets: []
+            };
+
+            const result = subject._averageSentiment(data);
+
+            expect(result.timestamp).to.equal(1);
+        })
+
+        it('should convert the tweet text to lowercase so that sentiment is case-insensitive', () => {
+            const data = {
+                timestamp: 1,
+                tweets: [{
+                    text: 'SomeText'
+                }, {
+                    text: 'SoMe OTher text'
+                }]
+            };
+            sentimentLib.analyze.returns({ score: 1 });
+
+            const result = subject._averageSentiment(data);
+
+            const firstPassArgument = sentimentLib.analyze.getCall(0).args[0];
+            const secondPassArgument = sentimentLib.analyze.getCall(1).args[0];
+
+            expect(firstPassArgument).to.equal(data.tweets[0].text.toLowerCase());
+            expect(secondPassArgument).to.equal(data.tweets[1].text.toLowerCase());
+        })
+    })
 })

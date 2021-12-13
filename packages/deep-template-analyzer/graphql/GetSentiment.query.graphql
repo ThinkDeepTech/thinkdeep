@@ -1,11 +1,9 @@
 query GetSentiment($economicEntityName: String!, $economicEntityType: EconomicEntityType!) {
-  getSentiment(economicEntityName: $economicEntityName, economicEntityType: $economicEntityType) {
-    sentiments {
+  sentiments(economicEntityName: $economicEntityName, economicEntityType: $economicEntityType) {
       timestamp
       score
       tweets{
         text
       }
-    }
   }
 }

@@ -1,12 +1,12 @@
 import {buildSubgraphSchema} from '@apollo/subgraph';
 import {ApolloServer} from 'apollo-server-express';
+import {AnalysisService} from './analysis-service.mjs';
+import { CollectionBinding } from './collection-binding.mjs';
 import {PostgresDataSource} from './datasource/postgres-datasource.mjs';
 import express from 'express';
 import {resolvers} from './resolvers.mjs';
 import {typeDefs} from './schema.mjs';
-import {AnalysisService} from './analysis-service.mjs';
-
-const port = 4001;
+import Sentiment from 'sentiment';
 
 const startApolloServer = async () => {
   const knexConfig = {
@@ -14,8 +14,9 @@ const startApolloServer = async () => {
     connection: process.env.PREDECOS_PG_CONNECTION_STRING,
   };
 
-  const db = new PostgresDataSource(knexConfig);
-  const analysisService = new AnalysisService(db);
+  const collectionBinding = await CollectionBinding.create();
+  const postgresDataSource = new PostgresDataSource(knexConfig);
+  const analysisService = new AnalysisService(postgresDataSource, new Sentiment(), collectionBinding);
 
   const server = new ApolloServer({
     schema: buildSubgraphSchema([{typeDefs, resolvers}]),
@@ -42,6 +43,7 @@ const startApolloServer = async () => {
     },
   });
 
+  const port = 4001;
   await new Promise((resolve) => app.listen({port}, resolve));
   // eslint-disable-next-line
   console.log(

@@ -5,7 +5,6 @@ import jwt from 'express-jwt';
 import jwks from 'jwks-rsa';
 
 const startGatewayService = async () => {
-  const port = 4000;
 
   const gateway = new ApolloGateway({
     serviceList: [
@@ -67,6 +66,7 @@ const startGatewayService = async () => {
     },
   });
 
+  const port = 4000;
   app.listen({port}, () =>
     // eslint-disable-next-line
     console.log(`Server ready at http://localhost:${port}${server.graphqlPath}`)

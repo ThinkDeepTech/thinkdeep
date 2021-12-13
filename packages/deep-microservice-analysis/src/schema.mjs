@@ -13,10 +13,6 @@ const typeDefs = gql`
         second: Int
     }
 
-    type GetSentimentResponse {
-        sentiments: [Sentiment!]!
-    }
-
     type Sentiment {
         timestamp: Float!
         score: Float!
@@ -28,8 +24,8 @@ const typeDefs = gql`
     }
 
     extend type Query {
-        search(businessName: String!): [EconomicEntity]!,
-        getSentiment(economicEntityName: String!, economicEntityType: EconomicEntityType!): GetSentimentResponse!
+        # TODO: If sentiments adds data to database it should be mutation
+        sentiments(economicEntityName: String!, economicEntityType: EconomicEntityType!): [Sentiment!]!
     }
 `;
 
