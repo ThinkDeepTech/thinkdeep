@@ -12,7 +12,7 @@ jobs:
 
             - checkout
 
-            - run: yarn install
+            - run: yarn install --force
 
             - run: yarn run build
 
@@ -47,9 +47,9 @@ jobs:
 
             - run: yarn --version
 
-            - run: yarn install
+            - run: yarn install --force
 
-            - run: NODE_ENV=development yarn run tests
+            - run: yarn run tests
 
             - run: yarn run build
 

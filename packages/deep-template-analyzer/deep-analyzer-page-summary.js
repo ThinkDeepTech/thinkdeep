@@ -97,7 +97,7 @@ export default class DeepAnalyzerPageSummary extends ApolloQuery {
   /**
    * Determine if the sentiment matches the data at the selected point in the google chart.
    * @param {Object} sentiment - Sentiment response from the API.
-   * @param {*} selectedPoint - Point selected on the google chart.
+   * @param {Array} selectedPoint - Point selected on the google chart.
    * @returns
    */
   _hasMatchingData(sentiment, selectedPoint) {
