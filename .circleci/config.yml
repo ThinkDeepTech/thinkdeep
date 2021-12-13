@@ -49,6 +49,10 @@ jobs:
 
             - run: yarn install --force
 
+            - run: yarn add -W apollo-datasource-mongodb
+
+            - run: yarn add -W mongodb
+
             - run: yarn run tests
 
             - run: yarn run build
