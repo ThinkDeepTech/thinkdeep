@@ -15,7 +15,7 @@ const execute = (
     /** Do nothing */
   }
 ) => {
-  exec(command, (error, stdout, stderr) => {
+  exec(command, { shell: false}, (error, stdout, stderr) => {
     console.log(stdout);
     console.log(stderr);
     if (error) throw error;
