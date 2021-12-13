@@ -1,4 +1,4 @@
-import {css, html, LitElement} from 'lit-element';
+import {css, html, LitElement} from 'lit';
 
 import '@thinkdeep/deep-footer';
 import '@thinkdeep/deep-navbar';

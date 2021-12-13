@@ -1,4 +1,4 @@
-import { html, LitElement } from 'lit-element';
+import {html, LitElement} from 'lit';
 
 export class DeepConsultancyPageNotFound extends LitElement {
   render() {
@@ -6,4 +6,7 @@ export class DeepConsultancyPageNotFound extends LitElement {
   }
 }
 
-customElements.define('deep-consultancy-page-not-found', DeepConsultancyPageNotFound);
+customElements.define(
+  'deep-consultancy-page-not-found',
+  DeepConsultancyPageNotFound
+);

@@ -15,4 +15,6 @@ export default {
   headline: 'Something different here',
   buttonText: 'Log In',
   notFoundPageContent: 'Page Still not found!',
+  startCollectingLabel: 'Collect2',
+  selectBusinessLabel: 'Select a business2',
 };

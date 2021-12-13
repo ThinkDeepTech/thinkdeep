@@ -1,4 +1,4 @@
-import {html, LitElement, css} from 'lit-element';
+import {html, LitElement, css} from 'lit';
 
 import '@thinkdeep/deep-navlink/deep-navlink';
 

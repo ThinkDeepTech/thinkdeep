@@ -17,4 +17,6 @@ export default {
   headline: 'Explore data.',
   buttonText: 'Log In',
   notFoundPageContent: 'Page Not Found!',
+  startCollectingLabel: 'Collect',
+  selectBusinessLabel: 'Select a business',
 };

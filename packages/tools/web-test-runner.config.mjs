@@ -10,7 +10,7 @@ const browsers = {
 };
 
 export default {
-  files: ['test/**/*.test.js'],
+  files: ['test/**/*.test.js', 'test/**/*.test.mjs'],
   'root-dir': '.',
   nodeResolve: true,
   browsers: Object.values(browsers),
