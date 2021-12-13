@@ -49,7 +49,7 @@ jobs:
 
             - run: yarn install
 
-            - run: yarn run tests
+            - run: NODE_ENV=development yarn run tests
 
             - run: yarn run build
 
