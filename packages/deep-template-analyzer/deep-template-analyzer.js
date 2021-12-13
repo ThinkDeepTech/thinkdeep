@@ -1,10 +1,6 @@
 import '@thinkdeep/deep-footer';
 import '@thinkdeep/deep-navbar';
 import {Router} from '@vaadin/router';
-// import '@vaadin/vaadin-app-layout/vaadin-app-layout';
-// import '@vaadin/vaadin-app-layout/vaadin-drawer-toggle';
-// import '@vaadin/vaadin-tabs/vaadin-tab';
-// import '@vaadin/vaadin-tabs/vaadin-tabs';
 import {css, html, LitElement} from 'lit';
 import {i18nMixin, translate} from 'lit-element-i18n';
 
@@ -159,37 +155,6 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
   render() {
     return html`
       ${this.styles}
-
-      <!-- <vaadin-app-layout>
-        <vaadin-drawer-toggle
-          slot="navbar"
-          touch-optimized
-        ></vaadin-drawer-toggle>
-        <h1 slot="navbar" touch-optimized>${this.companyName}</h1>
-        <vaadin-tabs slot="drawer" orientation="vertical">
-          <vaadin-tab> ${this.user?.name} </vaadin-tab>
-          ${this.routes.map((route) =>
-        route.hidden
-          ? html``
-          : html`
-              <vaadin-tab>
-                <a href="${route.path}"> ${route.name} </a>
-              </vaadin-tab>
-            `
-      )}
-          ${!this.user.loggedIn
-        ? html` <vaadin-tab @click="${this.user.login}">
-            <a> ${translate('translations:loginPageLabel')} </a>
-          </vaadin-tab>`
-        : html`
-            <vaadin-tab @click="${this.user.logout}">
-              <a> ${translate('translations:logoutPageLabel')} </a>
-            </vaadin-tab>
-          `}
-        </vaadin-tabs>
-
-        <main id="content"></main>
-      </vaadin-app-layout> -->
 
       <deep-navbar
         class="navbar"

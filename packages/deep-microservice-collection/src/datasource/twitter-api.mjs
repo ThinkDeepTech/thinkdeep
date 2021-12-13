@@ -8,6 +8,11 @@ class TwitterAPI extends RESTDataSource {
         this.initialize({});
     }
 
+    /**
+     * Fetch tweets from the twitter API.
+     * @param {String} businessName - Name of the business being searched.
+     * @returns {Array} - The tweets returned from the API or [].
+     */
     async tweets(businessName) {
         if (!businessName || (typeof businessName != 'string')) return [];
 
@@ -28,6 +33,11 @@ class TwitterAPI extends RESTDataSource {
         }
     }
 
+    /**
+     * Simple reducer converting API data to application format.
+     * @param {Object} payload - Data returned from the API.
+     * @returns {Array} - Tweets in array form or [].
+     */
     _reduceTweets(payload) {
         if (!payload?.data) return [];
 

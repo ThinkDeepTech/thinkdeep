@@ -3,6 +3,7 @@ import '@google-web-components/google-chart';
 import '@thinkdeep/deep-button/deep-button.mjs';
 import '@thinkdeep/deep-card/deep-card.mjs';
 import '@thinkdeep/deep-textbox/deep-textbox.mjs';
+import {translate} from 'lit-element-i18n';
 import GetSentiment from './graphql/GetSentiment.query.graphql';
 
 export default class DeepAnalyzerPageSummary extends ApolloQuery {
@@ -39,12 +40,11 @@ export default class DeepAnalyzerPageSummary extends ApolloQuery {
 
   render() {
     return html`
-      <!-- TODO: Translations -->
-      Start Collecting:
+      ${translate('translations:startCollectingLabel')}
       <deep-textbox placeholder="Business Name (i.e, Google)"></deep-textbox>
       <deep-button @click="${this._collectData}">Collect Data</deep-button>
 
-      Select Business:
+      ${translate('translations:selectBusinessLabel')}
       <select name="business" id="business">
         <option value="Google">Google</option>
       </select>
@@ -72,6 +72,10 @@ export default class DeepAnalyzerPageSummary extends ApolloQuery {
     `;
   }
 
+  /**
+   * Handle a user's click on point present in the google chart.
+   * @param {HTMLElement} originalTarget - Target of the click (i.e, google-chart).
+   */
   _handleChartSelection({originalTarget}) {
     const googleChart = originalTarget;
 
@@ -83,14 +87,20 @@ export default class DeepAnalyzerPageSummary extends ApolloQuery {
       const selectedPoint = googleChart.rows[selectedRow];
 
       this.data?.sentiments?.forEach((sentiment) => {
-        if (this._isMatchingSentiment(sentiment, selectedPoint)) {
+        if (this._hasMatchingData(sentiment, selectedPoint)) {
           this.selectedSentiments.push(sentiment);
         }
       });
     }
   }
 
-  _isMatchingSentiment(sentiment, selectedPoint) {
+  /**
+   * Determine if the sentiment matches the data at the selected point in the google chart.
+   * @param {Object} sentiment - Sentiment response from the API.
+   * @param {*} selectedPoint - Point selected on the google chart.
+   * @returns
+   */
+  _hasMatchingData(sentiment, selectedPoint) {
     return (
       sentiment.timestamp === selectedPoint[0] &&
       sentiment.score === selectedPoint[1]

@@ -24,7 +24,6 @@ const typeDefs = gql`
     }
 
     extend type Query {
-        # TODO: If sentiments adds data to database it should be mutation
         sentiments(economicEntityName: String!, economicEntityType: EconomicEntityType!): [Sentiment!]!
     }
 `;

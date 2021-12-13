@@ -59,7 +59,6 @@ const startGatewayService = async () => {
   server.applyMiddleware({
     app,
     cors: {
-      // TODO: Which origins should be allows and what's secure?
       origin: ['https://localhost:8000', 'http://localhost:8000', 'https://studio.apollographql.com'],
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE',
       credentials: true,

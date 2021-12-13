@@ -47,6 +47,10 @@ const startApolloServer = async () => {
       const user = req.headers.user ? JSON.parse(req.headers.user) : null;
       return {user};
     },
+
+    // NOTE: Introspection has some security implications. It allows developers to query the API to figure out the structure
+    // of the schema. This can be dangerous in production. However, these services are intended to be visible so this isn't
+    // currently an issue.
     introspection: true
   });
   await server.start();

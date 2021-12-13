@@ -1,7 +1,13 @@
 import {MongoDataSource} from 'apollo-datasource-mongodb';
 
-
 class TweetStore extends MongoDataSource {
+
+    /**
+     * Read tweets from the mongo store.
+     * @param {String} economicEntityName - Name of the economic entity (i.e, 'Google').
+     * @param {String} economicEntityType - Type of the economic entity (i.e, 'BUSINESS').
+     * @returns {Array} - Tweets read from the database and formatted for the application or [].
+     */
     async readTweets(economicEntityName, economicEntityType) {
         try {
             const result = await this.collection.find({
@@ -18,6 +24,15 @@ class TweetStore extends MongoDataSource {
             return [];
         }
     }
+
+    /**
+     * Create a timeseries entry in the database including tweets.
+     * @param {Number} timestamp - Timestamp to associate with the database entry.
+     * @param {String} economicEntityName - Name of the economic entity (i.e, 'Google')
+     * @param {String} economicEntityType - Type of the economic entity (i.e, 'BUSINESS')
+     * @param {Array} tweets - The tweets to add to the database.
+     * @returns {Boolean} - True if the operation is successful, false otherwise.
+     */
     async createTweets(timestamp, economicEntityName, economicEntityType, tweets) {
         try {
             await this.collection.insertOne({
@@ -40,10 +55,13 @@ class TweetStore extends MongoDataSource {
         }
     }
 
+    /**
+     *  Reduce the database data into a form used by the application.
+     * @param {Array} dbData - Data returned from the database.
+     * @returns {Array} - Data formatted for the API.
+     */
     _reduceTweets(dbData) {
 
-        // NOTE: All economic entity name and type values should be equivalent so just
-        // take the first values and apply to response.
         const response = [];
 
         for (const entry of dbData) {
