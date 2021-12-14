@@ -7,7 +7,6 @@ export default {
   companyCountryName: 'US',
   companyZipCode: '66381',
   homePageLabel: 'Home2',
-  aboutPageLabel: 'About2',
   loginPageLabel: 'Login2',
   logoutPageLabel: 'Logout2',
   summaryPageLabel: 'Summary2',
@@ -15,7 +14,7 @@ export default {
   headline: 'Something different here',
   buttonText: 'Log In',
   notFoundPageContent: 'Page Still not found!',
-  startCollectingLabel: 'Collect Business Data2',
+  startCollectingLabel: 'Collect Data2',
   startButtonLabel: 'Start2',
   selectBusinessLabel: 'Select a business2',
 };

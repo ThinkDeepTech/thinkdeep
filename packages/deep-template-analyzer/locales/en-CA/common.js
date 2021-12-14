@@ -9,7 +9,6 @@ export default {
   companyCountryName: 'Canada',
   companyZipCode: 'N5A7S1',
   homePageLabel: 'Home',
-  aboutPageLabel: 'About',
   loginPageLabel: 'Login',
   logoutPageLabel: 'Logout',
   summaryPageLabel: 'Summary',
@@ -17,7 +16,7 @@ export default {
   headline: 'Explore data.',
   buttonText: 'Log In',
   notFoundPageContent: 'Page Not Found!',
-  startCollectingLabel: 'Collect Business Data',
+  startCollectingLabel: 'Collect Data',
   startButtonLabel: 'Start',
   selectBusinessLabel: 'Select a business',
 };

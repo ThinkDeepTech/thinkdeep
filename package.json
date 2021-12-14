@@ -57,6 +57,9 @@
     "serve": "^10.1.1",
     "wait-on": "^6.0.0"
   },
+  "resolutions": {
+    "graphql": "^15.8.0"
+  },
   "workspaces": [
     "packages/*"
   ],

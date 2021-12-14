@@ -1,5 +1,6 @@
+import '@material/mwc-icon-button';
+import '@material/mwc-top-app-bar-fixed';
 import '@thinkdeep/deep-footer';
-import '@thinkdeep/deep-navbar';
 import {Router} from '@vaadin/router';
 import {css, html, LitElement} from 'lit';
 import {i18nMixin, translate} from 'lit-element-i18n';
@@ -60,19 +61,7 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
         name: translate('translations:homePageLabel'),
         component: 'deep-analyzer-page-home',
         action: async () => {
-          await import(
-            '@thinkdeep/deep-template-analyzer/deep-analyzer-page-home.js'
-          );
-        },
-      },
-      {
-        path: '/' + translate('translations:aboutPageLabel'),
-        name: translate('translations:aboutPageLabel'),
-        component: 'deep-analyzer-page-about',
-        action: async () => {
-          await import(
-            '@thinkdeep/deep-template-analyzer/deep-analyzer-page-about.js'
-          );
+          await import('@thinkdeep/deep-template-analyzer/deep-analyzer-page-home.js');
         },
       },
       {
@@ -96,9 +85,7 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
         name: translate('translations:summaryPageLabel'),
         component: 'deep-analyzer-page-summary',
         action: async () => {
-          await import(
-            '@thinkdeep/deep-template-analyzer/deep-analyzer-page-summary'
-          );
+          await import('@thinkdeep/deep-template-analyzer/deep-analyzer-page-summary');
         },
       },
       {
@@ -106,9 +93,7 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
         name: translate('translations:notFoundPageLabel'),
         component: 'deep-analyzer-page-not-found',
         action: async () => {
-          await import(
-            '@thinkdeep/deep-template-analyzer/deep-analyzer-page-not-found.js'
-          );
+          await import('@thinkdeep/deep-template-analyzer/deep-analyzer-page-not-found.js');
         },
         // TODO: Replacement for hidden included in vaadin? I think I can remember seeing one.
         hidden: true,
@@ -136,12 +121,14 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
           background-color: var(--primary-color, #000000);
         }
 
-        deep-navbar {
+        mwc-top-app-bar-fixed {
           grid-area: header;
           height: 16vh;
         }
 
         #content {
+          display: block;
+          min-height: 500px;
           grid-area: content;
         }
 
@@ -156,11 +143,50 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
     return html`
       ${this.styles}
 
-      <deep-navbar
-        class="navbar"
-        .companyName="${this.companyName}"
-        .routes="${this.routes}"
-      ></deep-navbar>
+      <mwc-top-app-bar-fixed>
+        <mwc-icon-button icon="menu" slot="navigationIcon"></mwc-icon-button>
+
+        <div slot="title">${this.companyName}</div>
+
+        <mwc-icon-button
+          icon="home"
+          slot="actionItems"
+          @click="${() => Router.go('/')}"
+          aria-label="home"
+        ></mwc-icon-button>
+        <mwc-icon-button
+          icon="space_dashboard"
+          slot="actionItems"
+          @click="${
+            () => Router.go(translate('translations:summaryPageLabel'))
+          }"
+          aria-label="summary"
+        ></mwc-icon-button>
+
+        ${
+          this.user.loggedIn
+            ? html`
+                <mwc-icon-button
+                  icon="logout"
+                  slot="actionItems"
+                  @click="${
+                    () => Router.go(translate('translations:logoutPageLabel'))
+                  }"
+                  aria-label="logout"
+                ></mwc-icon-button>
+              `
+            : html`
+                <mwc-icon-button
+                  icon="login"
+                  slot="actionItems"
+                  @click="${
+                    () => Router.go(translate('translations:loginPageLabel'))
+                  }"
+                  aria-label="login"
+                ></mwc-icon-button>
+              `
+        }
+      </mwc-top-app-bar-fixed>
 
       <main id="content"></main>
 
