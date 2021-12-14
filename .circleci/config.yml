@@ -12,7 +12,7 @@ jobs:
 
             - checkout
 
-            - run: yarn install
+            - run: yarn install --force
 
             - run: yarn run build
 
@@ -33,23 +33,19 @@ jobs:
 
             - checkout
 
-            - save_cache:
-                paths:
-                    - node_modules
-                key: v1-dependencies-{{ checksum "package.json" }}
-
-            # Download and cache dependencies
-            - restore_cache:
-                keys:
-                    - v1-dependencies-{{ checksum "package.json" }}
-
             - run: node --version
 
             - run: yarn --version
 
-            - run: yarn install
+            - run: yarn install --force
 
-            - run: NODE_ENV=development yarn run tests
+            # TODO: There's something wrong with the yarn install above. It seems to avoid installation of apollo-datasource-mongodb as
+            # well as mongodb itself. This is a patch solution, but isn't scalable. After build fix, troubleshoot.
+            - run: yarn add -W apollo-datasource-mongodb
+
+            - run: yarn add -W mongodb
+
+            - run: yarn run tests
 
             - run: yarn run build
 
