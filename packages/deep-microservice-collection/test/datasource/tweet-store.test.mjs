@@ -83,9 +83,7 @@ describe('tweet-store', () => {
         })
 
         it('should reduce the tweets', async () => {
-            const economicEntityName = "some business name";
-            const economicEntityType = 'BUSINESS';
-            const databaseData = [{
+            const tweets = [{
                 timestamp: 1,
                 tweets: [{
                     text: 'This is a raw tweet'
@@ -99,7 +97,7 @@ describe('tweet-store', () => {
                 }]
             }];
             mongoCollection.find.returns(mongoCollection);
-            mongoCollection.toArray.returns(databaseData);
+            mongoCollection.toArray.returns(tweets);
 
             const result = await subject.readRecentTweets(economicEntityName, economicEntityType, numTweetsToReturn);
 
@@ -122,8 +120,6 @@ describe('tweet-store', () => {
 
         it('should insert the data into the database', async () => {
             const timestamp = 1;
-            const economicEntityName = 'some name';
-            const economicEntityType = 'BUSINESS';
             const tweets = [{
                 text: 'i have something to say'
             },{
@@ -137,8 +133,6 @@ describe('tweet-store', () => {
 
         it('should return true if the insert succeeds', async() => {
             const timestamp = 1;
-            const economicEntityName = 'some name';
-            const economicEntityType = 'BUSINESS';
             const tweets = [{
                 text: 'i have something to say'
             },{
@@ -152,8 +146,6 @@ describe('tweet-store', () => {
 
         it('should return false if the insert fails',async  () => {
             const timestamp = 1;
-            const economicEntityName = 'some name';
-            const economicEntityType = 'BUSINESS';
             const tweets = [{
                 text: 'i have something to say'
             },{
