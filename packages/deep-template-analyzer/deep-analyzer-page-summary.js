@@ -1,14 +1,18 @@
+import {ApolloMutationController} from '@apollo-elements/core';
 import {ApolloQuery, html} from '@apollo-elements/lit-apollo';
 import '@google-web-components/google-chart';
 import '@thinkdeep/deep-button/deep-button.mjs';
 import '@thinkdeep/deep-card/deep-card.mjs';
 import '@thinkdeep/deep-textbox/deep-textbox.mjs';
+import {debounce} from './debounce.mjs';
 import {translate} from 'lit-element-i18n';
+import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
 import GetSentiment from './graphql/GetSentiment.query.graphql';
 
 export default class DeepAnalyzerPageSummary extends ApolloQuery {
   static get properties() {
     return {
+      mutation: {type: Object},
       selectedSentiments: {type: Array},
     };
   }
@@ -22,6 +26,8 @@ export default class DeepAnalyzerPageSummary extends ApolloQuery {
       economicEntityName: 'Google',
       economicEntityType: 'BUSINESS',
     };
+
+    this.mutation = new ApolloMutationController(this, CollectEconomicData);
 
     this.selectedSentiments = [];
   }
@@ -41,13 +47,13 @@ export default class DeepAnalyzerPageSummary extends ApolloQuery {
   render() {
     return html`
       ${translate('translations:startCollectingLabel')}
-      <deep-textbox placeholder="Business Name (i.e, Google)"></deep-textbox>
-      <deep-button @click="${this._collectData}">Collect Data</deep-button>
-
-      ${translate('translations:selectBusinessLabel')}
-      <select name="business" id="business">
-        <option value="Google">Google</option>
-      </select>
+      <deep-textbox
+        placeholder="i.e, Google"
+        @input="${debounce(this._setCompanyName.bind(this), 350)}"
+      ></deep-textbox>
+      <deep-button @click="${() => this.mutation.mutate()}"
+        >${translate('translations:startButtonLabel')}</deep-button
+      >
 
       <google-chart
         type="line"
@@ -105,6 +111,14 @@ export default class DeepAnalyzerPageSummary extends ApolloQuery {
       sentiment.timestamp === selectedPoint[0] &&
       sentiment.score === selectedPoint[1]
     );
+  }
+
+  _setCompanyName({explicitOriginalTarget}) {
+    const companyName = explicitOriginalTarget.value;
+    this.mutation.variables = {
+      economicEntityName: companyName,
+      economicEntityType: 'BUSINESS',
+    };
   }
 }
 
