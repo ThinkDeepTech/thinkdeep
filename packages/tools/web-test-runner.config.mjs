@@ -10,7 +10,7 @@ const browsers = {
   firefox: playwrightLauncher({product: 'firefox'}),
 };
 
-const port = await getPort({port: portNumbers(49152, 49252)});
+const port = await getPort();
 
 console.log(`
 
