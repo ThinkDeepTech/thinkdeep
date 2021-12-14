@@ -4,6 +4,7 @@ import '@google-web-components/google-chart';
 import '@thinkdeep/deep-button/deep-button.mjs';
 import '@thinkdeep/deep-card/deep-card.mjs';
 import '@thinkdeep/deep-textbox/deep-textbox.mjs';
+import {debounce} from './debounce.mjs';
 import {translate} from 'lit-element-i18n';
 import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
 import GetSentiment from './graphql/GetSentiment.query.graphql';
@@ -48,7 +49,7 @@ export default class DeepAnalyzerPageSummary extends ApolloQuery {
       ${translate('translations:startCollectingLabel')}
       <deep-textbox
         placeholder="i.e, Google"
-        @input="${this._setCompanyName}"
+        @input="${debounce(this._setCompanyName.bind(this), 350)}"
       ></deep-textbox>
       <deep-button @click="${() => this.mutation.mutate()}"
         >${translate('translations:startButtonLabel')}</deep-button
@@ -112,9 +113,10 @@ export default class DeepAnalyzerPageSummary extends ApolloQuery {
     );
   }
 
-  _setCompanyName({data}) {
+  _setCompanyName({explicitOriginalTarget}) {
+    const companyName = explicitOriginalTarget.value;
     this.mutation.variables = {
-      economicEntityName: data,
+      economicEntityName: companyName,
       economicEntityType: 'BUSINESS',
     };
   }

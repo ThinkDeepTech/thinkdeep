@@ -19,7 +19,7 @@ class TweetStore extends MongoDataSource {
             const result = await this.collection.find({
                 economicEntityName: economicEntityName.toLowerCase(),
                 economicEntityType : economicEntityType.toLowerCase()
-            }).limit(numTweetsToReturn).sort({timestamp: -1}).toArray();
+            }).sort({timestamp: -1}).limit(numTweetsToReturn).toArray();
 
             return this._reduceTweets(result);
         } catch (e) {
