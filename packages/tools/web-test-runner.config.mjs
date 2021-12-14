@@ -10,6 +10,7 @@ const browsers = {
   firefox: playwrightLauncher({product: 'firefox'}),
 };
 
+// Get a random port number.
 const port = await getPort();
 
 console.log(`
