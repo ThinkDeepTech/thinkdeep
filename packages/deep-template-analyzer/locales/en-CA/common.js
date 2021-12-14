@@ -9,7 +9,6 @@ export default {
   companyCountryName: 'Canada',
   companyZipCode: 'N5A7S1',
   homePageLabel: 'Home',
-  aboutPageLabel: 'About',
   loginPageLabel: 'Login',
   logoutPageLabel: 'Logout',
   summaryPageLabel: 'Summary',

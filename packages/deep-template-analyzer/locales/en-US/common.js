@@ -7,7 +7,6 @@ export default {
   companyCountryName: 'US',
   companyZipCode: '66381',
   homePageLabel: 'Home2',
-  aboutPageLabel: 'About2',
   loginPageLabel: 'Login2',
   logoutPageLabel: 'Logout2',
   summaryPageLabel: 'Summary2',
