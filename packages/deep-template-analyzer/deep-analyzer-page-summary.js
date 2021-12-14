@@ -1,6 +1,8 @@
 import {ApolloMutationController} from '@apollo-elements/core';
-import {ApolloQuery, html} from '@apollo-elements/lit-apollo';
+import {ApolloQuery, css, html} from '@apollo-elements/lit-apollo';
 import '@google-web-components/google-chart';
+import '@material/mwc-button';
+import '@material/mwc-textfield';
 import '@thinkdeep/deep-button/deep-button.mjs';
 import '@thinkdeep/deep-card/deep-card.mjs';
 import '@thinkdeep/deep-textbox/deep-textbox.mjs';
@@ -44,37 +46,54 @@ export default class DeepAnalyzerPageSummary extends ApolloQuery {
     this.removeEventListener('google-chart-select', this._handleChartSelection);
   }
 
+  static get styles() {
+    return css`
+      :host {
+        display: block;
+        min-height: 500px;
+      }
+    `;
+  }
+
   render() {
     return html`
       ${translate('translations:startCollectingLabel')}
-      <deep-textbox
-        placeholder="i.e, Google"
+      <mwc-textfield
+        label="Business name"
         @input="${debounce(this._setCompanyName.bind(this), 350)}"
-      ></deep-textbox>
-      <deep-button @click="${() => this.mutation.mutate()}"
-        >${translate('translations:startButtonLabel')}</deep-button
-      >
+      ></mwc-textfield>
+      <mwc-button
+        raised
+        label="${translate('translations:startButtonLabel')}"
+        @click="${() => this.mutation.mutate()}"
+        icon="input"
+      ></mwc-button>
 
-      <google-chart
-        type="line"
-        options='{"title": "Sentiment as a function of time" }'
-        cols='[{"label": "Timestamp", "type": "number"}, {"label": "Sentiment", "type": "number"}]'
-        rows="[${this.data?.sentiments?.map((sentiment) =>
-          JSON.stringify([sentiment.timestamp, sentiment.score])
-        )}]"
-      >
-      </google-chart>
+      <div>
+        <google-chart
+          type="line"
+          options="{&quot;title&quot;: &quot;Sentiment as a function of time&quot; }"
+          cols="[{&quot;label&quot;: &quot;Timestamp&quot;, &quot;type&quot;: &quot;number&quot;}, {&quot;label&quot;: &quot;Sentiment&quot;, &quot;type&quot;: &quot;number&quot;}]"
+          rows="[${
+            this.data?.sentiments?.map((sentiment) =>
+              JSON.stringify([sentiment.timestamp, sentiment.score])
+            )
+          }]"
+        ></google-chart>
+      </div>
 
-      ${this.selectedSentiments.map((sentiment) =>
-        sentiment?.tweets?.map(
-          (tweet, index) => html`
-            <deep-card>
-              <h3>Tweet ${index}</h3>
-              <p>${tweet?.text}</p>
-            </deep-card>
-          `
+      ${
+        this.selectedSentiments.map((sentiment) =>
+          sentiment?.tweets?.map(
+            (tweet, index) => html`
+              <deep-card>
+                <h3>Tweet ${index}</h3>
+                <p>${tweet?.text}</p>
+              </deep-card>
+            `
+          )
         )
-      )}
+      }
     `;
   }
 

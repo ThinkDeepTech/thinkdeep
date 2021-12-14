@@ -1,7 +1,6 @@
 import '@material/mwc-icon-button';
 import '@material/mwc-top-app-bar-fixed';
 import '@thinkdeep/deep-footer';
-import '@thinkdeep/deep-navbar';
 import {Router} from '@vaadin/router';
 import {css, html, LitElement} from 'lit';
 import {i18nMixin, translate} from 'lit-element-i18n';
@@ -122,12 +121,14 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
           background-color: var(--primary-color, #000000);
         }
 
-        deep-navbar {
+        mwc-top-app-bar-fixed {
           grid-area: header;
           height: 16vh;
         }
 
         #content {
+          display: block;
+          min-height: 500px;
           grid-area: content;
         }
 
@@ -142,11 +143,6 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
     return html`
       ${this.styles}
 
-      <!-- <deep-navbar
-        class="navbar"
-        .companyName="${this.companyName}"
-        .routes="${this.routes}"
-      ></deep-navbar> -->
       <mwc-top-app-bar-fixed>
         <mwc-icon-button icon="menu" slot="navigationIcon"></mwc-icon-button>
 
