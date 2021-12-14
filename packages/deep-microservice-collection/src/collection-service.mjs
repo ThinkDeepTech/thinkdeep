@@ -51,7 +51,7 @@ class CollectionService {
 
         if (!hasReadAllAccess(user)) return [];
 
-        return await tweetStore.readTweets(economicEntityName, economicEntityType);
+        return await tweetStore.readRecentTweets(economicEntityName, economicEntityType, 10);
     }
 
     /**

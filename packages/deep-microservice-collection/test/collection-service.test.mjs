@@ -20,7 +20,7 @@ describe('collection-service', () => {
 
         tweetStore = new TweetStore({});
         TweetStore.prototype.createTweets = sinon.stub();
-        TweetStore.prototype.readTweets = sinon.stub();
+        TweetStore.prototype.readRecentTweets = sinon.stub();
 
         subject = new CollectionService(twitterAPI, tweetStore);
     });
@@ -64,13 +64,13 @@ describe('collection-service', () => {
         it('should read the tweets if the user has read:all scope', async () => {
             const user = { scope: 'read:all'};
             const result = await subject.tweets('somename', 'business', user);
-            expect(tweetStore.readTweets).to.have.been.called;
+            expect(tweetStore.readRecentTweets).to.have.been.called;
         })
 
         it('should read tweets from the store', async () => {
             const user = { scope: 'read:all'};
             const result = await subject.tweets('somename', 'business', user);
-            expect(tweetStore.readTweets).to.have.been.called;
+            expect(tweetStore.readRecentTweets).to.have.been.called;
         })
     })
 

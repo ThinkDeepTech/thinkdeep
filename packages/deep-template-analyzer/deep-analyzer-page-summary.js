@@ -52,7 +52,7 @@ export default class DeepAnalyzerPageSummary extends ApolloQuery {
       <google-chart
         type="line"
         options='{"title": "Sentiment as a function of time" }'
-        cols='[{"label": "Year", "type": "number"}, {"label": "Sentiment", "type": "number"}]'
+        cols='[{"label": "Timestamp", "type": "number"}, {"label": "Sentiment", "type": "number"}]'
         rows="[${this.data?.sentiments?.map((sentiment) =>
           JSON.stringify([sentiment.timestamp, sentiment.score])
         )}]"

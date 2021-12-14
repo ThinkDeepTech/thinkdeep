@@ -10,56 +10,80 @@ const expect = chai.expect;
 describe('tweet-store', () => {
 
     let mongoCollection;
+    const economicEntityName = 'somebusiness';
+    const economicEntityType = 'BUSINESS';
+    const numTweetsToReturn = 12;
+    const databaseData = [{
+        timestamp: 1,
+        tweets: [{
+            text: 'This is a raw tweet'
+        }]
+    }];
     let subject;
     beforeEach(() => {
         mongoCollection = {
             find: sinon.stub(),
+            sort: sinon.stub(),
+            limit: sinon.stub(),
             toArray: sinon.stub(),
             insertOne: sinon.stub()
         };
+        mongoCollection.find.returns(mongoCollection);
+        mongoCollection.sort.returns(mongoCollection);
+        mongoCollection.limit.returns(mongoCollection);
+        mongoCollection.toArray.returns(databaseData);
+
         subject = new TweetStore(mongoCollection);
     });
 
-    describe('readTweets', () => {
+    describe('readRecentTweets', () => {
+
+        it('should return [] if economicTypeName is empty', async () => {
+            const result = await subject.readRecentTweets('', economicEntityType, numTweetsToReturn);
+            expect(result.length).to.equal(0);
+        })
+
+        it('should return [] if economicEntityName is not a string', async () => {
+            const result = await subject.readRecentTweets(1, economicEntityType, numTweetsToReturn);
+            expect(result.length).to.equal(0);
+        })
+
+        it('should return [] if economicEntityType is empty', async () => {
+            const result = await subject.readRecentTweets(economicEntityName, '', numTweetsToReturn);
+            expect(result.length).to.equal(0);
+        })
+
+        it('should return [] if economicEntityType is not a string', async () => {
+            const result = await subject.readRecentTweets(economicEntityName, [], numTweetsToReturn);
+            expect(result.length).to.equal(0);
+        })
+
+        it('should limit the number of returned results to numRecentTweets', async () => {
+            await subject.readRecentTweets(economicEntityName, economicEntityType, numTweetsToReturn);
+            const limit = mongoCollection.limit.getCall(0).args[0];
+            expect(limit).to.equal(numTweetsToReturn);
+        })
+
+        it('should sort the tweets in descending order', async () => {
+            await subject.readRecentTweets(economicEntityName, economicEntityType, numTweetsToReturn);
+            const sortOptions = mongoCollection.sort.getCall(0).args[0];
+
+            // NOTE: A value of -1 indicates a sort in descending order.
+            expect(sortOptions.timestamp).to.equal(-1);
+        })
 
         it('should read tweets from the database', async () => {
-            const economicEntityName = "some business name";
-            const economicEntityType = 'BUSINESS';
-            const databaseData = [{
-                timestamp: 1,
-                tweets: [{
-                    text: 'This is a raw tweet'
-                }]
-            }];
-            mongoCollection.find.returns(mongoCollection);
-            mongoCollection.toArray.returns(databaseData);
-
-            await subject.readTweets(economicEntityName, economicEntityType);
-
+            await subject.readRecentTweets(economicEntityName, economicEntityType, numTweetsToReturn);
             expect(mongoCollection.find).to.have.been.called;
         })
 
         it('should package database tweets as an array', async () => {
-            const economicEntityName = "some business name";
-            const economicEntityType = 'BUSINESS';
-            const databaseData = [{
-                timestamp: 1,
-                tweets: [{
-                    text: 'This is a raw tweet'
-                }]
-            }];
-            mongoCollection.find.returns(mongoCollection);
-            mongoCollection.toArray.returns(databaseData);
-
-            await subject.readTweets(economicEntityName, economicEntityType);
-
+            await subject.readRecentTweets(economicEntityName, economicEntityType, numTweetsToReturn);
             expect(mongoCollection.toArray).to.have.been.called;
         })
 
         it('should reduce the tweets', async () => {
-            const economicEntityName = "some business name";
-            const economicEntityType = 'BUSINESS';
-            const databaseData = [{
+            const tweets = [{
                 timestamp: 1,
                 tweets: [{
                     text: 'This is a raw tweet'
@@ -73,9 +97,9 @@ describe('tweet-store', () => {
                 }]
             }];
             mongoCollection.find.returns(mongoCollection);
-            mongoCollection.toArray.returns(databaseData);
+            mongoCollection.toArray.returns(tweets);
 
-            const result = await subject.readTweets(economicEntityName, economicEntityType);
+            const result = await subject.readRecentTweets(economicEntityName, economicEntityType, numTweetsToReturn);
 
             expect(result[0].timestamp).to.equal(1);
             expect(result[0].tweets.length).to.equal(1);
@@ -84,17 +108,9 @@ describe('tweet-store', () => {
         })
 
         it('should return [] if an error occurs', async () => {
-            const economicEntityName = "some business name";
-            const economicEntityType = 'BUSINESS';
-            const databaseData = [{
-                timestamp: 1,
-                tweets: [{
-                    text: 'This is a raw tweet'
-                }]
-            }];
             mongoCollection.find.throws();
 
-            const result = await subject.readTweets(economicEntityName, economicEntityType);
+            const result = await subject.readRecentTweets(economicEntityName, economicEntityType, numTweetsToReturn);
 
             expect(result.length).to.equal(0);
         })
@@ -104,8 +120,6 @@ describe('tweet-store', () => {
 
         it('should insert the data into the database', async () => {
             const timestamp = 1;
-            const economicEntityName = 'some name';
-            const economicEntityType = 'BUSINESS';
             const tweets = [{
                 text: 'i have something to say'
             },{
@@ -119,8 +133,6 @@ describe('tweet-store', () => {
 
         it('should return true if the insert succeeds', async() => {
             const timestamp = 1;
-            const economicEntityName = 'some name';
-            const economicEntityType = 'BUSINESS';
             const tweets = [{
                 text: 'i have something to say'
             },{
@@ -134,8 +146,6 @@ describe('tweet-store', () => {
 
         it('should return false if the insert fails',async  () => {
             const timestamp = 1;
-            const economicEntityName = 'some name';
-            const economicEntityType = 'BUSINESS';
             const tweets = [{
                 text: 'i have something to say'
             },{

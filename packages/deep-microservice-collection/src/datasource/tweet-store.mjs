@@ -3,17 +3,23 @@ import {MongoDataSource} from 'apollo-datasource-mongodb';
 class TweetStore extends MongoDataSource {
 
     /**
-     * Read tweets from the mongo store.
+     * Read recent tweets from the mongo store.
      * @param {String} economicEntityName - Name of the economic entity (i.e, 'Google').
      * @param {String} economicEntityType - Type of the economic entity (i.e, 'BUSINESS').
+     * @param {Number} numTweetsToReturn - Number of recent tweets to return.
      * @returns {Array} - Tweets read from the database and formatted for the application or [].
      */
-    async readTweets(economicEntityName, economicEntityType) {
+    async readRecentTweets(economicEntityName, economicEntityType, numTweetsToReturn) {
+
+        if (!economicEntityName || (typeof economicEntityName != 'string')) return [];
+
+        if (!economicEntityType || (typeof economicEntityType != 'string')) return [];
+
         try {
             const result = await this.collection.find({
                 economicEntityName: economicEntityName.toLowerCase(),
                 economicEntityType : economicEntityType.toLowerCase()
-            }).toArray();
+            }).limit(numTweetsToReturn).sort({timestamp: -1}).toArray();
 
             return this._reduceTweets(result);
         } catch (e) {
