@@ -39,6 +39,8 @@ jobs:
 
             - run: yarn install --force
 
+            # TODO: There's something wrong with the yarn install above. It seems to avoid installation of apollo-datasource-mongodb as
+            # well as mongodb itself. This is a patch solution, but isn't scalable. After build fix, troubleshoot.
             - run: yarn add -W apollo-datasource-mongodb
 
             - run: yarn add -W mongodb
