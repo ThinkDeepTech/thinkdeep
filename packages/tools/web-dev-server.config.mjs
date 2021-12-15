@@ -1,3 +1,4 @@
+// TODO: Update to @rollup/plugin-graphql
 import rollupGraphQL from '@apollo-elements/rollup-plugin-graphql';
 import rollupReplace from '@rollup/plugin-replace';
 import { fromRollup } from '@web/dev-server-rollup';

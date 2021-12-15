@@ -14,7 +14,5 @@
     "esModuleInterop": true,
     "lib": ["dom", "esnext", "es2016"]
   },
-  "exclude": ["node_modules", "dist", "examples"],
-  "typeRoots": ["node_modules/@types"],
-  "types": ["node"]
+  "exclude": ["node_modules", "dist", "examples"]
 }
