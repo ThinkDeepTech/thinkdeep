@@ -166,8 +166,9 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    * Handle selection.
    * @param {HTMLElement} explicitOriginalTarget - The element which was selected in the selection dropdown box.
    */
-  _onSelect({explicitOriginalTarget}) {
-    const businessName = explicitOriginalTarget.value;
+  _onSelect() {
+    const businessName = this.shadowRoot.querySelector('[aria-selected="true"]')
+      .value;
     this.query.variables = {
       economicEntityName: businessName,
       economicEntityType: 'BUSINESS',
