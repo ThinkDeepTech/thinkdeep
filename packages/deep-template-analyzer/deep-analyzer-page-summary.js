@@ -129,7 +129,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
       const selectedPoint = googleChart.rows[selectedRow];
 
-      this.query.data?.sentiments?.forEach((sentiment) => {
+      this.data?.sentiments?.forEach((sentiment) => {
         if (this._hasMatchingData(sentiment, selectedPoint)) {
           this.selectedSentiments.push(sentiment);
         }
