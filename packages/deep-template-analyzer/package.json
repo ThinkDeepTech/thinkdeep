@@ -70,6 +70,8 @@
     "@google-web-components/google-chart": "^5.0.0",
     "@material/mwc-button": "^0.25.3",
     "@material/mwc-icon-button": "^0.25.3",
+    "@material/mwc-list": "^0.25.3",
+    "@material/mwc-select": "^0.25.3",
     "@material/mwc-textfield": "^0.25.3",
     "@material/mwc-top-app-bar-fixed": "^0.25.3",
     "@thinkdeep/deep-button": "^0.0.8",

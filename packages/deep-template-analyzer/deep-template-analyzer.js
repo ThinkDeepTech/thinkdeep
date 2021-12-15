@@ -144,8 +144,6 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
       ${this.styles}
 
       <mwc-top-app-bar-fixed>
-        <mwc-icon-button icon="menu" slot="navigationIcon"></mwc-icon-button>
-
         <div slot="title">${this.companyName}</div>
 
         <mwc-icon-button
