@@ -19,7 +19,6 @@ import GetSentiment from './graphql/GetSentiment.query.graphql';
 export default class DeepAnalyzerPageSummary extends LitElement {
   static get properties() {
     return {
-      data: {type: Object},
       query: {type: Object},
       mutation: {type: Object},
       selectedSentiments: {type: Array},
@@ -28,8 +27,6 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
   constructor() {
     super();
-
-    this.data = {};
 
     this.query = new ApolloQueryController(this, GetSentiment, {
       variables: {
@@ -48,14 +45,14 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     super.connectedCallback();
 
     this.addEventListener('google-chart-select', this._handleChartSelection);
-    this.addEventListener('selected', this._onSelect.bind(this));
+    this.addEventListener('selected', this._onSelect);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
 
     this.removeEventListener('google-chart-select', this._handleChartSelection);
-    this.removeEventListener('selected', this._onSelect.bind(this));
+    this.removeEventListener('selected', this._onSelect);
   }
 
   static get styles() {
@@ -94,7 +91,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         options="{&quot;title&quot;: &quot;Sentiment as a function of time&quot; }"
         cols="[{&quot;label&quot;: &quot;Timestamp&quot;, &quot;type&quot;: &quot;number&quot;}, {&quot;label&quot;: &quot;Sentiment&quot;, &quot;type&quot;: &quot;number&quot;}]"
         rows="[${
-          this.data?.sentiments?.map((sentiment) =>
+          this.query?.data?.sentiments?.map((sentiment) =>
             JSON.stringify([sentiment.timestamp, sentiment.score])
           )
         }]"
@@ -129,7 +126,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
       const selectedPoint = googleChart.rows[selectedRow];
 
-      this.data?.sentiments?.forEach((sentiment) => {
+      this.query?.data?.sentiments?.forEach((sentiment) => {
         if (this._hasMatchingData(sentiment, selectedPoint)) {
           this.selectedSentiments.push(sentiment);
         }
@@ -163,8 +160,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   }
 
   /**
-   * Handle selection.
-   * @param {HTMLElement} explicitOriginalTarget - The element which was selected in the selection dropdown box.
+   * Find the selected business and add it to the query variables.
    */
   _onSelect() {
     const businessName = this.shadowRoot.querySelector('[aria-selected="true"]')
@@ -182,7 +178,6 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    * This happened to solve the issue.
    */
   _triggerUpdate() {
-    this.data = this.query.data;
     this.requestUpdate();
   }
 }
