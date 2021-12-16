@@ -3,44 +3,41 @@ version: 2.1
 orbs:
     browser-tools: circleci/browser-tools@1.2.2
 
-jobs:
+commands:
     install:
-        docker:
-          - image: 'cimg/node:14.17.6'
-
-        working_directory: ~/project
-
-        steps:
-
-          - checkout
-
-          - run:
-            name: Install Dependencies
-            command: yarn install
-          - run:
-            name: Add Missing Dependencies
-            command: yarn add -W apollo-datasource-mongodb && yarn add -W mongodb
-
-          - save_cache:
-            key: v1-repo-cache
-            paths:
-              - node_modules
+      steps:
+        - run:
+          name: Installing Dependencies
+          command: yarn install
+        - run:
+          name: Adding Missing Dependencies
+          command: yarn add -W apollo-datasource-mongodb && yarn add -W mongodb
 
     test:
-        docker:
-          - image: 'cimg/node:14.17.6'
+      steps:
+        - run:
+          name: Run Tests
+          command: yarn run tests
 
-        working_directory: ~/project
+    build:
+      steps:
+        - run:
+          name: Perform Build
+          command: yarn run build
 
-        steps:
+    deploy:
+      steps:
+        - run:
+          name: Installing Firebase
+          command: curl -sL https://firebase.tools | bash
 
-          - restore_cache:
-            key: v1-repo-cache
+        - run:
+            name: Performing Deployment
+            command: firebase --token $FIREBASE_TOKEN deploy
 
-          - run:
-            name: Run Tests
-            command: yarn run tests
 
+
+jobs:
     build:
       docker:
           - image: 'cimg/node:14.17.6'
@@ -49,12 +46,11 @@ jobs:
 
       steps:
 
-          - restore_cache:
-            key: v1-repo-cache
+          - install
 
-          - run:
-            name: Perform Build
-            command: yarn run build
+          - test
+
+          - build
 
     deploy:
       docker:
@@ -63,16 +59,12 @@ jobs:
       working_directory: ~/project
 
       steps:
-          - restore_cache:
-            key: v1-repo-cache
 
-          - run:
-              name: Fetch and Install Firebase
-              command: curl -sL https://firebase.tools | bash
+          - install
 
-          - run:
-              name: Perform Deployment
-              command: firebase --token $FIREBASE_TOKEN deploy
+          - build
+
+          - deploy
 
 
 workflows:
@@ -91,10 +83,8 @@ workflows:
 
   deploy:
     jobs:
-      - install
-      - build:
-        requires:
-          - install
+      - build
+
       - deploy:
         requires:
           - build
