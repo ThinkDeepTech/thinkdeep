@@ -22,9 +22,9 @@ jobs:
             command: yarn add -W apollo-datasource-mongodb && yarn add -W mongodb
 
           - save_cache:
-            key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+            key: v1-repo-cache
             paths:
-              - ~/cache
+              - node_modules
 
     test:
         docker:
@@ -35,7 +35,7 @@ jobs:
         steps:
 
           - restore_cache:
-            keys: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+            key: v1-repo-cache
 
           - run:
             name: Run Tests
@@ -50,9 +50,9 @@ jobs:
       steps:
 
           - restore_cache:
-            keys: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+            key: v1-repo-cache
 
-          run:
+          - run:
             name: Perform Build
             command: yarn run build
 
@@ -64,7 +64,7 @@ jobs:
 
       steps:
           - restore_cache:
-            key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+            key: v1-repo-cache
 
           - run:
               name: Fetch and Install Firebase
