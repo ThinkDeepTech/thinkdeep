@@ -35,7 +35,7 @@ jobs:
         steps:
 
           - restore_cache:
-            key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+            keys: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
 
           - run:
             name: Run Tests
@@ -50,7 +50,7 @@ jobs:
       steps:
 
           - restore_cache:
-            key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+            keys: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
 
           run:
             name: Perform Build
