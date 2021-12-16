@@ -4,38 +4,23 @@ orbs:
     browser-tools: circleci/browser-tools@1.2.2
 
 commands:
-    install:
+    install_command:
       steps:
-        - run:
-          name: Installing Dependencies
-          command: yarn install
-        - run:
-          name: Adding Missing Dependencies
-          command: yarn add -W apollo-datasource-mongodb && yarn add -W mongodb
+        - run: yarn install
+        - run: yarn add -W apollo-datasource-mongodb && yarn add -W mongodb
 
-    test:
+    test_command:
       steps:
-        - run:
-          name: Run Tests
-          command: yarn run tests
+        - run: yarn run tests
 
-    build:
+    build_command:
       steps:
-        - run:
-          name: Perform Build
-          command: yarn run build
+        - run: yarn run build
 
-    deploy:
+    deploy_command:
       steps:
-        - run:
-          name: Installing Firebase
-          command: curl -sL https://firebase.tools | bash
-
-        - run:
-            name: Performing Deployment
-            command: firebase --token $FIREBASE_TOKEN deploy
-
-
+        - run: curl -sL https://firebase.tools | bash
+        - run: firebase --token $FIREBASE_TOKEN deploy
 
 jobs:
     build:
@@ -45,12 +30,11 @@ jobs:
       working_directory: ~/project
 
       steps:
-
-          - install
-
-          - test
-
-          - build
+          - browser-tools/install-browser-tools
+          - checkout
+          - install_command
+          - test_command
+          - build_command
 
     deploy:
       docker:
@@ -59,12 +43,10 @@ jobs:
       working_directory: ~/project
 
       steps:
-
-          - install
-
-          - build
-
-          - deploy
+          - checkout
+          - install_command
+          - build_command
+          - deploy_command
 
 
 workflows:
@@ -72,27 +54,20 @@ workflows:
   version: 2
 
   build:
-    jobs:
-      - install
-      - test:
-        requires:
-          - install
-      - build:
-        requires:
-          - install
 
-  deploy:
     jobs:
       - build
 
-      - deploy:
-        requires:
-          - build
+  deploy:
 
-        filters:
-          branches:
-            only:
-              master
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
 
 # jobs:
 #     deploy:
