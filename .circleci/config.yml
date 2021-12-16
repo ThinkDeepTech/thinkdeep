@@ -1,72 +1,175 @@
 version: 2.1
+
 orbs:
     browser-tools: circleci/browser-tools@1.2.2
-jobs:
-    deploy:
-        docker:
-            - image: 'cimg/node:14.17.6'
 
-        working_directory: ~/repo
+jobs:
+    install:
+        docker:
+          - image: 'cimg/node:14.17.6'
+
+        working_directory: ~/project
 
         steps:
 
-            - checkout
+          - checkout
 
-            - run: yarn install --force
+          - run:
+            name: Install Dependencies
+            command: yarn install
+          - run:
+            name: Add Missing Dependencies
+            command: yarn add -W apollo-datasource-mongodb && yarn add -W mongodb
 
-            - run: yarn run build
+          - save_cache:
+            key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+            paths:
+              - ~/cache
 
-            - run: curl -sL https://firebase.tools | bash
+    test:
+        docker:
+          - image: 'cimg/node:14.17.6'
 
-            - run: which firebase
+        working_directory: ~/project
 
-            - run: firebase --token $FIREBASE_TOKEN deploy
+        steps:
+
+          - restore_cache:
+            key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+
+          - run:
+            name: Run Tests
+            command: yarn run tests
 
     build:
-        docker:
-            - image: 'cimg/node:14.17.6-browsers'
+      docker:
+          - image: 'cimg/node:14.17.6'
 
-        working_directory: ~/repo
+      working_directory: ~/project
 
-        steps:
-            - browser-tools/install-browser-tools
+      steps:
 
-            - checkout
+          - restore_cache:
+            key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
 
-            - run: node --version
+          run:
+            name: Perform Build
+            command: yarn run build
 
-            - run: yarn --version
+    deploy:
+      docker:
+          - image: 'cimg/node:14.17.6'
 
-            - run: yarn install --force
+      working_directory: ~/project
 
-            # TODO: There's something wrong with the yarn install above. It seems to avoid installation of apollo-datasource-mongodb as
-            # well as mongodb itself. This is a patch solution, but isn't scalable. After build fix, troubleshoot.
-            - run: yarn add -W apollo-datasource-mongodb
+      steps:
+          - restore_cache:
+            key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
 
-            - run: yarn add -W mongodb
+          - run:
+              name: Fetch and Install Firebase
+              command: curl -sL https://firebase.tools | bash
 
-            - run: yarn run tests
+          - run:
+              name: Perform Deployment
+              command: firebase --token $FIREBASE_TOKEN deploy
 
-            - run: yarn run build
 
 workflows:
 
   version: 2
 
-  deploy:
-
+  build:
     jobs:
+      - install
+      - test:
+        requires:
+          - install
+      - build:
+        requires:
+          - install
 
-      - build
-
+  deploy:
+    jobs:
+      - install
+      - build:
+        requires:
+          - install
       - deploy:
+        requires:
+          - build
 
-          requires:
+        filters:
+          branches:
+            only:
+              master
 
-            - build
+# jobs:
+#     deploy:
+#         docker:
+#             - image: 'cimg/node:14.17.6'
 
-          filters:
+#         working_directory: ~/repo
 
-            branches:
+#         steps:
 
-              only: master
+#             - checkout
+
+#             - run: yarn install --force
+
+#             - run: yarn run build
+
+#             - run: curl -sL https://firebase.tools | bash
+
+#             - run: which firebase
+
+#             - run: firebase --token $FIREBASE_TOKEN deploy
+
+#     build:
+#         docker:
+#             - image: 'cimg/node:14.17.6-browsers'
+
+#         working_directory: ~/repo
+
+#         steps:
+#             - browser-tools/install-browser-tools
+
+#             - checkout
+
+#             - run: node --version
+
+#             - run: yarn --version
+
+#             - run: yarn install --force
+
+#             # TODO: There's something wrong with the yarn install above. It seems to avoid installation of apollo-datasource-mongodb as
+#             # well as mongodb itself. This is a patch solution, but isn't scalable. After build fix, troubleshoot.
+#             - run: yarn add -W apollo-datasource-mongodb
+
+#             - run: yarn add -W mongodb
+
+#             - run: yarn run tests
+
+#             - run: yarn run build
+
+# workflows:
+
+#   version: 2
+
+#   deploy:
+
+#     jobs:
+
+#       - build
+
+#       - deploy:
+
+#           requires:
+
+#             - build
+
+#           filters:
+
+#             branches:
+
+#               only: master
