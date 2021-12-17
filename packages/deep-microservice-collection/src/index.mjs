@@ -4,7 +4,9 @@ import {CollectionService} from './collection-service.mjs';
 import {TweetStore} from './datasource/tweet-store.mjs'
 import {TwitterAPI} from './datasource/twitter-api.mjs';
 import express from 'express';
+import {getPublicIP} from './get-public-ip.mjs';
 import {MongoClient} from 'mongodb';
+import os from 'os';
 import process from 'process';
 import {resolvers} from './resolvers.mjs';
 import {typeDefs} from './schema.mjs';
@@ -51,7 +53,8 @@ const startApolloServer = async () => {
     // NOTE: Introspection has some security implications. It allows developers to query the API to figure out the structure
     // of the schema. This can be dangerous in production. However, these services are intended to be visible so this isn't
     // currently an issue.
-    introspection: true
+    introspection: true,
+    playground: true
   });
   await server.start();
 
@@ -70,12 +73,16 @@ const startApolloServer = async () => {
     },
   });
 
+
   const port = 4002;
   await new Promise((resolve) => app.listen({port}, resolve));
+
   // eslint-disable-next-line
   console.log(
-    `🚀 Server ready at http://localhost:${port}${server.graphqlPath}`
+    `🚀 Server ready at http://${getPublicIP()}:${port}${server.graphqlPath}`
   );
 };
 
-startApolloServer();
+startApolloServer().then(() => { }, (reason) => {
+  console.log(`An Error Occurred: ${reason}`);
+});

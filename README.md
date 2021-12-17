@@ -92,3 +92,7 @@ with security-related development I opted to use one that was already available.
 ```console
     yarn run setup
 ```
+- Follow the instructions for setup in each of the microservices and the analysis app.
+
+## Environment Variables
+- NODE_ENV : The environment in which the application is running (i.e, development, production)

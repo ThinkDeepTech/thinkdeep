@@ -54,6 +54,7 @@ workflows:
   version: 2
 
   build_and_deploy_if_master:
+
     jobs:
       - build
       - deploy:
