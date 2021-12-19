@@ -4,6 +4,7 @@ import {AnalysisService} from './analysis-service.mjs';
 import { CollectionBinding } from './collection-binding.mjs';
 import {PostgresDataSource} from './datasource/postgres-datasource.mjs';
 import express from 'express';
+import { getPublicIP } from './get-public-ip.mjs';
 import {resolvers} from './resolvers.mjs';
 import {typeDefs} from './schema.mjs';
 import Sentiment from 'sentiment';
@@ -47,8 +48,12 @@ const startApolloServer = async () => {
   await new Promise((resolve) => app.listen({port}, resolve));
   // eslint-disable-next-line
   console.log(
-    `🚀 Server ready at http://localhost:${port}${server.graphqlPath}`
+    `🚀 Server ready at http://${getPublicIP()}:${port}${server.graphqlPath}`
   );
 };
 
-startApolloServer();
+try {
+  startApolloServer();
+} catch (e) {
+  console.log(`An Error Ocurred: ${e.message}`);
+}

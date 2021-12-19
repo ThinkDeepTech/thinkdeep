@@ -1,6 +1,41 @@
-FROM node:latest
+FROM ubuntu:20.04
+# TODO: Pass NODE_ENV into all microservices
+
+ARG PREDECOS_AUTH_AUDIENCE
+ARG PREDECOS_AUTH_JWKS_URI
+ARG PREDECOS_AUTH_ISSUER
+ARG PREDECOS_MICROSERVICE_ANALYSIS_URL
+ARG PREDECOS_MICROSERVICE_COLLECTION_URL
+
+ENV PREDECOS_AUTH_AUDIENCE=$PREDECOS_AUTH_AUDIENCE
+ENV PREDECOS_AUTH_JWKS_URI=$PREDECOS_AUTH_JWKS_URI
+ENV PREDECOS_AUTH_ISSUER=$PREDECOS_AUTH_ISSUER
+ENV PREDECOS_MICROSERVICE_ANALYSIS_URL=$PREDECOS_MICROSERVICE_ANALYSIS_URL
+ENV PREDECOS_MICROSERVICE_COLLECTION_URL=$PREDECOS_MICROSERVICE_COLLECTION_URL
+
 WORKDIR /usr/src/app
-COPY ./* ./
+
+RUN apt-get update
+
+RUN apt-get install -y curl
+
+# Add nodejs 16.x
+RUN /bin/bash -c "curl -sL https://deb.nodesource.com/setup_16.x | bash -"
+
+RUN apt-get update
+
+RUN apt-get install -y nodejs
+
+RUN npm i --global yarn
+
+RUN yarn --version
+
+COPY src/ ./src
+
+COPY package.json ./
+
 RUN yarn install
-EXPOSE 8080
+
+EXPOSE 4000
+
 CMD ["yarn", "run", "start"]

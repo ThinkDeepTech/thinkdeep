@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
     browser-tools: circleci/browser-tools@1.2.2
+    kubernetes: circleci/kubernetes@1.0.2
 
 commands:
     install_command:
@@ -63,74 +64,3 @@ workflows:
           filters:
             branches:
               only: master
-
-
-# jobs:
-#     deploy:
-#         docker:
-#             - image: 'cimg/node:14.17.6'
-
-#         working_directory: ~/repo
-
-#         steps:
-
-#             - checkout
-
-#             - run: yarn install --force
-
-#             - run: yarn run build
-
-#             - run: curl -sL https://firebase.tools | bash
-
-#             - run: which firebase
-
-#             - run: firebase --token $FIREBASE_TOKEN deploy
-
-#     build:
-#         docker:
-#             - image: 'cimg/node:14.17.6-browsers'
-
-#         working_directory: ~/repo
-
-#         steps:
-#             - browser-tools/install-browser-tools
-
-#             - checkout
-
-#             - run: node --version
-
-#             - run: yarn --version
-
-#             - run: yarn install --force
-
-#             # TODO: There's something wrong with the yarn install above. It seems to avoid installation of apollo-datasource-mongodb as
-#             # well as mongodb itself. This is a patch solution, but isn't scalable. After build fix, troubleshoot.
-#             - run: yarn add -W apollo-datasource-mongodb
-
-#             - run: yarn add -W mongodb
-
-#             - run: yarn run tests
-
-#             - run: yarn run build
-
-# workflows:
-
-#   version: 2
-
-#   deploy:
-
-#     jobs:
-
-#       - build
-
-#       - deploy:
-
-#           requires:
-
-#             - build
-
-#           filters:
-
-#             branches:
-
-#               only: master

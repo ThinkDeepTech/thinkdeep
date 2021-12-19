@@ -2,6 +2,7 @@ import graphql from '@apollo-elements/rollup-plugin-graphql';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import babel from '@rollup/plugin-babel';
 import eslint from '@rollup/plugin-eslint';
+import replace from '@rollup/plugin-replace';
 import html from '@web/rollup-plugin-html';
 import copy from 'rollup-plugin-copy'
 import merge from 'deepmerge';
@@ -29,6 +30,9 @@ export default merge(createSpaConfig, {
   },
   plugins: [
     nodeResolve(),
+    replace({
+      PREDECOS_MICROSERVICE_GATEWAY_URL: JSON.stringify(process.env.PREDECOS_MICROSERVICE_GATEWAY_URL)
+    }),
     eslint(),
     babel({ babelHelpers: 'bundled', rootMode: "upward" }),
     html(),

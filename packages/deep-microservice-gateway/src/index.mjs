@@ -2,6 +2,7 @@ import {ApolloGateway, RemoteGraphQLDataSource} from '@apollo/gateway';
 import {ApolloServer} from 'apollo-server-express';
 import express from 'express';
 import jwt from 'express-jwt';
+import {getPublicIP} from './get-public-ip.mjs';
 import jwks from 'jwks-rsa';
 
 const startGatewayService = async () => {
@@ -68,8 +69,13 @@ const startGatewayService = async () => {
   const port = 4000;
   app.listen({port}, () =>
     // eslint-disable-next-line
-    console.log(`Server ready at http://localhost:${port}${server.graphqlPath}`)
+    console.log(`Server ready at http://${getPublicIP()}:${port}${server.graphqlPath}`)
   );
 };
 
-startGatewayService();
+
+try {
+  startGatewayService();
+} catch (e) {
+  console.log(`An Error Ocurred: ${e.message}`);
+}

@@ -14,7 +14,7 @@
     "url": "git+https://github.com/ThinkDeepTech/thinkdeep.git"
   },
   "scripts": {
-    "start": "node ./src/index.js",
+    "start": "node ./src/index.mjs",
     "tests": "mocha ./test/**/*.test.mjs"
   },
   "devDependencies": {

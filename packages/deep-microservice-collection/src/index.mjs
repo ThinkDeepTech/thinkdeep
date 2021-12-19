@@ -39,9 +39,11 @@ const startApolloServer = async () => {
   console.log("Connected successfully to server");
 
   const twitterAPI = new TwitterAPI();
+  // TODO: remove admin
   const tweetStore = new TweetStore(mongoClient.db('admin').collection('tweets'));
   const collectionService = new CollectionService(twitterAPI, tweetStore);
 
+  const isProduction = process.env.NODE_ENV === 'production';
   const server = new ApolloServer({
     schema: buildSubgraphSchema([{typeDefs, resolvers}]),
     dataSources: () => ({collectionService}),
@@ -54,7 +56,9 @@ const startApolloServer = async () => {
     // of the schema. This can be dangerous in production. However, these services are intended to be visible so this isn't
     // currently an issue.
     introspection: true,
-    playground: true
+
+    // TODO: Disable this later
+    playground: isProduction
   });
   await server.start();
 

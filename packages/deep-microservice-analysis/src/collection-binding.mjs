@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 import {print} from 'graphql';
-import {Binding} from "@thinkdeep/deep-graphql-binding";
+import {Binding} from "deep-graphql-binding";
 import {introspectSchema, wrapSchema} from '@graphql-tools/wrap';
 
 /**
