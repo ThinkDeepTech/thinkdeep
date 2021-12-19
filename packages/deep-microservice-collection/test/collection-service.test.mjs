@@ -13,6 +13,7 @@ describe('collection-service', () => {
 
     let twitterAPI;
     let tweetStore;
+    let logger;
     let subject;
     beforeEach(() => {
         twitterAPI = new TwitterAPI();
@@ -22,7 +23,14 @@ describe('collection-service', () => {
         TweetStore.prototype.createTweets = sinon.stub();
         TweetStore.prototype.readRecentTweets = sinon.stub();
 
-        subject = new CollectionService(twitterAPI, tweetStore);
+        logger = {
+            debug: sinon.stub(),
+            info: sinon.stub(),
+            warn: sinon.stub(),
+            error: sinon.stub()
+        };
+
+        subject = new CollectionService(twitterAPI, tweetStore, logger);
     });
 
     describe('tweets', async () => {

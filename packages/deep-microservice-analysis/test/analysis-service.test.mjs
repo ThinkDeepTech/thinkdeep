@@ -12,6 +12,7 @@ describe('analysis-service', () => {
 
     let dataSource;
     let sentimentLib;
+    let logger;
     let collectionBinding;
     let subject;
     beforeEach((done) => {
@@ -26,7 +27,13 @@ describe('analysis-service', () => {
                 tweets: sinon.stub()
             }
         };
-        subject = new AnalysisService(dataSource, sentimentLib, collectionBinding);
+        logger = {
+            debug: sinon.stub(),
+            info: sinon.stub(),
+            warn: sinon.stub(),
+            error: sinon.stub()
+        }
+        subject = new AnalysisService(dataSource, sentimentLib, collectionBinding, logger);
         done();
     });
 
