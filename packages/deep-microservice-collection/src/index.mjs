@@ -4,12 +4,16 @@ import {CollectionService} from './collection-service.mjs';
 import {TweetStore} from './datasource/tweet-store.mjs'
 import {TwitterAPI} from './datasource/twitter-api.mjs';
 import express from 'express';
+import {getLogger} from './get-logger.mjs'
 import {getPublicIP} from './get-public-ip.mjs';
+import {loggingPlugin} from './logging-plugin.mjs';
 import {MongoClient} from 'mongodb';
 import os from 'os';
 import process from 'process';
 import {resolvers} from './resolvers.mjs';
 import {typeDefs} from './schema.mjs';
+
+const logger = getLogger();
 
 const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRING);
 
@@ -41,7 +45,7 @@ const startApolloServer = async () => {
   const twitterAPI = new TwitterAPI();
   // TODO: remove admin
   const tweetStore = new TweetStore(mongoClient.db('admin').collection('tweets'));
-  const collectionService = new CollectionService(twitterAPI, tweetStore);
+  const collectionService = new CollectionService(twitterAPI, tweetStore, logger);
 
   const isProduction = process.env.NODE_ENV === 'production';
   const server = new ApolloServer({
@@ -51,6 +55,9 @@ const startApolloServer = async () => {
       const user = req.headers.user ? JSON.parse(req.headers.user) : null;
       return {user};
     },
+    plugins: [
+      loggingPlugin
+    ],
 
     // NOTE: Introspection has some security implications. It allows developers to query the API to figure out the structure
     // of the schema. This can be dangerous in production. However, these services are intended to be visible so this isn't
@@ -71,6 +78,7 @@ const startApolloServer = async () => {
   server.applyMiddleware({
     app,
     cors: {
+      // TODO: Remove localhost from prod deployments. Security.
       origin: ['https://localhost:8000', 'http://localhost:8000', 'https://studio.apollographql.com'],
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE',
       credentials: true,
@@ -82,11 +90,11 @@ const startApolloServer = async () => {
   await new Promise((resolve) => app.listen({port}, resolve));
 
   // eslint-disable-next-line
-  console.log(
+  logger.info(
     `🚀 Server ready at http://${getPublicIP()}:${port}${server.graphqlPath}`
   );
 };
 
 startApolloServer().then(() => { }, (reason) => {
-  console.log(`An Error Occurred: ${reason}`);
+  logger.error(`An Error Occurred: ${JSON.stringify(reason)}`);
 });

@@ -11,10 +11,11 @@ class AnalysisService {
      * @param {Object} sentimentLib - Library to use for sentiment analysis. This is an instance of Sentiment from 'sentiment' package.
      * @param {Object} collectionBinding - CollectionBinding object to use when communicating with the collection service.
      */
-    constructor(dataSource, sentimentLib, collectionBinding) {
+    constructor(dataSource, sentimentLib, collectionBinding, logger) {
         this._dataSource = dataSource;
         this._sentimentLib = sentimentLib;
         this._collectionBinding = collectionBinding;
+        this._logger = logger;
     }
 
     /**
@@ -26,13 +27,16 @@ class AnalysisService {
      * @param {Object} collectionBinding - The collection microservice binding. This parameter is present for testing purposes and isn't intended for regular use.
      * @returns {Array} - The formatted sentiment objects in array form or [].
      */
-    async sentiments(economicEntityName, economicEntityType, user, collectionBinding = this._collectionBinding) {
+    async sentiments(economicEntityName, economicEntityType, user, collectionBinding = this._collectionBinding, logger = this._logger) {
         if (!economicEntityName || (typeof economicEntityName != 'string')) return [];
 
         if (!economicEntityType || (typeof economicEntityType != 'string')) return [];
 
         if (!hasReadAllAccess(user)) return [];
 
+        logger.debug(`Querying sentiments for economic entity name: ${economicEntityName}, type: ${economicEntityType}`);
+
+        logger.debug(`Fetching tweets for economic entity with name: ${economicEntityName}, type: ${economicEntityType}`);
         const data = await collectionBinding.query.tweets({ economicEntityName, economicEntityType },
             `
             {
@@ -42,6 +46,7 @@ class AnalysisService {
                 }
             }
             `, { context: { user } });
+        logger.debug(`Received tweets: ${JSON.stringify(data)}`);
 
         const sentiments = [];
         for (const entry of data) {
@@ -49,6 +54,8 @@ class AnalysisService {
 
             sentiments.push( this._averageSentiment(entry) );
         }
+
+        logger.debug(`Finished computing sentiments: ${JSON.stringify(sentiments)}`);
 
         return sentiments;
     }
