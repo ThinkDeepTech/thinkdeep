@@ -11,6 +11,7 @@ describe('user', () => {
   describe('getUser', () => {
     let authClient = null;
     beforeEach(() => {
+      globalThis.PREDECOS_AUTH_AUDIENCE = '';
       authClient = {
         logout: sinon.stub(),
         loginWithRedirect: sinon.stub(),
