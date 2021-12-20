@@ -22,7 +22,7 @@ commands:
 
     login_docker:
       steps:
-        - run: echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
+        - run: echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
 
     test_monorepo:
       steps:
@@ -47,7 +47,8 @@ jobs:
 
       steps:
         - checkout
-        - setup_remote_docker
+        - setup_remote_docker:
+          version: 20.10.12
         - login_docker
         - install_doctl
         - login_doctl
@@ -71,7 +72,8 @@ jobs:
 
       steps:
         - checkout
-        - setup_remote_docker
+        - setup_remote_docker:
+          version: 20.10.12
         - login_docker
         - install_doctl
         - login_doctl
@@ -91,7 +93,8 @@ jobs:
 
       steps:
         - checkout
-        - setup_remote_docker
+        - setup_remote_docker:
+          version: 20.10.12
         - login_docker
         - install_doctl
         - login_doctl
@@ -119,7 +122,8 @@ jobs:
 
       steps:
         - checkout
-        - setup_remote_docker
+        - setup_remote_docker:
+          version: 20.10.12
         - login_docker
         - install_doctl
         - login_doctl
@@ -145,7 +149,8 @@ jobs:
 
       steps:
         - checkout
-        - setup_remote_docker
+        - setup_remote_docker:
+          version: 20.10.12
         - login_docker
         - install_doctl
         - login_doctl
