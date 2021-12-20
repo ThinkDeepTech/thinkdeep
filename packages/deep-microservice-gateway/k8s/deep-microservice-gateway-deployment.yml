@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: deep-microservice-gateway
-        image: thinkdeeptech/deep-microservice-gateway:v0.0.1
+        image: thinkdeeptech/deep-microservice-gateway:latest
         ports:
         - containerPort: 4000

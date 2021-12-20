@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: deep-microservice-collection
-        image: thinkdeeptech/deep-microservice-collection:v0.0.1
+        image: thinkdeeptech/deep-microservice-collection:latest
         ports:
         - containerPort: 4002

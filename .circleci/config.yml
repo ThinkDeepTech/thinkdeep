@@ -5,26 +5,165 @@ orbs:
     kubernetes: circleci/kubernetes@1.0.2
 
 commands:
-    install_command:
+    install_monorepo:
       steps:
         - run: yarn install
         - run: yarn add -W apollo-datasource-mongodb && yarn add -W mongodb
 
-    test_command:
+    install_doctl:
+      steps:
+        - run: wget https://github.com/digitalocean/doctl/releases/download/v1.68.0/doctl-1.68.0-linux-amd64.tar.gz
+        - run: tar xzf doctl-1.68.0-linux-amd64.tar.gz
+        - run: PATH=$PATH:`pwd`
+
+    login_doctl:
+      steps:
+        - run: doctl auth init
+
+    login_docker:
+      steps:
+        - run: echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
+
+    test_monorepo:
       steps:
         - run: yarn run tests
 
-    build_command:
+    build_ui_command:
       steps:
         - run: yarn run build
 
-    deploy_command:
+    deploy_ui_command:
       steps:
         - run: curl -sL https://firebase.tools | bash
         - run: firebase --token $FIREBASE_TOKEN deploy
 
 jobs:
-    build:
+
+    deploy_mongodb:
+      docker:
+        - image: 'cimg/base:stable'
+
+      working_directory: ~/project/packages/deep-microservice-collection/k8s
+
+      steps:
+        - checkout
+        - setup_remote_docker
+        - login_docker
+        - install_doctl
+        - login_doctl
+        - kubernetes/install-kubectl
+        - kubernetes/delete-resource:
+            now: true
+            resource-names: mongodb
+            resource-types: deployments
+            wait: true
+        - kubernetes/create-or-update-resource:
+            get-rollout-status: true
+            resource-file-path: ./mongodb-deployment.yml
+            resource-name: mongodb-deployment
+            show-kubectl-command: true
+
+    deploy_postgres:
+      docker:
+        - image: 'cimg/base:stable'
+
+      working_directory: ~/project/packages/deep-microservice-analysis/k8s
+
+      steps:
+        - checkout
+        - setup_remote_docker
+        - login_docker
+        - install_doctl
+        - login_doctl
+        - kubernetes/install-kubectl
+        - kubernetes/delete-resource:
+            now: true
+            resource-names: postgres-deployment
+            resource-types: deployments
+            wait: true
+        - run: envsubst < postgres-deployment.yaml | kubectl apply -f -
+
+    build_and_deploy_microservice_collection:
+      docker:
+        - image: docker:17.05.0-ce-git
+
+      working_directory: ~/project/packages/deep-microservice-collection
+
+      steps:
+        - checkout
+        - setup_remote_docker
+        - login_docker
+        - install_doctl
+        - login_doctl
+        - kubernetes/install-kubectl
+        - run: docker build -t thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-collection:latest --build-arg PREDECOS_MONGODB_CONNECTION_STRING=$PREDECOS_MONGODB_CONNECTION_STRING --build-arg PREDECOS_TWITTER_BEARER=$PREDECOS_TWITTER_BEARER .
+        - run: docker push thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM}
+        - run: docker push thinkdeeptech/deep-microservice-collection:latest
+        - kubernetes/delete-resource:
+            now: true
+            resource-names: deep-microservice-collection-deployment
+            resource-types: deployments
+            wait: true
+        - kubernetes/create-or-update-resource:
+            get-rollout-status: true
+            resource-file-path: ./k8s/deep-microservice-collection-deployment.yml
+            resource-name: deep-microservice-collection-deployment
+            show-kubectl-command: true
+
+
+    build_and_deploy_microservice_analysis:
+      docker:
+        - image: docker:17.05.0-ce-git
+
+      working_directory: ~/project/packages/deep-microservice-analysis
+
+      steps:
+        - checkout
+        - setup_remote_docker
+        - login_docker
+        - install_doctl
+        - login_doctl
+        - run: docker build -t thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis:latest --build-arg PREDECOS_PG_CONNECTION_STRING=$PREDECOS_PG_CONNECTION_STRING --build-arg PREDECOS_MICROSERVICE_COLLECTION_URL=$PREDECOS_MICROSERVICE_COLLECTION_URL .
+        - run: docker push thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM}
+        - run: docker push thinkdeeptech/deep-microservice-analysis:latest
+        - kubernetes/delete-resource:
+            now: true
+            resource-names: deep-microservice-analysis-deployment
+            resource-types: deployments
+            wait: true
+        - kubernetes/create-or-update-resource:
+            get-rollout-status: true
+            resource-file-path: ./k8s/deep-microservice-analysis-deployment.yml
+            resource-name: deep-microservice-analysis-deployment
+            show-kubectl-command: true
+
+    build_and_deploy_microservice_gateway:
+      docker:
+        - image: docker:17.05.0-ce-git
+
+      working_directory: ~/project/packages/deep-microservice-gateway
+
+      steps:
+        - checkout
+        - setup_remote_docker
+        - login_docker
+        - install_doctl
+        - login_doctl
+        - run: docker build -t thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-gateway:latest --build-arg PREDECOS_AUTH_AUDIENCE=$PREDECOS_AUTH_AUDIENCE --build-arg PREDECOS_AUTH_JWKS_URI=$PREDECOS_AUTH_JWKS_URI --build-arg PREDECOS_AUTH_ISSUER=$PREDECOS_AUTH_ISSUER --build-arg PREDECOS_MICROSERVICE_ANALYSIS_URL=$PREDECOS_MICROSERVICE_ANALYSIS_URL --build-arg PREDECOS_MICROSERVICE_COLLECTION_URL=$PREDECOS_MICROSERVICE_COLLECTION_URL .
+        - run: docker push thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM}
+        - run: docker push thinkdeeptech/deep-microservice-gateway:latest
+        - kubernetes/delete-resource:
+            now: true
+            resource-names: deep-microservice-gateway-deployment
+            resource-types: deployments
+            wait: true
+        - kubernetes/create-or-update-resource:
+            get-rollout-status: true
+            resource-file-path: ./k8s/deep-microservice-gateway-deployment.yml
+            resource-name: deep-microservice-gateway-deployment
+            show-kubectl-command: true
+
+    build_ui:
       docker:
           - image: 'cimg/node:14.17.6'
 
@@ -33,11 +172,11 @@ jobs:
       steps:
           - browser-tools/install-browser-tools
           - checkout
-          - install_command
-          - test_command
-          - build_command
+          - install_monorepo
+          - test_monorepo
+          - build_ui_command
 
-    deploy:
+    deploy_ui:
       docker:
           - image: 'cimg/node:14.17.6'
 
@@ -45,9 +184,9 @@ jobs:
 
       steps:
           - checkout
-          - install_command
-          - build_command
-          - deploy_command
+          - install_monorepo
+          - build_ui_command
+          - deploy_ui_command
 
 
 workflows:
@@ -57,10 +196,27 @@ workflows:
   build_and_deploy_if_master:
 
     jobs:
-      - build
-      - deploy:
+
+      - build_and_deploy_microservice_collection
+        # filters:
+        #   branches:
+        #     only: master
+
+      - build_and_deploy_microservice_analysis
+        # filters:
+        #   branches:
+        #     only: master
+
+      - build_and_deploy_microservice_gateway
+          # filters:
+          #   branches:
+          #     only: master
+
+      - build_ui
+
+      - deploy_ui:
           requires:
-            - build
+            - build_ui
           filters:
             branches:
               only: master
