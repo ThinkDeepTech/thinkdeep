@@ -19,7 +19,7 @@ commands:
 
     login_docker:
       steps:
-        - run: docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
+        - run: echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
 
     test_monorepo:
       steps:
