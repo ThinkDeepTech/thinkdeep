@@ -50,7 +50,7 @@ class AnalysisService {
 
         const sentiments = [];
         for (const entry of data) {
-            if (!entry?.timestamp) continue;
+            if (!entry?.timestamp || !Array.isArray(entry?.tweets) || !entry?.tweets?.length) continue;
 
             sentiments.push( this._averageSentiment(entry) );
         }
