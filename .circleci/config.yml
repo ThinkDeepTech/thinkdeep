@@ -15,11 +15,10 @@ commands:
         - run: sudo apt-get install -y openssl
         - run: wget https://github.com/digitalocean/doctl/releases/download/v1.68.0/doctl-1.68.0-linux-amd64.tar.gz
         - run: tar xzf doctl-1.68.0-linux-amd64.tar.gz
-        - run: export PATH=$PATH:`pwd`
 
     login_doctl:
       steps:
-        - run: doctl auth init
+        - run: ./doctl auth init
 
     login_docker:
       steps:
