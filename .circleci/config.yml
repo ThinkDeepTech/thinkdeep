@@ -10,14 +10,11 @@ commands:
         - run: yarn install
         - run: yarn add -W apollo-datasource-mongodb && yarn add -W mongodb
 
-    install_doctl:
+    install_and_login_doctl:
       steps:
         - run: sudo apt-get install -y openssl
         - run: wget https://github.com/digitalocean/doctl/releases/download/v1.68.0/doctl-1.68.0-linux-amd64.tar.gz
         - run: tar xzf doctl-1.68.0-linux-amd64.tar.gz
-
-    login_doctl:
-      steps:
         - run: ./doctl auth init
 
     login_docker:
@@ -43,47 +40,50 @@ jobs:
       docker:
         - image: 'cimg/base:stable'
 
-      working_directory: ~/project/packages/deep-microservice-collection/k8s
+      working_directory: ~/project
 
       steps:
         - checkout
         - setup_remote_docker:
             version: 20.10.7
         - login_docker
-        - install_doctl
-        - login_doctl
+        - install_and_login_doctl
         - kubernetes/install-kubectl
         - kubernetes/delete-resource:
             now: true
             resource-names: mongodb-deployment
             resource-types: deployments
             wait: true
+            working_directory: ./packages/deep-microservice-collection/k8s
         - kubernetes/create-or-update-resource:
             get-rollout-status: true
             resource-file-path: ./mongodb-deployment.yml
             resource-name: mongodb-deployment
             show-kubectl-command: true
+            working_directory: ./packages/deep-microservice-collection/k8s
 
     deploy_postgres:
       docker:
         - image: 'cimg/base:stable'
 
-      working_directory: ~/project/packages/deep-microservice-analysis/k8s
+      working_directory: ~/project
 
       steps:
         - checkout
         - setup_remote_docker:
             version: 20.10.7
         - login_docker
-        - install_doctl
-        - login_doctl
+        - install_and_login_doctl
         - kubernetes/install-kubectl
         - kubernetes/delete-resource:
             now: true
             resource-names: postgres-deployment
             resource-types: deployments
             wait: true
-        - run: envsubst < postgres-deployment.yaml | kubectl apply -f -
+            working_directory: ./packages/deep-microservice-analysis/k8s
+        - run:
+            command: envsubst < postgres-deployment.yaml | kubectl apply -f -
+            working_directory: ./packages/deep-microservice-analysis/k8s
 
     build_and_deploy_microservice_collection:
       docker:
@@ -96,24 +96,25 @@ jobs:
         - setup_remote_docker:
             version: 20.10.7
         - login_docker
-        - install_doctl
-        - login_doctl
+        - install_and_login_doctl
         - kubernetes/install-kubectl
-        - run: cd ./packages/deep-microservice-collection
-        - run: docker build -t thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-collection:latest --build-arg PREDECOS_MONGODB_CONNECTION_STRING=$PREDECOS_MONGODB_CONNECTION_STRING --build-arg PREDECOS_TWITTER_BEARER=$PREDECOS_TWITTER_BEARER .
+        - run:
+            command: docker build -t thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-collection:latest --build-arg PREDECOS_MONGODB_CONNECTION_STRING=$PREDECOS_MONGODB_CONNECTION_STRING --build-arg PREDECOS_TWITTER_BEARER=$PREDECOS_TWITTER_BEARER .
+            working_directory: ./packages/deep-microservice-collection
         - run: docker push thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-collection:latest
-        - run: cd ./k8s
         - kubernetes/delete-resource:
             now: true
             resource-names: deep-microservice-collection-deployment
             resource-types: deployments
             wait: true
+            working_directory: ./packages/deep-microservice-collection/k8s
         - kubernetes/create-or-update-resource:
             get-rollout-status: true
             resource-file-path: ./deep-microservice-collection-deployment.yml
             resource-name: deep-microservice-collection-deployment
             show-kubectl-command: true
+            working_directory: ./packages/deep-microservice-collection/k8s
 
 
     build_and_deploy_microservice_analysis:
@@ -127,24 +128,25 @@ jobs:
         - setup_remote_docker:
             version: 20.10.7
         - login_docker
-        - install_doctl
-        - login_doctl
+        - install_and_login_doctl
         - kubernetes/install-kubectl
-        - run: cd ./packages/deep-microservice-analysis
-        - run: docker build -t thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis:latest --build-arg PREDECOS_PG_CONNECTION_STRING=$PREDECOS_PG_CONNECTION_STRING --build-arg PREDECOS_MICROSERVICE_COLLECTION_URL=$PREDECOS_MICROSERVICE_COLLECTION_URL .
+        - run:
+            command: docker build -t thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis:latest --build-arg PREDECOS_PG_CONNECTION_STRING=$PREDECOS_PG_CONNECTION_STRING --build-arg PREDECOS_MICROSERVICE_COLLECTION_URL=$PREDECOS_MICROSERVICE_COLLECTION_URL .
+            working_directory: ./packages/deep-microservice-analysis
         - run: docker push thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-analysis:latest
-        - run: cd ./k8s
         - kubernetes/delete-resource:
             now: true
             resource-names: deep-microservice-analysis-deployment
             resource-types: deployments
             wait: true
+            working_directory: ./packages/deep-microservice-analysis/k8s
         - kubernetes/create-or-update-resource:
             get-rollout-status: true
             resource-file-path: ./deep-microservice-analysis-deployment.yml
             resource-name: deep-microservice-analysis-deployment
             show-kubectl-command: true
+            working_directory: ./packages/deep-microservice-analysis/k8s
 
     build_and_deploy_microservice_gateway:
       docker:
@@ -157,11 +159,11 @@ jobs:
         - setup_remote_docker:
             version: 20.10.7
         - login_docker
-        - install_doctl
-        - login_doctl
+        - install_and_login_doctl
         - kubernetes/install-kubectl
-        - run: cd ./packages/deep-microservice-gateway
-        - run: docker build -t thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-gateway:latest --build-arg PREDECOS_AUTH_AUDIENCE=$PREDECOS_AUTH_AUDIENCE --build-arg PREDECOS_AUTH_JWKS_URI=$PREDECOS_AUTH_JWKS_URI --build-arg PREDECOS_AUTH_ISSUER=$PREDECOS_AUTH_ISSUER --build-arg PREDECOS_MICROSERVICE_ANALYSIS_URL=$PREDECOS_MICROSERVICE_ANALYSIS_URL --build-arg PREDECOS_MICROSERVICE_COLLECTION_URL=$PREDECOS_MICROSERVICE_COLLECTION_URL .
+        - run:
+            command: docker build -t thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-gateway:latest --build-arg PREDECOS_AUTH_AUDIENCE=$PREDECOS_AUTH_AUDIENCE --build-arg PREDECOS_AUTH_JWKS_URI=$PREDECOS_AUTH_JWKS_URI --build-arg PREDECOS_AUTH_ISSUER=$PREDECOS_AUTH_ISSUER --build-arg PREDECOS_MICROSERVICE_ANALYSIS_URL=$PREDECOS_MICROSERVICE_ANALYSIS_URL --build-arg PREDECOS_MICROSERVICE_COLLECTION_URL=$PREDECOS_MICROSERVICE_COLLECTION_URL .
+            working_directory: ./packages/deep-microservice-gateway
         - run: docker push thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-gateway:latest
         - run: cd ./k8s
@@ -170,11 +172,13 @@ jobs:
             resource-names: deep-microservice-gateway-deployment
             resource-types: deployments
             wait: true
+            working_directory: ./packages/deep-microservice-gateway/k8s
         - kubernetes/create-or-update-resource:
             get-rollout-status: true
             resource-file-path: ./deep-microservice-gateway-deployment.yml
             resource-name: deep-microservice-gateway-deployment
             show-kubectl-command: true
+            working_directory: ./packages/deep-microservice-gateway/k8s
 
     build_ui:
       docker:
