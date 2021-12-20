@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deep-microservice-analysis-deployment
+  labels:
+    app: deep-microservice-analysis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deep-microservice-analysis
+  template:
+    metadata:
+      labels:
+        app: deep-microservice-analysis
+    spec:
+      containers:
+      - name: deep-microservice-analysis
+        image: thinkdeeptech/deep-microservice-analysis:v0.0.1
+        ports:
+        - containerPort: 4001
