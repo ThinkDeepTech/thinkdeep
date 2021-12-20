@@ -12,6 +12,7 @@ commands:
 
     install_doctl:
       steps:
+        - run: apt-get install -y openssl
         - run: wget https://github.com/digitalocean/doctl/releases/download/v1.68.0/doctl-1.68.0-linux-amd64.tar.gz
         - run: tar xzf doctl-1.68.0-linux-amd64.tar.gz
         - run: PATH=$PATH:`pwd`
