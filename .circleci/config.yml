@@ -8,7 +8,7 @@ commands:
     install_command:
       steps:
         - run: yarn install
-        - run: yarn add -W apollo-datasource-mongodb && yarn add -W mongodb && yarn add lerna
+        - run: yarn add -W apollo-datasource-mongodb && yarn add -W mongodb && yarn add -W lerna
 
     test_command:
       steps:
