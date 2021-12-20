@@ -54,13 +54,11 @@ jobs:
             resource-names: mongodb-deployment
             resource-types: deployments
             wait: true
-            working_directory: ./packages/deep-microservice-collection/k8s
         - kubernetes/create-or-update-resource:
             get-rollout-status: true
-            resource-file-path: ./mongodb-deployment.yml
+            resource-file-path: ./packages/deep-microservice-collection/k8s/mongodb-deployment.yml
             resource-name: mongodb-deployment
             show-kubectl-command: true
-            working_directory: ./packages/deep-microservice-collection/k8s
 
     deploy_postgres:
       docker:
@@ -80,7 +78,6 @@ jobs:
             resource-names: postgres-deployment
             resource-types: deployments
             wait: true
-            working_directory: ./packages/deep-microservice-analysis/k8s
         - run:
             command: envsubst < postgres-deployment.yaml | kubectl apply -f -
             working_directory: ./packages/deep-microservice-analysis/k8s
@@ -108,13 +105,11 @@ jobs:
             resource-names: deep-microservice-collection-deployment
             resource-types: deployments
             wait: true
-            working_directory: ./packages/deep-microservice-collection/k8s
         - kubernetes/create-or-update-resource:
             get-rollout-status: true
-            resource-file-path: ./deep-microservice-collection-deployment.yml
+            resource-file-path: ./packages/deep-microservice-collection/k8s/deep-microservice-collection-deployment.yml
             resource-name: deep-microservice-collection-deployment
             show-kubectl-command: true
-            working_directory: ./packages/deep-microservice-collection/k8s
 
 
     build_and_deploy_microservice_analysis:
@@ -140,13 +135,11 @@ jobs:
             resource-names: deep-microservice-analysis-deployment
             resource-types: deployments
             wait: true
-            working_directory: ./packages/deep-microservice-analysis/k8s
         - kubernetes/create-or-update-resource:
             get-rollout-status: true
-            resource-file-path: ./deep-microservice-analysis-deployment.yml
+            resource-file-path: ./packages/deep-microservice-analysis/k8s/deep-microservice-analysis-deployment.yml
             resource-name: deep-microservice-analysis-deployment
             show-kubectl-command: true
-            working_directory: ./packages/deep-microservice-analysis/k8s
 
     build_and_deploy_microservice_gateway:
       docker:
@@ -172,13 +165,11 @@ jobs:
             resource-names: deep-microservice-gateway-deployment
             resource-types: deployments
             wait: true
-            working_directory: ./packages/deep-microservice-gateway/k8s
         - kubernetes/create-or-update-resource:
             get-rollout-status: true
-            resource-file-path: ./deep-microservice-gateway-deployment.yml
+            resource-file-path: ./packages/deep-microservice-gateway/k8s/deep-microservice-gateway-deployment.yml
             resource-name: deep-microservice-gateway-deployment
             show-kubectl-command: true
-            working_directory: ./packages/deep-microservice-gateway/k8s
 
     build_ui:
       docker:
