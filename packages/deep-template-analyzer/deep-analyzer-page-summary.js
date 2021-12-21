@@ -110,10 +110,9 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
   /**
    * Handle a user's click on point present in the google chart.
-   * @param {HTMLElement} originalTarget - Target of the click (i.e, google-chart).
    */
-  _handleChartSelection({originalTarget}) {
-    const googleChart = originalTarget;
+  _handleChartSelection() {
+    const googleChart = this.shadowRoot.querySelector('google-chart');
 
     this.selectedSentiments = [];
 
