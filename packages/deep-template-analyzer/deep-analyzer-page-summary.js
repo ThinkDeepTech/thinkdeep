@@ -88,27 +88,23 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
       <google-chart
         type="line"
-        options="{&quot;title&quot;: &quot;Sentiment as a function of time&quot; }"
-        cols="[{&quot;label&quot;: &quot;Timestamp&quot;, &quot;type&quot;: &quot;number&quot;}, {&quot;label&quot;: &quot;Sentiment&quot;, &quot;type&quot;: &quot;number&quot;}]"
-        rows="[${
-          this.query?.data?.sentiments?.map((sentiment) =>
-            JSON.stringify([sentiment.timestamp, sentiment.score])
-          )
-        }]"
+        options='{"title": "Sentiment as a function of time" }'
+        cols='[{"label": "Timestamp", "type": "number"}, {"label": "Sentiment", "type": "number"}]'
+        rows="[${this.query?.data?.sentiments?.map((sentiment) =>
+          JSON.stringify([sentiment.timestamp, sentiment.score])
+        )}]"
       ></google-chart>
 
-      ${
-        this.selectedSentiments.map((sentiment) =>
-          sentiment?.tweets?.map(
-            (tweet, index) => html`
-              <deep-card>
-                <h3>Tweet ${index}</h3>
-                <p>${tweet?.text}</p>
-              </deep-card>
-            `
-          )
+      ${this.selectedSentiments.map((sentiment) =>
+        sentiment?.tweets?.map(
+          (tweet, index) => html`
+            <deep-card>
+              <h3>Tweet ${index}</h3>
+              <p>${tweet?.text}</p>
+            </deep-card>
+          `
         )
-      }
+      )}
     `;
   }
 
@@ -149,10 +145,9 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
   /**
    * Handle input.
-   * @param {HTMLElement} explicitOriginalTarget - The input element containing the business for which data will be collected.
    */
-  _onInput({explicitOriginalTarget}) {
-    const companyName = explicitOriginalTarget.value;
+  _onInput() {
+    const companyName = this.shadowRoot.querySelector('mwc-textfield').value;
     this.mutation.variables = {
       economicEntityName: companyName,
       economicEntityType: 'BUSINESS',
@@ -163,8 +158,9 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    * Find the selected business and add it to the query variables.
    */
   _onSelect() {
-    const businessName = this.shadowRoot.querySelector('[aria-selected="true"]')
-      .value;
+    const businessName = this.shadowRoot.querySelector(
+      '[aria-selected="true"]'
+    ).value;
     this.query.variables = {
       economicEntityName: businessName,
       economicEntityType: 'BUSINESS',
