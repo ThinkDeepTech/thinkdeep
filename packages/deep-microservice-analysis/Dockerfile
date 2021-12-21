@@ -25,9 +25,11 @@ RUN npm i --global yarn
 
 RUN yarn --version
 
-COPY src/ ./src
+RUN mkdir ./src
 
-COPY package.json ./
+COPY src/ ./src/
+
+COPY package.json $BASE_DIRECTORY/
 
 RUN yarn install
 

@@ -38,7 +38,7 @@ jobs:
 
     deploy_mongodb:
       docker:
-        - image: 'cimg/base:2021.12'
+        - image: 'cimg/base:stable'
 
       working_directory: ~/project
 
@@ -62,7 +62,7 @@ jobs:
 
     deploy_postgres:
       docker:
-        - image: 'cimg/base:2021.12'
+        - image: 'cimg/base:stable'
 
       working_directory: ~/project
 
@@ -84,7 +84,7 @@ jobs:
 
     build_and_deploy_microservice_collection:
       docker:
-        - image: 'cimg/base:2021.12'
+        - image: 'cimg/base:stable'
 
       working_directory: ~/project
 
@@ -114,7 +114,7 @@ jobs:
 
     build_and_deploy_microservice_analysis:
       docker:
-        - image: 'cimg/base:2021.12'
+        - image: 'cimg/base:stable'
 
       working_directory: ~/project
 
@@ -143,7 +143,7 @@ jobs:
 
     build_and_deploy_microservice_gateway:
       docker:
-        - image: 'cimg/base:2021.12'
+        - image: 'cimg/base:stable'
 
       working_directory: ~/project
 

@@ -75,11 +75,17 @@ const startApolloServer = async () => {
   // therefore how to attack. Therefore, it's disabled here.
   app.disable('x-powered-by');
 
+  let allowedOrigins = ['https://predecos.com', 'https://thinkdeep-d4624.web.app/']
+  if (!isProduction) {
+    allowedOrigins = allowedOrigins.concat(['https://localhost:8000', 'http://localhost:8000', 'https://studio.apollographql.com']);
+  }
+
+
   server.applyMiddleware({
     app,
     cors: {
       // TODO: Remove localhost from prod deployments. Security.
-      origin: ['https://predecos.com', 'https://thinkdeep-d4624.web.app/'],
+      origin: allowedOrigins,
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE',
       credentials: true,
     },

@@ -25,7 +25,8 @@ const startGatewayService = async () => {
           );
         },
       });
-    }
+    },
+    logger
   });
 
   const server = new ApolloServer({
@@ -60,10 +61,16 @@ const startGatewayService = async () => {
   // before server.applyMiddleWare(...) breaks Apollo Explorer.
   app.use(jwtHandler);
 
+  let allowedOrigins = ['https://predecos.com', 'https://thinkdeep-d4624.web.app/']
+  const isProduction = process.env.NODE_ENV.toLowerCase() === 'production';
+  if (!isProduction) {
+    allowedOrigins = allowedOrigins.concat(['https://localhost:8000', 'http://localhost:8000', 'https://studio.apollographql.com']);
+  }
+
   server.applyMiddleware({
     app,
     cors: {
-      origin: ['https://predecos.com', 'https://thinkdeep-d4624.web.app/'],
+      origin: allowedOrigins,
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE',
       credentials: true,
     },
