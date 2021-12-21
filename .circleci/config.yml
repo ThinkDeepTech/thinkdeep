@@ -100,12 +100,11 @@ jobs:
             working_directory: ./packages/deep-microservice-collection
         - run: docker push thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-collection:latest
-        - run: ./doctl auth init && kubectl delete deployment deep-microservice-collection-deployment
-        # - kubernetes/delete-resource:
-        #     now: true
-        #     resource-names: deep-microservice-collection-deployment
-        #     resource-types: deployments
-        #     wait: true
+        - kubernetes/delete-resource:
+            now: true
+            resource-names: deep-microservice-collection-deployment
+            resource-types: deployments
+            wait: true
         - kubernetes/create-or-update-resource:
             get-rollout-status: true
             resource-file-path: ./packages/deep-microservice-collection/k8s/deep-microservice-collection-deployment.yml
