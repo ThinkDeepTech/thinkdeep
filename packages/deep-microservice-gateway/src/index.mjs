@@ -73,6 +73,7 @@ const startGatewayService = async () => {
       origin: allowedOrigins,
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE',
       credentials: true,
+      preflightContinue: true
     },
   });
 
