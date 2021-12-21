@@ -61,6 +61,7 @@ const startGatewayService = async () => {
   // before server.applyMiddleWare(...) breaks Apollo Explorer.
   app.use(jwtHandler);
 
+  // NOTE: Placing a forward slash at the end of any allowed origin causes a preflight error.
   let allowedOrigins = ['https://predecos.com', 'https://thinkdeep-d4624.web.app']
   const isProduction = process.env.NODE_ENV.toLowerCase() === 'production';
   if (!isProduction) {

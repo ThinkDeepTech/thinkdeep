@@ -159,7 +159,6 @@ jobs:
             working_directory: ./packages/deep-microservice-gateway
         - run: docker push thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-gateway:latest
-        - run: cd ./k8s
         - kubernetes/delete-resource:
             now: true
             resource-names: deep-microservice-gateway-deployment
