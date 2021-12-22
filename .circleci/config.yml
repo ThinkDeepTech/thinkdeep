@@ -11,13 +11,6 @@ commands:
         - run: yarn install
         - run: yarn add -W apollo-datasource-mongodb && yarn add -W mongodb
 
-    install_and_login_doctl:
-      steps:
-        - run: sudo apt-get install -y openssl
-        - run: wget https://github.com/digitalocean/doctl/releases/download/v1.68.0/doctl-1.68.0-linux-amd64.tar.gz
-        - run: tar xzf doctl-1.68.0-linux-amd64.tar.gz
-        - run: ./doctl auth init
-
     login_docker:
       steps:
         - run: echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
@@ -97,21 +90,18 @@ jobs:
         - k8s/install
         - k8s/initialize:
             cluster: predecos-kubernetes-cluster
-        # - install_and_login_doctl
-        # - kubernetes/install-kubectl
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-collection:latest --build-arg PREDECOS_MONGODB_CONNECTION_STRING=$PREDECOS_MONGODB_CONNECTION_STRING --build-arg PREDECOS_TWITTER_BEARER=$PREDECOS_TWITTER_BEARER --build-arg NODE_ENV=$NODE_ENV .
             working_directory: ./packages/deep-microservice-collection
         - run: docker push thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-collection:latest
-        # - run: ./doctl kubernetes cluster kubeconfig save predecos-kubernetes-cluster
         - kubernetes/delete-resource:
             now: true
             resource-names: deep-microservice-collection-deployment
             resource-types: deployments
             wait: true
         - kubernetes/create-or-update-resource:
-            get-rollout-status: true
+            # get-rollout-status: true
             resource-file-path: ./packages/deep-microservice-collection/k8s/deep-microservice-collection-deployment.yml
             resource-name: deep-microservice-collection-deployment
             show-kubectl-command: true
@@ -131,21 +121,18 @@ jobs:
         - k8s/install
         - k8s/initialize:
             cluster: predecos-kubernetes-cluster
-        # - install_and_login_doctl
-        # - kubernetes/install-kubectl
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis:latest --build-arg PREDECOS_PG_CONNECTION_STRING=$PREDECOS_PG_CONNECTION_STRING --build-arg PREDECOS_MICROSERVICE_COLLECTION_URL=$PREDECOS_MICROSERVICE_COLLECTION_URL --build-arg NODE_ENV=$NODE_ENV .
             working_directory: ./packages/deep-microservice-analysis
         - run: docker push thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-analysis:latest
-        # - run: ./doctl kubernetes cluster kubeconfig save predecos-kubernetes-cluster
         - kubernetes/delete-resource:
             now: true
             resource-names: deep-microservice-analysis-deployment
             resource-types: deployments
             wait: true
         - kubernetes/create-or-update-resource:
-            get-rollout-status: true
+            # get-rollout-status: true
             resource-file-path: ./packages/deep-microservice-analysis/k8s/deep-microservice-analysis-deployment.yml
             resource-name: deep-microservice-analysis-deployment
             show-kubectl-command: true
@@ -164,21 +151,18 @@ jobs:
         - k8s/install
         - k8s/initialize:
             cluster: predecos-kubernetes-cluster
-        # - install_and_login_doctl
-        # - kubernetes/install-kubectl
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-gateway:latest --build-arg PREDECOS_AUTH_AUDIENCE=$PREDECOS_AUTH_AUDIENCE --build-arg PREDECOS_AUTH_JWKS_URI=$PREDECOS_AUTH_JWKS_URI --build-arg PREDECOS_AUTH_ISSUER=$PREDECOS_AUTH_ISSUER --build-arg PREDECOS_MICROSERVICE_ANALYSIS_URL=$PREDECOS_MICROSERVICE_ANALYSIS_URL --build-arg PREDECOS_MICROSERVICE_COLLECTION_URL=$PREDECOS_MICROSERVICE_COLLECTION_URL --build-arg NODE_ENV=$NODE_ENV .
             working_directory: ./packages/deep-microservice-gateway
         - run: docker push thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-gateway:latest
-        # - run: ./doctl kubernetes cluster kubeconfig save predecos-kubernetes-cluster
         - kubernetes/delete-resource:
             now: true
             resource-names: deep-microservice-gateway-deployment
             resource-types: deployments
             wait: true
         - kubernetes/create-or-update-resource:
-            get-rollout-status: true
+            # get-rollout-status: true
             resource-file-path: ./packages/deep-microservice-gateway/k8s/deep-microservice-gateway-deployment.yml
             resource-name: deep-microservice-gateway-deployment
             show-kubectl-command: true
