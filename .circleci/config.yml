@@ -100,6 +100,7 @@ jobs:
             working_directory: ./packages/deep-microservice-collection
         - run: docker push thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-collection:latest
+        - run: ./doctl kubernetes cluster kubeconfig save predecos-kubernetes-cluster
         - kubernetes/delete-resource:
             now: true
             resource-names: deep-microservice-collection-deployment
@@ -130,6 +131,7 @@ jobs:
             working_directory: ./packages/deep-microservice-analysis
         - run: docker push thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-analysis:latest
+        - run: ./doctl kubernetes cluster kubeconfig save predecos-kubernetes-cluster
         - kubernetes/delete-resource:
             now: true
             resource-names: deep-microservice-analysis-deployment
@@ -159,6 +161,7 @@ jobs:
             working_directory: ./packages/deep-microservice-gateway
         - run: docker push thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-gateway:latest
+        - run: ./doctl kubernetes cluster kubeconfig save predecos-kubernetes-cluster
         - kubernetes/delete-resource:
             now: true
             resource-names: deep-microservice-gateway-deployment

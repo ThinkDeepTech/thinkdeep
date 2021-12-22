@@ -96,7 +96,6 @@ const startApolloServer = async () => {
   const port = 4002;
   await new Promise((resolve) => app.listen({port}, resolve));
 
-  // eslint-disable-next-line
   logger.info(
     `🚀 Server ready at http://${getPublicIP()}:${port}${server.graphqlPath}`
   );
