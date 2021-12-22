@@ -76,7 +76,7 @@ const startApolloServer = async () => {
   app.disable('x-powered-by');
 
   // NOTE: Placing a forward slash at the end of any allowed origin causes a preflight error.
-  let allowedOrigins = ['https://predecos.com', 'https://thinkdeep-d4624.web.app']
+  let allowedOrigins = ['https://predecos.com', 'https://www.predecos.com', 'https://thinkdeep-d4624.web.app', 'https://www.thinkdeep-d4624.web.app']
   if (!isProduction) {
     allowedOrigins = allowedOrigins.concat(['https://localhost:8000', 'http://localhost:8000', 'https://studio.apollographql.com']);
   }
