@@ -97,11 +97,14 @@ jobs:
         - k8s/install
         - k8s/initialize:
             cluster: predecos-kubernetes-cluster
+        # - install_and_login_doctl
+        # - kubernetes/install-kubectl
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-collection:latest --build-arg PREDECOS_MONGODB_CONNECTION_STRING=$PREDECOS_MONGODB_CONNECTION_STRING --build-arg PREDECOS_TWITTER_BEARER=$PREDECOS_TWITTER_BEARER --build-arg NODE_ENV=$NODE_ENV .
             working_directory: ./packages/deep-microservice-collection
         - run: docker push thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-collection:latest
+        # - run: ./doctl kubernetes cluster kubeconfig save predecos-kubernetes-cluster
         - kubernetes/delete-resource:
             now: true
             resource-names: deep-microservice-collection-deployment
@@ -125,14 +128,17 @@ jobs:
         - setup_remote_docker:
             version: 20.10.7
         - login_docker
-        - install_and_login_doctl
-        - kubernetes/install-kubectl
+        - k8s/install
+        - k8s/initialize:
+            cluster: predecos-kubernetes-cluster
+        # - install_and_login_doctl
+        # - kubernetes/install-kubectl
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis:latest --build-arg PREDECOS_PG_CONNECTION_STRING=$PREDECOS_PG_CONNECTION_STRING --build-arg PREDECOS_MICROSERVICE_COLLECTION_URL=$PREDECOS_MICROSERVICE_COLLECTION_URL --build-arg NODE_ENV=$NODE_ENV .
             working_directory: ./packages/deep-microservice-analysis
         - run: docker push thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-analysis:latest
-        - run: ./doctl kubernetes cluster kubeconfig save predecos-kubernetes-cluster
+        # - run: ./doctl kubernetes cluster kubeconfig save predecos-kubernetes-cluster
         - kubernetes/delete-resource:
             now: true
             resource-names: deep-microservice-analysis-deployment
@@ -155,14 +161,17 @@ jobs:
         - setup_remote_docker:
             version: 20.10.7
         - login_docker
-        - install_and_login_doctl
-        - kubernetes/install-kubectl
+        - k8s/install
+        - k8s/initialize:
+            cluster: predecos-kubernetes-cluster
+        # - install_and_login_doctl
+        # - kubernetes/install-kubectl
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-gateway:latest --build-arg PREDECOS_AUTH_AUDIENCE=$PREDECOS_AUTH_AUDIENCE --build-arg PREDECOS_AUTH_JWKS_URI=$PREDECOS_AUTH_JWKS_URI --build-arg PREDECOS_AUTH_ISSUER=$PREDECOS_AUTH_ISSUER --build-arg PREDECOS_MICROSERVICE_ANALYSIS_URL=$PREDECOS_MICROSERVICE_ANALYSIS_URL --build-arg PREDECOS_MICROSERVICE_COLLECTION_URL=$PREDECOS_MICROSERVICE_COLLECTION_URL --build-arg NODE_ENV=$NODE_ENV .
             working_directory: ./packages/deep-microservice-gateway
         - run: docker push thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-gateway:latest
-        - run: ./doctl kubernetes cluster kubeconfig save predecos-kubernetes-cluster
+        # - run: ./doctl kubernetes cluster kubeconfig save predecos-kubernetes-cluster
         - kubernetes/delete-resource:
             now: true
             resource-names: deep-microservice-gateway-deployment
