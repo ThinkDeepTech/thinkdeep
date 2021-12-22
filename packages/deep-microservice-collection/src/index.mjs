@@ -8,7 +8,6 @@ import {getLogger} from './get-logger.mjs'
 import {getPublicIP} from './get-public-ip.mjs';
 import {loggingPlugin} from './logging-plugin.mjs';
 import {MongoClient} from 'mongodb';
-import os from 'os';
 import process from 'process';
 import {resolvers} from './resolvers.mjs';
 import {typeDefs} from './schema.mjs';
@@ -43,7 +42,6 @@ const startApolloServer = async () => {
   console.log("Connected successfully to server");
 
   const twitterAPI = new TwitterAPI();
-  // TODO: remove admin
   const tweetStore = new TweetStore(mongoClient.db('admin').collection('tweets'));
   const collectionService = new CollectionService(twitterAPI, tweetStore, logger);
 
@@ -63,9 +61,6 @@ const startApolloServer = async () => {
     // of the schema. This can be dangerous in production. However, these services are intended to be visible so this isn't
     // currently an issue.
     introspection: true,
-
-    // TODO: Disable this later
-    playground: isProduction
   });
   await server.start();
 
@@ -85,7 +80,6 @@ const startApolloServer = async () => {
   server.applyMiddleware({
     app,
     cors: {
-      // TODO: Remove localhost from prod deployments. Security.
       origin: allowedOrigins,
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE',
       credentials: true,
@@ -101,6 +95,6 @@ const startApolloServer = async () => {
   );
 };
 
-startApolloServer().then(() => { }, (reason) => {
+startApolloServer().then(() => { /* Do nothing */ }, (reason) => {
   logger.error(`An Error Occurred: ${JSON.stringify(reason)}`);
 });

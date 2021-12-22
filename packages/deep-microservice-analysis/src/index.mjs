@@ -66,6 +66,6 @@ const startApolloServer = async () => {
   );
 };
 
-startApolloServer().then(() => { }, (reason) => {
+startApolloServer().then(() => { /* Do nothing */ }, (reason) => {
   logger.error(`An Error Occurred: ${JSON.stringify(reason)}`);
 });

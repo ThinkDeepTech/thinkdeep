@@ -83,6 +83,6 @@ const startGatewayService = async () => {
   );
 };
 
-startGatewayService().then(() => { }, (reason) => {
+startGatewayService().then(() => { /* Do nothing */ }, (reason) => {
   logger.error(`An Error Occurred: ${JSON.stringify(reason)}`);
 });

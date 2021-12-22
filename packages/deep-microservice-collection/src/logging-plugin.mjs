@@ -10,13 +10,13 @@ const loggingPlugin = {
       return {
         // Fires whenever Apollo Server will parse a GraphQL
         // request to create its associated document AST.
-        async parsingDidStart(requestContext) {
+        async parsingDidStart() {
           logger.debug('Parsing started.');
         },
 
         // Fires whenever Apollo Server will validate a
         // request's document AST against your GraphQL schema.
-        async validationDidStart(requestContext) {
+        async validationDidStart() {
           logger.debug('Validation started.');
         },
 
