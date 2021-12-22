@@ -8,6 +8,9 @@ import jwks from 'jwks-rsa';
 
 const logger = getLogger();
 
+/**
+ * Start the gateway.
+ */
 const startGatewayService = async () => {
 
   const gateway = new ApolloGateway({
@@ -55,10 +58,9 @@ const startGatewayService = async () => {
   // therefore how to attack. Therefore, it's disabled here.
   app.disable('x-powered-by');
 
-
   // NOTE: This handler must be present here in order for authorization to correctly operate. If placed
   // after server.applyMiddleWare(...) it simply doesn't execute. However, the presence of this handler
-  // before server.applyMiddleWare(...) breaks Apollo Explorer.
+  // before server.applyMiddleWare(...) breaks Apollo Explorer but applies authorization.
   app.use(jwtHandler);
 
   // NOTE: Placing a forward slash at the end of any allowed origin causes a preflight error.

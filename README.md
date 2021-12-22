@@ -57,11 +57,21 @@ but it also defines how its interface is used by other microservices. This, in t
 service in one codebase. One benefit of that would be full-stack development can be done without making changes that collide
 with another teams changes. Federation, as well as schema stitching, provide mechanisms for taking a subgraph and connecting
 it to a full application supergraph in a seamless way. Federation uses a single gateway that provides access to the remaining
-services. This gateway is the publicly accessible end-point for the system of microservices and routes requests to the necessary
+services. This gateway is the publicly accessible end-point for the microservices and routes requests to the necessary
 microservice needed to gather the response. This application uses that concept because it's intended to introduce additional
 microservices that will perform tasks such as data fetching/collection, data cleaning as well as providing data structures for
 use in the front-end. Additional benefits include reducing the number of requests that need to go over the wire to gather data when
 compared to RESTful APIs, it's backed by facebook and is used by numerous companies and is therefore battle-tested and it's fun.
+
+#### Kubernetes
+[Kubernetes](https://kubernetes.io/) is a container orchestration system with many powerful characteristics. It's used in this
+project to take advantage of self-healing, monitoring, replication and load-balancing.
+
+#### Docker
+Docker provides containerization and is used for a couple of reasons. It allows developers to reproduce bugs that are seen in different
+environments such as production. It encapsulates application dependencies and configuration such that each application will run
+without worry about conflicting dependencies in a different application. It allows for easy backup and it takes up a much smaller
+footprint than virtual machines. It's also moving toward greater adoption on multiple platforms including windows and linux.
 
 #### Postgres
 Postgres was chosen simply because I've heard good things about it and it's heavily used.
@@ -97,5 +107,3 @@ with security-related development I opted to use one that was already available.
 ## Environment Variables
 - NODE_ENV : The environment in which the application is running (i.e, development, production)
 - DIGITALOCEAN_ACCESS_TOKEN : Access token for digital ocean
-
-TODO: UPDATE

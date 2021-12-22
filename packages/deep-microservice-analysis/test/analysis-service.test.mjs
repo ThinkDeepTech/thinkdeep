@@ -156,6 +156,36 @@ describe('analysis-service', () => {
             expect(sentimentLib.analyze).to.have.been.called;
         })
 
+        it('should skip over entries that include a null value for tweets ', async () => {
+            const economicEntityName = "SomeBusinessName";
+            const economicEntityType = "BUSINESS";
+            const user = { scope: "profile email read:all" };
+            const tweets = [{
+                timestamp: 1,
+                tweets: null
+            }];
+            collectionBinding.query.tweets.returns(tweets);
+
+            const response = await subject.sentiments(economicEntityName, economicEntityType, user);
+
+            expect(sentimentLib.analyze).not.to.have.been.called;
+        })
+
+        it('should skip over entries that include an empty tweets array ', async () => {
+            const economicEntityName = "SomeBusinessName";
+            const economicEntityType = "BUSINESS";
+            const user = { scope: "profile email read:all" };
+            const tweets = [{
+                timestamp: 1,
+                tweets: []
+            }];
+            collectionBinding.query.tweets.returns(tweets);
+
+            const response = await subject.sentiments(economicEntityName, economicEntityType, user);
+
+            expect(sentimentLib.analyze).not.to.have.been.called;
+        })
+
     });
 
     describe('_averageSentiment', () => {

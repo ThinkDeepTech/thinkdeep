@@ -12,10 +12,12 @@
     1. PREDECOS_PG_CONNECTION_STRING : Ensure this is equal to the postgres connection string associated with the database.
     1. PREDECOS_MICROSERVICE_COLLECTION_URL
     1. POSTGRES_PASSWORD
+    1. NODE_ENV
 
 ## Notes
 
-- Running postgres on kubernetes requires passing values into envsubstr to avoid storing sensitive info in git:
+- Running postgres on kubernetes requires passing values into envsubstr to avoid storing sensitive info in git.
+Use the following command to achieve that.
 ```console
 
     envsubst < deployment.yaml | kubectl apply -f -
