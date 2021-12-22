@@ -1,72 +1,228 @@
 version: 2.1
+
 orbs:
     browser-tools: circleci/browser-tools@1.2.2
+    kubernetes: circleci/kubernetes@1.0.2
+    k8s: digitalocean/k8s@0.1.1
+
+commands:
+    install_monorepo:
+      steps:
+        - run: yarn install
+        - run: yarn add -W apollo-datasource-mongodb && yarn add -W mongodb
+
+    login_docker:
+      steps:
+        - run: echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
+
+    test_monorepo:
+      steps:
+        - run: yarn run tests
+
+    build_ui_command:
+      steps:
+        - run: yarn run build
+
+    deploy_ui_command:
+      steps:
+        - run: curl -sL https://firebase.tools | bash
+        - run: firebase --token $FIREBASE_TOKEN deploy
+
 jobs:
-    deploy:
-        docker:
-            - image: 'cimg/node:14.17.6'
 
-        working_directory: ~/repo
+    deploy_mongodb:
+      docker:
+        - image: 'cimg/base:stable'
 
-        steps:
+      working_directory: ~/project
 
-            - checkout
+      steps:
+        - checkout
+        - setup_remote_docker:
+            version: 20.10.7
+        - login_docker
+        - k8s/install
+        - k8s/initialize:
+            cluster: predecos-kubernetes-cluster
+        - kubernetes/delete-resource:
+            now: true
+            resource-names: mongodb-deployment
+            resource-types: deployments
+            wait: true
+        - kubernetes/create-or-update-resource:
+            get-rollout-status: true
+            resource-file-path: ./packages/deep-microservice-collection/k8s/mongodb-deployment.yml
+            resource-name: deployment/mongodb-deployment
+            show-kubectl-command: true
 
-            - run: yarn install --force
+    deploy_postgres:
+      docker:
+        - image: 'cimg/base:stable'
 
-            - run: yarn run build
+      working_directory: ~/project
 
-            - run: curl -sL https://firebase.tools | bash
+      steps:
+        - checkout
+        - setup_remote_docker:
+            version: 20.10.7
+        - login_docker
+        - k8s/install
+        - k8s/initialize:
+            cluster: predecos-kubernetes-cluster
+        - kubernetes/delete-resource:
+            now: true
+            resource-names: postgres-deployment
+            resource-types: deployments
+            wait: true
+        - run:
+            command: envsubst < postgres-deployment.yaml | kubectl apply -f -
+            working_directory: ./packages/deep-microservice-analysis/k8s
 
-            - run: which firebase
+    build_and_deploy_microservice_collection:
+      docker:
+        - image: 'cimg/base:stable'
 
-            - run: firebase --token $FIREBASE_TOKEN deploy
+      working_directory: ~/project
 
-    build:
-        docker:
-            - image: 'cimg/node:14.17.6-browsers'
+      steps:
+        - checkout
+        - setup_remote_docker:
+            version: 20.10.7
+        - login_docker
+        - k8s/install
+        - k8s/initialize:
+            cluster: predecos-kubernetes-cluster
+        - run:
+            command: docker build -t thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-collection:latest --build-arg PREDECOS_MONGODB_CONNECTION_STRING=$PREDECOS_MONGODB_CONNECTION_STRING --build-arg PREDECOS_TWITTER_BEARER=$PREDECOS_TWITTER_BEARER --build-arg NODE_ENV=$NODE_ENV .
+            working_directory: ./packages/deep-microservice-collection
+        - run: docker push thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM}
+        - run: docker push thinkdeeptech/deep-microservice-collection:latest
+        - kubernetes/delete-resource:
+            now: true
+            resource-names: deep-microservice-collection-deployment
+            resource-types: deployments
+            wait: true
+        - kubernetes/create-or-update-resource:
+            get-rollout-status: true
+            resource-file-path: ./packages/deep-microservice-collection/k8s/deep-microservice-collection-deployment.yml
+            resource-name: deployment/deep-microservice-collection-deployment
+            show-kubectl-command: true
 
-        working_directory: ~/repo
 
-        steps:
-            - browser-tools/install-browser-tools
+    build_and_deploy_microservice_analysis:
+      docker:
+        - image: 'cimg/base:stable'
 
-            - checkout
+      working_directory: ~/project
 
-            - run: node --version
+      steps:
+        - checkout
+        - setup_remote_docker:
+            version: 20.10.7
+        - login_docker
+        - k8s/install
+        - k8s/initialize:
+            cluster: predecos-kubernetes-cluster
+        - run:
+            command: docker build -t thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis:latest --build-arg PREDECOS_PG_CONNECTION_STRING=$PREDECOS_PG_CONNECTION_STRING --build-arg PREDECOS_MICROSERVICE_COLLECTION_URL=$PREDECOS_MICROSERVICE_COLLECTION_URL --build-arg NODE_ENV=$NODE_ENV .
+            working_directory: ./packages/deep-microservice-analysis
+        - run: docker push thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM}
+        - run: docker push thinkdeeptech/deep-microservice-analysis:latest
+        - kubernetes/delete-resource:
+            now: true
+            resource-names: deep-microservice-analysis-deployment
+            resource-types: deployments
+            wait: true
+        - kubernetes/create-or-update-resource:
+            get-rollout-status: true
+            resource-file-path: ./packages/deep-microservice-analysis/k8s/deep-microservice-analysis-deployment.yml
+            resource-name: deployment/deep-microservice-analysis-deployment
+            show-kubectl-command: true
 
-            - run: yarn --version
+    build_and_deploy_microservice_gateway:
+      docker:
+        - image: 'cimg/base:stable'
 
-            - run: yarn install --force
+      working_directory: ~/project
 
-            # TODO: There's something wrong with the yarn install above. It seems to avoid installation of apollo-datasource-mongodb as
-            # well as mongodb itself. This is a patch solution, but isn't scalable. After build fix, troubleshoot.
-            - run: yarn add -W apollo-datasource-mongodb
+      steps:
+        - checkout
+        - setup_remote_docker:
+            version: 20.10.7
+        - login_docker
+        - k8s/install
+        - k8s/initialize:
+            cluster: predecos-kubernetes-cluster
+        - run:
+            command: docker build -t thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-gateway:latest --build-arg PREDECOS_AUTH_AUDIENCE=$PREDECOS_AUTH_AUDIENCE --build-arg PREDECOS_AUTH_JWKS_URI=$PREDECOS_AUTH_JWKS_URI --build-arg PREDECOS_AUTH_ISSUER=$PREDECOS_AUTH_ISSUER --build-arg PREDECOS_MICROSERVICE_ANALYSIS_URL=$PREDECOS_MICROSERVICE_ANALYSIS_URL --build-arg PREDECOS_MICROSERVICE_COLLECTION_URL=$PREDECOS_MICROSERVICE_COLLECTION_URL --build-arg NODE_ENV=$NODE_ENV .
+            working_directory: ./packages/deep-microservice-gateway
+        - run: docker push thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM}
+        - run: docker push thinkdeeptech/deep-microservice-gateway:latest
+        - kubernetes/delete-resource:
+            now: true
+            resource-names: deep-microservice-gateway-deployment
+            resource-types: deployments
+            wait: true
+        - kubernetes/create-or-update-resource:
+            get-rollout-status: true
+            resource-file-path: ./packages/deep-microservice-gateway/k8s/deep-microservice-gateway-deployment.yml
+            resource-name: deployment/deep-microservice-gateway-deployment
+            show-kubectl-command: true
 
-            - run: yarn add -W mongodb
+    build_ui:
+      docker:
+          - image: 'cimg/node:14.17.6'
 
-            - run: yarn run tests
+      working_directory: ~/project
 
-            - run: yarn run build
+      steps:
+          - browser-tools/install-browser-tools
+          - checkout
+          - install_monorepo
+          - test_monorepo
+          - build_ui_command
+
+    deploy_ui:
+      docker:
+          - image: 'cimg/node:14.17.6'
+
+      working_directory: ~/project
+
+      steps:
+          - checkout
+          - install_monorepo
+          - build_ui_command
+          - deploy_ui_command
+
 
 workflows:
 
   version: 2
 
-  deploy:
+  build_and_deploy_if_master:
 
     jobs:
 
-      - build
-
-      - deploy:
-
-          requires:
-
-            - build
-
+      - build_and_deploy_microservice_collection:
           filters:
-
             branches:
+              only: master
 
+      - build_and_deploy_microservice_analysis:
+          filters:
+            branches:
+              only: master
+
+      - build_and_deploy_microservice_gateway:
+          filters:
+            branches:
+              only: master
+
+      - build_ui
+
+      - deploy_ui:
+          requires:
+            - build_ui
+          filters:
+            branches:
               only: master

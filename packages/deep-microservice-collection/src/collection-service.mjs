@@ -9,9 +9,10 @@ class CollectionService {
      * @param {Object} twitterAPI - RESTDataSource tied to the twitter API.
      * @param {Object} tweetStore - MongoDataSource tied to the tweet collection.
      */
-    constructor(twitterAPI, tweetStore) {
+    constructor(twitterAPI, tweetStore, logger) {
         this._twitterAPI = twitterAPI;
         this._tweetStore = tweetStore;
+        this._logger = logger;
     }
 
     /**
@@ -21,12 +22,14 @@ class CollectionService {
      * @param {Object} user - The user making the request.
      * @returns {Object}
      */
-    async collectEconomicData(entityName, entityType, user) {
+    async collectEconomicData(entityName, entityType, user, logger = this._logger) {
         if (!entityName || (typeof entityName != 'string')) return { success: false };
 
         if (!entityType || (typeof entityType != 'string')) return { success: false };
 
         if (!hasReadAllAccess(user)) return { success: false};
+
+        logger.debug(`Collecting economic data for name: ${entityName}, type: ${entityType}`);
 
         const strategy = this._strategy(entityType).bind(this);
 
@@ -43,13 +46,15 @@ class CollectionService {
      * @param {Object} tweetStore - TweetStore instance. This is included for testing purposes and should use the default if not being used in tests.
      * @returns {Array} - Tweets that are in the database or [].
      */
-    async tweets(economicEntityName, economicEntityType, user, tweetStore = this._tweetStore) {
+    async tweets(economicEntityName, economicEntityType, user, tweetStore = this._tweetStore, logger = this._logger) {
 
         if (!economicEntityName || (typeof economicEntityName != 'string')) return [];
 
         if (!economicEntityType || (typeof economicEntityType != 'string')) return [];
 
         if (!hasReadAllAccess(user)) return [];
+
+        logger.debug(`Fetching tweets for economic entity name: ${economicEntityName}, type: ${economicEntityType}`);
 
         return await tweetStore.readRecentTweets(economicEntityName, economicEntityType, 10);
     }
@@ -76,12 +81,16 @@ class CollectionService {
      * @param {Object} tweetStore - TweetStore object. This is for use in tests.
      * @returns {Boolean} - True if the function succeeds, false otherwise.
      */
-    async _collectBusinessData(businessName, twitterAPI = this._twitterAPI, tweetStore = this._tweetStore) {
+    async _collectBusinessData(businessName, twitterAPI = this._twitterAPI, tweetStore = this._tweetStore, logger = this._logger) {
 
+        if (!businessName || (typeof businessName != 'string')) return false;
+
+        logger.debug(`Fetching data from the twitter API for business name: ${businessName}.`);
         const data = await twitterAPI.tweets(businessName);
 
         const timestamp = moment().unix();
 
+        logger.debug(`Adding tweets to the tweet store for business name: ${businessName}, tweets: ${JSON.stringify(data)}.`);
         const success = await tweetStore.createTweets(timestamp, businessName, 'business', data);
 
         return success;

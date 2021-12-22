@@ -2,8 +2,15 @@ import {ApolloGateway, RemoteGraphQLDataSource} from '@apollo/gateway';
 import {ApolloServer} from 'apollo-server-express';
 import express from 'express';
 import jwt from 'express-jwt';
+import {getLogger} from './get-logger.mjs'
+import {getPublicIP} from './get-public-ip.mjs';
 import jwks from 'jwks-rsa';
 
+const logger = getLogger();
+
+/**
+ * Start the gateway.
+ */
 const startGatewayService = async () => {
 
   const gateway = new ApolloGateway({
@@ -22,6 +29,7 @@ const startGatewayService = async () => {
         },
       });
     },
+    logger
   });
 
   const server = new ApolloServer({
@@ -50,26 +58,33 @@ const startGatewayService = async () => {
   // therefore how to attack. Therefore, it's disabled here.
   app.disable('x-powered-by');
 
-
   // NOTE: This handler must be present here in order for authorization to correctly operate. If placed
   // after server.applyMiddleWare(...) it simply doesn't execute. However, the presence of this handler
-  // before server.applyMiddleWare(...) breaks Apollo Explorer.
+  // before server.applyMiddleWare(...) breaks Apollo Explorer but applies authorization.
   app.use(jwtHandler);
+
+  // NOTE: Placing a forward slash at the end of any allowed origin causes a preflight error.
+  let allowedOrigins = ['https://predecos.com', 'https://www.predecos.com', 'https://thinkdeep-d4624.web.app', 'https://www.thinkdeep-d4624.web.app']
+  const isProduction = process.env.NODE_ENV.toLowerCase() === 'production';
+  if (!isProduction) {
+    allowedOrigins = allowedOrigins.concat(['https://localhost:8000', 'http://localhost:8000', 'https://studio.apollographql.com']);
+  }
 
   server.applyMiddleware({
     app,
     cors: {
-      origin: ['https://localhost:8000', 'http://localhost:8000', 'https://studio.apollographql.com'],
+      origin: allowedOrigins,
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE',
-      credentials: true,
+      credentials: true
     },
   });
 
   const port = 4000;
   app.listen({port}, () =>
-    // eslint-disable-next-line
-    console.log(`Server ready at http://localhost:${port}${server.graphqlPath}`)
+    logger.info(`Server ready at http://${getPublicIP()}:${port}${server.graphqlPath}`)
   );
 };
 
-startGatewayService();
+startGatewayService().then(() => { /* Do nothing */ }, (reason) => {
+  logger.error(`An Error Occurred: ${JSON.stringify(reason)}`);
+});

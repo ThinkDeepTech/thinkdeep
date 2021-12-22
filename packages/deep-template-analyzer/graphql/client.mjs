@@ -13,7 +13,7 @@ const initApolloClient = async () => {
     const cache = new InMemoryCache();
 
     const httpLink = new HttpLink({
-        uri: 'http://localhost:4000/graphql',
+        uri: PREDECOS_MICROSERVICE_GATEWAY_URL,
         credentials: 'include'
     });
 

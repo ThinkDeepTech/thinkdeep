@@ -1,7 +1,10 @@
-import fetch from 'node-fetch';
-import {print} from 'graphql';
-import {Binding} from "@thinkdeep/deep-graphql-binding";
 import {introspectSchema, wrapSchema} from '@graphql-tools/wrap';
+import {Binding} from "@thinkdeep/deep-graphql-binding";
+import {print} from 'graphql';
+import { getLogger } from './get-logger.mjs';
+import fetch from 'node-fetch';
+
+const logger = getLogger();
 
 /**
  * The executor to be used to handle requests that go to the collection microservice.
@@ -10,6 +13,8 @@ import {introspectSchema, wrapSchema} from '@graphql-tools/wrap';
  */
 const executor = async ({ document, variables, context }) => {
     const query = print(document);
+
+    logger.debug(`Fetching data from the collection API. Query: ${JSON.stringify(query)}, Variables: ${JSON.stringify(variables)}`);
     const fetchResult = await fetch(process.env.PREDECOS_MICROSERVICE_COLLECTION_URL, {
         method: 'POST',
         headers: {

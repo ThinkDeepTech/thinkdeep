@@ -12,8 +12,8 @@
     "url": "git+https://github.com/ThinkDeepTech/thinkdeep.git"
   },
   "scripts": {
-    "dev": "web-dev-server --config ./web-dev-server.config.mjs --esbuild-target auto",
-    "dev:watch": "web-dev-server --config ./web-dev-server.config.mjs --watch --esbuild-target auto",
+    "start": "web-dev-server --config ./web-dev-server.config.mjs --esbuild-target auto",
+    "start:watch": "web-dev-server --config ./web-dev-server.config.mjs --watch --esbuild-target auto",
     "tests": "web-test-runner --config ./web-test-runner.config.mjs",
     "tests:watch": "web-test-runner --config ./web-test-runner.config.mjs --watch",
     "build": "rimraf build && rollup -c rollup.config.mjs"

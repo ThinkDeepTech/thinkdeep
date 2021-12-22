@@ -10,7 +10,7 @@ let auth0 = null;
 const getUser = async (options = {
     domain: 'predecos.us.auth0.com',
     clientId: 'T4NyuF1MTRTLTHmEvCC5hEDV5zsmG6aQ',
-    audience: 'https://www.predecos.com/api/v1', // TODO: Recreate API and hide audience.
+    audience: PREDECOS_AUTH_AUDIENCE, // TODO: Recreate API and hide audience.
 }) => {
     if (!auth0) {
         await initAuth(options);
@@ -38,14 +38,18 @@ const getUser = async (options = {
 
     const { domain, clientId, audience } = options;
 
-    auth0 = await createAuth0Client({
-        domain,
-        client_id: clientId,
-        redirect_uri: globalThis.location.origin,
-        cacheLocation: 'localstorage',
-        audience: audience,
-        scope: 'openid profile email read:all'
-    });
+    try {
+        auth0 = await createAuth0Client({
+            domain,
+            client_id: clientId,
+            redirect_uri: globalThis.location.origin,
+            cacheLocation: 'localstorage',
+            audience: audience,
+            scope: 'openid profile email read:all'
+        });
+    } catch(e) {
+        console.log(`An error occurred while creating the auth client: ${e.message}`);
+    }
 
     if (!auth0) {
         throw new Error('Failed to create auth client.');
