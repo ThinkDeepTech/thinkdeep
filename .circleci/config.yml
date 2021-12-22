@@ -101,9 +101,9 @@ jobs:
             resource-types: deployments
             wait: true
         - kubernetes/create-or-update-resource:
-            # get-rollout-status: true
+            get-rollout-status: true
             resource-file-path: ./packages/deep-microservice-collection/k8s/deep-microservice-collection-deployment.yml
-            resource-name: deep-microservice-collection-deployment
+            resource-name: deployment/deep-microservice-collection-deployment
             show-kubectl-command: true
 
 
@@ -132,9 +132,9 @@ jobs:
             resource-types: deployments
             wait: true
         - kubernetes/create-or-update-resource:
-            # get-rollout-status: true
+            get-rollout-status: true
             resource-file-path: ./packages/deep-microservice-analysis/k8s/deep-microservice-analysis-deployment.yml
-            resource-name: deep-microservice-analysis-deployment
+            resource-name: deployment/deep-microservice-analysis-deployment
             show-kubectl-command: true
 
     build_and_deploy_microservice_gateway:
@@ -162,9 +162,9 @@ jobs:
             resource-types: deployments
             wait: true
         - kubernetes/create-or-update-resource:
-            # get-rollout-status: true
+            get-rollout-status: true
             resource-file-path: ./packages/deep-microservice-gateway/k8s/deep-microservice-gateway-deployment.yml
-            resource-name: deep-microservice-gateway-deployment
+            resource-name: deployment/deep-microservice-gateway-deployment
             show-kubectl-command: true
 
     build_ui:
