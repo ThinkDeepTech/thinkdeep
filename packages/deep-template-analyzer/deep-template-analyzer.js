@@ -161,22 +161,22 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
           @click="${() => Router.go('/')}"
           aria-label="Home"
         ></mwc-icon-button>
-        <mwc-icon-button
-          icon="space_dashboard"
-          slot="actionItems"
-          @click="${() =>
-            Router.go(translate('translations:summaryPageLabel'))}"
-          aria-label="summary"
-        ></mwc-icon-button>
 
         ${this.user.loggedIn
           ? html`
+              <mwc-icon-button
+                icon="space_dashboard"
+                slot="actionItems"
+                @click="${() =>
+                  Router.go(translate('translations:summaryPageLabel'))}"
+                aria-label="${translate('translations:summaryPageLabel')}"
+              ></mwc-icon-button>
               <mwc-icon-button
                 icon="logout"
                 slot="actionItems"
                 @click="${() =>
                   Router.go(translate('translations:logoutPageLabel'))}"
-                aria-label="logout"
+                aria-label="${translate('translations:logoutPageLabel')}"
               ></mwc-icon-button>
             `
           : html`

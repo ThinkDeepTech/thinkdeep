@@ -15,6 +15,6 @@ export default {
   buttonText: 'Log In',
   notFoundPageContent: 'Page not found',
   startCollectingLabel: 'Watch',
-  startButtonLabel: 'Add',
+  startButtonLabel: 'Start',
   selectBusinessLabel: 'Select a business',
 };
