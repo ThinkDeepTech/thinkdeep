@@ -6,3 +6,4 @@
     1. PREDECOS_AUTH_ISSUER : Auth0 Issuer
     1. PREDECOS_MICROSERVICE_ANALYSIS_URL : Url to analysis microservice.
     1. PREDECOS_MICROSERVICE_COLLECTION_URL : Url to collection microservice.
+    1. NODE_ENV

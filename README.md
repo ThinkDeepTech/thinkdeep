@@ -2,7 +2,7 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ThinkDeepTech_thinkdeep&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ThinkDeepTech_thinkdeep)
 
 # Thinkdeep
-The main purpose of this repository is to learn while developing something cool.
+The main purpose of this repository is to learn while developing something cool. It's a bit of an experiment.
 
 ## Global Dependencies
 - [Node v16.10.0](https://nodejs.org/en/)

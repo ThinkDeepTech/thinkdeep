@@ -14,14 +14,7 @@ export class DeepFooter extends LitElement {
     super();
 
     this.companyName = '';
-    this.address = {
-      streetNumber: '',
-      streetName: '',
-      cityName: '',
-      provinceName: '',
-      countryName: '',
-      zipCode: '',
-    };
+    this.address = {};
     this.routes = [];
   }
 
@@ -93,10 +86,12 @@ export class DeepFooter extends LitElement {
         )}
       </div>
       <div class="address">
-        ${this.address.streetNumber} ${this.address.streetName} <br />
-        ${this.address.cityName}, ${this.address.provinceCode} <br />
-        ${this.address.countryName} <br />
-        ${this.address.zipCode}
+        ${Object.keys(this.address).length !== 0
+          ? html` ${this.address.streetNumber} ${this.address.streetName} <br />
+              ${this.address.cityName}, ${this.address.provinceCode} <br />
+              ${this.address.countryName} <br />
+              ${this.address.zipCode}`
+          : html``}
       </div>
       <div class="copyright">${this._copyright(this.companyName)}.</div>
     `;
