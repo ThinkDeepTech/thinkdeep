@@ -61,7 +61,9 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
         name: translate('translations:homePageLabel'),
         component: 'deep-analyzer-page-home',
         action: async () => {
-          await import('@thinkdeep/deep-template-analyzer/deep-analyzer-page-home.js');
+          await import(
+            '@thinkdeep/deep-template-analyzer/deep-analyzer-page-home.js'
+          );
         },
       },
       {
@@ -85,7 +87,9 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
         name: translate('translations:summaryPageLabel'),
         component: 'deep-analyzer-page-summary',
         action: async () => {
-          await import('@thinkdeep/deep-template-analyzer/deep-analyzer-page-summary');
+          await import(
+            '@thinkdeep/deep-template-analyzer/deep-analyzer-page-summary'
+          );
         },
       },
       {
@@ -93,7 +97,9 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
         name: translate('translations:notFoundPageLabel'),
         component: 'deep-analyzer-page-not-found',
         action: async () => {
-          await import('@thinkdeep/deep-template-analyzer/deep-analyzer-page-not-found.js');
+          await import(
+            '@thinkdeep/deep-template-analyzer/deep-analyzer-page-not-found.js'
+          );
         },
         // TODO: Replacement for hidden included in vaadin? I think I can remember seeing one.
         hidden: true,
@@ -113,27 +119,30 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
       css`
         :host {
           display: grid;
-          grid-template-rows: auto 1fr auto;
+          grid-template-rows: 10vh 1fr auto;
           grid-template-areas:
             'header'
             'content'
             'footer';
-          background-color: var(--primary-color, #000000);
         }
 
         mwc-top-app-bar-fixed {
           grid-area: header;
-          height: 16vh;
+          height: 10vh;
+          --mdc-theme-primary: var(--primary-color);
+          --mdc-theme-on-primary: white;
         }
 
         #content {
-          display: block;
-          min-height: 500px;
           grid-area: content;
+          min-height: 80vh;
+          color: var(--primary-color);
         }
 
         deep-footer {
           grid-area: footer;
+          background-color: var(--primary-color);
+          color: white;
         }
       `,
     ];
@@ -150,49 +159,40 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
           icon="home"
           slot="actionItems"
           @click="${() => Router.go('/')}"
-          aria-label="home"
+          aria-label="Home"
         ></mwc-icon-button>
         <mwc-icon-button
           icon="space_dashboard"
           slot="actionItems"
-          @click="${
-            () => Router.go(translate('translations:summaryPageLabel'))
-          }"
+          @click="${() =>
+            Router.go(translate('translations:summaryPageLabel'))}"
           aria-label="summary"
         ></mwc-icon-button>
 
-        ${
-          this.user.loggedIn
-            ? html`
-                <mwc-icon-button
-                  icon="logout"
-                  slot="actionItems"
-                  @click="${
-                    () => Router.go(translate('translations:logoutPageLabel'))
-                  }"
-                  aria-label="logout"
-                ></mwc-icon-button>
-              `
-            : html`
-                <mwc-icon-button
-                  icon="login"
-                  slot="actionItems"
-                  @click="${
-                    () => Router.go(translate('translations:loginPageLabel'))
-                  }"
-                  aria-label="login"
-                ></mwc-icon-button>
-              `
-        }
+        ${this.user.loggedIn
+          ? html`
+              <mwc-icon-button
+                icon="logout"
+                slot="actionItems"
+                @click="${() =>
+                  Router.go(translate('translations:logoutPageLabel'))}"
+                aria-label="logout"
+              ></mwc-icon-button>
+            `
+          : html`
+              <mwc-icon-button
+                icon="login"
+                slot="actionItems"
+                @click="${() =>
+                  Router.go(translate('translations:loginPageLabel'))}"
+                aria-label="login"
+              ></mwc-icon-button>
+            `}
       </mwc-top-app-bar-fixed>
 
       <main id="content"></main>
 
-      <deep-footer
-        .routes="${this.routes}"
-        .address="${this.address}"
-        .companyName="${this.companyName}"
-      ></deep-footer>
+      <deep-footer .companyName="${this.companyName}"></deep-footer>
     `;
   }
 }

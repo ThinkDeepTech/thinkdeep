@@ -58,25 +58,37 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   static get styles() {
     return css`
       :host {
-        display: block;
-        min-height: 500px;
+        display: grid;
+        grid-template-columns: repeat(1fr, 6);
+        min-height: 80vh;
+      }
+
+      mwc-button {
+        --mdc-theme-primary: var(--primary-color);
+        --mdc-theme-on-primary: white;
+      }
+
+      mwc-textfield {
+        --mdc-theme-primary: var(--primary-color);
       }
     `;
   }
 
   render() {
     return html`
-      ${translate('translations:startCollectingLabel')}
-      <mwc-textfield
-        label="Business name"
-        @input="${debounce(this._onInput.bind(this), 350)}"
-      ></mwc-textfield>
-      <mwc-button
-        raised
-        label="${translate('translations:startButtonLabel')}"
-        @click="${() => this.mutation.mutate()}"
-        icon="input"
-      ></mwc-button>
+      <div>
+        <label>${translate('translations:startCollectingLabel')}</label>
+        <mwc-textfield
+          label="Business name"
+          @input="${debounce(this._onInput.bind(this), 350)}"
+        ></mwc-textfield>
+        <mwc-button
+          raised
+          label="${translate('translations:startButtonLabel')}"
+          @click="${() => this.mutation.mutate()}"
+          icon="input"
+        ></mwc-button>
+      </div>
 
       <mwc-select label="Select a business">
         <mwc-list-item value="Google">Google</mwc-list-item>

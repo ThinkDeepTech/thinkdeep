@@ -1,7 +1,7 @@
 // TODO: Migrate to json file
 
 export default {
-  companyName: 'ACME',
+  companyName: 'Predecos',
   companyStreetNumber: '349',
   companyStreetName: 'Oliver Street',
   companyCityName: 'Geordon',
@@ -13,10 +13,10 @@ export default {
   logoutPageLabel: 'Logout',
   summaryPageLabel: 'Summary',
   notFoundPageLabel: 'Page Not Found',
-  headline: 'Explore data.',
+  headline: 'This site is experimental.',
   buttonText: 'Log In',
   notFoundPageContent: 'Page Not Found!',
-  startCollectingLabel: 'Collect Data',
-  startButtonLabel: 'Start',
+  startCollectingLabel: 'Watch',
+  startButtonLabel: 'Add',
   selectBusinessLabel: 'Select a business',
 };
