@@ -5,12 +5,10 @@ import {
 import {LitElement, css, html} from '@apollo-elements/lit-apollo';
 import '@google-web-components/google-chart';
 import '@material/mwc-button';
+import '@material/mwc-list/mwc-list';
 import '@material/mwc-list/mwc-list-item';
 import '@material/mwc-select';
 import '@material/mwc-textfield';
-import '@thinkdeep/deep-button/deep-button.mjs';
-import '@thinkdeep/deep-card/deep-card.mjs';
-import '@thinkdeep/deep-textbox/deep-textbox.mjs';
 import {debounce} from './debounce.mjs';
 import {translate} from 'lit-element-i18n';
 import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
@@ -59,8 +57,52 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     return css`
       :host {
         display: grid;
-        grid-template-columns: repeat(1fr, 6);
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+        grid-template-rows: 18vh 18vh 40vh;
         min-height: 80vh;
+      }
+
+      google-chart {
+        grid-column-start: 1;
+        grid-row-start: 3;
+      }
+
+      mwc-list {
+        grid-column-start: 3;
+        grid-column-end: 6;
+        grid-row-start: 1;
+        grid-row-end: 4;
+        overflow: scroll;
+      }
+
+      @media (max-width: 768px) {
+        :host {
+          display: grid;
+          grid-template-columns: 1fr;
+          min-height: 80vh;
+        }
+
+        google-chart {
+          grid-column-start: 1;
+          grid-row-start: 3;
+        }
+
+        mwc-list {
+          grid-column-start: 1;
+          grid-column-end: 6;
+          grid-row-start: 4;
+        }
+      }
+
+      .input {
+        grid-column-start: 1;
+        grid-column-end: 3;
+      }
+
+      .tweet {
+        height: 16vh;
+        width: 90%;
+        color: var(--primary-color);
       }
 
       mwc-button {
@@ -76,7 +118,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
   render() {
     return html`
-      <div>
+      <div class="input">
         <label>${translate('translations:startCollectingLabel')}</label>
         <mwc-textfield
           label="Business name"
@@ -90,13 +132,16 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         ></mwc-button>
       </div>
 
-      <mwc-select label="Select a business">
-        <mwc-list-item value="Google">Google</mwc-list-item>
-        <mwc-list-item value="Amazon">Amazon</mwc-list-item>
-        <mwc-list-item value="PetCo">PetCo</mwc-list-item>
-        <mwc-list-item value="Tesla">Tesla</mwc-list-item>
-        <mwc-list-item value="Ford">Ford</mwc-list-item>
-      </mwc-select>
+      <div class="input">
+        <label>${translate('translations:analyzeDataLabel')}</label>
+        <mwc-select label="Select a business">
+          <mwc-list-item selected value="Google">Google</mwc-list-item>
+          <mwc-list-item value="Amazon">Amazon</mwc-list-item>
+          <mwc-list-item value="PetCo">PetCo</mwc-list-item>
+          <mwc-list-item value="Tesla">Tesla</mwc-list-item>
+          <mwc-list-item value="Ford">Ford</mwc-list-item>
+        </mwc-select>
+      </div>
 
       <google-chart
         type="line"
@@ -107,16 +152,19 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         )}]"
       ></google-chart>
 
-      ${this.selectedSentiments.map((sentiment) =>
-        sentiment?.tweets?.map(
-          (tweet, index) => html`
-            <deep-card>
-              <h3>Tweet ${index}</h3>
-              <p>${tweet?.text}</p>
-            </deep-card>
-          `
-        )
-      )}
+      <mwc-list>
+        ${this.selectedSentiments.map((sentiment) =>
+          sentiment?.tweets?.map(
+            (tweet, index) => html`
+              <mwc-list-item class="tweet">
+                <h3>Tweet ${index}</h3>
+                <p>${tweet?.text}</p>
+              </mwc-list-item>
+              <li divider padded role="separator"></li>
+            `
+          )
+        )}
+      </mwc-list>
     `;
   }
 
