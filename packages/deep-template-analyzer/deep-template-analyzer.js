@@ -13,8 +13,6 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
   static get properties() {
     return {
       companyName: {type: String},
-      address: {type: Object},
-      routes: {type: Array},
       location: {type: Object},
       user: {type: Object},
     };
@@ -23,8 +21,6 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
   constructor() {
     super();
     this.companyName = '';
-    this.address = {};
-    this.routes = [];
     this.location = Router.location;
     this.user = {};
   }
@@ -46,16 +42,11 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
     );
 
     this.companyName = translate('translations:companyName');
-    this.address = {
-      streetNumber: translate('translations:companyStreetNumber'),
-      streetName: translate('translations:companyStreetName'),
-      cityName: translate('translations:companyCityName'),
-      provinceCode: translate('translations:companyProvinceCode'),
-      countryName: translate('translations:companyCountryName'),
-      zipCode: translate('translations:companyZipCode'),
-    };
 
-    this.routes = [
+    this.user = await getUser();
+    await initApolloClient();
+
+    const routes = [
       {
         path: '/',
         name: translate('translations:homePageLabel'),
@@ -74,15 +65,18 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
           await this.user.login();
         },
       },
-      {
+    ];
+
+    if (this.user.loggedIn) {
+      routes.push({
         path: `/${translate('translations:logoutPageLabel')}`,
         name: translate('translations:logoutPageLabel'),
         component: 'deep-analyzer-page-home',
         action: async () => {
           await this.user.logout();
         },
-      },
-      {
+      });
+      routes.push({
         path: `/${translate('translations:summaryPageLabel')}`,
         name: translate('translations:summaryPageLabel'),
         component: 'deep-analyzer-page-summary',
@@ -91,27 +85,29 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
             '@thinkdeep/deep-template-analyzer/deep-analyzer-page-summary'
           );
         },
+      });
+    }
+
+    // NOTE: It appears that the vaadin router implements a sort of chain-of-responsibility in that it
+    // checks each path to see if the windows location matches and, if it does, it routes to that page.
+    // However, that means that all routes must be pushed before the not found page otherwise they'll
+    // match with the not found page and ignore routing definitions that occur afterward.
+    routes.push({
+      path: '(.*)',
+      name: translate('translations:notFoundPageLabel'),
+      component: 'deep-analyzer-page-not-found',
+      action: async () => {
+        await import(
+          '@thinkdeep/deep-template-analyzer/deep-analyzer-page-not-found.js'
+        );
       },
-      {
-        path: '(.*)',
-        name: translate('translations:notFoundPageLabel'),
-        component: 'deep-analyzer-page-not-found',
-        action: async () => {
-          await import(
-            '@thinkdeep/deep-template-analyzer/deep-analyzer-page-not-found.js'
-          );
-        },
-        // TODO: Replacement for hidden included in vaadin? I think I can remember seeing one.
-        hidden: true,
-      },
-    ];
+      // TODO: Replacement for hidden included in vaadin? I think I can remember seeing one.
+      hidden: true,
+    });
 
     const targetViewingArea = this.shadowRoot.getElementById('content');
     const router = new Router(targetViewingArea);
-    router.setRoutes(this.routes);
-
-    this.user = await getUser();
-    await initApolloClient();
+    router.setRoutes(routes);
   }
 
   static get styles() {
@@ -128,7 +124,6 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
 
         mwc-top-app-bar-fixed {
           grid-area: header;
-          height: 10vh;
           --mdc-theme-primary: var(--primary-color);
           --mdc-theme-on-primary: white;
         }
