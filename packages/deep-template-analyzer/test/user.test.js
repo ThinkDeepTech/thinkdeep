@@ -4,14 +4,17 @@ import {
 } from '@open-wc/testing';
 import sinon from 'sinon';
 
-import {getUser, test} from '@thinkdeep/deep-template-analyzer/user.mjs';
-const {setAuthClientForTesting} = test;
+import {
+  getUser,
+  setAuthClientForTesting,
+} from '@thinkdeep/deep-template-analyzer/user.mjs';
 
 describe('user', () => {
   describe('getUser', () => {
     let authClient = null;
     beforeEach(() => {
-      globalThis.PREDECOS_AUTH_AUDIENCE = '';
+      globalThis.PREDECOS_AUTH_AUDIENCE = 'thing';
+      globalThis.PREDECOS_MICROSERVICE_GATEWAY_URL = 'notimportant';
       authClient = {
         logout: sinon.stub(),
         loginWithRedirect: sinon.stub(),
@@ -89,25 +92,6 @@ describe('user', () => {
         },
         (reason) => {
           done();
-        }
-      );
-    });
-
-    it('should initialize the auth client if domain, clientId and audience are specified', (done) => {
-      setAuthClientForTesting(null);
-
-      getUser({
-        domain: 'somedomain',
-        clientId: 'someclientid',
-        audience: 'someaudience',
-      }).then(
-        () => {
-          done();
-        },
-        (reason) => {
-          done(
-            'getUser threw an error even though domain, clientId and audience were specified'
-          );
         }
       );
     });
