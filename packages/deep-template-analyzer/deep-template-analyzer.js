@@ -152,6 +152,10 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
       <mwc-top-app-bar-fixed>
         <div slot="title">${this.companyName}</div>
 
+        <!--
+          NOTE: An anchor tag is used here because direct use of @vaadin/router's Router.go(...) method causes routing errors
+          during testing. Navigation ends up at a blank page with text that says "Not Found". Include anchor tags in all routes.
+      -->
         <a href="/" slot="actionItems">
           <mwc-icon-button
             icon="home"
