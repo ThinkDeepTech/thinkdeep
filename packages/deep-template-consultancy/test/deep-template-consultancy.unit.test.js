@@ -1,9 +1,6 @@
 import {html, litFixtureSync, expect, assert} from '@open-wc/testing';
 import '@thinkdeep/deep-template-consultancy/deep-template-consultancy.js';
 
-// TODO: Test usage of element.requestUpdate. Reference following for info:
-// https://open-wc.org/guides/knowledge/testing/stubs/
-
 /**
  * Find the matching routing component.
  * @param {Object[]} routes - Route array used to represent routes.

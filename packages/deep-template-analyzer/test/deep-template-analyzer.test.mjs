@@ -1,5 +1,5 @@
 import {html, litFixtureSync, expect} from '@open-wc/testing';
-import { delayForPageRender, path, wait } from '@thinkdeep/tools/test-helper.mjs';
+import { delayForPageRender, path } from '@thinkdeep/tools/test-helper.mjs';
 import { translate } from 'lit-element-i18n';
 import sinon from 'sinon';
 
