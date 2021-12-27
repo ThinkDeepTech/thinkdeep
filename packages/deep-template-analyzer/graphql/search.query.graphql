@@ -1,8 +1,0 @@
-query Search($businessName: String!) {
-  search(businessName: $businessName) {
-    id
-    name
-    first
-    second
-  }
-}

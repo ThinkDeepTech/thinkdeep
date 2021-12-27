@@ -82,7 +82,7 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
         component: 'deep-analyzer-page-summary',
         action: async () => {
           await import(
-            '@thinkdeep/deep-template-analyzer/deep-analyzer-page-summary'
+            '@thinkdeep/deep-template-analyzer/deep-analyzer-page-summary.js'
           );
         },
       });
@@ -101,8 +101,6 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
           '@thinkdeep/deep-template-analyzer/deep-analyzer-page-not-found.js'
         );
       },
-      // TODO: Replacement for hidden included in vaadin? I think I can remember seeing one.
-      hidden: true,
     });
 
     const targetViewingArea = this.shadowRoot.getElementById('content');
@@ -134,6 +132,10 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
           color: var(--primary-color);
         }
 
+        a {
+          color: white;
+        }
+
         deep-footer {
           grid-area: footer;
           background-color: var(--primary-color);
@@ -150,38 +152,52 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
       <mwc-top-app-bar-fixed>
         <div slot="title">${this.companyName}</div>
 
-        <mwc-icon-button
-          icon="home"
-          slot="actionItems"
-          @click="${() => Router.go('/')}"
-          aria-label="Home"
-        ></mwc-icon-button>
+        <!--
+          NOTE: An anchor tag is used here because direct use of @vaadin/router's Router.go(...) method causes routing errors
+          during testing. Navigation ends up at a blank page with text that says "Not Found". Include anchor tags in all routes.
+      -->
+        <a href="/" slot="actionItems">
+          <mwc-icon-button
+            icon="home"
+            aria-label="${translate('translations:homePageLabel')}"
+          >
+          </mwc-icon-button>
+        </a>
 
         ${this.user.loggedIn
           ? html`
-              <mwc-icon-button
-                icon="space_dashboard"
+              <a
+                href="${translate('translations:summaryPageLabel')}"
                 slot="actionItems"
-                @click="${() =>
-                  Router.go(translate('translations:summaryPageLabel'))}"
-                aria-label="${translate('translations:summaryPageLabel')}"
-              ></mwc-icon-button>
-              <mwc-icon-button
-                icon="logout"
+              >
+                <mwc-icon-button
+                  icon="space_dashboard"
+                  aria-label="${translate('translations:summaryPageLabel')}"
+                >
+                </mwc-icon-button>
+              </a>
+              <a
+                href="${translate('translations:logoutPageLabel')}"
                 slot="actionItems"
-                @click="${() =>
-                  Router.go(translate('translations:logoutPageLabel'))}"
-                aria-label="${translate('translations:logoutPageLabel')}"
-              ></mwc-icon-button>
+              >
+                <mwc-icon-button
+                  icon="logout"
+                  aria-label="${translate('translations:logoutPageLabel')}"
+                >
+                </mwc-icon-button>
+              </a>
             `
           : html`
-              <mwc-icon-button
-                icon="login"
+              <a
+                href="${translate('translations:loginPageLabel')}"
                 slot="actionItems"
-                @click="${() =>
-                  Router.go(translate('translations:loginPageLabel'))}"
-                aria-label="login"
-              ></mwc-icon-button>
+              >
+                <mwc-icon-button
+                  icon="login"
+                  aria-label="${translate('translations:loginPageLabel')}"
+                >
+                </mwc-icon-button>
+              </a>
             `}
       </mwc-top-app-bar-fixed>
 

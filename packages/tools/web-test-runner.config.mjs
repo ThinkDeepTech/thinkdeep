@@ -1,5 +1,5 @@
 import {playwrightLauncher} from '@web/test-runner-playwright';
-import getPort, {portNumbers} from 'get-port';
+import getPort from 'get-port';
 
 const browsers = {
   chromium: playwrightLauncher({product: 'chromium', launchOptions: {
@@ -12,12 +12,6 @@ const browsers = {
 
 // Get a random port number.
 const port = await getPort();
-
-console.log(`
-
-Port number used: ${port}
-
-`)
 
 export default {
   files: ['test/**/*.test.js', 'test/**/*.test.mjs'],

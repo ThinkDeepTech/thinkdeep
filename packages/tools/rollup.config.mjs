@@ -1,4 +1,4 @@
-import graphql from '@apollo-elements/rollup-plugin-graphql';
+import graphql from '@rollup/plugin-graphql';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import babel from '@rollup/plugin-babel';
 import eslint from '@rollup/plugin-eslint';

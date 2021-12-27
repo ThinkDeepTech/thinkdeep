@@ -1,7 +1,7 @@
 
 import createAuth0Client from '@auth0/auth0-spa-js';
 
-let auth0 = null;
+globalThis.auth0 = null;
 /**
  * Fetch user data.
  * @param {Object} options
@@ -12,9 +12,10 @@ const getUser = async (options = {
     clientId: 'T4NyuF1MTRTLTHmEvCC5hEDV5zsmG6aQ',
     audience: PREDECOS_AUTH_AUDIENCE, // TODO: Recreate API and hide audience.
 }) => {
-    if (!auth0) {
+    if (!globalThis.auth0) {
         await initAuth(options);
     }
+    const auth0 = globalThis.auth0;
     const profile = await auth0.getUser();
     const loggedIn = await auth0.isAuthenticated();
     let token = '';
@@ -39,7 +40,7 @@ const getUser = async (options = {
     const { domain, clientId, audience } = options;
 
     try {
-        auth0 = await createAuth0Client({
+        globalThis.auth0 = await createAuth0Client({
             domain,
             client_id: clientId,
             redirect_uri: globalThis.location.origin,
@@ -51,10 +52,11 @@ const getUser = async (options = {
         console.log(`An error occurred while creating the auth client: ${e.message}`);
     }
 
-    if (!auth0) {
+    if (!globalThis.auth0) {
         throw new Error('Failed to create auth client.');
     }
 
+    const auth0 = globalThis.auth0;
     const isAuthenticated = await auth0.isAuthenticated();
     const query = globalThis.location.search || '';
     if (!isAuthenticated &&
@@ -94,13 +96,10 @@ const logout = async () => {
  * @param {Object} authClient - Auth client for use with testing.
  */
 const setAuthClientForTesting = (authClient) => {
-    auth0 = authClient;
+    globalThis.auth0 = authClient;
 };
 
-const test = {
-    setAuthClientForTesting
-};
 export {
     getUser,
-    test
+    setAuthClientForTesting
 }

@@ -3,36 +3,43 @@ import { setContext } from '@apollo/client/link/context';
 
 import { getUser } from '../user.mjs';
 
+let client = null;
 /**
  * Initialize the apollo client for use with the application.
  */
 const initApolloClient = async () => {
 
-    const user = await getUser();
+    if (!client) {
+        const user = await getUser();
 
-    const cache = new InMemoryCache();
+        const cache = new InMemoryCache();
 
-    const httpLink = new HttpLink({
-        uri: PREDECOS_MICROSERVICE_GATEWAY_URL,
-        credentials: 'include'
-    });
+        const httpLink = new HttpLink({
+            uri: PREDECOS_MICROSERVICE_GATEWAY_URL,
+            credentials: 'include'
+        });
 
-    const authLink = setContext((_, {headers}) => {
-        return {
-            headers: {
-                ...headers,
-                authorization: !!user.token ? `Bearer ${user.token}` : ''
-            }
-        };
-    });
+        const authLink = setContext((_, {headers}) => {
+            return {
+                headers: {
+                    ...headers,
+                    authorization: !!user.token ? `Bearer ${user.token}` : ''
+                }
+            };
+        });
 
-    const client = new ApolloClient({
-        cache,
-        link: authLink.concat(httpLink)
-    });
+        client = new ApolloClient({
+            cache,
+            link: authLink.concat(httpLink)
+        });
+    }
 
     // NOTE: This ensures all application graphql requests are made using the specified client.
     globalThis.__APOLLO_CLIENT__ = client;
 }
 
-export { initApolloClient };
+const setApolloClientForTesting = (mockClient) => {
+    client = mockClient;
+}
+
+export { initApolloClient, setApolloClientForTesting };
