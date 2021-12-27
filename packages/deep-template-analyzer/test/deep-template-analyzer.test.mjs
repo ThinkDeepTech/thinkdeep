@@ -1,5 +1,5 @@
 import {html, litFixtureSync, expect} from '@open-wc/testing';
-import { delayForPageRender, path } from '@thinkdeep/tools/test-helper.mjs';
+import { delayForPageRender, path, wait } from '@thinkdeep/tools/test-helper.mjs';
 import { translate } from 'lit-element-i18n';
 import sinon from 'sinon';
 
@@ -7,7 +7,9 @@ import '../deep-template-analyzer.js';
 import { setAuthClientForTesting } from '../user.mjs';
 import { setApolloClientForTesting } from '../graphql/client.mjs';
 
-
+const navigationItems = (parent) => {
+    return parent.shadowRoot.querySelectorAll('mwc-top-app-bar-fixed > a');
+}
 
 describe('deep-template-analyzer', () => {
 
@@ -48,7 +50,6 @@ describe('deep-template-analyzer', () => {
         await delayForPageRender();
         const homePage = element.shadowRoot.querySelector('deep-analyzer-page-home');
         const welcomeText = homePage.shadowRoot.querySelector('h1').textContent;
-        debugger;
         expect(welcomeText).to.equal('This site is experimental.');
     });
 
@@ -57,7 +58,7 @@ describe('deep-template-analyzer', () => {
             <deep-template-analyzer></deep-template-analyzer>
         `);
         await delayForPageRender();
-        const navItems = element.shadowRoot.querySelectorAll('mwc-top-app-bar-fixed > a');
+        const navItems = navigationItems(element);
         expect(navItems.length).to.equal(2);
         expect(path(navItems[0])).to.equal('');
         expect(path(navItems[1])).to.equal(translate('translations:loginPageLabel'));
@@ -73,7 +74,7 @@ describe('deep-template-analyzer', () => {
         unknownPageAnchor.href = translate('translations:summaryPageLabel');
         element.appendChild(unknownPageAnchor);
 
-        const navItems = element.shadowRoot.querySelectorAll('mwc-top-app-bar-fixed > a');
+        const navItems = navigationItems(element);
         for(const navItem of navItems) {
             expect(navItem.href).not.to.include(translate('translations:summaryPageLabel'));
         }
@@ -96,7 +97,7 @@ describe('deep-template-analyzer', () => {
         `);
         await delayForPageRender();
 
-        const navItems = element.shadowRoot.querySelectorAll('mwc-top-app-bar-fixed > a');
+        const navItems = navigationItems(element);
         expect(navItems.length).to.equal(3);
         expect(path(navItems[0])).to.equal('');
         expect(path(navItems[1])).to.equal(translate('translations:summaryPageLabel'));
@@ -108,7 +109,7 @@ describe('deep-template-analyzer', () => {
             <deep-template-analyzer></deep-template-analyzer>
         `);
         await delayForPageRender();
-        const navItems = element.shadowRoot.querySelectorAll('mwc-top-app-bar-fixed > a');
+        const navItems = navigationItems(element);
         expect(path(navItems[1])).to.equal(translate('translations:loginPageLabel'));
 
         navItems[1].click();

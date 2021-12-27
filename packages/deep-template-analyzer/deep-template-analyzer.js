@@ -82,7 +82,7 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
         component: 'deep-analyzer-page-summary',
         action: async () => {
           await import(
-            '@thinkdeep/deep-template-analyzer/deep-analyzer-page-summary'
+            '@thinkdeep/deep-template-analyzer/deep-analyzer-page-summary.js'
           );
         },
       });
@@ -101,8 +101,6 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
           '@thinkdeep/deep-template-analyzer/deep-analyzer-page-not-found.js'
         );
       },
-      // TODO: Replacement for hidden included in vaadin? I think I can remember seeing one.
-      hidden: true,
     });
 
     const targetViewingArea = this.shadowRoot.getElementById('content');
@@ -132,6 +130,10 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
           grid-area: content;
           min-height: 80vh;
           color: var(--primary-color);
+        }
+
+        a {
+          color: white;
         }
 
         deep-footer {
