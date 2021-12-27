@@ -159,7 +159,6 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
         <a href="/" slot="actionItems">
           <mwc-icon-button
             icon="home"
-            @click="${() => this._routeToPage('/')}"
             aria-label="${translate('translations:homePageLabel')}"
           >
           </mwc-icon-button>
