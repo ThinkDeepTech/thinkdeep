@@ -13,7 +13,7 @@ const wait = async (milliseconds) => {
 const delayForPageRender = async () => {
     // NOTE: The test times out if it takes longer than 2000 ms to complete during the automated build. Therefore,
     // this wait value should be less than 2000 ms.
-    await wait(500);
+    await wait(600);
 };
 
 const path = (anchor) => {
