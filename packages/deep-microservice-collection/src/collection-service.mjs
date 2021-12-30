@@ -22,12 +22,12 @@ class CollectionService {
      * @param {Object} user - The user making the request.
      * @returns {Object}
      */
-    async collectEconomicData(entityName, entityType, user, logger = this._logger) {
+    async collectEconomicData(entityName, entityType, permissions, logger = this._logger) {
         if (!entityName || (typeof entityName != 'string')) return { success: false };
 
         if (!entityType || (typeof entityType != 'string')) return { success: false };
 
-        if (!hasReadAllAccess(user)) return { success: false};
+        // if (!hasReadAllAccess(permissions)) return { success: false};
 
         logger.debug(`Collecting economic data for name: ${entityName}, type: ${entityType}`);
 
@@ -46,13 +46,13 @@ class CollectionService {
      * @param {Object} tweetStore - TweetStore instance. This is included for testing purposes and should use the default if not being used in tests.
      * @returns {Array} - Tweets that are in the database or [].
      */
-    async tweets(economicEntityName, economicEntityType, user, tweetStore = this._tweetStore, logger = this._logger) {
+    async tweets(economicEntityName, economicEntityType, permissions, tweetStore = this._tweetStore, logger = this._logger) {
 
         if (!economicEntityName || (typeof economicEntityName != 'string')) return [];
 
         if (!economicEntityType || (typeof economicEntityType != 'string')) return [];
 
-        if (!hasReadAllAccess(user)) return [];
+        if (!hasReadAllAccess(permissions)) return [];
 
         logger.debug(`Fetching tweets for economic entity name: ${economicEntityName}, type: ${economicEntityType}`);
 

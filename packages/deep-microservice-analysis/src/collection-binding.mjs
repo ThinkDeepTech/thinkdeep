@@ -19,7 +19,7 @@ const executor = async ({ document, variables, context }) => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            user: !!context?.user ? JSON.stringify(context.user) : null
+            permissions: !!context?.permissions ? JSON.stringify(context.permissions) : null
         },
         body: JSON.stringify({ query, variables })
     });

@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deep-microservice-user-deployment
+  labels:
+    app: deep-microservice-user
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deep-microservice-user
+  template:
+    metadata:
+      labels:
+        app: deep-microservice-user
+    spec:
+      containers:
+      - name: deep-microservice-user
+        image: thinkdeeptech/deep-microservice-user:latest
+        ports:
+        - containerPort: 4003

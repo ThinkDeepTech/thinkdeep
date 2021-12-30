@@ -1,14 +1,12 @@
 import {buildSubgraphSchema} from '@apollo/subgraph';
 import {ApolloServer} from 'apollo-server-express';
-import {CollectionService} from './collection-service.mjs';
-import {TweetStore} from './datasource/tweet-store.mjs';
-import {TwitterAPI} from './datasource/twitter-api.mjs';
 import express from 'express';
 import {getLogger} from './get-logger.mjs';
 import {getPublicIP} from './get-public-ip.mjs';
 import {loggingPlugin} from './logging-plugin.mjs';
 import {MongoClient} from 'mongodb';
 import process from 'process';
+import { UserService } from './user-service.mjs';
 import {resolvers} from './resolvers.mjs';
 import {typeDefs} from './schema.mjs';
 
@@ -41,26 +39,19 @@ const startApolloServer = async () => {
 
   console.log("Connected successfully to server");
 
-  const twitterAPI = new TwitterAPI();
-  const tweetStore = new TweetStore(mongoClient.db('admin').collection('tweets'));
-  const collectionService = new CollectionService(twitterAPI, tweetStore, logger);
+  const userService = new UserService(logger);
 
-  const isProduction = process.env.NODE_ENV === 'production';
   const server = new ApolloServer({
     schema: buildSubgraphSchema([{typeDefs, resolvers}]),
-    dataSources: () => ({collectionService}),
+    dataSources: () => ({userService}),
     context: ({req}) => {
       const permissions = req.headers.permissions ? JSON.parse(req.headers.permissions) : null;
-      return {permissions};
+      const me = req.headers.me ? JSON.parse(req.headers.me) : null;
+      return {permissions, me};
     },
     plugins: [
       loggingPlugin
     ],
-
-    // NOTE: Introspection has some security implications. It allows developers to query the API to figure out the structure
-    // of the schema. This can be dangerous in production. However, these services are intended to be visible so this isn't
-    // currently an issue.
-    introspection: true,
   });
   await server.start();
 
@@ -72,6 +63,7 @@ const startApolloServer = async () => {
 
   // NOTE: Placing a forward slash at the end of any allowed origin causes a preflight error.
   let allowedOrigins = ['https://predecos.com', 'https://www.predecos.com', 'https://thinkdeep-d4624.web.app', 'https://www.thinkdeep-d4624.web.app']
+  const isProduction = process.env.NODE_ENV === 'production';
   if (!isProduction) {
     allowedOrigins = allowedOrigins.concat(['https://localhost:8000', 'http://localhost:8000', 'https://studio.apollographql.com']);
   }
@@ -87,7 +79,7 @@ const startApolloServer = async () => {
   });
 
 
-  const port = 4002;
+  const port = 4003;
   await new Promise((resolve) => app.listen({port}, resolve));
 
   logger.info(

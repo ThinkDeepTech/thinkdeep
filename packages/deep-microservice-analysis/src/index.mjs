@@ -27,8 +27,8 @@ const startApolloServer = async () => {
     schema: buildSubgraphSchema([{typeDefs, resolvers}]),
     dataSources: () => ({analysisService}),
     context: ({req}) => {
-      const user = req.headers.user ? JSON.parse(req.headers.user) : null;
-      return {user};
+      const permissions = req.headers.permissions ? JSON.parse(req.headers.permissions) : null;
+      return {permissions};
     },
     plugins: [
       loggingPlugin

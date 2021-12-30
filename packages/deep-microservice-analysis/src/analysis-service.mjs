@@ -27,12 +27,12 @@ class AnalysisService {
      * @param {Object} collectionBinding - The collection microservice binding. This parameter is present for testing purposes and isn't intended for regular use.
      * @returns {Array} - The formatted sentiment objects in array form or [].
      */
-    async sentiments(economicEntityName, economicEntityType, user, collectionBinding = this._collectionBinding, logger = this._logger) {
+    async sentiments(economicEntityName, economicEntityType, permissions, collectionBinding = this._collectionBinding, logger = this._logger) {
         if (!economicEntityName || (typeof economicEntityName != 'string')) return [];
 
         if (!economicEntityType || (typeof economicEntityType != 'string')) return [];
 
-        if (!hasReadAllAccess(user)) return [];
+        if (!hasReadAllAccess(permissions)) return [];
 
         logger.debug(`Querying sentiments for economic entity name: ${economicEntityName}, type: ${economicEntityType}`);
 
@@ -45,7 +45,7 @@ class AnalysisService {
                     text
                 }
             }
-            `, { context: { user } });
+            `, { context: { permissions } });
         logger.debug(`Received tweets: ${JSON.stringify(data)}`);
 
         const sentiments = [];
