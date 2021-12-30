@@ -27,7 +27,7 @@ class CollectionService {
 
         if (!entityType || (typeof entityType != 'string')) return { success: false };
 
-        // if (!hasReadAllAccess(permissions)) return { success: false};
+        if (!hasReadAllAccess(permissions)) return { success: false};
 
         logger.debug(`Collecting economic data for name: ${entityName}, type: ${entityType}`);
 
