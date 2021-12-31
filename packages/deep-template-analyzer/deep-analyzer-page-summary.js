@@ -10,6 +10,7 @@ import '@material/mwc-list/mwc-list-item';
 import '@material/mwc-select';
 import '@material/mwc-textfield';
 import {debounce} from './debounce.mjs';
+import './deep-site-configuration.mjs';
 import {translate} from 'lit-element-i18n';
 import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
 import GetSentiment from './graphql/GetSentiment.query.graphql';
@@ -17,8 +18,16 @@ import GetSentiment from './graphql/GetSentiment.query.graphql';
 export default class DeepAnalyzerPageSummary extends LitElement {
   static get properties() {
     return {
+      // TODO: Meaningful names to query and mutation below.
+      // Query to fetch sentiments
       query: {type: Object},
+
+      // Mutation to collect data
       mutation: {type: Object},
+
+      // The users site configuration.
+      configuration: {type: Object},
+
       selectedSentiments: {type: Array},
     };
   }
@@ -28,13 +37,16 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
     this.query = new ApolloQueryController(this, GetSentiment, {
       variables: {
-        economicEntityName: 'Google',
+        economicEntityName: '',
         economicEntityType: 'BUSINESS',
       },
+      noAutoSubscribe: true,
       onData: this._triggerUpdate.bind(this),
     });
 
     this.mutation = new ApolloMutationController(this, CollectEconomicData);
+
+    this.configuration = {observedEconomicEntities: []};
 
     this.selectedSentiments = [];
   }
@@ -42,6 +54,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   connectedCallback() {
     super.connectedCallback();
 
+    // TODO: Switch from addeventlistener to use of @ directive in custom elements.
     this.addEventListener('google-chart-select', this._handleChartSelection);
     this.addEventListener('selected', this._onSelect);
   }
@@ -113,11 +126,19 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       mwc-textfield {
         --mdc-theme-primary: var(--primary-color);
       }
+
+      [hidden] {
+        display: none;
+      }
     `;
   }
 
   render() {
     return html`
+      <deep-site-configuration
+        @site-configuration="${this._handleSiteConfig}"
+        hidden
+      ></deep-site-configuration>
       <div class="input">
         <label>${translate('translations:startCollectingLabel')}</label>
         <mwc-textfield
@@ -135,11 +156,14 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       <div class="input">
         <label>${translate('translations:analyzeDataLabel')}</label>
         <mwc-select label="Select a business">
-          <mwc-list-item selected value="Google">Google</mwc-list-item>
-          <mwc-list-item value="Amazon">Amazon</mwc-list-item>
-          <mwc-list-item value="PetCo">PetCo</mwc-list-item>
-          <mwc-list-item value="Tesla">Tesla</mwc-list-item>
-          <mwc-list-item value="Ford">Ford</mwc-list-item>
+          ${this.configuration.observedEconomicEntities.map(
+            (economicEntity, index) =>
+              html`<mwc-list-item
+                ?selected="${index === 0}"
+                value="${economicEntity.name}"
+                >${economicEntity.name}</mwc-list-item
+              >`
+          )}
         </mwc-select>
       </div>
 
@@ -224,6 +248,13 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       economicEntityName: businessName,
       economicEntityType: 'BUSINESS',
     };
+    this.query.executeQuery();
+  }
+
+  _handleSiteConfig({detail}) {
+    this.configuration = detail.configuration || {observedEconomicEntities: []};
+
+    // TODO: Handle collect data case updating user config to include new value.
   }
 
   /**
