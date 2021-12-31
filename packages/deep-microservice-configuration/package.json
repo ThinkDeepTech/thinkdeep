@@ -1,5 +1,5 @@
 {
-  "name": "@thinkdeep/deep-microservice-user",
+  "name": "@thinkdeep/deep-microservice-configuration",
   "version": "0.0.8",
   "description": "User microservice tieing users to account config.",
   "keywords": [

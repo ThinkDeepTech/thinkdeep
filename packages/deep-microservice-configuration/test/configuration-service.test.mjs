@@ -4,9 +4,9 @@ import sinonChai from 'sinon-chai';
 const expect = chai.expect;
 chai.use(sinonChai);
 
-import { UserService } from '../src/user-service.mjs';
+import { ConfigurationService } from '../src/configuration-service.mjs';
 
-describe('user-service', () => {
+describe('configuration-service', () => {
 
     let logger;
     let subject;
@@ -19,6 +19,6 @@ describe('user-service', () => {
             error: sinon.stub()
         };
 
-        subject = new UserService(logger);
+        subject = new ConfigurationService(logger);
     });
 });

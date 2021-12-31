@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: deep-microservice-user-service
+  name: deep-microservice-configuration-service
 spec:
   selector:
-    app: deep-microservice-user
+    app: deep-microservice-configuration
   ports:
     - protocol: TCP
       port: 4003

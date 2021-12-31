@@ -18,11 +18,11 @@ const getUser = async (options = {
     const auth0 = globalThis.auth0;
     const profile = await auth0.getUser();
     const loggedIn = await auth0.isAuthenticated();
-    let token = '';
+    let accessToken = '';
     if (loggedIn) {
-        token = await auth0.getTokenSilently();
+        accessToken = await auth0.getTokenSilently();
     }
-    return { profile, login, logout, loggedIn, token };
+    return { profile, login, logout, loggedIn, accessToken };
 }
 
 /**

@@ -6,7 +6,8 @@ const typeDefs = gql`
         BUSINESS
     }
 
-    type User {
+    # The site configuration associated with a given user.
+    type Configuration {
         observedEconomicEntities: [EconomicEntity!]!
     }
 
@@ -21,12 +22,11 @@ const typeDefs = gql`
     }
 
     extend type Mutation {
-        # NOTE: The user identity is passed using the id token.
 
-        # Fetch or create the user.
-        user: User!
+        # Fetch or create the site config.
+        configuration(userEmail: String!): Configuration!
 
-        updateUser(observedEconomicEntities: [EconomicEntityInput!]!): User!
+        updateConfiguration(userEmail: String!, observedEconomicEntities: [EconomicEntityInput!]!): Configuration!
     }
 `;
 

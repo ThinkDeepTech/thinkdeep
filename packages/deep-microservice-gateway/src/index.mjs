@@ -17,7 +17,7 @@ const startGatewayService = async () => {
     serviceList: [
       {name: 'analysis', url: process.env.PREDECOS_MICROSERVICE_ANALYSIS_URL},
       {name: 'collection', url: process.env.PREDECOS_MICROSERVICE_COLLECTION_URL},
-      {name: 'user', url: process.env.PREDECOS_MICROSERVICE_USER_URL},
+      {name: 'configuration', url: process.env.PREDECOS_MICROSERVICE_CONFIGURATION_URL},
     ],
     buildService({name, url}) {
       return new RemoteGraphQLDataSource({
@@ -26,10 +26,6 @@ const startGatewayService = async () => {
           request.http.headers.set(
             'permissions',
             context?.req?.permissions ? JSON.stringify(context?.req?.permissions) : null
-          );
-          request.http.headers.set(
-            'me',
-            context?.req?.me ? JSON.stringify(context?.req?.me) : null
           );
         },
       });
@@ -57,25 +53,6 @@ const startGatewayService = async () => {
     requestProperty: 'permissions',
   });
 
-  const extractMe = jwt({
-    secret: jwks.expressJwtSecret({
-      cache: true,
-      rateLimit: true,
-      jwksRequestsPerMinute: 5,
-      jwksUri: process.env.PREDECOS_AUTH_JWKS_URI,
-    }),
-    aud: process.env.PREDECOS_AUTH_AUDIENCE,
-    issuer: process.env.PREDECOS_AUTH_ISSUER,
-    algorithms: ['RS256'],
-    requestProperty: 'me',
-    getToken: function(req) {
-      if (req?.headers?.me) {
-        return req.headers.me;
-      }
-      return null;
-    }
-  })
-
   const app = express();
 
   // NOTE: x-powered-by can allow attackers to determine what technologies are being used by software and
@@ -86,8 +63,6 @@ const startGatewayService = async () => {
   // after server.applyMiddleWare(...) it simply doesn't execute. However, the presence of this handler
   // before server.applyMiddleWare(...) breaks Apollo Explorer but applies authorization.
   app.use(extractPermissions);
-
-  app.use(extractMe);
 
   // NOTE: Placing a forward slash at the end of any allowed origin causes a preflight error.
   let allowedOrigins = ['https://predecos.com', 'https://www.predecos.com', 'https://thinkdeep-d4624.web.app', 'https://www.thinkdeep-d4624.web.app']

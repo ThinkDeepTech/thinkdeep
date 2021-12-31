@@ -23,7 +23,7 @@ const initApolloClient = async () => {
             return {
                 headers: {
                     ...headers,
-                    authorization: !!user.token ? `Bearer ${user.token}` : ''
+                    authorization: !!user.accessToken ? `Bearer ${user.accessToken}` : '',
                 }
             };
         });

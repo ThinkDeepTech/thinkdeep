@@ -37,7 +37,7 @@ describe('user', () => {
       authClient.isAuthenticated.returns(Promise.resolve(true));
       authClient.getTokenSilently.returns(Promise.resolve(accessToken));
       const user = await getUser();
-      expect(user.token).to.equal(accessToken);
+      expect(user.accessToken).to.equal(accessToken);
     });
 
     it('should fetch the user profile', async () => {

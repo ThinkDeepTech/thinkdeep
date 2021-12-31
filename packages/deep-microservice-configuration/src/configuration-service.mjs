@@ -1,9 +1,9 @@
 import { hasReadAllAccess } from './permissions.mjs';
 
-class UserService {
+class ConfigurationService {
 
     /**
-     * Business layer associated with users.
+     * Business layer associated with site configuration.
      *
      * @param {Object} logger - Logger to use.
      */
@@ -11,9 +11,9 @@ class UserService {
         this._logger = logger;
     }
 
-    getOrCreateUser(permissions) {
+    getOrCreateConfiguration(userEmail, permissions) {
 
-        this._logger.debug('Getting or creating user.');
+        this._logger.info(`Getting or creating site configuration for user: ${userEmail}`);
         return {
             observedEconomicEntities: [{
                 name: 'Google',
@@ -35,12 +35,12 @@ class UserService {
         };
     }
 
-    updateUser(observedEconomicEntities, permissions) {
-        this._logger.debug('Updating user.');
+    updateConfiguration(userEmail, observedEconomicEntities, permissions) {
+        this._logger.info(`Updating site configuration for user: ${userEmail}`);
 
-        return this.getOrCreateUser();
+        return this.getOrCreateConfiguration();
     }
 
 }
 
-export { UserService };
+export { ConfigurationService };

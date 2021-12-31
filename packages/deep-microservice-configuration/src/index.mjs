@@ -1,12 +1,12 @@
 import {buildSubgraphSchema} from '@apollo/subgraph';
 import {ApolloServer} from 'apollo-server-express';
+import { ConfigurationService } from './configuration-service.mjs';
 import express from 'express';
 import {getLogger} from './get-logger.mjs';
 import {getPublicIP} from './get-public-ip.mjs';
 import {loggingPlugin} from './logging-plugin.mjs';
 import {MongoClient} from 'mongodb';
 import process from 'process';
-import { UserService } from './user-service.mjs';
 import {resolvers} from './resolvers.mjs';
 import {typeDefs} from './schema.mjs';
 
@@ -39,11 +39,11 @@ const startApolloServer = async () => {
 
   console.log("Connected successfully to server");
 
-  const userService = new UserService(logger);
+  const configurationService = new ConfigurationService(logger);
 
   const server = new ApolloServer({
     schema: buildSubgraphSchema([{typeDefs, resolvers}]),
-    dataSources: () => ({userService}),
+    dataSources: () => ({configurationService}),
     context: ({req}) => {
       const permissions = req.headers.permissions ? JSON.parse(req.headers.permissions) : null;
       const me = req.headers.me ? JSON.parse(req.headers.me) : null;
