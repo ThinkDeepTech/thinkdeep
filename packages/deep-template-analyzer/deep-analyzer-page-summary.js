@@ -18,12 +18,11 @@ import GetSentiment from './graphql/GetSentiment.query.graphql';
 export default class DeepAnalyzerPageSummary extends LitElement {
   static get properties() {
     return {
-      // TODO: Meaningful names to query and mutation below.
-      // Query to fetch sentiments
-      query: {type: Object},
+      // Fetch sentiment query object
+      getSentiment: {type: Object},
 
-      // Mutation to collect data
-      mutation: {type: Object},
+      // Data collection mutation object
+      collectEconomicData: {type: Object},
 
       // The users site configuration.
       configuration: {type: Object},
@@ -35,7 +34,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   constructor() {
     super();
 
-    this.query = new ApolloQueryController(this, GetSentiment, {
+    this.getSentiment = new ApolloQueryController(this, GetSentiment, {
       variables: {
         economicEntityName: '',
         economicEntityType: 'BUSINESS',
@@ -44,7 +43,10 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       onData: this._triggerUpdate.bind(this),
     });
 
-    this.mutation = new ApolloMutationController(this, CollectEconomicData);
+    this.collectEconomicData = new ApolloMutationController(
+      this,
+      CollectEconomicData
+    );
 
     this.configuration = {observedEconomicEntities: []};
 
@@ -148,7 +150,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         <mwc-button
           raised
           label="${translate('translations:startButtonLabel')}"
-          @click="${() => this.mutation.mutate()}"
+          @click="${this._collectEconomicData.bind(this)}"
           icon="input"
         ></mwc-button>
       </div>
@@ -171,7 +173,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         type="line"
         options='{"title": "Sentiment as a function of time" }'
         cols='[{"label": "Timestamp", "type": "number"}, {"label": "Sentiment", "type": "number"}]'
-        rows="[${this.query?.data?.sentiments?.map((sentiment) =>
+        rows="[${this.getSentiment?.data?.sentiments?.map((sentiment) =>
           JSON.stringify([sentiment.timestamp, sentiment.score])
         )}]"
       ></google-chart>
@@ -205,7 +207,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
       const selectedPoint = googleChart.rows[selectedRow];
 
-      this.query?.data?.sentiments?.forEach((sentiment) => {
+      this.getSentiment?.data?.sentiments?.forEach((sentiment) => {
         if (this._hasMatchingData(sentiment, selectedPoint)) {
           this.selectedSentiments.push(sentiment);
         }
@@ -231,10 +233,23 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    */
   _onInput() {
     const companyName = this.shadowRoot.querySelector('mwc-textfield').value;
-    this.mutation.variables = {
+    this.collectEconomicData.variables = {
       economicEntityName: companyName,
       economicEntityType: 'BUSINESS',
     };
+  }
+
+  _collectEconomicData() {
+    // TODO: Network optimization
+    const deepSiteConfig = this.shadowRoot.querySelector(
+      'deep-site-configuration'
+    );
+    deepSiteConfig.observeEconomicEntity({
+      name: this.collectEconomicData.variables.economicEntityName || '',
+      type: this.collectEconomicData.variables.economicEntityType || '',
+    });
+    deepSiteConfig.updateConfiguration();
+    this.collectEconomicData.mutate();
   }
 
   /**
@@ -244,17 +259,15 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     const businessName = this.shadowRoot.querySelector(
       '[aria-selected="true"]'
     ).value;
-    this.query.variables = {
+    this.getSentiment.variables = {
       economicEntityName: businessName,
       economicEntityType: 'BUSINESS',
     };
-    this.query.executeQuery();
+    this.getSentiment.executeQuery();
   }
 
   _handleSiteConfig({detail}) {
-    this.configuration = detail.configuration || {observedEconomicEntities: []};
-
-    // TODO: Handle collect data case updating user config to include new value.
+    this.configuration = detail || {observedEconomicEntities: []};
   }
 
   /**
