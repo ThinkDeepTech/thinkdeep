@@ -7,38 +7,36 @@ class ConfigurationService {
      *
      * @param {Object} logger - Logger to use.
      */
-    constructor(logger) {
+    constructor(configStore, logger) {
+        this._configStore = configStore;
         this._logger = logger;
     }
 
-    getOrCreateConfiguration(userEmail, permissions) {
+    async getOrCreateConfiguration(userEmail) {
 
         this._logger.info(`Getting or creating site configuration for user: ${userEmail}`);
-        return {
-            observedEconomicEntities: [{
-                name: 'Google',
-                type: 'BUSINESS'
-            },
-            {
-                name: 'Tesla',
-                type: 'BUSINESS'
-            },{
-                name: 'PetCo',
-                type: 'BUSINESS'
-            },{
-                name: 'Ford',
-                type: 'BUSINESS'
-            }, {
-                name: 'Amazon',
-                type: 'BUSINESS'
-            }]
-        };
+
+        const configExists = await this._configStore.configurationExists(userEmail);
+
+        if (!configExists) {
+            await this._configStore.createConfigurationForUser(userEmail, {
+                observedEconomicEntities: []
+            });
+        }
+
+        const configuration = await this._configStore.readConfigurationForUser(userEmail);
+
+        return configuration;
     }
 
-    updateConfiguration(userEmail, observedEconomicEntities, permissions) {
+    async updateConfiguration(userEmail, observedEconomicEntities, permissions) {
         this._logger.info(`Updating site configuration for user: ${userEmail}`);
 
-        return this.getOrCreateConfiguration();
+        await this._configStore.updateConfigurationForUser(userEmail, {
+            observedEconomicEntities
+        });
+
+        return await this._configStore.readConfigurationForUser(userEmail);
     }
 
 }

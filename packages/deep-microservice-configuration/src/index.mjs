@@ -1,6 +1,7 @@
 import {buildSubgraphSchema} from '@apollo/subgraph';
 import {ApolloServer} from 'apollo-server-express';
 import { ConfigurationService } from './configuration-service.mjs';
+import {ConfigurationStore} from './datasource/configuration-store.mjs';
 import express from 'express';
 import {getLogger} from './get-logger.mjs';
 import {getPublicIP} from './get-public-ip.mjs';
@@ -39,7 +40,8 @@ const startApolloServer = async () => {
 
   console.log("Connected successfully to server");
 
-  const configurationService = new ConfigurationService(logger);
+  const configurationStore = new ConfigurationStore(mongoClient.db('admin').collection('configurations'));
+  const configurationService = new ConfigurationService(configurationStore, logger);
 
   const server = new ApolloServer({
     schema: buildSubgraphSchema([{typeDefs, resolvers}]),
