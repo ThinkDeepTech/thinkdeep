@@ -239,8 +239,10 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     };
   }
 
+  /**
+   * Collect economic data and update the user configuration to account for new collections.
+   */
   _collectEconomicData() {
-    // TODO: Network optimization
     const deepSiteConfig = this.shadowRoot.querySelector(
       'deep-site-configuration'
     );
@@ -266,6 +268,10 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     this.getSentiment.executeQuery();
   }
 
+  /**
+   * Handle reception of the site-configuration event.
+   * @param {Object} detail - Configuration of the form { observedEconomicEntities: [...]}.
+   */
   _handleSiteConfig({detail}) {
     this.configuration = detail || {observedEconomicEntities: []};
   }

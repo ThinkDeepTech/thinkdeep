@@ -1,7 +1,7 @@
 {
   "name": "@thinkdeep/deep-microservice-configuration",
   "version": "0.0.8",
-  "description": "User microservice tieing users to account config.",
+  "description": "Configuration microservice tieing users to site config.",
   "keywords": [
     "GraphQL",
     "Apollo",
@@ -29,13 +29,11 @@
     "@apollo/subgraph": "^0.1.5",
     "apollo-datasource": "^3.1.0",
     "apollo-datasource-mongodb": "^0.5.2",
-    "apollo-datasource-rest": "^3.4.0",
     "apollo-server": "^3.2.0",
     "apollo-server-express": "^3.5.0",
     "express": "^4.17.1",
     "graphql": "^15.5.1",
     "log4js": "^6.3.0",
-    "moment": "^2.29.1",
     "mongodb": "^4.2.1"
   },
   "private": true

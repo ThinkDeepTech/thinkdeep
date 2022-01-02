@@ -81,11 +81,6 @@ class DeepSiteConfiguration extends LitElement {
         });
     }
 
-    // TODO: Is this needed?
-    render() {
-        return html``;
-    }
-
     updated(changedProperties) {
         if (changedProperties.has('configuration')) {
             let event = new CustomEvent('site-configuration', {
@@ -95,11 +90,22 @@ class DeepSiteConfiguration extends LitElement {
         }
     }
 
+    /**
+     * Add the specified economic entity to those observed by the user.
+     * @param {Object} economicEntity - Economic entity, i.e { name: 'somename', type: 'BUSINESS'}.
+     * @returns
+     */
     observeEconomicEntity(economicEntity) {
         if (this.alreadyExists(economicEntity, this.configuration.observedEconomicEntities)) return;
         this.configuration.observedEconomicEntities.push(economicEntity);
     }
 
+    /**
+     * Check if an economic entity is already being observed.
+     * @param {Object} economicEntity
+     * @param {Array} targetEconomicEntities - Economic entities to check against.
+     * @returns {Boolean} - True if the economic entity is present. False otherwise.
+     */
     alreadyExists(economicEntity, targetEconomicEntities) {
         for (const presentEntity of targetEconomicEntities) {
             if (this.equivalent(presentEntity, economicEntity)) return true;
@@ -107,12 +113,21 @@ class DeepSiteConfiguration extends LitElement {
         return false;
     }
 
+    /**
+     * Check if two economic entities are equivalent.
+     * @param {Object} entity1
+     * @param {Object} entity2
+     * @returns {Boolean} - True if the two are equivalent. False otherwise.
+     */
     equivalent(entity1, entity2) {
         const sameName = entity1.name.toLowerCase() === entity2.name.toLowerCase();
         const sameType = entity1.type.toLowerCase() === entity2.type.toLowerCase();
         return sameName && sameType;
     }
 
+    /**
+     * Trigger update of the users configuration on the server.
+     */
     updateConfiguration() {
         this.updateConfigMutation.variables = {
             userEmail: this.user?.profile?.email || null,

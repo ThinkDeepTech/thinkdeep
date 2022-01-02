@@ -10,6 +10,7 @@ class AnalysisService {
      * @param {Object} dataSource - PostgresDataSource object to use when interacting with the database.
      * @param {Object} sentimentLib - Library to use for sentiment analysis. This is an instance of Sentiment from 'sentiment' package.
      * @param {Object} collectionBinding - CollectionBinding object to use when communicating with the collection service.
+     * @param {Object} logger - Logger to use.
      */
     constructor(dataSource, sentimentLib, collectionBinding, logger) {
         this._dataSource = dataSource;
@@ -23,7 +24,7 @@ class AnalysisService {
      *
      * @param {String} economicEntityName - Name of the economic entity (i.e, 'Google').
      * @param {String} economicEntityType - Type of the economic entity (i.e, 'BUSINESS').
-     * @param {Object} user - The user requesting the data.
+     * @param {Object} permissions - Permissions for the user making the request.
      * @param {Object} collectionBinding - The collection microservice binding. This parameter is present for testing purposes and isn't intended for regular use.
      * @returns {Array} - The formatted sentiment objects in array form or [].
      */
