@@ -21,8 +21,10 @@ describe('user', () => {
         handleRedirectCallback: sinon.stub(),
         isAuthenticated: sinon.stub(),
         getTokenSilently: sinon.stub(),
+        getIdTokenClaims: sinon.stub(),
         getUser: sinon.stub(),
       };
+      authClient.getIdTokenClaims.returns(Promise.resolve({__raw: 2}));
       setAuthClientForTesting(authClient);
     });
 
