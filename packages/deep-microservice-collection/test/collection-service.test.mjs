@@ -1,5 +1,4 @@
 import chai from 'chai';
-import mockDb from 'mock-knex';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 const expect = chai.expect;

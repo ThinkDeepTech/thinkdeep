@@ -10,6 +10,7 @@ import '@material/mwc-list/mwc-list-item';
 import '@material/mwc-select';
 import '@material/mwc-textfield';
 import {debounce} from './debounce.mjs';
+import './deep-site-configuration.mjs';
 import {translate} from 'lit-element-i18n';
 import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
 import GetSentiment from './graphql/GetSentiment.query.graphql';
@@ -17,8 +18,15 @@ import GetSentiment from './graphql/GetSentiment.query.graphql';
 export default class DeepAnalyzerPageSummary extends LitElement {
   static get properties() {
     return {
-      query: {type: Object},
-      mutation: {type: Object},
+      // Fetch sentiment query object
+      getSentiment: {type: Object},
+
+      // Data collection mutation object
+      collectEconomicData: {type: Object},
+
+      // The users site configuration.
+      configuration: {type: Object},
+
       selectedSentiments: {type: Array},
     };
   }
@@ -26,15 +34,21 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   constructor() {
     super();
 
-    this.query = new ApolloQueryController(this, GetSentiment, {
+    this.getSentiment = new ApolloQueryController(this, GetSentiment, {
       variables: {
-        economicEntityName: 'Google',
+        economicEntityName: '',
         economicEntityType: 'BUSINESS',
       },
+      noAutoSubscribe: true,
       onData: this._triggerUpdate.bind(this),
     });
 
-    this.mutation = new ApolloMutationController(this, CollectEconomicData);
+    this.collectEconomicData = new ApolloMutationController(
+      this,
+      CollectEconomicData
+    );
+
+    this.configuration = {observedEconomicEntities: []};
 
     this.selectedSentiments = [];
   }
@@ -42,6 +56,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   connectedCallback() {
     super.connectedCallback();
 
+    // TODO: Switch from addeventlistener to use of @ directive in custom elements.
     this.addEventListener('google-chart-select', this._handleChartSelection);
     this.addEventListener('selected', this._onSelect);
   }
@@ -113,11 +128,19 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       mwc-textfield {
         --mdc-theme-primary: var(--primary-color);
       }
+
+      [hidden] {
+        display: none;
+      }
     `;
   }
 
   render() {
     return html`
+      <deep-site-configuration
+        @site-configuration="${this._handleSiteConfig}"
+        hidden
+      ></deep-site-configuration>
       <div class="input">
         <label>${translate('translations:startCollectingLabel')}</label>
         <mwc-textfield
@@ -127,7 +150,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         <mwc-button
           raised
           label="${translate('translations:startButtonLabel')}"
-          @click="${() => this.mutation.mutate()}"
+          @click="${this._collectEconomicData.bind(this)}"
           icon="input"
         ></mwc-button>
       </div>
@@ -135,11 +158,14 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       <div class="input">
         <label>${translate('translations:analyzeDataLabel')}</label>
         <mwc-select label="Select a business">
-          <mwc-list-item selected value="Google">Google</mwc-list-item>
-          <mwc-list-item value="Amazon">Amazon</mwc-list-item>
-          <mwc-list-item value="PetCo">PetCo</mwc-list-item>
-          <mwc-list-item value="Tesla">Tesla</mwc-list-item>
-          <mwc-list-item value="Ford">Ford</mwc-list-item>
+          ${this.configuration.observedEconomicEntities.map(
+            (economicEntity, index) =>
+              html`<mwc-list-item
+                ?selected="${index === 0}"
+                value="${economicEntity.name}"
+                >${economicEntity.name}</mwc-list-item
+              >`
+          )}
         </mwc-select>
       </div>
 
@@ -147,7 +173,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         type="line"
         options='{"title": "Sentiment as a function of time" }'
         cols='[{"label": "Timestamp", "type": "number"}, {"label": "Sentiment", "type": "number"}]'
-        rows="[${this.query?.data?.sentiments?.map((sentiment) =>
+        rows="[${this.getSentiment?.data?.sentiments?.map((sentiment) =>
           JSON.stringify([sentiment.timestamp, sentiment.score])
         )}]"
       ></google-chart>
@@ -181,7 +207,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
       const selectedPoint = googleChart.rows[selectedRow];
 
-      this.query?.data?.sentiments?.forEach((sentiment) => {
+      this.getSentiment?.data?.sentiments?.forEach((sentiment) => {
         if (this._hasMatchingData(sentiment, selectedPoint)) {
           this.selectedSentiments.push(sentiment);
         }
@@ -207,10 +233,25 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    */
   _onInput() {
     const companyName = this.shadowRoot.querySelector('mwc-textfield').value;
-    this.mutation.variables = {
+    this.collectEconomicData.variables = {
       economicEntityName: companyName,
       economicEntityType: 'BUSINESS',
     };
+  }
+
+  /**
+   * Collect economic data and update the user configuration to account for new collections.
+   */
+  _collectEconomicData() {
+    const deepSiteConfig = this.shadowRoot.querySelector(
+      'deep-site-configuration'
+    );
+    deepSiteConfig.observeEconomicEntity({
+      name: this.collectEconomicData.variables.economicEntityName || '',
+      type: this.collectEconomicData.variables.economicEntityType || '',
+    });
+    deepSiteConfig.updateConfiguration();
+    this.collectEconomicData.mutate();
   }
 
   /**
@@ -220,10 +261,19 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     const businessName = this.shadowRoot.querySelector(
       '[aria-selected="true"]'
     ).value;
-    this.query.variables = {
+    this.getSentiment.variables = {
       economicEntityName: businessName,
       economicEntityType: 'BUSINESS',
     };
+    this.getSentiment.executeQuery();
+  }
+
+  /**
+   * Handle reception of the site-configuration event.
+   * @param {Object} detail - Configuration of the form { observedEconomicEntities: [...]}.
+   */
+  _handleSiteConfig({detail}) {
+    this.configuration = detail || {observedEconomicEntities: []};
   }
 
   /**

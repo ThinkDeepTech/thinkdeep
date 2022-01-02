@@ -16,15 +16,20 @@ const startGatewayService = async () => {
   const gateway = new ApolloGateway({
     serviceList: [
       {name: 'analysis', url: process.env.PREDECOS_MICROSERVICE_ANALYSIS_URL},
-      {name: 'collection', url: process.env.PREDECOS_MICROSERVICE_COLLECTION_URL}
+      {name: 'collection', url: process.env.PREDECOS_MICROSERVICE_COLLECTION_URL},
+      {name: 'configuration', url: process.env.PREDECOS_MICROSERVICE_CONFIGURATION_URL},
     ],
     buildService({name, url}) {
       return new RemoteGraphQLDataSource({
         url,
         willSendRequest({request, context}) {
           request.http.headers.set(
-            'user',
-            context?.req?.user ? JSON.stringify(context?.req?.user) : null
+            'permissions',
+            context?.req?.permissions ? JSON.stringify(context.req.permissions) : null
+          );
+          request.http.headers.set(
+            'me',
+            context?.req?.me ? JSON.stringify(context.req.me) : null
           );
         },
       });
@@ -39,17 +44,36 @@ const startGatewayService = async () => {
   });
   await server.start();
 
-  const jwtHandler = jwt({
+  const extractPermissions = jwt({
     secret: jwks.expressJwtSecret({
       cache: true,
       rateLimit: true,
       jwksRequestsPerMinute: 5,
       jwksUri: process.env.PREDECOS_AUTH_JWKS_URI,
     }),
-    audience: process.env.PREDECOS_AUTH_AUDIENCE,
+    aud: process.env.PREDECOS_AUTH_AUDIENCE,
     issuer: process.env.PREDECOS_AUTH_ISSUER,
     algorithms: ['RS256'],
-    requestProperty: 'user',
+    requestProperty: 'permissions',
+  });
+
+  const extractMe = jwt({
+    secret: jwks.expressJwtSecret({
+      cache: true,
+      rateLimit: true,
+      jwksRequestsPerMinute: 5,
+      jwksUri: process.env.PREDECOS_AUTH_JWKS_URI,
+    }),
+    aud: process.env.PREDECOS_AUTH_AUDIENCE,
+    issuer: process.env.PREDECOS_AUTH_ISSUER,
+    algorithms: ['RS256'],
+    requestProperty: 'me',
+    getToken: (req) => {
+      if (req.headers.me) {
+        return req.headers.me;
+      }
+      return '';
+    }
   });
 
   const app = express();
@@ -61,7 +85,9 @@ const startGatewayService = async () => {
   // NOTE: This handler must be present here in order for authorization to correctly operate. If placed
   // after server.applyMiddleWare(...) it simply doesn't execute. However, the presence of this handler
   // before server.applyMiddleWare(...) breaks Apollo Explorer but applies authorization.
-  app.use(jwtHandler);
+  app.use(extractPermissions);
+
+  app.use(extractMe);
 
   // NOTE: Placing a forward slash at the end of any allowed origin causes a preflight error.
   let allowedOrigins = ['https://predecos.com', 'https://www.predecos.com', 'https://thinkdeep-d4624.web.app', 'https://www.thinkdeep-d4624.web.app']

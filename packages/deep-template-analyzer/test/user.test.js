@@ -21,8 +21,10 @@ describe('user', () => {
         handleRedirectCallback: sinon.stub(),
         isAuthenticated: sinon.stub(),
         getTokenSilently: sinon.stub(),
+        getIdTokenClaims: sinon.stub(),
         getUser: sinon.stub(),
       };
+      authClient.getIdTokenClaims.returns(Promise.resolve({__raw: 2}));
       setAuthClientForTesting(authClient);
     });
 
@@ -37,7 +39,7 @@ describe('user', () => {
       authClient.isAuthenticated.returns(Promise.resolve(true));
       authClient.getTokenSilently.returns(Promise.resolve(accessToken));
       const user = await getUser();
-      expect(user.token).to.equal(accessToken);
+      expect(user.accessToken).to.equal(accessToken);
     });
 
     it('should fetch the user profile', async () => {

@@ -1,0 +1,8 @@
+mutation GetOrCreateSiteConfiguration($userEmail: String!){
+  configuration(userEmail: $userEmail) {
+    observedEconomicEntities {
+      name
+      type
+    }
+  }
+}

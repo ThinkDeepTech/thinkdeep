@@ -6,13 +6,6 @@ const typeDefs = gql`
         BUSINESS
     }
 
-    type EconomicEntity @key(fields: "id") {
-        id: ID!
-        name: String!
-        first: Int
-        second: Int
-    }
-
     type Sentiment {
         timestamp: Float!
         score: Float!

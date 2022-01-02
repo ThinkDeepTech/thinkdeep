@@ -8,6 +8,7 @@ class CollectionService {
      *
      * @param {Object} twitterAPI - RESTDataSource tied to the twitter API.
      * @param {Object} tweetStore - MongoDataSource tied to the tweet collection.
+     * @param {Object} logger - Logger to use.
      */
     constructor(twitterAPI, tweetStore, logger) {
         this._twitterAPI = twitterAPI;
@@ -19,17 +20,17 @@ class CollectionService {
      * Begin collection of data related to the specified entity name and type.
      * @param {String} entityName - Name of the economic entity (i.e, 'Google').
      * @param {String} entityType - Type of the economic entity (i.e, 'BUSINESS').
-     * @param {Object} user - The user making the request.
+     * @param {Object} permissions - Permissions for the user making the request.
      * @returns {Object}
      */
-    async collectEconomicData(entityName, entityType, user, logger = this._logger) {
+    async collectEconomicData(entityName, entityType, permissions) {
         if (!entityName || (typeof entityName != 'string')) return { success: false };
 
         if (!entityType || (typeof entityType != 'string')) return { success: false };
 
-        if (!hasReadAllAccess(user)) return { success: false};
+        if (!hasReadAllAccess(permissions)) return { success: false};
 
-        logger.debug(`Collecting economic data for name: ${entityName}, type: ${entityType}`);
+        this._logger.debug(`Collecting economic data for name: ${entityName}, type: ${entityType}`);
 
         const strategy = this._strategy(entityType).bind(this);
 
@@ -42,21 +43,20 @@ class CollectionService {
      * Get the tweets associated with the specified economic entity name and type.
      * @param {String} economicEntityName - Name of the economic entity (i.e, 'Google').
      * @param {String} economicEntityType - Type of the economic entity (i.e, 'BUSINESS').
-     * @param {Object} user - User making the request.
-     * @param {Object} tweetStore - TweetStore instance. This is included for testing purposes and should use the default if not being used in tests.
+     * @param {Object} permissions - Permissions for the user making the request.
      * @returns {Array} - Tweets that are in the database or [].
      */
-    async tweets(economicEntityName, economicEntityType, user, tweetStore = this._tweetStore, logger = this._logger) {
+    async tweets(economicEntityName, economicEntityType, permissions) {
 
         if (!economicEntityName || (typeof economicEntityName != 'string')) return [];
 
         if (!economicEntityType || (typeof economicEntityType != 'string')) return [];
 
-        if (!hasReadAllAccess(user)) return [];
+        if (!hasReadAllAccess(permissions)) return [];
 
-        logger.debug(`Fetching tweets for economic entity name: ${economicEntityName}, type: ${economicEntityType}`);
+        this._logger.debug(`Fetching tweets for economic entity name: ${economicEntityName}, type: ${economicEntityType}`);
 
-        return await tweetStore.readRecentTweets(economicEntityName, economicEntityType, 10);
+        return await this._tweetStore.readRecentTweets(economicEntityName, economicEntityType, 10);
     }
 
     /**
@@ -77,23 +77,20 @@ class CollectionService {
     /**
      * Collect data associated with a business.
      * @param {String} businessName - Name of the business for which data will be collected.
-     * @param {Object} twitterAPI - TwitterAPI object. This is for use in tests.
-     * @param {Object} tweetStore - TweetStore object. This is for use in tests.
      * @returns {Boolean} - True if the function succeeds, false otherwise.
      */
-    async _collectBusinessData(businessName, twitterAPI = this._twitterAPI, tweetStore = this._tweetStore, logger = this._logger) {
+    async _collectBusinessData(businessName) {
 
         if (!businessName || (typeof businessName != 'string')) return false;
 
-        logger.debug(`Fetching data from the twitter API for business name: ${businessName}.`);
-        const data = await twitterAPI.tweets(businessName);
+        this._logger.debug(`Fetching data from the twitter API for business name: ${businessName}.`);
+        const data = await this._twitterAPI.tweets(businessName);
 
         const timestamp = moment().unix();
 
-        logger.debug(`Adding tweets to the tweet store for business name: ${businessName}, tweets: ${JSON.stringify(data)}.`);
-        const success = await tweetStore.createTweets(timestamp, businessName, 'business', data);
+        this._logger.debug(`Adding tweets to the tweet store for business name: ${businessName}, tweets: ${JSON.stringify(data)}.`);
 
-        return success;
+        return await this._tweetStore.createTweets(timestamp, businessName, 'business', data);
     }
 }
 

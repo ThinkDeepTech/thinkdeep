@@ -12,7 +12,7 @@ const initApolloClient = async () => {
     if (!client) {
         const user = await getUser();
 
-        const cache = new InMemoryCache();
+        const cache = new InMemoryCache({ addTypename: false });
 
         const httpLink = new HttpLink({
             uri: PREDECOS_MICROSERVICE_GATEWAY_URL,
@@ -23,7 +23,8 @@ const initApolloClient = async () => {
             return {
                 headers: {
                     ...headers,
-                    authorization: !!user.token ? `Bearer ${user.token}` : ''
+                    authorization: !!user?.accessToken ? `Bearer ${user.accessToken}` : '',
+                    me: !!user?.idToken ? user.idToken : ''
                 }
             };
         });
