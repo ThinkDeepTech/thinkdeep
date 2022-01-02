@@ -207,7 +207,7 @@ describe('configuration-service', () => {
             };
             const observedEconomicEntities = 'nonarray';
 
-            const actual = await subject.updateConfiguration(userEmail, observedEconomicEntities, permissions, me);
+            await subject.updateConfiguration(userEmail, observedEconomicEntities, permissions, me);
 
             expect(configurationStore.readConfigurationForUser).to.have.been.calledOnce;
         })
@@ -225,7 +225,7 @@ describe('configuration-service', () => {
                 type: 'BUSINESS'
             }];
 
-            const actual = await subject.updateConfiguration(userEmail, observedEconomicEntities, permissions, me);
+            await subject.updateConfiguration(userEmail, observedEconomicEntities, permissions, me);
 
             expect(configurationStore.updateConfigurationForUser).to.have.been.calledOnce;
             expect(configurationStore.readConfigurationForUser).to.have.been.calledOnce;

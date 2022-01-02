@@ -34,8 +34,7 @@ const hasReadAllAccess = (permissions) => {
  */
 const isCurrentUser = (userEmail, me) => {
     if (!isValidMe(me)) return false;
-    const sameEmail = userEmail.toLowerCase() === me.email.toLowerCase();
-    return sameEmail;
+    return userEmail.toLowerCase() === me.email.toLowerCase();
 };
 
 export { hasReadAllAccess, isCurrentUser};

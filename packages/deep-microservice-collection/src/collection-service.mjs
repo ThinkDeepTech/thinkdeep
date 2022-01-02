@@ -89,9 +89,8 @@ class CollectionService {
         const timestamp = moment().unix();
 
         this._logger.debug(`Adding tweets to the tweet store for business name: ${businessName}, tweets: ${JSON.stringify(data)}.`);
-        const success = await this._tweetStore.createTweets(timestamp, businessName, 'business', data);
 
-        return success;
+        return await this._tweetStore.createTweets(timestamp, businessName, 'business', data);
     }
 }
 

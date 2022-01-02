@@ -88,6 +88,6 @@ class ConfigurationStore extends MongoDataSource {
             throw new Error(`Configuration update failed: ${e.message}`);
         }
     }
-};
+}
 
 export { ConfigurationStore };

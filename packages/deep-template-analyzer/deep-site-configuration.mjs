@@ -1,7 +1,7 @@
 import { ApolloMutationController } from '@apollo-elements/core';
 import { GetOrCreateSiteConfiguration } from './graphql/GetOrCreateSiteConfiguration.mutation.graphql';
 import { UpdateConfiguration } from './graphql/UpdateConfiguration.mutation.graphql';
-import { html, LitElement } from "lit";
+import { LitElement } from "lit";
 import { getUser } from './user.mjs'
 
 class DeepSiteConfiguration extends LitElement {
