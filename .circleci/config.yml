@@ -108,35 +108,35 @@ jobs:
             resource-name: deployment/deep-microservice-collection-deployment
             show-kubectl-command: true
 
-      build_and_deploy_microservice_configuration:
-        docker:
-          - image: 'cimg/base:stable'
+    build_and_deploy_microservice_configuration:
+      docker:
+        - image: 'cimg/base:stable'
 
-        working_directory: ~/project
+      working_directory: ~/project
 
-        steps:
-          - checkout
-          - setup_remote_docker:
-              version: 20.10.7
-          - login_docker
-          - k8s/install
-          - k8s/initialize:
-              cluster: predecos-kubernetes-cluster
-          - run:
-              command: docker build -t thinkdeeptech/deep-microservice-configuration:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-configuration:latest --build-arg PREDECOS_MONGODB_CONNECTION_STRING=$PREDECOS_MONGODB_CONNECTION_STRING --build-arg NODE_ENV=$NODE_ENV .
-              working_directory: ./packages/deep-microservice-configuration
-          - run: docker push thinkdeeptech/deep-microservice-configuration:${CIRCLE_BUILD_NUM}
-          - run: docker push thinkdeeptech/deep-microservice-configuration:latest
-          - kubernetes/delete-resource:
-              now: true
-              resource-names: deep-microservice-configuration-deployment
-              resource-types: deployments
-              wait: true
-          - kubernetes/create-or-update-resource:
-              get-rollout-status: true
-              resource-file-path: ./packages/deep-microservice-configuration/k8s/deep-microservice-configuration-deployment.yml
-              resource-name: deployment/deep-microservice-configuration-deployment
-              show-kubectl-command: true
+      steps:
+        - checkout
+        - setup_remote_docker:
+            version: 20.10.7
+        - login_docker
+        - k8s/install
+        - k8s/initialize:
+            cluster: predecos-kubernetes-cluster
+        - run:
+            command: docker build -t thinkdeeptech/deep-microservice-configuration:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-configuration:latest --build-arg PREDECOS_MONGODB_CONNECTION_STRING=$PREDECOS_MONGODB_CONNECTION_STRING --build-arg NODE_ENV=$NODE_ENV .
+            working_directory: ./packages/deep-microservice-configuration
+        - run: docker push thinkdeeptech/deep-microservice-configuration:${CIRCLE_BUILD_NUM}
+        - run: docker push thinkdeeptech/deep-microservice-configuration:latest
+        - kubernetes/delete-resource:
+            now: true
+            resource-names: deep-microservice-configuration-deployment
+            resource-types: deployments
+            wait: true
+        - kubernetes/create-or-update-resource:
+            get-rollout-status: true
+            resource-file-path: ./packages/deep-microservice-configuration/k8s/deep-microservice-configuration-deployment.yml
+            resource-name: deployment/deep-microservice-configuration-deployment
+            show-kubectl-command: true
 
 
     build_and_deploy_microservice_analysis:
