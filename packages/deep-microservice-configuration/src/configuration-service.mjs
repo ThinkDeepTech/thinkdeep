@@ -5,6 +5,7 @@ class ConfigurationService {
     /**
      * Business layer associated with site configuration.
      *
+     * @param {Object} configStore - Configuration store to use.
      * @param {Object} logger - Logger to use.
      */
     constructor(configStore, logger) {
@@ -12,6 +13,14 @@ class ConfigurationService {
         this._logger = logger;
     }
 
+    /**
+     * Get or create a user configuration.
+     *
+     * @param {String} userEmail - Email for the user for whom a configuration is being fetched.
+     * @param {Object} permissions - Permissions object containing the scope for user auth.
+     * @param {Object} me - The object containing the current user making the request.
+     * @returns {Object} - The configuration associated with the user or a default of the form { observedEconomicEntities: []}.
+     */
     async getOrCreateConfiguration(userEmail, permissions, me) {
 
         if (!userEmail || (typeof userEmail != 'string')) return { observedEconomicEntities: [ ]};
@@ -31,6 +40,15 @@ class ConfigurationService {
         return this._configStore.readConfigurationForUser(userEmail);
     }
 
+    /**
+     *
+     * @param {String} userEmail - Email for the user for whom a configuration is being fetched.
+     * @param {Array} observedEconomicEntities - Array of new observed economic entities to associate with the user.
+     * @param {Object} permissions - Permissions object containing the scope for user auth.
+     * @param {Object} me - The object containing the current user making the request.
+     * @returns {Object} - The configuration associated with the user or a default of the form { observedEconomicEntities: []}.
+     * @returns
+     */
     async updateConfiguration(userEmail, observedEconomicEntities, permissions, me) {
 
         if (!userEmail || (typeof userEmail != 'string')) return { observedEconomicEntities: [ ]};
