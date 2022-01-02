@@ -2,7 +2,7 @@
 import chai from 'chai';
 const expect = chai.expect;
 
-import { hasReadAllAccess, isValidUser } from "../src/permissions.mjs";
+import { hasReadAllAccess, isCurrentUser } from "../src/permissions.mjs";
 
 describe('permissions', () => {
 
@@ -17,22 +17,35 @@ describe('permissions', () => {
         })
     })
 
-    describe('isValidUser', () => {
+    describe('isCurrentUser', () => {
 
-        it('should ensure the user is not null', () => {
-            expect(isValidUser(null)).to.equal(false);
+        it('should ensure the me object is defined', () => {
+            const me = undefined;
+            const userEmail = 'someuser@email.com';
+            expect(isCurrentUser(userEmail, me)).to.equal(false);
         })
 
-        it('should ensure the user has a scope property', () => {
-            expect(isValidUser({})).to.equal(false);
+        it('should verify that the me object has an email field', () => {
+            const me = {};
+            const userEmail = 'someuser@email.com';
+            expect(isCurrentUser(userEmail, me)).to.equal(false);
         })
 
-        it('should ensure the scope property is populated', () => {
-            expect(isValidUser({ scope: ''})).to.equal(false);
+        it('should return false if the user email does not match the email present in me', () => {
+            const me = {
+                email: 'anotheruser@email.com'
+            };
+            const userEmail = 'someuser@email.com';
+            expect(isCurrentUser(userEmail, me)).to.equal(false);
         })
 
-        it('should return true if the user has a populated scope field', () => {
-            expect(isValidUser({ scope: 'something'})).to.equal(true);
+        it('should ensure the user email matches the email present in the me object', () => {
+            const me = {
+                email: 'someuser@email.com'
+            };
+            const userEmail = 'someuser@email.com';
+            expect(isCurrentUser(userEmail, me)).to.equal(true);
         })
     })
+
 })

@@ -28,7 +28,7 @@ class DeepSiteConfiguration extends LitElement {
                     let foundEntries = [];
                     for (const entityInFirst of firstObservedEntities) {
 
-                        const foundEntry = false;
+                        let foundEntry = false;
                         for (const entityInSecond of secondObservedEntities) {
 
                             const sameName = entityInFirst.name.toLowerCase() === entityInSecond.name.toLowerCase();
@@ -53,7 +53,7 @@ class DeepSiteConfiguration extends LitElement {
     constructor() {
         super();
 
-        this.configuration = { observeEconomicEntities: [ ]};
+        this.configuration = { observedEconomicEntities: [ ]};
 
         getUser().then((user) => {
             this.user = user;

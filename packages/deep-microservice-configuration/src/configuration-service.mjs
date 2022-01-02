@@ -1,4 +1,4 @@
-import { hasReadAllAccess } from './permissions.mjs';
+import { hasReadAllAccess, isCurrentUser } from './permissions.mjs';
 
 class ConfigurationService {
 
@@ -12,9 +12,13 @@ class ConfigurationService {
         this._logger = logger;
     }
 
-    async getOrCreateConfiguration(userEmail) {
+    async getOrCreateConfiguration(userEmail, permissions, me) {
 
-        this._logger.info(`Getting or creating site configuration for user: ${userEmail}`);
+        if (!userEmail || (typeof userEmail != 'string')) return { observedEconomicEntities: [ ]};
+
+        if (!isCurrentUser(userEmail, me) || !hasReadAllAccess(permissions)) return { observedEconomicEntities: [ ]};
+
+        this._logger.debug(`Getting or creating site configuration for user: ${userEmail}`);
 
         const configExists = await this._configStore.configurationExists(userEmail);
 
@@ -24,19 +28,24 @@ class ConfigurationService {
             });
         }
 
-        const configuration = await this._configStore.readConfigurationForUser(userEmail);
-
-        return configuration;
+        return this._configStore.readConfigurationForUser(userEmail);
     }
 
-    async updateConfiguration(userEmail, observedEconomicEntities, permissions) {
-        this._logger.info(`Updating site configuration for user: ${userEmail}`);
+    async updateConfiguration(userEmail, observedEconomicEntities, permissions, me) {
+
+        if (!userEmail || (typeof userEmail != 'string')) return { observedEconomicEntities: [ ]};
+
+        if (!isCurrentUser(userEmail, me) || !hasReadAllAccess(permissions)) return { observedEconomicEntities: [ ]};
+
+        if (!Array.isArray(observedEconomicEntities)) return this._configStore.readConfigurationForUser(userEmail);
+
+        this._logger.debug(`Updating site configuration for user: ${userEmail}`);
 
         await this._configStore.updateConfigurationForUser(userEmail, {
             observedEconomicEntities
         });
 
-        return await this._configStore.readConfigurationForUser(userEmail);
+        return this._configStore.readConfigurationForUser(userEmail);
     }
 
 }

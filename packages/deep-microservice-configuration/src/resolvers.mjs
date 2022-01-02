@@ -1,9 +1,9 @@
 
 const resolvers = {
     Mutation: {
-        configuration: async(_, {userEmail}, {dataSources, permissions}) => await dataSources.configurationService.getOrCreateConfiguration(userEmail, permissions),
+        configuration: async(_, {userEmail}, {dataSources, permissions, me}) => await dataSources.configurationService.getOrCreateConfiguration(userEmail, permissions, me),
 
-        updateConfiguration: async (_, {userEmail, observedEconomicEntities}, {dataSources, permissions}) => await dataSources.configurationService.updateConfiguration(userEmail, observedEconomicEntities, permissions)
+        updateConfiguration: async (_, {userEmail, observedEconomicEntities}, {dataSources, permissions, me}) => await dataSources.configurationService.updateConfiguration(userEmail, observedEconomicEntities, permissions, me)
     }
 };
 
