@@ -5,13 +5,23 @@ const expect = chai.expect;
 chai.use(sinonChai);
 
 import { CollectionService } from '../src/collection-service.mjs';
+import { EconomicEntityMemo } from '../src/datasource/economic-entity-memo.mjs';
 import { TwitterAPI } from '../src/datasource/twitter-api.mjs';
 import { TweetStore } from '../src/datasource/tweet-store.mjs';
 
 describe('collection-service', () => {
 
+    const memoizedEconomicEntities = [{
+        economicEntityName: 'firstbusiness',
+        economicEntityType: 'BUSINESS'
+    }, {
+        economicEntityName: 'secondbusiness',
+        economicEntityType: 'BUSINESS'
+    }];
+
     let twitterAPI;
     let tweetStore;
+    let economicEntityMemo;
     let logger;
     let subject;
     beforeEach(() => {
@@ -29,8 +39,35 @@ describe('collection-service', () => {
             error: sinon.stub()
         };
 
-        subject = new CollectionService(twitterAPI, tweetStore, logger);
+        economicEntityMemo = new EconomicEntityMemo({}, logger);
+        EconomicEntityMemo.prototype.collectingData = sinon.stub();
+        EconomicEntityMemo.prototype.memoizeDataCollection = sinon.stub();
+        EconomicEntityMemo.prototype.readAll = sinon.stub();
+        EconomicEntityMemo.prototype._readMemo = sinon.stub();
+
+        EconomicEntityMemo.prototype.readAll.returns( Promise.resolve( memoizedEconomicEntities ))
+        EconomicEntityMemo.prototype.collectingData.returns( true );
+
+        subject = new CollectionService(twitterAPI, tweetStore, economicEntityMemo, logger);
     });
+
+    describe('constructor', () => {
+
+        it('should read all of the economic entities stored', () => {
+            expect(economicEntityMemo.readAll).to.have.been.calledOnce;
+        })
+
+        it('should collect data for each memoized economic entity', () => {
+
+            const firstCall = economicEntityMemo.memoizeDataCollection.getCall(0);
+            const secondCall = economicEntityMemo.memoizeDataCollection.getCall(1);
+
+            expect(firstCall.args[0]).to.equal('firstbusiness');
+            expect(firstCall.args[1]).to.equal('BUSINESS');
+            expect(secondCall.args[0]).to.equal('secondbusiness');
+            expect(secondCall.args[1]).to.equal('BUSINESS');
+        })
+    })
 
     describe('tweets', async () => {
 
@@ -123,58 +160,57 @@ describe('collection-service', () => {
 
         it('should execute the body if the user has read:all scope', async () => {
             const user = { scope: 'email profile read:all' };
-            await subject.collectEconomicData('someone', 'business', user);
-            expect(twitterAPI.tweets).to.have.been.called;
+            const result = await subject.collectEconomicData('somebusiness', 'business', user);
+            expect(result.success).to.equal(true);
         })
 
-        it('should fetch the appropriate strategy for the entityType', async () => {
-            const user = { scope: 'read:all' };
-            tweetStore.createTweets.returns(true);
+        it('should not collect data if data is already being collected', async () => {
+            const user = { scope: 'email profile read:all' };
+            await subject.collectEconomicData('somebusiness', 'business', user);
+            expect(economicEntityMemo.memoizeDataCollection.callCount).to.equal(2);
+        })
 
-            const result = await subject.collectEconomicData('someone', 'business', user);
-
-            expect(twitterAPI.tweets).to.have.been.called;
-            expect(result.success).to.equal(true);
+        it('should collect data if automation is being used', async () => {
+            const user = { scope: 'email profile read:all' };
+            await subject.collectEconomicData('somebusiness', 'business', user, true);
+            expect(economicEntityMemo.memoizeDataCollection.callCount).to.equal(3);
         })
     })
 
-    describe('_strategy', () => {
-
-        it('should fetch the business strategy for entityType business', async () => {
-            const entityType = 'BUSINESS';
-            const expectedStrategy = async () => { return true; };
-            const actualStrategy = subject._strategy(entityType, expectedStrategy);
-            expect(expectedStrategy).to.equal(actualStrategy);
-        })
+    describe('_commands', () => {
 
         it('should perform case-insentitive comparisons', () => {
+            const entityName = 'somebusiness';
             const entityType1 = 'BUSINESS';
             const entityType2 = 'bUsInEss';
-            const expectedStrategy = async () => { return true; };
-            const firstStrategy = subject._strategy(entityType1, expectedStrategy);
-            const secondStrategy = subject._strategy(entityType2, expectedStrategy);
-            expect(firstStrategy).to.equal(secondStrategy);
+            const firstCommands = subject._commands(entityName, entityType1);
+            const secondCommands = subject._commands(entityName, entityType2);
+            expect(firstCommands._callback).to.equal(secondCommands._callback);
         })
 
         it('should throw an error if the entity type is unknown', () => {
+            const entityName = 'somebusiness';
             const entityType = 'unknownentity';
-            expect(subject._strategy.bind(subject, entityType)).to.throw(Error);
+            expect(subject._commands.bind(subject, entityName, entityType)).to.throw(Error);
         })
+
+
 
     });
 
-    describe('_collectBusinessData', () => {
+    describe('_collectTweets', () => {
 
         it('should fetch tweets associated with the specified business', async () => {
-            const businessName = 'somebusiness';
-            await subject._collectBusinessData(businessName, twitterAPI);
-            expect(twitterAPI.tweets.withArgs(businessName)).to.have.been.called;
+            const entityName = 'somebusiness';
+            const entityType = 'BUSINESS';
+            await subject._collectTweets(entityName, entityType);
+            expect(twitterAPI.tweets.withArgs(entityName)).to.have.been.called;
         })
 
         it('should store the tweets', async () => {
             tweetStore.createTweets.returns(true);
 
-            await subject._collectBusinessData('someonebusiness');
+            await subject._collectTweets('someonebusiness', 'BUSINESS');
 
             expect(tweetStore.createTweets).to.have.been.called;
         })

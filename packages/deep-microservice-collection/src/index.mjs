@@ -1,6 +1,7 @@
 import {buildSubgraphSchema} from '@apollo/subgraph';
 import {ApolloServer} from 'apollo-server-express';
 import {CollectionService} from './collection-service.mjs';
+import {EconomicEntityMemo} from './datasource/economic-entity-memo.mjs';
 import {TweetStore} from './datasource/tweet-store.mjs';
 import {TwitterAPI} from './datasource/twitter-api.mjs';
 import express from 'express';
@@ -43,7 +44,8 @@ const startApolloServer = async () => {
 
   const twitterAPI = new TwitterAPI();
   const tweetStore = new TweetStore(mongoClient.db('admin').collection('tweets'));
-  const collectionService = new CollectionService(twitterAPI, tweetStore, logger);
+  const economicEntityMemo = new EconomicEntityMemo(mongoClient.db('admin').collection('memo'), logger);
+  const collectionService = new CollectionService(twitterAPI, tweetStore, economicEntityMemo, logger);
 
   const isProduction = process.env.NODE_ENV === 'production';
   const server = new ApolloServer({
