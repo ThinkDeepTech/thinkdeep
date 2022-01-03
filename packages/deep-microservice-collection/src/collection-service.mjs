@@ -32,6 +32,8 @@ class CollectionService {
             for (const economicEntity of economicEntities) {
                 this.collectEconomicData(economicEntity.economicEntityName, economicEntity.economicEntityType, automationPerms, true);
             }
+        }, (reason) => {
+            this._logger.error(`Failed to read memoized economic entities. Reason: ${JSON.stringify(reason)}`);
         });
     }
 
