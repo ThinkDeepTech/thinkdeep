@@ -4,6 +4,7 @@ import sinonChai from 'sinon-chai';
 const expect = chai.expect;
 chai.use(sinonChai);
 
+import { Commander } from '../src/commander.mjs';
 import { CollectionService } from '../src/collection-service.mjs';
 import { EconomicEntityMemo } from '../src/datasource/economic-entity-memo.mjs';
 import { TwitterAPI } from '../src/datasource/twitter-api.mjs';
@@ -12,25 +13,27 @@ import { TweetStore } from '../src/datasource/tweet-store.mjs';
 describe('collection-service', () => {
 
     const memoizedEconomicEntities = [{
-        economicEntityName: 'firstbusiness',
-        economicEntityType: 'BUSINESS'
+        name: 'firstbusiness',
+        type: 'BUSINESS'
     }, {
-        economicEntityName: 'secondbusiness',
-        economicEntityType: 'BUSINESS'
+        name: 'secondbusiness',
+        type: 'BUSINESS'
     }];
 
     let twitterAPI;
     let tweetStore;
     let economicEntityMemo;
+    let commander;
     let logger;
     let subject;
     beforeEach(() => {
-        twitterAPI = new TwitterAPI();
-        TwitterAPI.prototype.tweets = sinon.stub();
 
-        tweetStore = new TweetStore({});
+        TwitterAPI.prototype.tweets = sinon.stub();
+        twitterAPI = new TwitterAPI();
+
         TweetStore.prototype.createTweets = sinon.stub();
         TweetStore.prototype.readRecentTweets = sinon.stub();
+        tweetStore = new TweetStore({});
 
         logger = {
             debug: sinon.stub(),
@@ -39,33 +42,35 @@ describe('collection-service', () => {
             error: sinon.stub()
         };
 
-        economicEntityMemo = new EconomicEntityMemo({}, logger);
         EconomicEntityMemo.prototype.collectingData = sinon.stub();
         EconomicEntityMemo.prototype.memoizeDataCollection = sinon.stub();
-        EconomicEntityMemo.prototype.readAll = sinon.stub();
+        EconomicEntityMemo.prototype.readEconomicEntities = sinon.stub();
         EconomicEntityMemo.prototype._readMemo = sinon.stub();
+        economicEntityMemo = new EconomicEntityMemo({}, logger);
 
-        EconomicEntityMemo.prototype.readAll.returns( Promise.resolve( memoizedEconomicEntities ))
+        EconomicEntityMemo.prototype.readEconomicEntities.returns( Promise.resolve( memoizedEconomicEntities ))
         EconomicEntityMemo.prototype.collectingData.returns( true );
 
-        subject = new CollectionService(twitterAPI, tweetStore, economicEntityMemo, logger);
+        Commander.prototype.execute = sinon.stub();
+        Commander.prototype.stopAllCommands = sinon.stub();
+        commander = new Commander(logger);
+
+        subject = new CollectionService(twitterAPI, tweetStore, economicEntityMemo, commander, logger);
     });
 
     describe('constructor', () => {
 
         it('should read all of the economic entities stored', () => {
-            expect(economicEntityMemo.readAll).to.have.been.calledOnce;
+            expect(economicEntityMemo.readEconomicEntities).to.have.been.calledOnce;
         })
 
         it('should collect data for each memoized economic entity', () => {
 
-            const firstCall = economicEntityMemo.memoizeDataCollection.getCall(0);
-            const secondCall = economicEntityMemo.memoizeDataCollection.getCall(1);
+            const firstCall = commander.execute.getCall(0);
+            const secondCall = commander.execute.getCall(1);
 
-            expect(firstCall.args[0]).to.equal('firstbusiness');
-            expect(firstCall.args[1]).to.equal('BUSINESS');
-            expect(secondCall.args[0]).to.equal('secondbusiness');
-            expect(secondCall.args[1]).to.equal('BUSINESS');
+            expect(firstCall.args[0]).to.equal('firstbusiness:BUSINESS');
+            expect(secondCall.args[0]).to.equal('secondbusiness:BUSINESS');
         })
     })
 
@@ -167,13 +172,7 @@ describe('collection-service', () => {
         it('should not collect data if data is already being collected', async () => {
             const user = { scope: 'email profile read:all' };
             await subject.collectEconomicData('somebusiness', 'business', user);
-            expect(economicEntityMemo.memoizeDataCollection.callCount).to.equal(2);
-        })
-
-        it('should collect data if automation is being used', async () => {
-            const user = { scope: 'email profile read:all' };
-            await subject.collectEconomicData('somebusiness', 'business', user, true);
-            expect(economicEntityMemo.memoizeDataCollection.callCount).to.equal(3);
+            expect(economicEntityMemo.memoizeDataCollection).not.to.have.been.called;
         })
     })
 

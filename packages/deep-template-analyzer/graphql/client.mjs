@@ -31,7 +31,17 @@ const initApolloClient = async () => {
 
         client = new ApolloClient({
             cache,
-            link: authLink.concat(httpLink)
+            link: authLink.concat(httpLink),
+            defaultOptions: {
+                watchQuery: {
+                    fetchPolicy: 'no-cache',
+                    errorPolicy: 'ignore',
+                },
+                query: {
+                    fetchPolicy: 'no-cache',
+                    errorPolicy: 'all',
+                }
+            }
         });
     }
 

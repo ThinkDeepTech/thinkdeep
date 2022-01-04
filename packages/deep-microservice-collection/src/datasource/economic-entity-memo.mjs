@@ -1,8 +1,5 @@
 import { MongoDataSource } from "apollo-datasource-mongodb";
-
-const validString = (val) => {
-    return !!val && typeof val === 'string';
-};
+import { validString } from '../helpers.mjs';
 
 class EconomicEntityMemo extends MongoDataSource {
 
@@ -34,11 +31,11 @@ class EconomicEntityMemo extends MongoDataSource {
         if (!collectingData) {
             this._logger.debug(`Memoizing entity with name: ${entityName}, type: ${entityType}.`);
 
-            await this.collection.insertOne({ economicEntityName: entityName, economicEntityType: entityType });
+            await this.collection.insertOne({ name: entityName, type: entityType });
         }
     }
 
-    async readAll() {
+    async readEconomicEntities() {
         try {
             const results = this.collection.find({}).toArray();
             return results;
@@ -55,7 +52,7 @@ class EconomicEntityMemo extends MongoDataSource {
         if (!validString(entityType)) throw new Error(`Entity type must be a valid string to memoize. Received: ${entityType}`);
 
         try {
-            const entries = await this.collection.find({ economicEntityName: entityName, economicEntityType: entityType }).limit(1).toArray();
+            const entries = await this.collection.find({ name: entityName, type: entityType }).limit(1).toArray();
             return entries[0];
         } catch(e) {
             throw new Error(`Read memo failed for entity name: ${entityName}, entity type: ${entityType}. Error: ${e.message}`);

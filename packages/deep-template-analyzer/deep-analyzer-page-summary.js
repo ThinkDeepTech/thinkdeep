@@ -21,6 +21,8 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       // Fetch sentiment query object
       getSentiment: {type: Object},
 
+      getSentimentIntervalId: {type: Number},
+
       // Data collection mutation object
       collectEconomicData: {type: Object},
 
@@ -51,6 +53,8 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     this.configuration = {observedEconomicEntities: []};
 
     this.selectedSentiments = [];
+
+    this.getSentimentIntervalId = null;
   }
 
   connectedCallback() {
@@ -59,6 +63,11 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     // TODO: Switch from addeventlistener to use of @ directive in custom elements.
     this.addEventListener('google-chart-select', this._handleChartSelection);
     this.addEventListener('selected', this._onSelect);
+
+    this.getSentimentIntervalId = setInterval(
+      this._onSelect.bind(this),
+      1 * 60 * 1000
+    ); // TODO: Every minute
   }
 
   disconnectedCallback() {
@@ -66,6 +75,8 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
     this.removeEventListener('google-chart-select', this._handleChartSelection);
     this.removeEventListener('selected', this._onSelect);
+
+    clearInterval(this.getSentimentIntervalId);
   }
 
   static get styles() {
@@ -266,6 +277,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       economicEntityType: 'BUSINESS',
     };
     this.getSentiment.executeQuery();
+    this.requestUpdate();
   }
 
   /**

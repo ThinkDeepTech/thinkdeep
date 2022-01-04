@@ -1,4 +1,5 @@
-import {Command} from './command/command.mjs';
+import {Command} from './command.mjs';
+import { validString } from './helpers.mjs';
 import moment from 'moment';
 import { hasReadAllAccess } from './permissions.mjs';
 
@@ -8,9 +9,9 @@ import { hasReadAllAccess } from './permissions.mjs';
  * NOTE: Due to twitter developer account limitations only 500,000 tweets can be consumed per month.
  * As a result, ~400 businesses can be watched if fetched every 6 hours resulting in the following math.
  */
-const TWITTER_FETCH_INTERVAL = 6 * 60 * 60 * 1000; /** 6 hrs -> min -> seconds -> ms */
+// const TWITTER_FETCH_INTERVAL = 6 * 60 * 60 * 1000; /** 6 hrs -> min -> seconds -> ms */
 
-const automationPerms = { scope: 'read:all' };
+const TWITTER_FETCH_INTERVAL = 1 * 60 * 1000; /** TODO: Every minute */
 
 class CollectionService {
 
@@ -20,17 +21,19 @@ class CollectionService {
      * @param {Object} twitterAPI - RESTDataSource tied to the twitter API.
      * @param {Object} tweetStore - MongoDataSource tied to the tweet collection.
      * @param {Object} economicEntityMemo - EconomicEntityMemo object to be used.
+     * @param {Object} commander - Commander object to be user.
      * @param {Object} logger - Logger to use.
      */
-    constructor(twitterAPI, tweetStore, economicEntityMemo, logger) {
+    constructor(twitterAPI, tweetStore, economicEntityMemo, commander, logger) {
         this._twitterAPI = twitterAPI;
         this._tweetStore = tweetStore;
         this._economicEntityMemo = economicEntityMemo;
+        this._commander = commander;
         this._logger = logger;
 
-        this._economicEntityMemo.readAll().then((economicEntities) => {
+        this._economicEntityMemo.readEconomicEntities().then((economicEntities) => {
             for (const economicEntity of economicEntities) {
-                this.collectEconomicData(economicEntity.economicEntityName, economicEntity.economicEntityType, automationPerms, true);
+                this._startDataCollection(economicEntity.name, economicEntity.type);
             }
         }, (reason) => {
             this._logger.error(`Failed to read memoized economic entities. Reason: ${JSON.stringify(reason)}`);
@@ -44,10 +47,11 @@ class CollectionService {
      * @param {Object} permissions - Permissions for the user making the request.
      * @returns {Object}
      */
-    async collectEconomicData(entityName, entityType, permissions, automated = false) {
-        if (!entityName || (typeof entityName != 'string')) return { success: false };
+    async collectEconomicData(entityName, entityType, permissions) {
 
-        if (!entityType || (typeof entityType != 'string')) return { success: false };
+        if (!validString(entityName)) return { success: false };
+
+        if (!validString(entityType)) return { success: false };
 
         if (!hasReadAllAccess(permissions)) return { success: false};
 
@@ -55,13 +59,9 @@ class CollectionService {
 
         const collectingData = await this._economicEntityMemo.collectingData(entityName, entityType);
 
-        if (!collectingData || automated) {
+        if (!collectingData) {
 
-            const commands = this._commands(entityName, entityType);
-
-            for (const command of commands) {
-                command.execute();
-            }
+            this._startDataCollection(entityName, entityType);
 
             await this._economicEntityMemo.memoizeDataCollection(entityName, entityType);
         }
@@ -78,9 +78,9 @@ class CollectionService {
      */
     async tweets(economicEntityName, economicEntityType, permissions) {
 
-        if (!economicEntityName || (typeof economicEntityName != 'string')) return [];
+        if (!validString(economicEntityName)) return [];
 
-        if (!economicEntityType || (typeof economicEntityType != 'string')) return [];
+        if (!validString(economicEntityType)) return [];
 
         if (!hasReadAllAccess(permissions)) return [];
 
@@ -88,6 +88,17 @@ class CollectionService {
 
         // TODO: Return more than 10
         return await this._tweetStore.readRecentTweets(economicEntityName, economicEntityType, 10);
+    }
+
+    _startDataCollection(entityName, entityType) {
+
+        if (!validString(entityName)) return;
+
+        if (!validString(entityType)) return;
+
+        const commands = this._commands(entityName, entityType);
+
+        this._commander.execute(`${entityName}:${entityType}`, commands);
     }
 
     /**
@@ -114,9 +125,9 @@ class CollectionService {
      */
     async _collectTweets(entityName, entityType) {
 
-        if (!entityName || (typeof entityName != 'string')) return false;
+        if (!validString(entityName)) return false;
 
-        if (!entityType || (typeof entityType != 'string')) return false;
+        if (!validString(entityType)) return false;
 
         this._logger.debug(`Fetching data from the twitter API for: name ${entityName}, type ${entityType}.`);
         const data = await this._twitterAPI.tweets(entityName);
