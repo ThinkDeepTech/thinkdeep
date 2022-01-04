@@ -78,47 +78,47 @@ describe('collection-service', () => {
 
         it('should return [] if the economicEntityName is empty', async () => {
             const entityName = "";
-            const user = { scope: 'read:all'};
-            const result = await subject.tweets(entityName, 'business', user);
+            const permissions = { scope: 'read:all'};
+            const result = await subject.tweets(entityName, 'business', permissions);
             expect(result.length).to.equal(0);
         })
 
         it('should return [] if the economicEntityName is not a string', async () => {
             const entityName = 1;
-            const user = { scope: 'read:all'};
-            const result = await subject.tweets(entityName, 'business', user);
+            const permissions = { scope: 'read:all'};
+            const result = await subject.tweets(entityName, 'business', permissions);
             expect(result.length).to.equal(0);
         })
 
         it('should return [] if the economicEntityType is empty', async () => {
             const entityType = '';
-            const user = { scope: 'read:all'};
-            const result = await subject.tweets('somename', entityType, user);
+            const permissions = { scope: 'read:all'};
+            const result = await subject.tweets('somename', entityType, permissions);
             expect(result.length).to.equal(0);
         })
 
         it('should return [] if the economicEntityType is not a string', async () => {
             const entityType = {};
-            const user = { scope: 'read:all'};
-            const result = await subject.tweets('somename', entityType, user);
+            const permissions = { scope: 'read:all'};
+            const result = await subject.tweets('somename', entityType, permissions);
             expect(result.length).to.equal(0);
         })
 
-        it('should return [] if the provided user does not have the read:all scope', async () => {
-            const user = { scope: 'profile email'};
-            const result = await subject.tweets('somename', 'business', user);
+        it('should return [] if the provided permissions does not have the read:all scope', async () => {
+            const permissions = { scope: 'profile email'};
+            const result = await subject.tweets('somename', 'business', permissions);
             expect(result.length).to.equal(0);
         })
 
-        it('should read the tweets if the user has read:all scope', async () => {
-            const user = { scope: 'read:all'};
-            const result = await subject.tweets('somename', 'business', user);
+        it('should read the tweets if the permissions has read:all scope', async () => {
+            const permissions = { scope: 'read:all'};
+            const result = await subject.tweets('somename', 'business', permissions);
             expect(tweetStore.readRecentTweets).to.have.been.called;
         })
 
         it('should read tweets from the store', async () => {
-            const user = { scope: 'read:all'};
-            const result = await subject.tweets('somename', 'business', user);
+            const permissions = { scope: 'read:all'};
+            const result = await subject.tweets('somename', 'business', permissions);
             expect(tweetStore.readRecentTweets).to.have.been.called;
         })
     })
@@ -126,53 +126,105 @@ describe('collection-service', () => {
     describe('collectEconomicData', () => {
         it('should indicate failure if the entityName is not specified', async () => {
             const entityName = "";
-            const user = { scope: 'read:all'};
-            const result = await subject.collectEconomicData(entityName, 'business', user);
+            const permissions = { scope: 'read:all'};
+            const result = await subject.collectEconomicData(entityName, 'business', permissions);
             expect(result.success).to.equal(false);
         })
 
         it('should indicate failure if the entityName is not a string', async () => {
             const entityName = {};
-            const user = { scope: 'read:all'};
-            const result = await subject.collectEconomicData(entityName, 'business', user);
+            const permissions = { scope: 'read:all'};
+            const result = await subject.collectEconomicData(entityName, 'business', permissions);
             expect(result.success).to.equal(false);
         })
 
         it('should indicate failure if the entityType is not specified', async () => {
             const entityType = '';
-            const user = { scope: 'read:all'};
-            const result = await subject.collectEconomicData('somename', entityType, user);
+            const permissions = { scope: 'read:all'};
+            const result = await subject.collectEconomicData('somename', entityType, permissions);
             expect(result.success).to.equal(false);
         })
 
         it('should indicate failure if the entityType is not a string', async () => {
             const entityType = [];
-            const user = { scope: 'read:all'};
-            const result = await subject.collectEconomicData('somename', entityType, user);
+            const permissions = { scope: 'read:all'};
+            const result = await subject.collectEconomicData('somename', entityType, permissions);
             expect(result.success).to.equal(false);
         })
 
-        it('should indicate failure if the read:all scope is absent from the user', async () => {
-            const user = { scope: 'email profile'};
-            const result = await subject.collectEconomicData('somename', 'business', user);
+        it('should indicate failure if the read:all scope is absent from the permissions', async () => {
+            const permissions = { scope: 'email profile'};
+            const result = await subject.collectEconomicData('somename', 'business', permissions);
             expect(result.success).to.equal(false);
         })
 
-        it('should indicate failure if a user object is not supplied', async () => {
+        it('should indicate failure if a permissions object is not supplied', async () => {
             const result = await subject.collectEconomicData('somename', 'business');
             expect(result.success).to.equal(false);
         })
 
-        it('should execute the body if the user has read:all scope', async () => {
-            const user = { scope: 'email profile read:all' };
-            const result = await subject.collectEconomicData('somebusiness', 'business', user);
+        it('should execute the body if the permissions has read:all scope', async () => {
+            const permissions = { scope: 'email profile read:all' };
+            const result = await subject.collectEconomicData('somebusiness', 'business', permissions);
             expect(result.success).to.equal(true);
         })
 
         it('should not collect data if data is already being collected', async () => {
-            const user = { scope: 'email profile read:all' };
-            await subject.collectEconomicData('somebusiness', 'business', user);
+            const permissions = { scope: 'email profile read:all' };
+            await subject.collectEconomicData('somebusiness', 'business', permissions);
             expect(economicEntityMemo.memoizeDataCollection).not.to.have.been.called;
+        })
+
+        it('should collect data if data is not being collected', async () => {
+            const permissions = { scope: 'email profile read:all' };
+            const entityName = 'somebusiness';
+            const entityType = 'BUSINESS';
+            economicEntityMemo.collectingData.returns(Promise.resolve(false));
+
+            await subject.collectEconomicData(entityName, entityType, permissions);
+
+            const executionKey = commander.execute.getCall(2).args[0];
+
+            // NOTE: The constructor executes the execute command twice. So, here, we need that plus one.
+            expect(commander.execute.callCount).to.equal(3);
+            expect(executionKey).to.equal(`${entityName}:${entityType}`);
+        })
+    })
+
+    describe('_startDataCollection', () => {
+
+        it('should indicate failure if the entityName is not specified', async () => {
+            const entityName = "";
+            await subject._startDataCollection(entityName, 'business');
+            expect(commander.execute).not.to.have.been.calledOnce;
+        })
+
+        it('should indicate failure if the entityName is not a string', async () => {
+            const entityName = {};
+            await subject._startDataCollection(entityName, 'business');
+            expect(commander.execute).not.to.have.been.calledOnce;
+        })
+
+        it('should indicate failure if the entityType is not specified', async () => {
+            const entityType = '';
+            await subject._startDataCollection('somename', entityType);
+            expect(commander.execute).not.to.have.been.calledOnce;
+        })
+
+        it('should indicate failure if the entityType is not a string', async () => {
+            const entityType = [];
+            await subject._startDataCollection('somename', entityType);
+            expect(commander.execute).not.to.have.been.calledOnce;
+        })
+
+        it('should start collection of data', async() => {
+            const entityName = 'somename';
+            const entityType = 'BUSINESS';
+
+            await subject._startDataCollection(entityName, entityType);
+
+            expect(commander.execute.callCount).to.equal(3);
+            expect(commander.execute.getCall(2).args[0]).to.equal(`${entityName}:${entityType}`);
         })
     })
 
@@ -193,8 +245,15 @@ describe('collection-service', () => {
             expect(subject._commands.bind(subject, entityName, entityType)).to.throw(Error);
         })
 
+        it('should include a command to collect tweets for type business', () => {
+            const entityName = 'somebusiness';
+            const entityType = 'BUSINESS';
 
+            const commands = subject._commands(entityName, entityType);
 
+            const actualCommand = commands[0]._callback;
+            expect(actualCommand.name).to.include('_collectTweets');
+        })
     });
 
     describe('_collectTweets', () => {

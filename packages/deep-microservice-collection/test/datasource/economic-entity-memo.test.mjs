@@ -134,7 +134,66 @@ describe('economic-entity-memo', () => {
     describe('readEconomicEntities', () => {
 
         it('should read all of the entries from the memo table', async () => {
+            await subject.readEconomicEntities();
+            const findArg = mongoCollection.find.getCall(0).args[0];
+            expect(Object.keys(findArg).length).to.equal(0);
+        })
 
+        it('should return [] when an error is thrown by mongo', async () => {
+            mongoCollection.find.throws();
+            const result = await subject.readEconomicEntities();
+            expect(result.length).to.equal(0);
+        })
+    })
+
+    describe('_readMemo', () => {
+
+        it('should throw an error if the entity name is empty', (done) => {
+            subject._readMemo('', entityType).then(() => {
+                done('An error was not thrown when it should have been.');
+            }, (reason) => {
+                done();
+            })
+        })
+
+        it('should throw an error if the entity name is not a string', (done) => {
+            subject._readMemo({}, entityType).then(() => {
+                done('An error was not thrown when it should have been.');
+            }, (reason) => {
+                done();
+            })
+        })
+
+        it('should throw an error if the entity type is empty', (done) => {
+            subject._readMemo(entityName, '').then(() => {
+                done('An error was not thrown when it should have been.');
+            }, (reason) => {
+                done();
+            })
+        })
+
+        it('should throw an error if the entity name is not a string', (done) => {
+            subject._readMemo(entityName, 1).then(() => {
+                done('An error was not thrown when it should have been.');
+            }, (reason) => {
+                done();
+            })
+        })
+
+        it('should read only those entries in the database that have both the same name and type', async () => {
+            await subject._readMemo(entityName, entityType);
+            const findArg = mongoCollection.find.getCall(0).args[0];
+            expect(findArg.name).to.equal(entityName);
+            expect(findArg.type).to.equal(entityType);
+        })
+
+        it('should throw an error when the database access fails', (done) => {
+            mongoCollection.find.throws();
+            subject._readMemo(entityName, entityType).then(() => {
+                done('An error was not thrown when it should have been.');
+            }, (reason) => {
+                done();
+            })
         })
     })
 
