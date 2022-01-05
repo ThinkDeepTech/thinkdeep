@@ -37,8 +37,7 @@ class EconomicEntityMemo extends MongoDataSource {
 
     async readEconomicEntities() {
         try {
-            const results = this.collection.find({}).toArray();
-            return results;
+            return this.collection.find({}).toArray();
         } catch (e) {
             this._logger.error(`Economic entity read all failed. Received: ${e.message}`);
             return [];

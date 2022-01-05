@@ -48,7 +48,6 @@ const startApolloServer = async () => {
   console.log("Connected successfully to server");
 
   const twitterAPI = new TwitterAPI();
-  // TODO: Add logging to twitter api and store.
   const tweetStore = new TweetStore(mongoClient.db('admin').collection('tweets'));
   const economicEntityMemo = new EconomicEntityMemo(mongoClient.db('admin').collection('memo'), logger);
   const collectionService = new CollectionService(twitterAPI, tweetStore, economicEntityMemo, commander, logger);

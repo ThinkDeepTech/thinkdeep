@@ -85,7 +85,7 @@ class CollectionService {
         this._logger.debug(`Fetching tweets for economic entity name ${economicEntityName}, type ${economicEntityType}`);
 
         // TODO: Return more than 10
-        return await this._tweetStore.readRecentTweets(economicEntityName, economicEntityType, 10);
+        return this._tweetStore.readRecentTweets(economicEntityName, economicEntityType, 10);
     }
 
     _startDataCollection(entityName, entityType) {
@@ -134,7 +134,7 @@ class CollectionService {
 
         this._logger.debug(`Adding tweets to the tweet store for: name ${entityName}, type ${entityType}, tweets ${JSON.stringify(data)}.`);
 
-        return await this._tweetStore.createTweets(timestamp, entityName, entityType, data);
+        return this._tweetStore.createTweets(timestamp, entityName, entityType, data);
     }
 }
 

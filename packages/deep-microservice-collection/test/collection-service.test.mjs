@@ -4,11 +4,7 @@ import sinonChai from 'sinon-chai';
 const expect = chai.expect;
 chai.use(sinonChai);
 
-import { Commander } from '../src/commander.mjs';
 import { CollectionService } from '../src/collection-service.mjs';
-import { EconomicEntityMemo } from '../src/datasource/economic-entity-memo.mjs';
-import { TwitterAPI } from '../src/datasource/twitter-api.mjs';
-import { TweetStore } from '../src/datasource/tweet-store.mjs';
 
 describe('collection-service', () => {
 
@@ -116,13 +112,13 @@ describe('collection-service', () => {
 
         it('should read the tweets if the permissions has read:all scope', async () => {
             const permissions = { scope: 'read:all'};
-            const result = await subject.tweets('somename', 'business', permissions);
+            await subject.tweets('somename', 'business', permissions);
             expect(tweetStore.readRecentTweets).to.have.been.called;
         })
 
         it('should read tweets from the store', async () => {
             const permissions = { scope: 'read:all'};
-            const result = await subject.tweets('somename', 'business', permissions);
+            await subject.tweets('somename', 'business', permissions);
             expect(tweetStore.readRecentTweets).to.have.been.called;
         })
     })
