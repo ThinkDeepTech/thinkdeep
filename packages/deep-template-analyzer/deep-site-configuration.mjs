@@ -25,24 +25,7 @@ class DeepSiteConfiguration extends LitElement {
 
                     if (!firstObservedEntities.length && sameLength) return false;
 
-                    let foundEntries = [];
-                    for (const entityInFirst of firstObservedEntities) {
-
-                        let foundEntry = false;
-                        for (const entityInSecond of secondObservedEntities) {
-
-                            const sameName = entityInFirst.name.toLowerCase() === entityInSecond.name.toLowerCase();
-                            const sameType = entityInFirst.type.toLowerCase() === entityInSecond.type.toLowerCase();
-                            if (sameName && sameType) {
-                                foundEntry = true;
-                            }
-                        }
-                        foundEntries.push(foundEntry);
-                    }
-
-                    const foundAllEntries = foundEntries.every((currentValue) => currentValue === true);
-
-                    return !sameLength || !foundAllEntries;
+                    return true;
                 }
             },
             fetchConfigMutation: {type: Object},
@@ -62,6 +45,9 @@ class DeepSiteConfiguration extends LitElement {
                 variables: {
                     userEmail: this.user?.profile?.email || null,
                     observedEconomicEntities: []
+                },
+                onCompleted: (data) => {
+                    this.configuration = data.updateConfiguration;
                 }
             });
 
