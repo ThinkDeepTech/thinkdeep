@@ -77,14 +77,14 @@ const getUser = async (options = {
  * Show the login window and prompt for user login.
  */
 const login = async () => {
-    return await auth0.loginWithRedirect();
+    return auth0.loginWithRedirect();
 };
 
 /**
  * Log the user out.
  */
 const logout = async () => {
-    return await auth0.logout({
+    return auth0.logout({
         returnTo: globalThis.location.origin,
     });
 };

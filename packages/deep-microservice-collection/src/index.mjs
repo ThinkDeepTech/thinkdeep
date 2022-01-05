@@ -1,6 +1,8 @@
 import {buildSubgraphSchema} from '@apollo/subgraph';
 import {ApolloServer} from 'apollo-server-express';
 import {CollectionService} from './collection-service.mjs';
+import {Commander} from './commander.mjs';
+import {EconomicEntityMemo} from './datasource/economic-entity-memo.mjs';
 import {TweetStore} from './datasource/tweet-store.mjs';
 import {TwitterAPI} from './datasource/twitter-api.mjs';
 import express from 'express';
@@ -14,10 +16,14 @@ import {typeDefs} from './schema.mjs';
 
 const logger = getLogger();
 
+const commander = new Commander(logger);
+
 const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRING);
 
 const performCleanup = async () => {
   await mongoClient.close();
+
+  commander.stopAllCommands();
 };
 
 const attachExitHandler = async (callback) => {
@@ -43,7 +49,8 @@ const startApolloServer = async () => {
 
   const twitterAPI = new TwitterAPI();
   const tweetStore = new TweetStore(mongoClient.db('admin').collection('tweets'));
-  const collectionService = new CollectionService(twitterAPI, tweetStore, logger);
+  const economicEntityMemo = new EconomicEntityMemo(mongoClient.db('admin').collection('memo'), logger);
+  const collectionService = new CollectionService(twitterAPI, tweetStore, economicEntityMemo, commander, logger);
 
   const isProduction = process.env.NODE_ENV === 'production';
   const server = new ApolloServer({

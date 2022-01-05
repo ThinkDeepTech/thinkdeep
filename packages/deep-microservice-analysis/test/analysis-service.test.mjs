@@ -1,12 +1,10 @@
-import chai, { assert } from 'chai';
-import mockDb from 'mock-knex';
+import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 const expect = chai.expect;
 chai.use(sinonChai);
 
 import { AnalysisService } from '../src/analysis-service.mjs';
-import { PostgresDataSource } from '../src/datasource/postgres-datasource.mjs';
 
 describe('analysis-service', () => {
 
@@ -16,9 +14,9 @@ describe('analysis-service', () => {
     let collectionBinding;
     let subject;
     beforeEach((done) => {
-        PostgresDataSource.prototype.getBusinessGraph = sinon.spy();
-        dataSource = new PostgresDataSource({ client: 'pg' });
-        mockDb.mock(dataSource.knex);
+        dataSource = {
+            getBusinessGraph: sinon.stub()
+        };
         sentimentLib = {
             analyze: sinon.stub()
         };
@@ -34,11 +32,6 @@ describe('analysis-service', () => {
             error: sinon.stub()
         }
         subject = new AnalysisService(dataSource, sentimentLib, collectionBinding, logger);
-        done();
-    });
-
-    afterEach((done) => {
-        mockDb.unmock(dataSource.knex);
         done();
     });
 

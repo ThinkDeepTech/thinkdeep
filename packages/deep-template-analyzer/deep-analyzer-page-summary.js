@@ -15,11 +15,15 @@ import {translate} from 'lit-element-i18n';
 import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
 import GetSentiment from './graphql/GetSentiment.query.graphql';
 
+const UPDATE_SENTIMENT_INTERVAL = 5 * 60 * 1000; /** min * seconds * ms */
+
 export default class DeepAnalyzerPageSummary extends LitElement {
   static get properties() {
     return {
       // Fetch sentiment query object
       getSentiment: {type: Object},
+
+      getSentimentIntervalId: {type: Number},
 
       // Data collection mutation object
       collectEconomicData: {type: Object},
@@ -51,21 +55,23 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     this.configuration = {observedEconomicEntities: []};
 
     this.selectedSentiments = [];
+
+    this.getSentimentIntervalId = null;
   }
 
   connectedCallback() {
     super.connectedCallback();
 
-    // TODO: Switch from addeventlistener to use of @ directive in custom elements.
-    this.addEventListener('google-chart-select', this._handleChartSelection);
-    this.addEventListener('selected', this._onSelect);
+    this.getSentimentIntervalId = setInterval(
+      this._onSelect.bind(this),
+      UPDATE_SENTIMENT_INTERVAL
+    );
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
 
-    this.removeEventListener('google-chart-select', this._handleChartSelection);
-    this.removeEventListener('selected', this._onSelect);
+    clearInterval(this.getSentimentIntervalId);
   }
 
   static get styles() {
@@ -157,7 +163,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
       <div class="input">
         <label>${translate('translations:analyzeDataLabel')}</label>
-        <mwc-select label="Select a business">
+        <mwc-select label="Select a business" @selected="${this._onSelect}">
           ${this.configuration.observedEconomicEntities.map(
             (economicEntity, index) =>
               html`<mwc-list-item
@@ -170,6 +176,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       </div>
 
       <google-chart
+        @google-chart-select="${this._handleChartSelection}"
         type="line"
         options='{"title": "Sentiment as a function of time" }'
         cols='[{"label": "Timestamp", "type": "number"}, {"label": "Sentiment", "type": "number"}]'

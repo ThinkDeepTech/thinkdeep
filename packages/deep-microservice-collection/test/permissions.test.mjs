@@ -2,7 +2,7 @@
 import chai from 'chai';
 const expect = chai.expect;
 
-import { hasReadAllAccess, isValidUser } from "../src/permissions.mjs";
+import { hasReadAllAccess, isValidPerm } from "../src/permissions.mjs";
 
 describe('permissions', () => {
 
@@ -17,22 +17,22 @@ describe('permissions', () => {
         })
     })
 
-    describe('isValidUser', () => {
+    describe('isValidPerm', () => {
 
         it('should ensure the user is not null', () => {
-            expect(isValidUser(null)).to.equal(false);
+            expect(isValidPerm(null)).to.equal(false);
         })
 
         it('should ensure the user has a scope property', () => {
-            expect(isValidUser({})).to.equal(false);
+            expect(isValidPerm({})).to.equal(false);
         })
 
         it('should ensure the scope property is populated', () => {
-            expect(isValidUser({ scope: ''})).to.equal(false);
+            expect(isValidPerm({ scope: ''})).to.equal(false);
         })
 
         it('should return true if the user has a populated scope field', () => {
-            expect(isValidUser({ scope: 'something'})).to.equal(true);
+            expect(isValidPerm({ scope: 'something'})).to.equal(true);
         })
     })
 })

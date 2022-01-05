@@ -1,5 +1,15 @@
+import {Command} from './command.mjs';
+import { validString } from './helpers.mjs';
 import moment from 'moment';
 import { hasReadAllAccess } from './permissions.mjs';
+
+/**
+ * Time interval between each twitter API call.
+ *
+ * NOTE: Due to twitter developer account limitations only 500,000 tweets can be consumed per month.
+ * As a result, ~16000 businesses can be watched.
+ */
+const TWITTER_FETCH_INTERVAL = 24 * 60 * 60 * 1000; /** hrs * min * seconds * ms */
 
 class CollectionService {
 
@@ -8,35 +18,53 @@ class CollectionService {
      *
      * @param {Object} twitterAPI - RESTDataSource tied to the twitter API.
      * @param {Object} tweetStore - MongoDataSource tied to the tweet collection.
+     * @param {Object} economicEntityMemo - EconomicEntityMemo object to be used.
+     * @param {Object} commander - Commander object to be used.
      * @param {Object} logger - Logger to use.
      */
-    constructor(twitterAPI, tweetStore, logger) {
+    constructor(twitterAPI, tweetStore, economicEntityMemo, commander, logger) {
         this._twitterAPI = twitterAPI;
         this._tweetStore = tweetStore;
+        this._economicEntityMemo = economicEntityMemo;
+        this._commander = commander;
         this._logger = logger;
+
+        this._economicEntityMemo.readEconomicEntities().then((economicEntities) => {
+            for (const economicEntity of economicEntities) {
+                this._startDataCollection(economicEntity.name, economicEntity.type);
+            }
+        }, (reason) => {
+            this._logger.error(`Failed to read memoized economic entities. Reason: ${JSON.stringify(reason)}`);
+        });
     }
 
     /**
-     * Begin collection of data related to the specified entity name and type.
+     * Begin data collection related to the specified entity name and type.
      * @param {String} entityName - Name of the economic entity (i.e, 'Google').
      * @param {String} entityType - Type of the economic entity (i.e, 'BUSINESS').
      * @param {Object} permissions - Permissions for the user making the request.
      * @returns {Object}
      */
     async collectEconomicData(entityName, entityType, permissions) {
-        if (!entityName || (typeof entityName != 'string')) return { success: false };
 
-        if (!entityType || (typeof entityType != 'string')) return { success: false };
+        if (!validString(entityName)) return { success: false };
+
+        if (!validString(entityType)) return { success: false };
 
         if (!hasReadAllAccess(permissions)) return { success: false};
 
         this._logger.debug(`Collecting economic data for name: ${entityName}, type: ${entityType}`);
 
-        const strategy = this._strategy(entityType).bind(this);
+        const collectingData = await this._economicEntityMemo.collectingData(entityName, entityType);
 
-        const success = await strategy(entityName);
+        if (!collectingData) {
 
-        return { success };
+            this._startDataCollection(entityName, entityType);
+
+            await this._economicEntityMemo.memoizeDataCollection(entityName, entityType);
+        }
+
+        return { success: true };
     }
 
     /**
@@ -48,49 +76,71 @@ class CollectionService {
      */
     async tweets(economicEntityName, economicEntityType, permissions) {
 
-        if (!economicEntityName || (typeof economicEntityName != 'string')) return [];
+        if (!validString(economicEntityName)) return [];
 
-        if (!economicEntityType || (typeof economicEntityType != 'string')) return [];
+        if (!validString(economicEntityType)) return [];
 
         if (!hasReadAllAccess(permissions)) return [];
 
-        this._logger.debug(`Fetching tweets for economic entity name: ${economicEntityName}, type: ${economicEntityType}`);
+        this._logger.debug(`Fetching tweets for economic entity name ${economicEntityName}, type ${economicEntityType}`);
 
-        return await this._tweetStore.readRecentTweets(economicEntityName, economicEntityType, 10);
+        // TODO: Return more than 10
+        return this._tweetStore.readRecentTweets(economicEntityName, economicEntityType, 10);
     }
 
     /**
-     * Fetch the strategy associated with the economic entity type.
-     * @param {String} entityType - Economic entity type (i.e, 'BUSINESS').
-     * @param {Function} businessHandler - Handler to use in the case of business type. This is used for testing purposes and should use default if not in tests.
-     * @returns {Function} - Stategy for use with the specified entity type.
+     * Start data collection for the specified entity name and type.
+     * @param {String} entityName - Name of the economic entity (i.e, 'Google')
+     * @param {String} entityType - Type of the economic entity (i.e, 'BUSINESS')
+     * @returns
      */
-    _strategy(entityType, businessHandler = this._collectBusinessData) {
+    _startDataCollection(entityName, entityType) {
+
+        if (!validString(entityName)) return;
+
+        if (!validString(entityType)) return;
+
+        const commands = this._commands(entityName, entityType);
+
+        this._commander.execute(`${entityName}:${entityType}`, commands);
+    }
+
+    /**
+     * Fetch the commands associated with the economic entity type.
+     * @param {String} entityName - Name of the economic entity (i.e, 'Google').
+     * @param {String} entityType - Economic entity type (i.e, 'BUSINESS').
+     * @returns {Array} - Array of command objects to execute for data collection.
+     */
+    _commands(entityName, entityType) {
         const type = entityType.toLowerCase();
         if (type === 'business') {
-            return businessHandler;
+            const command = new Command(TWITTER_FETCH_INTERVAL, this._collectTweets.bind(this, entityName, entityType));
+            return [command];
         } else {
             throw new Error('The specified economic type was unknown.')
         }
     }
 
     /**
-     * Collect data associated with a business.
-     * @param {String} businessName - Name of the business for which data will be collected.
+     * Collect tweets for a given entity name and type.
+     * @param {String} entityName - Economic entity name (i.e, 'Google').
+     * @param {String} entityType - Economic entity type (i.e, 'BUSINESS').
      * @returns {Boolean} - True if the function succeeds, false otherwise.
      */
-    async _collectBusinessData(businessName) {
+    async _collectTweets(entityName, entityType) {
 
-        if (!businessName || (typeof businessName != 'string')) return false;
+        if (!validString(entityName)) return false;
 
-        this._logger.debug(`Fetching data from the twitter API for business name: ${businessName}.`);
-        const data = await this._twitterAPI.tweets(businessName);
+        if (!validString(entityType)) return false;
+
+        this._logger.debug(`Fetching data from the twitter API for: name ${entityName}, type ${entityType}.`);
+        const data = await this._twitterAPI.tweets(entityName);
 
         const timestamp = moment().unix();
 
-        this._logger.debug(`Adding tweets to the tweet store for business name: ${businessName}, tweets: ${JSON.stringify(data)}.`);
+        this._logger.debug(`Adding tweets to the tweet store for: name ${entityName}, type ${entityType}, tweets ${JSON.stringify(data)}.`);
 
-        return await this._tweetStore.createTweets(timestamp, businessName, 'business', data);
+        return this._tweetStore.createTweets(timestamp, entityName, entityType, data);
     }
 }
 
