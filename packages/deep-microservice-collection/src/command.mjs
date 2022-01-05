@@ -17,6 +17,7 @@ class Command {
      * NOTE: This will run setInterval on the callback with the wait time.
      */
     execute() {
+        this._callback();
         this._intervalId = setInterval(this._callback, this._waitTime);
     }
 
