@@ -75,7 +75,7 @@ jobs:
             resource-types: deployments
             wait: true
         - run:
-            command: envsubst < postgres-deployment.yaml | kubectl apply -f -
+            command: envsubst < postgres-deployment.yml | kubectl apply -f -
             working_directory: ./packages/deep-microservice-analysis/k8s
 
     build_and_deploy_microservice_collection:
