@@ -28,12 +28,14 @@ describe('collection-service', () => {
     let subject;
     beforeEach(() => {
 
-        TwitterAPI.prototype.tweets = sinon.stub();
-        twitterAPI = new TwitterAPI();
+        twitterAPI = {
+            tweets: sinon.stub()
+        };
 
-        TweetStore.prototype.createTweets = sinon.stub();
-        TweetStore.prototype.readRecentTweets = sinon.stub();
-        tweetStore = new TweetStore({});
+        tweetStore = {
+            createTweets: sinon.stub(),
+            readRecentTweets: sinon.stub()
+        };
 
         logger = {
             debug: sinon.stub(),
@@ -42,18 +44,20 @@ describe('collection-service', () => {
             error: sinon.stub()
         };
 
-        EconomicEntityMemo.prototype.collectingData = sinon.stub();
-        EconomicEntityMemo.prototype.memoizeDataCollection = sinon.stub();
-        EconomicEntityMemo.prototype.readEconomicEntities = sinon.stub();
-        EconomicEntityMemo.prototype._readMemo = sinon.stub();
-        economicEntityMemo = new EconomicEntityMemo({}, logger);
+        economicEntityMemo = {
+            collectingData: sinon.stub(),
+            memoizeDataCollection: sinon.stub(),
+            readEconomicEntities: sinon.stub(),
+            _readMemo: sinon.stub()
+        };
 
-        EconomicEntityMemo.prototype.readEconomicEntities.returns( Promise.resolve( memoizedEconomicEntities ))
-        EconomicEntityMemo.prototype.collectingData.returns( true );
+        economicEntityMemo.readEconomicEntities.returns( Promise.resolve( memoizedEconomicEntities ))
+        economicEntityMemo.collectingData.returns( true );
 
-        Commander.prototype.execute = sinon.stub();
-        Commander.prototype.stopAllCommands = sinon.stub();
-        commander = new Commander(logger);
+        commander = {
+            execute: sinon.stub(),
+            stopAllCommands: sinon.stub()
+        };
 
         subject = new CollectionService(twitterAPI, tweetStore, economicEntityMemo, commander, logger);
     });
