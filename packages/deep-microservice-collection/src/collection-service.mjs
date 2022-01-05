@@ -19,7 +19,7 @@ class CollectionService {
      * @param {Object} twitterAPI - RESTDataSource tied to the twitter API.
      * @param {Object} tweetStore - MongoDataSource tied to the tweet collection.
      * @param {Object} economicEntityMemo - EconomicEntityMemo object to be used.
-     * @param {Object} commander - Commander object to be user.
+     * @param {Object} commander - Commander object to be used.
      * @param {Object} logger - Logger to use.
      */
     constructor(twitterAPI, tweetStore, economicEntityMemo, commander, logger) {
@@ -88,6 +88,12 @@ class CollectionService {
         return this._tweetStore.readRecentTweets(economicEntityName, economicEntityType, 10);
     }
 
+    /**
+     * Start data collection for the specified entity name and type.
+     * @param {String} entityName - Name of the economic entity (i.e, 'Google')
+     * @param {String} entityType - Type of the economic entity (i.e, 'BUSINESS')
+     * @returns
+     */
     _startDataCollection(entityName, entityType) {
 
         if (!validString(entityName)) return;
@@ -116,7 +122,7 @@ class CollectionService {
     }
 
     /**
-     * Collect data associated with a business.
+     * Collect tweets for a given entity name and type.
      * @param {String} entityName - Economic entity name (i.e, 'Google').
      * @param {String} entityType - Economic entity type (i.e, 'BUSINESS').
      * @returns {Boolean} - True if the function succeeds, false otherwise.
