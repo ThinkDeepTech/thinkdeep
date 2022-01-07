@@ -59,6 +59,12 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     this.getSentimentIntervalId = null;
   }
 
+  firstUpdated() {
+    super.firstUpdated();
+
+    this._setChartOptions();
+  }
+
   connectedCallback() {
     super.connectedCallback();
 
@@ -199,6 +205,16 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         )}
       </mwc-list>
     `;
+  }
+
+  /**
+   * Set the options for the sentiment chart.
+   */
+  _setChartOptions() {
+    const googleChart = this.shadowRoot.querySelector('google-chart');
+    const options = googleChart.options;
+    options.vAxis = {title: 'Sentiment', minValue: -5, maxValue: 5};
+    googleChart.options = options;
   }
 
   /**
