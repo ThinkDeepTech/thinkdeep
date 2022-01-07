@@ -9,6 +9,13 @@ class TwitterAPI extends RESTDataSource {
     }
 
     /**
+     * Force clear of memoized request results before each request.
+     */
+    willSendRequest() {
+        this.memoizedResults.clear();
+    }
+
+    /**
      * Fetch tweets from the twitter API.
      * @param {String} businessName - Name of the business being searched.
      * @returns {Array} - The tweets returned from the API or [].
@@ -17,12 +24,12 @@ class TwitterAPI extends RESTDataSource {
         if (!businessName || (typeof businessName != 'string')) return [];
 
         try{
-
             const endPoint = `tweets/search/recent?query=${encodeURIComponent(`${businessName} lang:en`)}`;
             const payload = await this.get(endPoint, {}, {
                 headers: {
                     Authorization: `Bearer ${process.env.PREDECOS_TWITTER_BEARER}`
-                }
+                },
+                cache: 'no-store'
             });
             return this._reduceTweets(payload);
 
