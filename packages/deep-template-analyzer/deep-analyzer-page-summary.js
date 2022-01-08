@@ -5,6 +5,7 @@ import {
 import {LitElement, css, html} from '@apollo-elements/lit-apollo';
 import '@google-web-components/google-chart';
 import '@material/mwc-button';
+import '@material/mwc-icon';
 import '@material/mwc-list/mwc-list';
 import '@material/mwc-list/mwc-list-item';
 import '@material/mwc-select';
@@ -92,6 +93,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       google-chart {
         grid-column-start: 1;
         grid-row-start: 3;
+        grid-row-end: 5;
       }
 
       mwc-list {
@@ -100,6 +102,28 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         grid-row-start: 1;
         grid-row-end: 4;
         overflow: scroll;
+      }
+
+      .tweet {
+        height: 16vh;
+        width: 90%;
+        color: var(--primary-color);
+      }
+
+      mwc-button,
+      mwc-textfield,
+      mwc-select {
+        --mdc-theme-primary: var(--primary-color);
+        width: 100%;
+      }
+
+      .input {
+        grid-column-start: 1;
+        grid-column-end: 3;
+        margin-top: 5vh;
+        margin-bottom: 5vh;
+        margin-left: 2vw;
+        margin-right: 2vw;
       }
 
       @media (max-width: 768px) {
@@ -119,26 +143,12 @@ export default class DeepAnalyzerPageSummary extends LitElement {
           grid-column-end: 6;
           grid-row-start: 4;
         }
-      }
 
-      .input {
-        grid-column-start: 1;
-        grid-column-end: 3;
-      }
-
-      .tweet {
-        height: 16vh;
-        width: 90%;
-        color: var(--primary-color);
-      }
-
-      mwc-button {
-        --mdc-theme-primary: var(--primary-color);
-        --mdc-theme-on-primary: white;
-      }
-
-      mwc-textfield {
-        --mdc-theme-primary: var(--primary-color);
+        mwc-button,
+        mwc-textfield,
+        mwc-select {
+          width: 92vw;
+        }
       }
 
       [hidden] {
@@ -153,10 +163,10 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         @site-configuration="${this._handleSiteConfig}"
         hidden
       ></deep-site-configuration>
+
       <div class="input">
-        <label>${translate('translations:startCollectingLabel')}</label>
         <mwc-textfield
-          label="Business name"
+          label="Enter a Business Name"
           @input="${debounce(this._onInput.bind(this), 350)}"
         ></mwc-textfield>
         <mwc-button
@@ -168,8 +178,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       </div>
 
       <div class="input">
-        <label>${translate('translations:analyzeDataLabel')}</label>
-        <mwc-select label="Select a business" @selected="${this._onSelect}">
+        <mwc-select label="Analyze a business" @selected="${this._onSelect}">
           ${this.configuration.observedEconomicEntities.map(
             (economicEntity, index) =>
               html`<mwc-list-item
