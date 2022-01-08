@@ -103,7 +103,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         overflow: scroll;
       }
 
-      @media (max-width: 1080px) {
+      @media (max-width: 768px) {
         :host {
           display: grid;
           grid-template-columns: 1fr;
