@@ -5,6 +5,7 @@ import {
 import {LitElement, css, html} from '@apollo-elements/lit-apollo';
 import '@google-web-components/google-chart';
 import '@material/mwc-button';
+import '@material/mwc-icon';
 import '@material/mwc-list/mwc-list';
 import '@material/mwc-list/mwc-list-item';
 import '@material/mwc-select';
@@ -102,7 +103,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         overflow: scroll;
       }
 
-      @media (max-width: 768px) {
+      @media (max-width: 1080px) {
         :host {
           display: grid;
           grid-template-columns: 1fr;
@@ -119,11 +120,21 @@ export default class DeepAnalyzerPageSummary extends LitElement {
           grid-column-end: 6;
           grid-row-start: 4;
         }
+
+        mwc-button,
+        mwc-textfield,
+        mwc-select {
+          width: 92vw;
+        }
       }
 
       .input {
         grid-column-start: 1;
         grid-column-end: 3;
+        margin-top: 5vh;
+        margin-bottom: 5vh;
+        margin-left: 2vw;
+        margin-right: 2vw;
       }
 
       .tweet {
@@ -135,9 +146,15 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       mwc-button {
         --mdc-theme-primary: var(--primary-color);
         --mdc-theme-on-primary: white;
+        margin: 5px;
       }
 
       mwc-textfield {
+        --mdc-theme-primary: var(--primary-color);
+        margin: 5px;
+      }
+
+      mwc-select {
         --mdc-theme-primary: var(--primary-color);
       }
 
@@ -153,10 +170,10 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         @site-configuration="${this._handleSiteConfig}"
         hidden
       ></deep-site-configuration>
+
       <div class="input">
-        <label>${translate('translations:startCollectingLabel')}</label>
         <mwc-textfield
-          label="Business name"
+          label="Enter a Business Name"
           @input="${debounce(this._onInput.bind(this), 350)}"
         ></mwc-textfield>
         <mwc-button
@@ -168,8 +185,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       </div>
 
       <div class="input">
-        <label>${translate('translations:analyzeDataLabel')}</label>
-        <mwc-select label="Select a business" @selected="${this._onSelect}">
+        <mwc-select label="Analyze a business" @selected="${this._onSelect}">
           ${this.configuration.observedEconomicEntities.map(
             (economicEntity, index) =>
               html`<mwc-list-item

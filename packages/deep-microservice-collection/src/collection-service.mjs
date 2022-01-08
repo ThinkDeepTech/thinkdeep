@@ -7,7 +7,7 @@ import { hasReadAllAccess } from './permissions.mjs';
  * Time interval between each twitter API call.
  *
  * NOTE: Due to twitter developer account limitations only 500,000 tweets can be consumed per month.
- * As a result, ~16000 businesses can be watched.
+ * As a result, ~400 businesses can be watched.
  */
 const TWITTER_FETCH_INTERVAL = 6 * 60 * 60 * 1000; /** hrs * min * seconds * ms */
 

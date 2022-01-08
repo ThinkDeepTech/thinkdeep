@@ -16,8 +16,6 @@ export default {
   headline: 'This site is experimental.',
   buttonText: 'Log In',
   notFoundPageContent: 'Page Not Found!',
-  startCollectingLabel: 'Collect data for',
-  startButtonLabel: 'Start',
-  analyzeDataLabel: 'Analyze data from',
+  startButtonLabel: 'Collect Data',
   selectBusinessLabel: 'Select a business',
 };
