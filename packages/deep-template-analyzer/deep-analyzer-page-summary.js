@@ -93,6 +93,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       google-chart {
         grid-column-start: 1;
         grid-row-start: 3;
+        grid-row-end: 5;
       }
 
       mwc-list {
@@ -101,6 +102,28 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         grid-row-start: 1;
         grid-row-end: 4;
         overflow: scroll;
+      }
+
+      .tweet {
+        height: 16vh;
+        width: 90%;
+        color: var(--primary-color);
+      }
+
+      mwc-button,
+      mwc-textfield,
+      mwc-select {
+        --mdc-theme-primary: var(--primary-color);
+        width: 100%;
+      }
+
+      .input {
+        grid-column-start: 1;
+        grid-column-end: 3;
+        margin-top: 5vh;
+        margin-bottom: 5vh;
+        margin-left: 2vw;
+        margin-right: 2vw;
       }
 
       @media (max-width: 768px) {
@@ -126,36 +149,6 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         mwc-select {
           width: 92vw;
         }
-      }
-
-      .input {
-        grid-column-start: 1;
-        grid-column-end: 3;
-        margin-top: 5vh;
-        margin-bottom: 5vh;
-        margin-left: 2vw;
-        margin-right: 2vw;
-      }
-
-      .tweet {
-        height: 16vh;
-        width: 90%;
-        color: var(--primary-color);
-      }
-
-      mwc-button {
-        --mdc-theme-primary: var(--primary-color);
-        --mdc-theme-on-primary: white;
-        margin: 5px;
-      }
-
-      mwc-textfield {
-        --mdc-theme-primary: var(--primary-color);
-        margin: 5px;
-      }
-
-      mwc-select {
-        --mdc-theme-primary: var(--primary-color);
       }
 
       [hidden] {
