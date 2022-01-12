@@ -8,6 +8,7 @@ import {TwitterAPI} from './datasource/twitter-api.mjs';
 import express from 'express';
 import {getLogger} from './get-logger.mjs';
 import {getPublicIP} from './get-public-ip.mjs';
+import { Kafka } from 'kafkajs';
 import {loggingPlugin} from './logging-plugin.mjs';
 import {MongoClient} from 'mongodb';
 import process from 'process';
@@ -18,10 +19,17 @@ const logger = getLogger();
 
 const commander = new Commander(logger);
 
+const kafka = new Kafka({
+  clientId: 'deep-microservice-collection',
+  brokers: [process.env.PREDECOS_KAFKA_URL]
+});
+const producer = kafka.producer();
+
 const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRING);
 
 const performCleanup = async () => {
   await mongoClient.close();
+  await producer.disconnect();
 
   commander.stopAllCommands();
 };
@@ -44,13 +52,14 @@ const startApolloServer = async () => {
   attachExitHandler(performCleanup);
 
   await mongoClient.connect();
+  await producer.connect();
 
   console.log("Connected successfully to server");
 
   const twitterAPI = new TwitterAPI();
   const tweetStore = new TweetStore(mongoClient.db('admin').collection('tweets'));
   const economicEntityMemo = new EconomicEntityMemo(mongoClient.db('admin').collection('memo'), logger);
-  const collectionService = new CollectionService(twitterAPI, tweetStore, economicEntityMemo, commander, logger);
+  const collectionService = new CollectionService(twitterAPI, tweetStore, economicEntityMemo, commander, producer, logger);
 
   const isProduction = process.env.NODE_ENV === 'production';
   const server = new ApolloServer({

@@ -6,19 +6,19 @@ const typeDefs = gql`
         BUSINESS
     }
 
-    type Sentiment {
-        timestamp: Float!
-        score: Float!
-        tweets: [Tweet!]!
-    }
+    #type Sentiment {
+    #    timestamp: Float!
+    #    score: Float!
+    #    tweets: [Tweet!]!
+    #}
 
-    type Tweet {
-        text: String!
-    }
+    #type Tweet {
+    #    text: String!
+    #}
 
-    extend type Query {
-        sentiments(economicEntityName: String!, economicEntityType: EconomicEntityType!): [Sentiment!]!
-    }
+    #extend type Query {
+    #    sentiments(economicEntityName: String!, economicEntityType: EconomicEntityType!): [Sentiment!]!
+    #}
 `;
 
 export { typeDefs };

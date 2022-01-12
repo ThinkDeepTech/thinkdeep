@@ -20,13 +20,15 @@ class CollectionService {
      * @param {Object} tweetStore - MongoDataSource tied to the tweet collection.
      * @param {Object} economicEntityMemo - EconomicEntityMemo object to be used.
      * @param {Object} commander - Commander object to be used.
+     * @param {Object} producer - Kafka producer to use.
      * @param {Object} logger - Logger to use.
      */
-    constructor(twitterAPI, tweetStore, economicEntityMemo, commander, logger) {
+    constructor(twitterAPI, tweetStore, economicEntityMemo, commander, producer, logger) {
         this._twitterAPI = twitterAPI;
         this._tweetStore = tweetStore;
         this._economicEntityMemo = economicEntityMemo;
         this._commander = commander;
+        this._producer = producer;
         this._logger = logger;
 
         this._economicEntityMemo.readEconomicEntities().then((economicEntities) => {
@@ -133,14 +135,34 @@ class CollectionService {
 
         if (!validString(entityType)) return false;
 
-        this._logger.debug(`Fetching data from the twitter API for: name ${entityName}, type ${entityType}.`);
-        const data = await this._twitterAPI.tweets(entityName);
+        this._logger.info(`Fetching data from the twitter API for: name ${entityName}, type ${entityType}.`);
+        const tweets = await this._twitterAPI.tweets(entityName);
 
         const timestamp = moment().unix();
 
-        this._logger.debug(`Adding tweets to the tweet store for: name ${entityName}, type ${entityType}, tweets ${JSON.stringify(data)}.`);
+        this._logger.info(`Adding timeseries entry to tweet store with timestamp ${timestamp}, tweets ${JSON.stringify(tweets)}`);
+        const tweetsCreated = await this._tweetStore.createTweets(timestamp, entityName, entityType, tweets);
 
-        return this._tweetStore.createTweets(timestamp, entityName, entityType, data);
+        const timeSeriesItems = await this._tweetStore.readRecentTweets(entityName, entityType, 10);
+
+        const event = {
+            economicEntityName: entityName,
+            economicEntityType: entityType,
+            timeSeriesItems
+        };
+
+        this._logger.info(`Adding collection event with value: ${JSON.stringify(event)}`);
+
+        this._producer.send({
+            topic: 'TWEETS_COLLECTED',
+            messages: [
+                { value: JSON.stringify(event) }
+            ]
+        });
+
+        this._logger.info(`Adding tweets to the tweet store for: name ${entityName}, type ${entityType}, tweets ${JSON.stringify(tweets)}.`);
+
+        return tweetsCreated;
     }
 }
 
