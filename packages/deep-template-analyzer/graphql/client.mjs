@@ -1,5 +1,7 @@
-import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client/core';
+import { ApolloClient, HttpLink, InMemoryCache, split } from '@apollo/client/core';
 import { setContext } from '@apollo/client/link/context';
+// import { getMainDefinition } from '@apollo/client/utilities';
+// import { WebSocketLink } from '@apollo/client/link/ws';
 
 import { getUser } from '../user.mjs';
 
@@ -14,10 +16,24 @@ const initApolloClient = async () => {
 
         const cache = new InMemoryCache({ addTypename: false });
 
+        // TODO: Remove hard coding
+        // const wsLink = new WebSocketLink({
+        //     url: `ws://localhost:4004/graphql`
+        // });
+
         const httpLink = new HttpLink({
             uri: PREDECOS_MICROSERVICE_GATEWAY_URL,
             credentials: 'include'
         });
+
+        // const backendLink = split(
+        //     ({ query }) => {
+        //         const definition = getMainDefinition(query);
+        //         return definition.kind === "OperationDefinition" && definition.operation === 'subscription';
+        //       },
+        //       wsLink,
+        //       httpLink
+        // )
 
         const authLink = setContext((_, {headers}) => {
             return {

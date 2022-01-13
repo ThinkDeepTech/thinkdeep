@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deep-microservice-subscription-deployment
+  labels:
+    app: deep-microservice-subscription
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deep-microservice-subscription
+  template:
+    metadata:
+      labels:
+        app: deep-microservice-subscription
+    spec:
+      containers:
+      - name: deep-microservice-subscription
+        image: thinkdeeptech/deep-microservice-subscription:latest
+        ports:
+        - containerPort: 4004
