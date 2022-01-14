@@ -1,9 +1,48 @@
-import { ApolloClient, HttpLink, InMemoryCache, split } from '@apollo/client/core';
+import { ApolloClient, ApolloLink, Observable, HttpLink, InMemoryCache, split } from '@apollo/client/core';
 import { setContext } from '@apollo/client/link/context';
-// import { getMainDefinition } from '@apollo/client/utilities';
+import { getMainDefinition } from '@apollo/client/utilities';
 // import { WebSocketLink } from '@apollo/client/link/ws';
 
 import { getUser } from '../user.mjs';
+
+import { print } from 'graphql';
+import { createClient } from 'graphql-ws';
+
+  class WebSocketLink extends ApolloLink {
+
+    constructor(clientOptions, request) {
+      super(request);
+      this.client = createClient(clientOptions);
+    }
+
+    request(operation) {
+      return new Observable((sink) => {
+        return this.client.subscribe(
+          { ...operation, query: print(operation.query) },
+          {
+            next: sink.next.bind(sink),
+            complete: sink.complete.bind(sink),
+            error: (err) => {
+              if (Array.isArray(err))
+                // GraphQLError[]
+                return sink.error(
+                  new Error(err.map(({ message }) => message).join(', ')),
+                );
+
+              if (err instanceof CloseEvent)
+                return sink.error(
+                  new Error(
+                    `Socket closed with event ${err.code} ${err.reason || ''}`, // reason will be available on clean closes only
+                  ),
+                );
+
+              return sink.error(err);
+            },
+          },
+        );
+      });
+    }
+  }
 
 let client = null;
 /**
@@ -20,20 +59,29 @@ const initApolloClient = async () => {
         // const wsLink = new WebSocketLink({
         //     url: `ws://localhost:4004/graphql`
         // });
+          const wsLink = new WebSocketLink({
+            url: 'ws://localhost:4004/graphql',
+            connectionParams: () => {
+              return {
+                authorization: !!user?.accessToken ? `Bearer ${user.accessToken}` : '',
+                me: !!user?.idToken ? user.idToken : '',
+              };
+            },
+          });
 
         const httpLink = new HttpLink({
             uri: PREDECOS_MICROSERVICE_GATEWAY_URL,
             credentials: 'include'
         });
 
-        // const backendLink = split(
-        //     ({ query }) => {
-        //         const definition = getMainDefinition(query);
-        //         return definition.kind === "OperationDefinition" && definition.operation === 'subscription';
-        //       },
-        //       wsLink,
-        //       httpLink
-        // )
+        const backendLink = split(
+            ({ query }) => {
+                const definition = getMainDefinition(query);
+                return definition.kind === "OperationDefinition" && definition.operation === 'subscription';
+              },
+              wsLink,
+              httpLink
+        )
 
         const authLink = setContext((_, {headers}) => {
             return {
@@ -47,7 +95,7 @@ const initApolloClient = async () => {
 
         client = new ApolloClient({
             cache,
-            link: authLink.concat(httpLink),
+            link: authLink.concat(backendLink),
             defaultOptions: {
                 watchQuery: {
                     fetchPolicy: 'no-cache',

@@ -61,7 +61,7 @@ class AnalysisService {
         this._logger.info(`Adding event with value: ${JSON.stringify(sentiments)}`);
 
         await this._producer.send({
-            topic: 'TWEET_SENTIMENT_COMPUTED',
+            topic: `TWEET_SENTIMENT_COMPUTED_${economicEntityName}_${economicEntityType}`,
             messages: [
                 { value: JSON.stringify(event) }
             ]

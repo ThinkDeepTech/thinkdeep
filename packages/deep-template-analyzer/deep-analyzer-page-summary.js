@@ -1,7 +1,7 @@
 import {
   ApolloMutationController,
   // ApolloQueryController,
-  // ApolloSubscriptionController
+  ApolloSubscriptionController,
 } from '@apollo-elements/core';
 import {LitElement, css, html} from '@apollo-elements/lit-apollo';
 import '@google-web-components/google-chart';
@@ -15,15 +15,16 @@ import {debounce} from './debounce.mjs';
 import './deep-site-configuration.mjs';
 import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
 // import GetSentiment from './graphql/GetSentiment.query.graphql';
-// import UpdateSentiments from './graphql/UpdateSentiments.subscription.graphql';
-import {createClient} from 'graphql-ws';
+import UpdateSentiments from './graphql/UpdateSentiments.subscription.graphql';
 import {translate} from 'lit-element-i18n';
 
-const UPDATE_SENTIMENT_INTERVAL = 5 * 60 * 1000; /** min * seconds * ms */
+// const UPDATE_SENTIMENT_INTERVAL = 5 * 60 * 1000; /** min * seconds * ms */
 
 export default class DeepAnalyzerPageSummary extends LitElement {
   static get properties() {
     return {
+      subscriptionClient: {type: Object},
+
       // Fetch sentiment query object
       getSentiment: {type: Object},
 
@@ -53,45 +54,20 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
     this.getSentiment = {data: {}};
 
-    const wsClient = createClient({
-      url: `ws://localhost:4004/graphql`,
-    });
-
-    const nextFcn = ({data}) => {
-      this.getSentiment.data.sentiments = data.updateSentiments;
-      this.requestUpdate();
-    };
-
-    const next = nextFcn.bind(this);
-
-    wsClient.subscribe(
+    this.getSentiment = new ApolloSubscriptionController(
+      this,
+      UpdateSentiments,
       {
-        query: `
-      subscription UpdateSentiments($economicEntityName: String!, $economicEntityType: EconomicEntityType!) {
-        updateSentiments(economicEntityName: $economicEntityName, economicEntityType: $economicEntityType) {
-          timestamp
-          score
-          tweets{
-              text
-          }
-        }
-      }
-      `,
         variables: {
           economicEntityName: 'Google',
           economicEntityType: 'BUSINESS',
         },
-      },
-      {
-        next: next,
+        onData: ({subscriptionData}) => {
+          this.getSentiment.data.sentiments =
+            subscriptionData.data.updateSentiments;
+        },
       }
     );
-
-    // this.getSentiment = new ApolloSubscriptionController(this, UpdateSentiments, {
-    //   onData: (val) => {
-    //     debugger;
-    //   }
-    // });
 
     this.collectEconomicData = new ApolloMutationController(
       this,
@@ -101,29 +77,12 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     this.configuration = {observedEconomicEntities: []};
 
     this.selectedSentiments = [];
-
-    this.getSentimentIntervalId = null;
   }
 
   firstUpdated() {
     super.firstUpdated();
 
     this._setChartOptions();
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-
-    this.getSentimentIntervalId = setInterval(
-      this._onSelect.bind(this),
-      UPDATE_SENTIMENT_INTERVAL
-    );
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-
-    clearInterval(this.getSentimentIntervalId);
   }
 
   static get styles() {
@@ -342,7 +301,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       economicEntityName: businessName,
       economicEntityType: 'BUSINESS',
     };
-    this.getSentiment.executeQuery();
+    // this.getSentiment.executeQuery();
   }
 
   /**
