@@ -36,6 +36,40 @@ class AnalysisService {
         });
     }
 
+    /**
+     * Get the sentiments associated with the specified economic entity and type.
+     *
+     * @param {String} economicEntityName - Name of the economic entity (i.e, 'Google').
+     * @param {String} economicEntityType - Type of the economic entity (i.e, 'BUSINESS').
+     * @param {Object} permissions - Permissions for the user making the request.
+     * @param {Object} collectionBinding - The collection microservice binding. This parameter is present for testing purposes and isn't intended for regular use.
+     * @returns {Array} - The formatted sentiment objects in array form or [].
+     */
+    //  async sentiments(economicEntityName, economicEntityType, permissions) {
+    //     if (!economicEntityName || (typeof economicEntityName != 'string')) return [];
+
+    //     if (!economicEntityType || (typeof economicEntityType != 'string')) return [];
+
+    //     if (!hasReadAllAccess(permissions)) return [];
+
+    //     logger.debug(`Querying sentiments for economic entity name: ${economicEntityName}, type: ${economicEntityType}`);
+
+    //     logger.debug(`Fetching tweets for economic entity with name: ${economicEntityName}, type: ${economicEntityType}`);
+
+    //     logger.debug(`Received tweets: ${JSON.stringify(data)}`);
+
+    //     const sentiments = [];
+    //     for (const entry of data) {
+    //         if (!entry?.timestamp || !Array.isArray(entry?.tweets) || !entry?.tweets?.length) continue;
+
+    //         sentiments.push( this._averageSentiment(entry) );
+    //     }
+
+    //     logger.debug(`Finished computing sentiments: ${JSON.stringify(sentiments)}`);
+
+    //     return sentiments;
+    // }
+
     async _computeSentiment(economicEntityName, economicEntityType, timeseriesTweets) {
         if (!economicEntityName || (typeof economicEntityName != 'string')) return;
 
@@ -61,7 +95,7 @@ class AnalysisService {
         this._logger.info(`Adding event with value: ${JSON.stringify(sentiments)}`);
 
         await this._producer.send({
-            topic: `TWEET_SENTIMENT_COMPUTED_${economicEntityName}_${economicEntityType}`,
+            topic: `TWEET_SENTIMENT_COMPUTED`,
             messages: [
                 { value: JSON.stringify(event) }
             ]

@@ -18,17 +18,12 @@ import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql'
 import UpdateSentiments from './graphql/UpdateSentiments.subscription.graphql';
 import {translate} from 'lit-element-i18n';
 
-// const UPDATE_SENTIMENT_INTERVAL = 5 * 60 * 1000; /** min * seconds * ms */
-
 export default class DeepAnalyzerPageSummary extends LitElement {
   static get properties() {
     return {
       subscriptionClient: {type: Object},
 
-      // Fetch sentiment query object
-      getSentiment: {type: Object},
-
-      getSentimentIntervalId: {type: Number},
+      sentiments: {type: Array},
 
       // Data collection mutation object
       collectEconomicData: {type: Object},
@@ -37,24 +32,31 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       configuration: {type: Object},
 
       selectedSentiments: {type: Array},
+
+      // Fetch sentiment query object
+      _getInitialSentimentQuery: {type: Object},
     };
   }
 
   constructor() {
     super();
 
-    // this.getSentiment = new ApolloQueryController(this, GetSentiment, {
+    this.sentiments = [];
+
+    // this._getInitialSentimentQuery = new ApolloQueryController(this, GetSentiment, {
     //   variables: {
     //     economicEntityName: '',
     //     economicEntityType: 'BUSINESS',
     //   },
     //   noAutoSubscribe: true,
-    //   onData: this._triggerUpdate.bind(this),
+    //   onData: (data) => {
+    //     debugger;
+    //   }
     // });
 
-    this.getSentiment = {data: {}};
+    // this._getInitialSentimentQuery = { };
 
-    this.getSentiment = new ApolloSubscriptionController(
+    this.subscriptionClient = new ApolloSubscriptionController(
       this,
       UpdateSentiments,
       {
@@ -63,15 +65,27 @@ export default class DeepAnalyzerPageSummary extends LitElement {
           economicEntityType: 'BUSINESS',
         },
         onData: ({subscriptionData}) => {
-          this.getSentiment.data.sentiments =
-            subscriptionData.data.updateSentiments;
+          this.sentiments = subscriptionData.data.updateSentiments;
+        },
+        onError: (error) => {
+          this.sentiments = [];
+          console.error(
+            `An error occurred while subscribing to sentiment updates: ${error}`
+          );
         },
       }
     );
 
     this.collectEconomicData = new ApolloMutationController(
       this,
-      CollectEconomicData
+      CollectEconomicData,
+      {
+        onError: (error) => {
+          console.error(
+            `An error occurred while attempting to collect economic data: ${error}`
+          );
+        },
+      }
     );
 
     this.configuration = {observedEconomicEntities: []};
@@ -199,7 +213,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         type="line"
         options='{"title": "Sentiment as a function of time" }'
         cols='[{"label": "Timestamp", "type": "number"}, {"label": "Sentiment", "type": "number"}]'
-        rows="[${this.getSentiment?.data?.sentiments?.map((sentiment) =>
+        rows="[${this.sentiments?.map((sentiment) =>
           JSON.stringify([sentiment.timestamp, sentiment.score])
         )}]"
       ></google-chart>
@@ -243,7 +257,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
       const selectedPoint = googleChart.rows[selectedRow];
 
-      this.getSentiment?.data?.sentiments?.forEach((sentiment) => {
+      this.sentiments?.forEach((sentiment) => {
         if (this._hasMatchingData(sentiment, selectedPoint)) {
           this.selectedSentiments.push(sentiment);
         }
@@ -297,11 +311,21 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     const businessName = this.shadowRoot.querySelector(
       '[aria-selected="true"]'
     ).value;
-    this.getSentiment.variables = {
+
+    const variables = {
       economicEntityName: businessName,
       economicEntityType: 'BUSINESS',
     };
-    // this.getSentiment.executeQuery();
+
+    setTimeout(() => {
+      /* Do nothing*/
+    }, 100);
+
+    // Fetch the data right away
+    this._getInitialSentimentQuery.variables = variables;
+    this._getInitialSentimentQuery.executeQuery();
+
+    this.subscriptionClient.variables = variables;
   }
 
   /**
@@ -310,16 +334,6 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    */
   _handleSiteConfig({detail}) {
     this.configuration = detail || {observedEconomicEntities: []};
-  }
-
-  /**
-   * Trigger an update to the DOM.
-   *
-   * NOTE: This is used because the google-chart wasn't dynamically updating as a result of data fetch.
-   * This happened to solve the issue.
-   */
-  _triggerUpdate() {
-    this.requestUpdate();
   }
 }
 

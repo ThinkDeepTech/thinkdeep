@@ -6,7 +6,7 @@ import jwt from 'express-jwt';
 // import {makeSubscriptionSchema} from 'federation-subscription-tools';
 import {getLogger} from './get-logger.mjs';
 import {getPublicIP} from './get-public-ip.mjs';
-import {execute, subscribe, printSchema, parse, getOperationAST, GraphQLError, validate} from 'graphql';
+import {execute, subscribe, printSchema, parse, getOperationAST, GraphQLError, validate, isObjectType} from 'graphql';
 import { useServer } from 'graphql-ws/lib/use/ws';
 import { createServer } from 'http';
 import jwks from 'jwks-rsa';
@@ -22,7 +22,7 @@ const startApolloServer = async () => {
 
   const port = 4004;
 
-  const extractPermissions = jwt({
+  const validateAndAppendPermissions = jwt({
     secret: jwks.expressJwtSecret({
       cache: true,
       rateLimit: true,
@@ -35,7 +35,7 @@ const startApolloServer = async () => {
     requestProperty: 'permissions',
   });
 
-  const extractMe = jwt({
+  const validateAndAppendMe = jwt({
     secret: jwks.expressJwtSecret({
       cache: true,
       rateLimit: true,
@@ -59,13 +59,6 @@ const startApolloServer = async () => {
   // NOTE: x-powered-by can allow attackers to determine what technologies are being used by software and
   // therefore how to attack. Therefore, it's disabled here.
   app.disable('x-powered-by');
-
-  // NOTE: This handler must be present here in order for authorization to correctly operate. If placed
-  // after server.applyMiddleWare(...) it simply doesn't execute. However, the presence of this handler
-  // before server.applyMiddleWare(...) breaks Apollo Explorer but applies authorization.
-  app.use(extractPermissions);
-
-  app.use(extractMe);
 
   const httpServer = createServer(app);
   const webSocketServer = new ws.Server({
@@ -107,11 +100,41 @@ const startApolloServer = async () => {
     execute,
     subscribe,
     context: (ctx) => {
-      debugger;
+      // debugger;
+    },
+    onConnect: ({connectionParams, extra}) => {
+
+      if (!extra?.request) {
+        throw new Error('The request object was not valid.');
+      }
+
+      const incomingRequest = extra.request || { };
+
+      if (!Object.keys(incomingRequest).length) {
+        throw new Error('There were no keys in the request');
+      }
+
+      const dummyRequest = {
+        ...incomingRequest,
+        headers: {
+          authorization: connectionParams?.authorization || '',
+          me: connectionParams?.me || '',
+        }
+      };
+
+      // NOTE: This is a bit hacky but I want to reuse express-jwts solution for completeness and consistency
+      // along with the safety of secret handling. It's kept consistent with the gateway microservice. If an error
+      // is thrown, the connection will be closed thereby correctly performing the needed validation.
+      const dummyNext = (error) => {
+        if (!!error) {
+          throw error;
+        }
+      };
+
+      validateAndAppendPermissions(dummyRequest, undefined, dummyNext);
+      validateAndAppendMe(dummyRequest, undefined, dummyNext);
     },
     onSubscribe: (_ctx, msg) => {
-
-      debugger;
 
       // Construct the execution arguments
       const args = {

@@ -2,9 +2,9 @@ import { gql } from 'apollo-server';
 
 const typeDefs = gql`
 
-    #enum EconomicEntityType {
-    #    BUSINESS
-    #}
+    enum EconomicEntityType {
+        BUSINESS
+    }
 
     type Sentiment {
         timestamp: Float!
