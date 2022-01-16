@@ -1,6 +1,6 @@
 import {
   ApolloMutationController,
-  // ApolloQueryController,
+  ApolloQueryController,
   ApolloSubscriptionController,
 } from '@apollo-elements/core';
 import {LitElement, css, html} from '@apollo-elements/lit-apollo';
@@ -14,7 +14,7 @@ import '@material/mwc-textfield';
 import {debounce} from './debounce.mjs';
 import './deep-site-configuration.mjs';
 import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
-// import GetSentiment from './graphql/GetSentiment.query.graphql';
+import GetSentiment from './graphql/GetSentiment.query.graphql';
 import UpdateSentiments from './graphql/UpdateSentiments.subscription.graphql';
 import {translate} from 'lit-element-i18n';
 
@@ -43,18 +43,26 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
     this.sentiments = [];
 
-    // this._getInitialSentimentQuery = new ApolloQueryController(this, GetSentiment, {
-    //   variables: {
-    //     economicEntityName: '',
-    //     economicEntityType: 'BUSINESS',
-    //   },
-    //   noAutoSubscribe: true,
-    //   onData: (data) => {
-    //     debugger;
-    //   }
-    // });
-
-    // this._getInitialSentimentQuery = { };
+    this._getInitialSentimentQuery = new ApolloQueryController(
+      this,
+      GetSentiment,
+      {
+        variables: {
+          economicEntityName: '',
+          economicEntityType: 'BUSINESS',
+        },
+        noAutoSubscribe: true,
+        onData: (data) => {
+          this.sentiments = data?.sentiments || [];
+        },
+        onError: (error) => {
+          this.sentiments = [];
+          console.error(
+            `Fetch sentiments failed with error: ${JSON.stringify(error)}`
+          );
+        },
+      }
+    );
 
     this.subscriptionClient = new ApolloSubscriptionController(
       this,
@@ -65,12 +73,14 @@ export default class DeepAnalyzerPageSummary extends LitElement {
           economicEntityType: 'BUSINESS',
         },
         onData: ({subscriptionData}) => {
-          this.sentiments = subscriptionData.data.updateSentiments;
+          this.sentiments = subscriptionData?.data?.updateSentiments || [];
         },
         onError: (error) => {
           this.sentiments = [];
           console.error(
-            `An error occurred while subscribing to sentiment updates: ${error}`
+            `An error occurred while subscribing to sentiment updates: ${JSON.stringify(
+              error
+            )}`
           );
         },
       }
@@ -82,7 +92,9 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       {
         onError: (error) => {
           console.error(
-            `An error occurred while attempting to collect economic data: ${error}`
+            `An error occurred while attempting to collect economic data: ${JSON.stringify(
+              error
+            )}`
           );
         },
       }
@@ -317,15 +329,12 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       economicEntityType: 'BUSINESS',
     };
 
-    setTimeout(() => {
-      /* Do nothing*/
-    }, 100);
+    // Subscribe to updates for the desired business
+    this.subscriptionClient.variables = variables;
 
     // Fetch the data right away
     this._getInitialSentimentQuery.variables = variables;
     this._getInitialSentimentQuery.executeQuery();
-
-    this.subscriptionClient.variables = variables;
   }
 
   /**

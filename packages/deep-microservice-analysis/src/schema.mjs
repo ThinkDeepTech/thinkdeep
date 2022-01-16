@@ -16,9 +16,9 @@ const typeDefs = gql`
         text: String!
     }
 
-    #extend type Query {
-    #    sentiments(economicEntityName: String!, economicEntityType: EconomicEntityType!): [Sentiment!]!
-    #}
+    extend type Query {
+        sentiments(economicEntityName: String!, economicEntityType: EconomicEntityType!): [Sentiment!]!
+    }
 `;
 
 export { typeDefs };

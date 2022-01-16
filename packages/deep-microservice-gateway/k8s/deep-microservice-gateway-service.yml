@@ -13,7 +13,6 @@ spec:
   selector:
     app: deep-microservice-gateway
   ports:
-  # TODO: Remove http once https in place
     - name: http
       protocol: TCP
       port: 4000

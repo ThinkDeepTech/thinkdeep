@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { hasReadAllAccess } from './permissions.mjs';
 
 class AnalysisService {
@@ -7,14 +8,14 @@ class AnalysisService {
      *
      * NOTE: The parameters below are injected because that improves testability of the codebase.
      *
-     * @param {Object} dataSource - PostgresDataSource to use when interacting with the database.
+     * @param {Object} analysisDataStore - AnalysisDataStore to use when interacting with the database.
      * @param {Object} sentimentLib - Library to use for sentiment analysis. This is an instance of Sentiment from 'sentiment' package.
      * @param {Object} consumer - Kafkajs consumer.
      * @param {Object} producer  - Kafkajs producer.
      * @param {Object} logger - Logger to use.
      */
-    constructor(dataSource, sentimentLib, consumer, producer, logger) {
-        this._dataSource = dataSource;
+    constructor(analysisDataStore, sentimentLib, consumer, producer, logger) {
+        this._analysisDataStore = analysisDataStore;
         this._sentimentLib = sentimentLib;
         this._consumer = consumer;
         this._producer = producer;
@@ -42,33 +43,23 @@ class AnalysisService {
      * @param {String} economicEntityName - Name of the economic entity (i.e, 'Google').
      * @param {String} economicEntityType - Type of the economic entity (i.e, 'BUSINESS').
      * @param {Object} permissions - Permissions for the user making the request.
-     * @param {Object} collectionBinding - The collection microservice binding. This parameter is present for testing purposes and isn't intended for regular use.
      * @returns {Array} - The formatted sentiment objects in array form or [].
      */
-    //  async sentiments(economicEntityName, economicEntityType, permissions) {
-    //     if (!economicEntityName || (typeof economicEntityName != 'string')) return [];
+     async sentiments(economicEntityName, economicEntityType, permissions) {
+        if (!economicEntityName || (typeof economicEntityName != 'string')) return [];
 
-    //     if (!economicEntityType || (typeof economicEntityType != 'string')) return [];
+        if (!economicEntityType || (typeof economicEntityType != 'string')) return [];
 
-    //     if (!hasReadAllAccess(permissions)) return [];
+        if (!hasReadAllAccess(permissions)) return [];
 
-    //     logger.debug(`Querying sentiments for economic entity name: ${economicEntityName}, type: ${economicEntityType}`);
+        this._logger.debug(`Querying sentiments for economic entity name: ${economicEntityName}, type: ${economicEntityType}`);
 
-    //     logger.debug(`Fetching tweets for economic entity with name: ${economicEntityName}, type: ${economicEntityType}`);
+        const databaseData = await this._analysisDataStore.readMostRecentSentiments(economicEntityName, economicEntityType);
 
-    //     logger.debug(`Received tweets: ${JSON.stringify(data)}`);
+        this._logger.debug(`Sentiments read: ${JSON.stringify(databaseData)}`);
 
-    //     const sentiments = [];
-    //     for (const entry of data) {
-    //         if (!entry?.timestamp || !Array.isArray(entry?.tweets) || !entry?.tweets?.length) continue;
-
-    //         sentiments.push( this._averageSentiment(entry) );
-    //     }
-
-    //     logger.debug(`Finished computing sentiments: ${JSON.stringify(sentiments)}`);
-
-    //     return sentiments;
-    // }
+        return databaseData.sentiments;
+    }
 
     async _computeSentiment(economicEntityName, economicEntityType, timeseriesTweets) {
         if (!economicEntityName || (typeof economicEntityName != 'string')) return;
@@ -86,13 +77,15 @@ class AnalysisService {
             sentiments.push( this._averageSentiment(entry) );
         }
 
+        await this._analysisDataStore.createSentiments(moment().unix(), economicEntityName, economicEntityType, sentiments);
+
         const event = {
             economicEntityName,
             economicEntityType,
             sentiments
         };
 
-        this._logger.info(`Adding event with value: ${JSON.stringify(sentiments)}`);
+        this._logger.info(`Adding event with value: ${JSON.stringify(event)}`);
 
         await this._producer.send({
             topic: `TWEET_SENTIMENT_COMPUTED`,

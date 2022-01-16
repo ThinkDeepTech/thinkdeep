@@ -21,7 +21,7 @@ const commander = new Commander(logger);
 
 const kafka = new Kafka({
   clientId: 'deep-microservice-collection',
-  brokers: [process.env.PREDECOS_KAFKA_URL]
+  brokers: [`${process.env.PREDECOS_KAFKA_HOST}:${process.env.PREDECOS_KAFKA_PORT}`]
 });
 const producer = kafka.producer();
 
@@ -61,7 +61,6 @@ const startApolloServer = async () => {
   const economicEntityMemo = new EconomicEntityMemo(mongoClient.db('admin').collection('memo'), logger);
   const collectionService = new CollectionService(twitterAPI, tweetStore, economicEntityMemo, commander, producer, logger);
 
-  const isProduction = process.env.NODE_ENV === 'production';
   const server = new ApolloServer({
     schema: buildSubgraphSchema([{typeDefs, resolvers}]),
     dataSources: () => ({collectionService}),
@@ -72,11 +71,6 @@ const startApolloServer = async () => {
     plugins: [
       loggingPlugin
     ],
-
-    // NOTE: Introspection has some security implications. It allows developers to query the API to figure out the structure
-    // of the schema. This can be dangerous in production. However, these services are intended to be visible so this isn't
-    // currently an issue.
-    introspection: true,
   });
   await server.start();
 
@@ -88,6 +82,7 @@ const startApolloServer = async () => {
 
   // NOTE: Placing a forward slash at the end of any allowed origin causes a preflight error.
   let allowedOrigins = ['https://predecos.com', 'https://www.predecos.com', 'https://thinkdeep-d4624.web.app', 'https://www.thinkdeep-d4624.web.app']
+  const isProduction = process.env.NODE_ENV === 'production';
   if (!isProduction) {
     allowedOrigins = allowedOrigins.concat(['https://localhost:8000', 'http://localhost:8000', 'https://studio.apollographql.com']);
   }

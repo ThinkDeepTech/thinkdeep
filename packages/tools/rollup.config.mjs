@@ -32,7 +32,8 @@ export default merge(createSpaConfig, {
     nodeResolve(),
     replace({
       PREDECOS_AUTH_AUDIENCE: JSON.stringify(process.env.PREDECOS_AUTH_AUDIENCE),
-      PREDECOS_MICROSERVICE_GATEWAY_URL: JSON.stringify(process.env.PREDECOS_MICROSERVICE_GATEWAY_URL)
+      PREDECOS_MICROSERVICE_GATEWAY_URL: JSON.stringify(process.env.PREDECOS_MICROSERVICE_GATEWAY_URL),
+      PREDECOS_MICROSERVICE_SUBSCRIPTION_URL: JSON.stringify(process.env.PREDECOS_MICROSERVICE_SUBSCRIPTION_URL)
     }),
     eslint(),
     babel({ babelHelpers: 'bundled', rootMode: "upward" }),

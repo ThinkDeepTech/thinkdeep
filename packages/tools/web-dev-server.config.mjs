@@ -8,7 +8,6 @@ const replace = fromRollup(rollupReplace);
 export default {
   nodeResolve: true,
 
-  // TODO: Update readme with self signing process.
   sslKey: '/home/hayden/ssl/ssl-cert.key',
   sslCert: '/home/hayden/ssl/ssl-cert.crt',
   open: true,
@@ -20,6 +19,7 @@ export default {
     replace({
       PREDECOS_AUTH_AUDIENCE: JSON.stringify(process.env.PREDECOS_AUTH_AUDIENCE),
       PREDECOS_MICROSERVICE_GATEWAY_URL: JSON.stringify(process.env.PREDECOS_MICROSERVICE_GATEWAY_URL),
+      PREDECOS_MICROSERVICE_SUBSCRIPTION_URL: JSON.stringify(process.env.PREDECOS_MICROSERVICE_SUBSCRIPTION_URL)
     }),
     graphql(),
   ],

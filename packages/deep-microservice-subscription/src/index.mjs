@@ -3,7 +3,6 @@ import {makeExecutableSchema} from '@graphql-tools/schema';
 import {gql} from 'apollo-server-express';
 import express from 'express';
 import jwt from 'express-jwt';
-// import {makeSubscriptionSchema} from 'federation-subscription-tools';
 import {getLogger} from './get-logger.mjs';
 import {getPublicIP} from './get-public-ip.mjs';
 import {execute, subscribe, printSchema, parse, getOperationAST, GraphQLError, validate, isObjectType} from 'graphql';
@@ -54,6 +53,60 @@ const startApolloServer = async () => {
     }
   });
 
+  const validateAndFetchPermissionsAndMe = async (connectionParams, extra) => {
+
+    if (!extra?.request) {
+      throw new Error('The request object was not valid.');
+    }
+
+    const incomingRequest = extra.request || { };
+
+    if (!Object.keys(incomingRequest).length) {
+      throw new Error('There were no keys in the request');
+    }
+
+    const dummyRequest = {
+      ...incomingRequest,
+      headers: {
+        authorization: connectionParams?.authorization || '',
+        me: connectionParams?.me || '',
+      }
+    };
+
+    // NOTE: This is a bit hacky but I want to reuse express-jwt's solution for completeness and consistency
+    // with the gateway along with the safety of secret handling. It's kept consistent with the gateway microservice.
+    // If an error is thrown, the connection will be closed thereby correctly performing the needed validation.
+    await new Promise((resolve) => {
+
+      const dummyNext = (error) => {
+        if (!!error) {
+          throw error;
+        }
+        resolve();
+      };
+
+      validateAndAppendPermissions(dummyRequest, undefined, dummyNext);
+
+    });
+
+    await new Promise((resolve) => {
+
+      const dummyNext = (error) => {
+        if (!!error) {
+          throw error;
+        }
+        resolve();
+      };
+
+      validateAndAppendMe(dummyRequest, undefined, dummyNext);
+    });
+
+    return {
+      permissions: dummyRequest?.permissions || {},
+      me: dummyRequest?.me || {}
+    }
+  };
+
   const app = express();
 
   // NOTE: x-powered-by can allow attackers to determine what technologies are being used by software and
@@ -74,7 +127,6 @@ const startApolloServer = async () => {
       {name: 'collection', url: process.env.PREDECOS_MICROSERVICE_COLLECTION_URL},
       {name: 'configuration', url: process.env.PREDECOS_MICROSERVICE_CONFIGURATION_URL},
     ],
-    experimental_pollInterval: 36000
   });
   gatewayProxy.onSchemaChange((gatewaySchema) => {
 
@@ -99,40 +151,14 @@ const startApolloServer = async () => {
   useServer({
     execute,
     subscribe,
-    context: (ctx) => {
-      // debugger;
+    context: async ({connectionParams, extra}) => {
+
+      const { permissions, me } = await validateAndFetchPermissionsAndMe(connectionParams, extra);
+
+      return { permissions, me };
     },
-    onConnect: ({connectionParams, extra}) => {
-
-      if (!extra?.request) {
-        throw new Error('The request object was not valid.');
-      }
-
-      const incomingRequest = extra.request || { };
-
-      if (!Object.keys(incomingRequest).length) {
-        throw new Error('There were no keys in the request');
-      }
-
-      const dummyRequest = {
-        ...incomingRequest,
-        headers: {
-          authorization: connectionParams?.authorization || '',
-          me: connectionParams?.me || '',
-        }
-      };
-
-      // NOTE: This is a bit hacky but I want to reuse express-jwts solution for completeness and consistency
-      // along with the safety of secret handling. It's kept consistent with the gateway microservice. If an error
-      // is thrown, the connection will be closed thereby correctly performing the needed validation.
-      const dummyNext = (error) => {
-        if (!!error) {
-          throw error;
-        }
-      };
-
-      validateAndAppendPermissions(dummyRequest, undefined, dummyNext);
-      validateAndAppendMe(dummyRequest, undefined, dummyNext);
+    onConnect: async ({connectionParams, extra}) => {
+      await validateAndFetchPermissionsAndMe(connectionParams, extra);
     },
     onSubscribe: (_ctx, msg) => {
 
@@ -174,46 +200,8 @@ const startApolloServer = async () => {
   }, webSocketServer);
 
   httpServer.listen({ port }, () => {
-    logger.info(`🚀 Subscriptions ready at ws://localhost:${port}${webSocketServer.options.path}`);
+    logger.info(`🚀 Subscriptions ready at ws://${getPublicIP()}:${port}${webSocketServer.options.path}`);
   })
-
-
-  // const server = new ApolloServer({
-  //   schema: buildSubgraphSchema([{typeDefs, resolvers}]),
-  //   dataSources: () => ({configurationService}),
-  //   context: ({req}) => {
-  //     const permissions = req.headers.permissions ? JSON.parse(req.headers.permissions) : null;
-  //     const me = req.headers.me ? JSON.parse(req.headers.me) : null;
-  //     return {permissions, me};
-  //   },
-  //   plugins: [
-  //     loggingPlugin
-  //   ],
-  // });
-  // await server.start();
-
-  // NOTE: Placing a forward slash at the end of any allowed origin causes a preflight error.
-  // let allowedOrigins = ['https://predecos.com', 'https://www.predecos.com', 'https://thinkdeep-d4624.web.app', 'https://www.thinkdeep-d4624.web.app']
-  // const isProduction = process.env.NODE_ENV === 'production';
-  // if (!isProduction) {
-  //   allowedOrigins = allowedOrigins.concat(['https://localhost:8000', 'http://localhost:8000', 'https://studio.apollographql.com']);
-  // }
-
-
-  // server.applyMiddleware({
-  //   app,
-  //   cors: {
-  //     origin: allowedOrigins,
-  //     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE',
-  //     credentials: true,
-  //   },
-  // });
-
-  // await new Promise((resolve) => app.listen({port}, resolve));
-
-  // logger.info(
-  //   `🚀 Server ready at http://${getPublicIP()}:${port}${server.graphqlPath}`
-  // );
 };
 
 startApolloServer().then(() => { /* Do nothing */ }, (reason) => {

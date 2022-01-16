@@ -1,21 +1,25 @@
 import {buildSubgraphSchema} from '@apollo/subgraph';
 import {ApolloServer} from 'apollo-server-express';
 import {AnalysisService} from './analysis-service.mjs';
-import {PostgresDataSource} from './datasource/postgres-datasource.mjs';
+import {AnalysisDataStore} from './datasource/analysis-data-store.mjs';
+// import {PostgresDataSource} from './datasource/postgres-datasource.mjs';
 import express from 'express';
 import { getLogger } from './get-logger.mjs';
 import { getPublicIP } from './get-public-ip.mjs';
 import { Kafka } from 'kafkajs';
 import { loggingPlugin } from './logging-plugin.mjs';
+import {MongoClient} from 'mongodb';
 import {resolvers} from './resolvers.mjs';
 import {typeDefs} from './schema.mjs';
 import Sentiment from 'sentiment';
 
 const logger = getLogger();
 
+const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRING);
+
 const kafka = new Kafka({
   clientId: 'deep-microservice-analysis',
-  brokers: [process.env.PREDECOS_KAFKA_URL]
+  brokers: [`${process.env.PREDECOS_KAFKA_HOST}:${process.env.PREDECOS_KAFKA_PORT}`]
 });
 const consumer = kafka.consumer({ groupId: 'deep-microservice-analysis-consumer' });
 const producer = kafka.producer();
@@ -23,6 +27,7 @@ const producer = kafka.producer();
 const performCleanup = async () => {
   await consumer.disconnect();
   await producer.disconnect();
+  await mongoClient.close();
 };
 
 const attachExitHandler = async (callback) => {
@@ -42,16 +47,18 @@ const startApolloServer = async () => {
 
   attachExitHandler(performCleanup);
 
+  await mongoClient.connect();
   await consumer.connect();
   await producer.connect();
 
-  const knexConfig = {
-    client: 'pg',
-    connection: process.env.PREDECOS_PG_CONNECTION_STRING,
-  };
+  // const knexConfig = {
+  //   client: 'pg',
+  //   connection: process.env.PREDECOS_PG_CONNECTION_STRING,
+  // };
 
-  const postgresDataSource = new PostgresDataSource(knexConfig);
-  const analysisService = new AnalysisService(postgresDataSource, new Sentiment(), consumer, producer, logger);
+  // const postgresDataSource = new PostgresDataSource(knexConfig);
+  const analysisataStore = new AnalysisDataStore(mongoClient.db('admin').collection('analysisResults'));
+  const analysisService = new AnalysisService(analysisataStore, new Sentiment(), consumer, producer, logger);
 
   const server = new ApolloServer({
     schema: buildSubgraphSchema([{typeDefs, resolvers}]),
