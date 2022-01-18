@@ -270,11 +270,9 @@ jobs:
               resource-names: deep-microservice-subscription-deployment
               resource-types: deployments
               wait: true
-          - kubernetes/create-or-update-resource:
-              get-rollout-status: true
-              resource-file-path: ./packages/deep-microservice-subscription/k8s/deep-microservice-subscription-deployment.yml
-              resource-name: deployment/deep-microservice-subscription-deployment
-              show-kubectl-command: true
+          - run:
+            command: envsubst < ./deep-microservice-subscription-deployment.yml | kubectl apply -f -
+            working_directory: ./packages/deep-microservice-subscription/k8s
 
     build_ui:
       docker:
