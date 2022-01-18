@@ -7,5 +7,4 @@ spec:
     app: zookeeper
   ports:
     - protocol: TCP
-    # TODO port
       port: 2181

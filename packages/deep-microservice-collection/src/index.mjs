@@ -23,6 +23,7 @@ const kafka = new Kafka({
   clientId: 'deep-microservice-collection',
   brokers: [`${process.env.PREDECOS_KAFKA_HOST}:${process.env.PREDECOS_KAFKA_PORT}`]
 });
+const admin = kafka.admin();
 const producer = kafka.producer();
 
 const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRING);
@@ -30,6 +31,7 @@ const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRI
 const performCleanup = async () => {
   await mongoClient.close();
   await producer.disconnect();
+  await admin.disconnect();
 
   commander.stopAllCommands();
 };
@@ -52,6 +54,7 @@ const startApolloServer = async () => {
   attachExitHandler(performCleanup);
 
   await mongoClient.connect();
+  await admin.connect();
   await producer.connect();
 
   console.log("Connected successfully to server");
@@ -59,7 +62,7 @@ const startApolloServer = async () => {
   const twitterAPI = new TwitterAPI();
   const tweetStore = new TweetStore(mongoClient.db('admin').collection('tweets'));
   const economicEntityMemo = new EconomicEntityMemo(mongoClient.db('admin').collection('memo'), logger);
-  const collectionService = new CollectionService(twitterAPI, tweetStore, economicEntityMemo, commander, producer, logger);
+  const collectionService = new CollectionService(twitterAPI, tweetStore, economicEntityMemo, commander, admin, producer, logger);
 
   const server = new ApolloServer({
     schema: buildSubgraphSchema([{typeDefs, resolvers}]),

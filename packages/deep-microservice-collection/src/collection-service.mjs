@@ -9,8 +9,7 @@ import { hasReadAllAccess } from './permissions.mjs';
  * NOTE: Due to twitter developer account limitations only 500,000 tweets can be consumed per month.
  * As a result, ~400 businesses can be watched.
  */
-// const TWITTER_FETCH_INTERVAL = 6 * 60 * 60 * 1000; /** hrs * min * seconds * ms */
-const TWITTER_FETCH_INTERVAL = 1 * 60 * 1000; /** hrs * min * seconds * ms */
+const TWITTER_FETCH_INTERVAL = 6 * 60 * 60 * 1000; /** hrs * min * seconds * ms */
 
 class CollectionService {
 
@@ -21,14 +20,16 @@ class CollectionService {
      * @param {Object} tweetStore - MongoDataSource tied to the tweet collection.
      * @param {Object} economicEntityMemo - EconomicEntityMemo object to be used.
      * @param {Object} commander - Commander object to be used.
-     * @param {Object} producer - Kafka producer to use.
+     * @param {Object} admin - KafkaJS admin.
+     * @param {Object} producer - KafkaJS producer to use.
      * @param {Object} logger - Logger to use.
      */
-    constructor(twitterAPI, tweetStore, economicEntityMemo, commander, producer, logger) {
+    constructor(twitterAPI, tweetStore, economicEntityMemo, commander, admin, producer, logger) {
         this._twitterAPI = twitterAPI;
         this._tweetStore = tweetStore;
         this._economicEntityMemo = economicEntityMemo;
         this._commander = commander;
+        this._admin = admin;
         this._producer = producer;
         this._logger = logger;
 
@@ -154,6 +155,7 @@ class CollectionService {
 
         this._logger.info(`Adding collection event with value: ${JSON.stringify(event)}`);
 
+        await this._topicCreation(['TWEETS_COLLECTED']);
         this._producer.send({
             topic: 'TWEETS_COLLECTED',
             messages: [
@@ -161,9 +163,22 @@ class CollectionService {
             ]
         });
 
-        this._logger.info(`Added tweets to the tweet store for: name ${entityName}, type ${entityType}`);
-
         return tweetsCreated;
+    }
+
+    async _topicCreation(topics) {
+        try {
+            await this._admin.createTopics({
+                /**
+                 * NOTE: If you don't wait for leaders the system throws an error when trying to write to the topic.
+                 */
+                waitForLeaders: true,
+                topics
+            });
+        } catch (error) {
+            /** An error is thrown when the topic has already been created */
+            this._logger.warn(`Creation of topics ${JSON.stringify(topics)} exited with error: ${JSON.stringify(error)}`);
+        }
     }
 }
 

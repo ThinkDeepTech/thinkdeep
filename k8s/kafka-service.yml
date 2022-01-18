@@ -7,5 +7,4 @@ spec:
     app: kafka
   ports:
     - protocol: TCP
-    # TODO: port
-      port: 9092
+      port: 9093

@@ -50,11 +50,9 @@ jobs:
               resource-names: kafka-deployment
               resource-types: deployments
               wait: true
-          - kubernetes/create-or-update-resource:
-              get-rollout-status: true
-              resource-file-path: ./k8s/kafka-deployment.yml
-              resource-name: deployment/kafka-deployment
-              show-kubectl-command: true
+          - run:
+              command: envsubst < ./kafka-deployment.yml | kubectl apply -f -
+              working_directory: ./k8s
 
     deploy_mongodb:
       docker:
@@ -124,11 +122,9 @@ jobs:
               resource-names: zookeeper-deployment
               resource-types: deployments
               wait: true
-          - kubernetes/create-or-update-resource:
-              get-rollout-status: true
-              resource-file-path: ./k8s/zookeeper-deployment.yml
-              resource-name: deployment/zookeeper-deployment
-              show-kubectl-command: true
+          - run:
+            command: envsubst < ./zookeeper-deployment.yml | kubectl apply -f -
+            working_directory: ./k8s
 
     build_and_deploy_microservice_analysis:
       docker:
