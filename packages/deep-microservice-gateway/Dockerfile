@@ -20,6 +20,8 @@ WORKDIR /usr/src/app
 
 RUN apt-get update
 
+RUN apt-get install -y vim
+
 RUN apt-get install -y curl
 
 # Add nodejs 16.x

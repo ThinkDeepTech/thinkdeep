@@ -161,7 +161,7 @@ class CollectionService {
             ]
         });
 
-        this._logger.info(`Adding tweets to the tweet store for: name ${entityName}, type ${entityType}, tweets ${JSON.stringify(tweets)}.`);
+        this._logger.info(`Added tweets to the tweet store for: name ${entityName}, type ${entityType}`);
 
         return tweetsCreated;
     }

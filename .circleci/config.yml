@@ -31,6 +31,31 @@ commands:
 
 jobs:
 
+      deploy_kafka:
+        docker:
+          - image: 'cimg/base:stable'
+
+        working_directory: ~/project
+
+        steps:
+          - checkout
+          - setup_remote_docker:
+              version: 20.10.7
+          - login_docker
+          - k8s/install
+          - k8s/initialize:
+              cluster: predecos-kubernetes-cluster
+          - kubernetes/delete-resource:
+              now: true
+              resource-names: kafka-deployment
+              resource-types: deployments
+              wait: true
+          - kubernetes/create-or-update-resource:
+              get-rollout-status: true
+              resource-file-path: ./k8s/kafka-deployment.yml
+              resource-name: deployment/kafka-deployment
+              show-kubectl-command: true
+
     deploy_mongodb:
       docker:
         - image: 'cimg/base:stable'
@@ -80,6 +105,61 @@ jobs:
             command: envsubst < ./postgres-deployment.yml | kubectl apply -f -
             working_directory: ./packages/deep-microservice-analysis/k8s
 
+    deploy_zookeeper:
+        docker:
+          - image: 'cimg/base:stable'
+
+        working_directory: ~/project
+
+        steps:
+          - checkout
+          - setup_remote_docker:
+              version: 20.10.7
+          - login_docker
+          - k8s/install
+          - k8s/initialize:
+              cluster: predecos-kubernetes-cluster
+          - kubernetes/delete-resource:
+              now: true
+              resource-names: zookeeper-deployment
+              resource-types: deployments
+              wait: true
+          - kubernetes/create-or-update-resource:
+              get-rollout-status: true
+              resource-file-path: ./k8s/zookeeper-deployment.yml
+              resource-name: deployment/zookeeper-deployment
+              show-kubectl-command: true
+
+    build_and_deploy_microservice_analysis:
+      docker:
+        - image: 'cimg/base:stable'
+
+      working_directory: ~/project
+
+      steps:
+        - checkout
+        - setup_remote_docker:
+            version: 20.10.7
+        - login_docker
+        - k8s/install
+        - k8s/initialize:
+            cluster: predecos-kubernetes-cluster
+        - run:
+            command: docker build -t thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis:latest --build-arg PREDECOS_MONGODB_CONNECTION_STRING=$PREDECOS_MONGODB_CONNECTION_STRING --build-arg PREDECOS_PG_CONNECTION_STRING=$PREDECOS_PG_CONNECTION_STRING --build-arg PREDECOS_KAFKA_HOST=$PREDECOS_KAFKA_HOST --build-arg PREDECOS_KAFKA_PORT=$PREDECOS_KAFKA_PORT --build-arg NODE_ENV=$NODE_ENV .
+            working_directory: ./packages/deep-microservice-analysis
+        - run: docker push thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM}
+        - run: docker push thinkdeeptech/deep-microservice-analysis:latest
+        - kubernetes/delete-resource:
+            now: true
+            resource-names: deep-microservice-analysis-deployment
+            resource-types: deployments
+            wait: true
+        - kubernetes/create-or-update-resource:
+            get-rollout-status: true
+            resource-file-path: ./packages/deep-microservice-analysis/k8s/deep-microservice-analysis-deployment.yml
+            resource-name: deployment/deep-microservice-analysis-deployment
+            show-kubectl-command: true
+
     build_and_deploy_microservice_collection:
       docker:
         - image: 'cimg/base:stable'
@@ -95,7 +175,7 @@ jobs:
         - k8s/initialize:
             cluster: predecos-kubernetes-cluster
         - run:
-            command: docker build -t thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-collection:latest --build-arg PREDECOS_MONGODB_CONNECTION_STRING=$PREDECOS_MONGODB_CONNECTION_STRING --build-arg PREDECOS_TWITTER_BEARER=$PREDECOS_TWITTER_BEARER --build-arg NODE_ENV=$NODE_ENV .
+            command: docker build -t thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-collection:latest --build-arg PREDECOS_MONGODB_CONNECTION_STRING=$PREDECOS_MONGODB_CONNECTION_STRING --build-arg PREDECOS_TWITTER_BEARER=$PREDECOS_TWITTER_BEARER --build-arg PREDECOS_KAFKA_HOST=$PREDECOS_KAFKA_HOST --build-arg PREDECOS_KAFKA_PORT=$PREDECOS_KAFKA_PORT --build-arg NODE_ENV=$NODE_ENV .
             working_directory: ./packages/deep-microservice-collection
         - run: docker push thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-collection:latest
@@ -140,37 +220,6 @@ jobs:
             resource-name: deployment/deep-microservice-configuration-deployment
             show-kubectl-command: true
 
-
-    build_and_deploy_microservice_analysis:
-      docker:
-        - image: 'cimg/base:stable'
-
-      working_directory: ~/project
-
-      steps:
-        - checkout
-        - setup_remote_docker:
-            version: 20.10.7
-        - login_docker
-        - k8s/install
-        - k8s/initialize:
-            cluster: predecos-kubernetes-cluster
-        - run:
-            command: docker build -t thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis:latest --build-arg PREDECOS_PG_CONNECTION_STRING=$PREDECOS_PG_CONNECTION_STRING --build-arg PREDECOS_MICROSERVICE_COLLECTION_URL=$PREDECOS_MICROSERVICE_COLLECTION_URL --build-arg NODE_ENV=$NODE_ENV .
-            working_directory: ./packages/deep-microservice-analysis
-        - run: docker push thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM}
-        - run: docker push thinkdeeptech/deep-microservice-analysis:latest
-        - kubernetes/delete-resource:
-            now: true
-            resource-names: deep-microservice-analysis-deployment
-            resource-types: deployments
-            wait: true
-        - kubernetes/create-or-update-resource:
-            get-rollout-status: true
-            resource-file-path: ./packages/deep-microservice-analysis/k8s/deep-microservice-analysis-deployment.yml
-            resource-name: deployment/deep-microservice-analysis-deployment
-            show-kubectl-command: true
-
     build_and_deploy_microservice_gateway:
       docker:
         - image: 'cimg/base:stable'
@@ -200,6 +249,36 @@ jobs:
             resource-file-path: ./packages/deep-microservice-gateway/k8s/deep-microservice-gateway-deployment.yml
             resource-name: deployment/deep-microservice-gateway-deployment
             show-kubectl-command: true
+
+      build_and_deploy_microservice_subscription:
+        docker:
+          - image: 'cimg/base:stable'
+
+        working_directory: ~/project
+
+        steps:
+          - checkout
+          - setup_remote_docker:
+              version: 20.10.7
+          - login_docker
+          - k8s/install
+          - k8s/initialize:
+              cluster: predecos-kubernetes-cluster
+          - run:
+              command: docker build -t thinkdeeptech/deep-microservice-subscription:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-subscription:latest --build-arg PREDECOS_AUTH_AUDIENCE=$PREDECOS_AUTH_AUDIENCE --build-arg PREDECOS_AUTH_JWKS_URI=$PREDECOS_AUTH_JWKS_URI --build-arg PREDECOS_AUTH_ISSUER=$PREDECOS_AUTH_ISSUER --build-arg PREDECOS_MICROSERVICE_ANALYSIS_URL=$PREDECOS_MICROSERVICE_ANALYSIS_URL --build-arg PREDECOS_MICROSERVICE_COLLECTION_URL=$PREDECOS_MICROSERVICE_COLLECTION_URL --build-arg PREDECOS_MICROSERVICE_CONFIGURATION_URL=$PREDECOS_MICROSERVICE_CONFIGURATION_URL --build-arg PREDECOS_KAFKA_HOST=$PREDECOS_KAFKA_HOST --build-arg PREDECOS_KAFKA_PORT=$PREDECOS_KAFKA_PORT --build-arg NODE_ENV=$NODE_ENV .
+              working_directory: ./packages/deep-microservice-subscription
+          - run: docker push thinkdeeptech/deep-microservice-subscription:${CIRCLE_BUILD_NUM}
+          - run: docker push thinkdeeptech/deep-microservice-subscription:latest
+          - kubernetes/delete-resource:
+              now: true
+              resource-names: deep-microservice-subscription-deployment
+              resource-types: deployments
+              wait: true
+          - kubernetes/create-or-update-resource:
+              get-rollout-status: true
+              resource-file-path: ./packages/deep-microservice-subscription/k8s/deep-microservice-subscription-deployment.yml
+              resource-name: deployment/deep-microservice-subscription-deployment
+              show-kubectl-command: true
 
     build_ui:
       docker:
@@ -234,6 +313,16 @@ workflows:
   build_and_deploy_if_master:
 
     jobs:
+
+      - deploy_zookeeper:
+          filters:
+            branches:
+              only: master
+
+      - deploy_kafka:
+          filters:
+            branches:
+              only: master
 
       - deploy_mongodb:
           filters:

@@ -1,6 +1,7 @@
 import {ApolloGateway} from '@apollo/gateway';
 import {makeExecutableSchema} from '@graphql-tools/schema';
 import {gql} from 'apollo-server-express';
+import cors from 'cors';
 import express from 'express';
 import jwt from 'express-jwt';
 import {getLogger} from './get-logger.mjs';
@@ -108,6 +109,20 @@ const startApolloServer = async () => {
   };
 
   const app = express();
+
+  // NOTE: Placing a forward slash at the end of any allowed origin causes a preflight error.
+  let allowedOrigins = ['https://predecos.com', 'https://www.predecos.com', 'https://thinkdeep-d4624.web.app', 'https://www.thinkdeep-d4624.web.app']
+  const isProduction = process.env.NODE_ENV.toLowerCase() === 'production';
+  if (!isProduction) {
+    allowedOrigins = allowedOrigins.concat(['https://localhost:8000', 'http://localhost:8000', 'https://studio.apollographql.com']);
+  }
+  const corsOptions = {
+    origin: allowedOrigins,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE',
+    credentials: true
+  };
+
+  app.use(cors(corsOptions));
 
   // NOTE: x-powered-by can allow attackers to determine what technologies are being used by software and
   // therefore how to attack. Therefore, it's disabled here.

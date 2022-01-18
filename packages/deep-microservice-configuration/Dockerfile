@@ -17,6 +17,8 @@ RUN /bin/bash -c "curl -sL https://deb.nodesource.com/setup_16.x | bash -"
 
 RUN apt-get update
 
+RUN apt-get install -y vim
+
 RUN apt-get install -y nodejs
 
 RUN npm i --global yarn
