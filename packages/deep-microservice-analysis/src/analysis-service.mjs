@@ -69,7 +69,7 @@ class AnalysisService {
 
         if (!economicEntityType || (typeof economicEntityType != 'string')) return;
 
-        if (!Array.isArray(timeseriesTweets)) return;
+        if (!Array.isArray(timeseriesTweets) || (timeseriesTweets.length === 0)) return;
 
         this._logger.info(`Received timeseries entry: ${JSON.stringify(timeseriesTweets)}`);
 
