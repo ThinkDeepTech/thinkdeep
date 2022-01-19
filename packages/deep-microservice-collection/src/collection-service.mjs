@@ -175,7 +175,8 @@ class CollectionService {
         try {
             await this._admin.createTopics({
                 /**
-                 * NOTE: If you don't wait for leaders the system throws an error when trying to write to the topic.
+                 * NOTE: If you don't wait for leaders the system throws an error when trying to write to the topic if a leader
+                 * hasn't been selected.
                  */
                 waitForLeaders: true,
                 topics

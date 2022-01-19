@@ -10,13 +10,15 @@ class AnalysisService {
      *
      * @param {Object} analysisDataStore - AnalysisDataStore to use when interacting with the database.
      * @param {Object} sentimentLib - Library to use for sentiment analysis. This is an instance of Sentiment from 'sentiment' package.
+     * @param {Object} admin - KafkaJS admin.
      * @param {Object} consumer - Kafkajs consumer.
      * @param {Object} producer  - Kafkajs producer.
      * @param {Object} logger - Logger to use.
      */
-    constructor(analysisDataStore, sentimentLib, consumer, producer, logger) {
+    constructor(analysisDataStore, sentimentLib, admin, consumer, producer, logger) {
         this._analysisDataStore = analysisDataStore;
         this._sentimentLib = sentimentLib;
+        this._admin = admin;
         this._consumer = consumer;
         this._producer = producer;
         this._logger = logger;
@@ -24,7 +26,8 @@ class AnalysisService {
         this._consumer.subscribe({ topic: 'TWEETS_COLLECTED', fromBeginning: true }).then(async () => {
 
             await this._consumer.run({
-                eachMessage: async ({topic, partition, message}) => {
+                eachMessage: async ({message}) => {
+
                     this._logger.debug(`Received kafka message: ${message.value.toString()}`);
 
                     const { economicEntityName, economicEntityType, timeSeriesItems} = JSON.parse(message.value.toString());
@@ -87,6 +90,7 @@ class AnalysisService {
 
         this._logger.info(`Adding event with value: ${JSON.stringify(event)}`);
 
+        await this._topicCreation(['TWEET_SENTIMENT_COMPUTED']);
         await this._producer.send({
             topic: `TWEET_SENTIMENT_COMPUTED`,
             messages: [
@@ -124,6 +128,22 @@ class AnalysisService {
         response.tweets = timeSeriesEntry.tweets;
 
         return response;
+    }
+
+    async _topicCreation(topics) {
+        try {
+            await this._admin.createTopics({
+                /**
+                 * NOTE: If you don't wait for leaders the system throws an error when trying to write to the topic if a leader
+                 * hasn't been selected.
+                 */
+                waitForLeaders: true,
+                topics
+            });
+        } catch (error) {
+            /** An error is thrown when the topic has already been created */
+            this._logger.warn(`Creation of topics ${JSON.stringify(topics)} exited with error: ${JSON.stringify(error)}`);
+        }
     }
 }
 

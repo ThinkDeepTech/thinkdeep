@@ -21,10 +21,12 @@ const kafka = new Kafka({
   clientId: 'deep-microservice-analysis',
   brokers: [`${process.env.PREDECOS_KAFKA_HOST}:${process.env.PREDECOS_KAFKA_PORT}`]
 });
+const admin = kafka.admin();
 const consumer = kafka.consumer({ groupId: 'deep-microservice-analysis-consumer' });
 const producer = kafka.producer();
 
 const performCleanup = async () => {
+  await admin.disconnect();
   await consumer.disconnect();
   await producer.disconnect();
   await mongoClient.close();
@@ -48,17 +50,18 @@ const startApolloServer = async () => {
   attachExitHandler(performCleanup);
 
   await mongoClient.connect();
+  await admin.connect();
   await consumer.connect();
   await producer.connect();
 
+  // TODO: Migrate to postgres
   // const knexConfig = {
   //   client: 'pg',
   //   connection: process.env.PREDECOS_PG_CONNECTION_STRING,
   // };
-
   // const postgresDataSource = new PostgresDataSource(knexConfig);
   const analysisataStore = new AnalysisDataStore(mongoClient.db('admin').collection('analysisResults'));
-  const analysisService = new AnalysisService(analysisataStore, new Sentiment(), consumer, producer, logger);
+  const analysisService = new AnalysisService(analysisataStore, new Sentiment(), admin, consumer, producer, logger);
 
   const server = new ApolloServer({
     schema: buildSubgraphSchema([{typeDefs, resolvers}]),
