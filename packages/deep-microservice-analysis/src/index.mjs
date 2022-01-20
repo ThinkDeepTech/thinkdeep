@@ -1,8 +1,8 @@
 import {buildSubgraphSchema} from '@apollo/subgraph';
 import {ApolloServer} from 'apollo-server-express';
 import {AnalysisService} from './analysis-service.mjs';
-import {AnalysisDataStore} from './datasource/analysis-data-store.mjs';
 // import {PostgresDataSource} from './datasource/postgres-datasource.mjs';
+import {SentimentStore} from './datasource/sentiment-store.mjs';
 import express from 'express';
 import { getLogger } from './get-logger.mjs';
 import { getPublicIP } from './get-public-ip.mjs';
@@ -60,8 +60,8 @@ const startApolloServer = async () => {
   //   connection: process.env.PREDECOS_PG_CONNECTION_STRING,
   // };
   // const postgresDataSource = new PostgresDataSource(knexConfig);
-  const analysisataStore = new AnalysisDataStore(mongoClient.db('admin').collection('analysisResults'));
-  const analysisService = new AnalysisService(analysisataStore, new Sentiment(), admin, consumer, producer, logger);
+  const sentimentStore = new SentimentStore(mongoClient.db('admin').collection('sentiments'), logger);
+  const analysisService = new AnalysisService(sentimentStore, new Sentiment(), admin, consumer, producer, logger);
 
   const server = new ApolloServer({
     schema: buildSubgraphSchema([{typeDefs, resolvers}]),

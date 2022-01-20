@@ -1,13 +1,23 @@
 import {MongoDataSource} from 'apollo-datasource-mongodb';
 
-class AnalysisDataStore extends MongoDataSource {
+class SentimentStore extends MongoDataSource {
+
+    /**
+     * @param {Object} mongoCollection - Mongo db collection to use.
+     * @param {Object} logger - Component logger.
+     */
+    constructor(mongoCollection, logger) {
+        super(mongoCollection);
+
+        this._logger = logger;
+    }
 
     /**
      * Read the most recent sentiment from the store.
      *
      * @param {String} economicEntityName - Name of the economic entity (i.e, 'Google').
      * @param {String} economicEntityType - Type of the economic entity (i.e, 'BUSINESS').
-     * @returns {Array} - Tweets read from the database and formatted for the application or [].
+     * @returns {Array} - Sentiments read from the database and formatted for the application schema or [].
      */
     async readMostRecentSentiments(economicEntityName, economicEntityType) {
 
@@ -23,7 +33,7 @@ class AnalysisDataStore extends MongoDataSource {
 
             return this._reduceSentiments(result)[0];
         } catch (e) {
-            console.log(`
+            this._logger.error(`
                 An error occurred while reading tweets from the store.
                 Error: ${e.message}
             `)
@@ -37,10 +47,17 @@ class AnalysisDataStore extends MongoDataSource {
      * @param {Number} timestamp - Timestamp associated with the entry.
      * @param {String} economicEntityName - Name of the economic entity (i.e, 'Google')
      * @param {String} economicEntityType - Type of the economic entity (i.e, 'BUSINESS')
-     * @param {Array} sentiments - Items to add to the database.
+     * @param {Array} sentiments - Items to add to the database. This must match the schema outlined in graphql.
      * @returns {Boolean} - True if the operation is successful, false otherwise.
      */
     async createSentiments(timestamp, economicEntityName, economicEntityType, sentiments) {
+
+        if (timestamp === 0) return false;
+
+        if (!economicEntityName || (typeof economicEntityName != 'string')) return false;
+
+        if (!economicEntityType || (typeof economicEntityType != 'string')) return false;
+
         try {
             await this.collection.insertOne({
                 timestamp,
@@ -50,7 +67,7 @@ class AnalysisDataStore extends MongoDataSource {
             });
             return true;
         } catch(e) {
-            console.log(`
+            this._logger.error(`
                 Insertion failed for:
                     economicEntityName: ${economicEntityName}
                     economicEntityType: ${economicEntityType}
@@ -85,4 +102,4 @@ class AnalysisDataStore extends MongoDataSource {
     }
 };
 
-export { AnalysisDataStore };
+export { SentimentStore };

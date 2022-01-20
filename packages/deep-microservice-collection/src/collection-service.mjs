@@ -171,6 +171,11 @@ class CollectionService {
         return tweetsCreated;
     }
 
+    /**
+     * Create the specified topics.
+     *
+     * @param {Array} topics - String array consisting of topic names.
+     */
     async _topicCreation(topics) {
         try {
             await this._admin.createTopics({

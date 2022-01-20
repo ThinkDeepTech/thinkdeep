@@ -64,6 +64,16 @@ class AnalysisService {
         return databaseData.sentiments;
     }
 
+    /**
+     * Compute sentiments for the specified tweets.
+     *
+     * NOTE: This sends a kafka event after sentiment computation.
+     *
+     * @param {String} economicEntityName - Name of the economic entity (i.e, Google)
+     * @param {String} economicEntityType - Type of economic entity (i.e, BUSINESS)
+     * @param {Array} timeseriesTweets - Consists of objects of the form { timestamp: <Number>, tweets: [{ text: 'tweet text' }]}
+     * @returns
+     */
     async _computeSentiment(economicEntityName, economicEntityType, timeseriesTweets) {
         if (!economicEntityName || (typeof economicEntityName != 'string')) return;
 
@@ -130,6 +140,11 @@ class AnalysisService {
         return response;
     }
 
+    /**
+     * Create the specified topics.
+     *
+     * @param {Array} topics - String array consisting of topic names.
+     */
     async _topicCreation(topics) {
         try {
             await this._admin.createTopics({
