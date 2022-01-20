@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: deep-microservice-gateway-service
+  name: deep-microservice-subscription-service
   annotations:
     # No TLS port annotation needed since 443 is assumed for HTTPS when another TLS option annotation is given.
     service.beta.kubernetes.io/do-loadbalancer-certificate-id: "12cba529-a0a4-4c85-a928-0d9154040f91"
@@ -11,12 +11,12 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: deep-microservice-gateway
+    app: deep-microservice-subscription
   ports:
     - name: http
       protocol: TCP
-      port: 4000
+      port: 4004
     - name: https
       protocol: TCP
       port: 443
-      targetPort: 4000
+      targetPort: 4004

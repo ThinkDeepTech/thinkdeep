@@ -1,37 +1,61 @@
-import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client/core';
+import { ApolloClient, HttpLink, InMemoryCache, split } from '@apollo/client/core';
 import { setContext } from '@apollo/client/link/context';
+import { getMainDefinition } from '@apollo/client/utilities';
+import { WebSocketLink } from './web-socket-link.mjs';
 
 import { getUser } from '../user.mjs';
 
-let client = null;
+let client = globalThis.__APOLLO_CLIENT__ || null;
 /**
  * Initialize the apollo client for use with the application.
  */
 const initApolloClient = async () => {
 
     if (!client) {
+
+        const authHeaders = (user) => {
+          return {
+            authorization: !!user?.accessToken ? `Bearer ${user.accessToken}` : '',
+            me: !!user?.idToken ? user.idToken : '',
+          };
+        };
+
         const user = await getUser();
 
         const cache = new InMemoryCache({ addTypename: false });
+
+        const wsLink = new WebSocketLink({
+          url: PREDECOS_MICROSERVICE_SUBSCRIPTION_URL,
+          connectionParams: () => {
+            const { authorization, me } = authHeaders(user);
+            return { authorization, me };
+          },
+        });
 
         const httpLink = new HttpLink({
             uri: PREDECOS_MICROSERVICE_GATEWAY_URL,
             credentials: 'include'
         });
 
+        const backendLink = split(
+            ({ query }) => {
+                const definition = getMainDefinition(query);
+                return definition.kind === "OperationDefinition" && definition.operation === 'subscription';
+              },
+              wsLink,
+              httpLink
+        );
+
         const authLink = setContext((_, {headers}) => {
+            const { authorization, me } = authHeaders(user);
             return {
-                headers: {
-                    ...headers,
-                    authorization: !!user?.accessToken ? `Bearer ${user.accessToken}` : '',
-                    me: !!user?.idToken ? user.idToken : ''
-                }
+                headers: { ...headers, authorization, me }
             };
         });
 
         client = new ApolloClient({
             cache,
-            link: authLink.concat(httpLink),
+            link: authLink.concat(backendLink),
             defaultOptions: {
                 watchQuery: {
                     fetchPolicy: 'no-cache',
@@ -50,7 +74,7 @@ const initApolloClient = async () => {
 }
 
 const setApolloClientForTesting = (mockClient) => {
-    client = mockClient;
+    globalThis.__APOLLO_CLIENT__ = mockClient;
 }
 
 export { initApolloClient, setApolloClientForTesting };

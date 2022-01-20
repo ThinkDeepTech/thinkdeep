@@ -1,6 +1,7 @@
 import {
   ApolloMutationController,
   ApolloQueryController,
+  ApolloSubscriptionController,
 } from '@apollo-elements/core';
 import {LitElement, css, html} from '@apollo-elements/lit-apollo';
 import '@google-web-components/google-chart';
@@ -12,19 +13,17 @@ import '@material/mwc-select';
 import '@material/mwc-textfield';
 import {debounce} from './debounce.mjs';
 import './deep-site-configuration.mjs';
-import {translate} from 'lit-element-i18n';
 import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
 import GetSentiment from './graphql/GetSentiment.query.graphql';
-
-const UPDATE_SENTIMENT_INTERVAL = 5 * 60 * 1000; /** min * seconds * ms */
+import UpdateSentiments from './graphql/UpdateSentiments.subscription.graphql';
+import {translate} from 'lit-element-i18n';
 
 export default class DeepAnalyzerPageSummary extends LitElement {
   static get properties() {
     return {
-      // Fetch sentiment query object
-      getSentiment: {type: Object},
+      subscriptionClient: {type: Object},
 
-      getSentimentIntervalId: {type: Number},
+      sentiments: {type: Array},
 
       // Data collection mutation object
       collectEconomicData: {type: Object},
@@ -33,52 +32,83 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       configuration: {type: Object},
 
       selectedSentiments: {type: Array},
+
+      // Fetch sentiment query object
+      _getInitialSentimentQuery: {type: Object},
     };
   }
 
   constructor() {
     super();
 
-    this.getSentiment = new ApolloQueryController(this, GetSentiment, {
-      variables: {
-        economicEntityName: '',
-        economicEntityType: 'BUSINESS',
-      },
-      noAutoSubscribe: true,
-      onData: this._triggerUpdate.bind(this),
-    });
+    this.sentiments = [];
+
+    this._getInitialSentimentQuery = new ApolloQueryController(
+      this,
+      GetSentiment,
+      {
+        variables: {
+          economicEntityName: '',
+          economicEntityType: 'BUSINESS',
+        },
+        noAutoSubscribe: true,
+        onData: (data) => {
+          this.sentiments = data?.sentiments || [];
+        },
+        onError: (error) => {
+          this.sentiments = [];
+          console.error(
+            `Fetch sentiments failed with error: ${JSON.stringify(error)}`
+          );
+        },
+      }
+    );
+
+    this.subscriptionClient = new ApolloSubscriptionController(
+      this,
+      UpdateSentiments,
+      {
+        variables: {
+          economicEntityName: 'Google',
+          economicEntityType: 'BUSINESS',
+        },
+        onData: ({subscriptionData}) => {
+          this.sentiments = subscriptionData?.data?.updateSentiments || [];
+        },
+        onError: (error) => {
+          this.sentiments = [];
+          console.error(
+            `An error occurred while subscribing to sentiment updates: ${JSON.stringify(
+              error
+            )}`
+          );
+        },
+      }
+    );
 
     this.collectEconomicData = new ApolloMutationController(
       this,
-      CollectEconomicData
+      CollectEconomicData,
+      {
+        onError: (error) => {
+          console.error(
+            `An error occurred while attempting to collect economic data: ${JSON.stringify(
+              error
+            )}`
+          );
+        },
+      }
     );
 
     this.configuration = {observedEconomicEntities: []};
 
     this.selectedSentiments = [];
-
-    this.getSentimentIntervalId = null;
   }
 
   firstUpdated() {
     super.firstUpdated();
 
     this._setChartOptions();
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-
-    this.getSentimentIntervalId = setInterval(
-      this._onSelect.bind(this),
-      UPDATE_SENTIMENT_INTERVAL
-    );
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-
-    clearInterval(this.getSentimentIntervalId);
   }
 
   static get styles() {
@@ -195,7 +225,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         type="line"
         options='{"title": "Sentiment as a function of time" }'
         cols='[{"label": "Timestamp", "type": "number"}, {"label": "Sentiment", "type": "number"}]'
-        rows="[${this.getSentiment?.data?.sentiments?.map((sentiment) =>
+        rows="[${this.sentiments?.map((sentiment) =>
           JSON.stringify([sentiment.timestamp, sentiment.score])
         )}]"
       ></google-chart>
@@ -239,7 +269,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
       const selectedPoint = googleChart.rows[selectedRow];
 
-      this.getSentiment?.data?.sentiments?.forEach((sentiment) => {
+      this.sentiments?.forEach((sentiment) => {
         if (this._hasMatchingData(sentiment, selectedPoint)) {
           this.selectedSentiments.push(sentiment);
         }
@@ -293,11 +323,20 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     const businessName = this.shadowRoot.querySelector(
       '[aria-selected="true"]'
     ).value;
-    this.getSentiment.variables = {
+
+    const variables = {
       economicEntityName: businessName,
       economicEntityType: 'BUSINESS',
     };
-    this.getSentiment.executeQuery();
+
+    // Subscribe to updates for the desired business.
+    // NOTE: This must occur before the data is fetched for the first time. Otherwise,
+    // updating from zero to one watched business won't update the sentiment graph.
+    this.subscriptionClient.variables = variables;
+
+    // Fetch the data right away
+    this._getInitialSentimentQuery.variables = variables;
+    this._getInitialSentimentQuery.executeQuery();
   }
 
   /**
@@ -306,16 +345,6 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    */
   _handleSiteConfig({detail}) {
     this.configuration = detail || {observedEconomicEntities: []};
-  }
-
-  /**
-   * Trigger an update to the DOM.
-   *
-   * NOTE: This is used because the google-chart wasn't dynamically updating as a result of data fetch.
-   * This happened to solve the issue.
-   */
-  _triggerUpdate() {
-    this.requestUpdate();
   }
 }
 

@@ -10,7 +10,7 @@ globalThis.auth0 = null;
 const getUser = async (options = {
     domain: 'predecos.us.auth0.com',
     clientId: 'T4NyuF1MTRTLTHmEvCC5hEDV5zsmG6aQ',
-    audience: PREDECOS_AUTH_AUDIENCE, // TODO: Recreate API and hide audience.
+    audience: PREDECOS_AUTH_AUDIENCE,
 }) => {
     if (!globalThis.auth0) {
         await initAuth(options);

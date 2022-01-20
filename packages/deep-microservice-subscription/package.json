@@ -1,11 +1,11 @@
 {
-  "name": "@thinkdeep/deep-microservice-collection",
+  "name": "@thinkdeep/deep-microservice-subscription",
   "version": "0.0.8",
-  "description": "Data collection microservice.",
+  "description": "Microservice managing subscriptions.",
   "keywords": [
-    "Python",
     "GraphQL",
-    "Federation"
+    "Apollo",
+    "NodeJS"
   ],
   "author": "haydenmcp <hayden.mcparlane@gmail.com>",
   "homepage": "https://github.com/ThinkDeepTech/thinkdeep#readme",
@@ -15,7 +15,7 @@
   },
   "scripts": {
     "start": "node ./src/index.mjs",
-    "tests": "mocha ./test/**/*.test.mjs ./test/*.test.mjs --exit"
+    "tests": "mocha ./test/**/*.test.mjs ./test/*.test.mjs"
   },
   "devDependencies": {
     "chai": "^4.3.4",
@@ -27,17 +27,21 @@
     "@apollo/federation": "^0.29.1",
     "@apollo/gateway": "^0.38.2",
     "@apollo/subgraph": "^0.1.5",
+    "@graphql-tools/schema": "^8.3.1",
     "apollo-datasource": "^3.1.0",
-    "apollo-datasource-mongodb": "^0.5.2",
-    "apollo-datasource-rest": "^3.4.0",
     "apollo-server": "^3.2.0",
     "apollo-server-express": "^3.5.0",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
-    "graphql": "^15.5.1",
+    "express-jwt": "^6.1.0",
+    "graphql": "^15.8.0",
+    "graphql-kafka-subscriptions": "^0.4.0",
+    "graphql-subscriptions": "^2.0.0",
+    "graphql-ws": "^5.5.5",
+    "jwks-rsa": "^2.0.5",
     "kafkajs": "^1.15.0",
     "log4js": "^6.3.0",
-    "moment": "^2.29.1",
-    "mongodb": "^4.2.1"
+    "ws": "^7.4.4"
   },
   "private": true
 }

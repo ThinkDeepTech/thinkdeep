@@ -20,6 +20,8 @@ describe('collection-service', () => {
     let tweetStore;
     let economicEntityMemo;
     let commander;
+    let admin;
+    let producer;
     let logger;
     let subject;
     beforeEach(() => {
@@ -55,7 +57,15 @@ describe('collection-service', () => {
             stopAllCommands: sinon.stub()
         };
 
-        subject = new CollectionService(twitterAPI, tweetStore, economicEntityMemo, commander, logger);
+        admin = {
+            createTopics: sinon.stub().returns(Promise.resolve())
+        };
+
+        producer = {
+            send: sinon.stub()
+        };
+
+        subject = new CollectionService(twitterAPI, tweetStore, economicEntityMemo, commander, admin, producer, logger);
     });
 
     describe('constructor', () => {
@@ -272,5 +282,84 @@ describe('collection-service', () => {
 
             expect(tweetStore.createTweets).to.have.been.called;
         })
+
+        it('should wait for topic creation before adding to the message queue', async () => {
+            const economicEntityName = "SomeBusinessName";
+            const economicEntityType = "BUSINESS";
+            const tweets = [{
+                    text: 'something'
+                }, {
+                    text: 'something else'
+                }];
+            const timeSeriesData = [{
+                timestamp: 1,
+                economicEntityName: 'irrelevant',
+                economicEntityType: 'irrelevant',
+                tweets
+            }];
+
+            twitterAPI.tweets.returns(tweets);
+            tweetStore.readRecentTweets.returns(timeSeriesData);
+
+            await subject._collectTweets(economicEntityName, economicEntityType);
+
+            const adminArg = admin.createTopics.getCall(0).args[0];
+            expect(admin.createTopics).to.have.been.calledOnce;
+            expect(adminArg.waitForLeaders).to.equal(true);
+        })
+
+        it('should add a message to the queue indicating what tweets were collected', async () => {
+            const economicEntityName = "SomeBusinessName";
+            const economicEntityType = "BUSINESS";
+            const tweets = [{
+                    text: 'something'
+                }, {
+                    text: 'something else'
+                }];
+            const timeSeriesData = [{
+                timestamp: 1,
+                economicEntityName: 'irrelevant',
+                economicEntityType: 'irrelevant',
+                tweets
+            }];
+
+            twitterAPI.tweets.returns(tweets);
+            tweetStore.readRecentTweets.returns(timeSeriesData);
+
+            await subject._collectTweets(economicEntityName, economicEntityType);
+
+            const sendArg = producer.send.getCall(0).args[0];
+            const sentEvent = JSON.parse(sendArg.messages[0].value);
+            expect(sendArg.topic).to.equal('TWEETS_COLLECTED');
+            expect(sentEvent.economicEntityName).to.equal(economicEntityName);
+            expect(sentEvent.economicEntityType).to.equal(economicEntityType);
+
+            const eventTweets = sentEvent.timeSeriesItems[0].tweets;
+            expect(eventTweets[0].text).to.equal(tweets[0].text);
+            expect(eventTweets[1].text).to.equal(tweets[1].text);
+
+        })
     });
+
+    describe('_topicCreation', () => {
+
+        it('should wait for a leader selection before returning', async () => {
+            const topics = ['SOME_TOPIC'];
+
+            await subject._topicCreation(topics);
+
+            const options = admin.createTopics.getCall(0).args[0];
+            expect(options.waitForLeaders).to.equal(true);
+        })
+
+        it('should warn the user when an error occurs', async () => {
+            const topics = ['SOME_TOPIC'];
+
+            admin.createTopics.throws();
+
+            await subject._topicCreation(topics);
+
+            expect(logger.warn).to.have.been.called;
+        })
+    })
 });

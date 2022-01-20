@@ -8,6 +8,7 @@ import {TwitterAPI} from './datasource/twitter-api.mjs';
 import express from 'express';
 import {getLogger} from './get-logger.mjs';
 import {getPublicIP} from './get-public-ip.mjs';
+import { Kafka } from 'kafkajs';
 import {loggingPlugin} from './logging-plugin.mjs';
 import {MongoClient} from 'mongodb';
 import process from 'process';
@@ -18,10 +19,19 @@ const logger = getLogger();
 
 const commander = new Commander(logger);
 
+const kafka = new Kafka({
+  clientId: 'deep-microservice-collection',
+  brokers: [`${process.env.PREDECOS_KAFKA_HOST}:${process.env.PREDECOS_KAFKA_PORT}`]
+});
+const admin = kafka.admin();
+const producer = kafka.producer();
+
 const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRING);
 
 const performCleanup = async () => {
   await mongoClient.close();
+  await producer.disconnect();
+  await admin.disconnect();
 
   commander.stopAllCommands();
 };
@@ -44,15 +54,16 @@ const startApolloServer = async () => {
   attachExitHandler(performCleanup);
 
   await mongoClient.connect();
+  await admin.connect();
+  await producer.connect();
 
   console.log("Connected successfully to server");
 
   const twitterAPI = new TwitterAPI();
   const tweetStore = new TweetStore(mongoClient.db('admin').collection('tweets'));
   const economicEntityMemo = new EconomicEntityMemo(mongoClient.db('admin').collection('memo'), logger);
-  const collectionService = new CollectionService(twitterAPI, tweetStore, economicEntityMemo, commander, logger);
+  const collectionService = new CollectionService(twitterAPI, tweetStore, economicEntityMemo, commander, admin, producer, logger);
 
-  const isProduction = process.env.NODE_ENV === 'production';
   const server = new ApolloServer({
     schema: buildSubgraphSchema([{typeDefs, resolvers}]),
     dataSources: () => ({collectionService}),
@@ -63,11 +74,6 @@ const startApolloServer = async () => {
     plugins: [
       loggingPlugin
     ],
-
-    // NOTE: Introspection has some security implications. It allows developers to query the API to figure out the structure
-    // of the schema. This can be dangerous in production. However, these services are intended to be visible so this isn't
-    // currently an issue.
-    introspection: true,
   });
   await server.start();
 
@@ -79,6 +85,7 @@ const startApolloServer = async () => {
 
   // NOTE: Placing a forward slash at the end of any allowed origin causes a preflight error.
   let allowedOrigins = ['https://predecos.com', 'https://www.predecos.com', 'https://thinkdeep-d4624.web.app', 'https://www.thinkdeep-d4624.web.app']
+  const isProduction = process.env.NODE_ENV === 'production';
   if (!isProduction) {
     allowedOrigins = allowedOrigins.concat(['https://localhost:8000', 'http://localhost:8000', 'https://studio.apollographql.com']);
   }

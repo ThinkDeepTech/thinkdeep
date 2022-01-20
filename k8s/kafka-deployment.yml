@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-deployment
+  labels:
+    app: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+      - name: kafka
+        image: bitnami/kafka:2.8.1
+        ports:
+        - containerPort: $PREDECOS_KAFKA_PORT
+        env:
+          - name: KAFKA_CFG_ZOOKEEPER_CONNECT
+            value: "$PREDECOS_ZOOKEEPER_HOST:$PREDECOS_ZOOKEEPER_PORT"
+          - name: ALLOW_PLAINTEXT_LISTENER
+            value: "$KAFKA_ALLOW_PLAINTEXT_LISTENER"
+          - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
+            value: "$KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE"
+          - name: KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP
+            value: "$KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP"
+          - name: KAFKA_CFG_LISTENERS
+            value: "$KAFKA_CFG_LISTENERS"
+          - name: KAFKA_CFG_ADVERTISED_LISTENERS
+            value: "CLIENT://$PREDECOS_KAFKA_HOST:9092,EXTERNAL://$PREDECOS_KAFKA_HOST:$PREDECOS_KAFKA_PORT"
+          - name: KAFKA_CFG_INTER_BROKER_LISTENER_NAME
+            value: "$KAFKA_CFG_INTER_BROKER_LISTENER_NAME"

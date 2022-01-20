@@ -19,7 +19,7 @@ const startGatewayService = async () => {
       {name: 'collection', url: process.env.PREDECOS_MICROSERVICE_COLLECTION_URL},
       {name: 'configuration', url: process.env.PREDECOS_MICROSERVICE_CONFIGURATION_URL},
     ],
-    buildService({name, url}) {
+    buildService({url}) {
       return new RemoteGraphQLDataSource({
         url,
         willSendRequest({request, context}) {
