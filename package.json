@@ -9,6 +9,7 @@
     "microservice:collection": "nodemon ./packages/deep-microservice-collection/src/index.mjs",
     "microservice:configuration": "nodemon ./packages/deep-microservice-configuration/src/index.mjs",
     "microservice:gateway": "wait-on tcp:4002 && wait-on tcp:4001 && wait-on tcp:4003  && nodemon ./packages/deep-microservice-gateway/src/index.mjs",
+    "microservice:subscription": "wait-on tcp:4002 && wait-on tcp:4001 && wait-on tcp:4003  && wait-on tcp:4000 && nodemon ./packages/deep-microservice-subscription/src/index.mjs",
     "nodemon": "nodemon -h",
     "build": "lerna run build",
     "tests": "lerna run tests"
