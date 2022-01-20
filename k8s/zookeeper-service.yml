@@ -7,4 +7,4 @@ spec:
     app: zookeeper
   ports:
     - protocol: TCP
-      port: 2181
+      port: $PREDECOS_ZOOKEEPER_PORT

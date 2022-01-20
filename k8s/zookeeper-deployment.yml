@@ -18,7 +18,7 @@ spec:
       - name: zookeeper
         image: bitnami/zookeeper:3.6.3
         ports:
-        - containerPort: 2181
+        - containerPort: $PREDECOS_ZOOKEEPER_PORT
         env:
           - name: ALLOW_ANONYMOUS_LOGIN
             value: "$ZOOKEEPER_ALLOW_ANONYMOUS_LOGIN"

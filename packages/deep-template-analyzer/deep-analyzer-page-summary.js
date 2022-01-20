@@ -329,7 +329,9 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       economicEntityType: 'BUSINESS',
     };
 
-    // Subscribe to updates for the desired business
+    // Subscribe to updates for the desired business.
+    // NOTE: This must occur before the data is fetched for the first time. Otherwise,
+    // updating from zero to one watched business won't update the sentiment graph.
     this.subscriptionClient.variables = variables;
 
     // Fetch the data right away
