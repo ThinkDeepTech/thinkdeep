@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: zookeeper
-        image: bitnami/zookeeper:3.6.3
+        image: bitnami/zookeeper:latest
         ports:
         - containerPort: $PREDECOS_ZOOKEEPER_PORT
         env:
