@@ -107,6 +107,11 @@ learn, which means it's easier to navigate the codebase.
 ### Additional Design Decisions
 The following are design decisions that were not catagorizable as only client or server. Some of them are both.
 
+#### Continuous deployment
+The system is automatically deployed to my public development environment. This is a powerful concept that allows for
+fast development. With sufficient testing, automated system can allow for safe automated deployment of the code to
+"production."
+
 #### Use of full-stack JavaScript
 Reducing the mental effort needed to understand a given codebase has dramatic impacts on software development speed
 and stability. Full-stack javascript was used here (along with the same testing frameworks on both front and back end)
