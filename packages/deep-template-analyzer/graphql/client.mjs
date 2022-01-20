@@ -12,7 +12,6 @@ let client = globalThis.__APOLLO_CLIENT__ || null;
 const initApolloClient = async () => {
 
     if (!client) {
-        const user = await getUser();
 
         const authHeaders = (user) => {
           return {
@@ -20,6 +19,8 @@ const initApolloClient = async () => {
             me: !!user?.idToken ? user.idToken : '',
           };
         };
+
+        const user = await getUser();
 
         const cache = new InMemoryCache({ addTypename: false });
 

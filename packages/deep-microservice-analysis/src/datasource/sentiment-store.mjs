@@ -100,6 +100,6 @@ class SentimentStore extends MongoDataSource {
 
         return response;
     }
-};
+}
 
 export { SentimentStore };
