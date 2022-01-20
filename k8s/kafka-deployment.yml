@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: kafka
-        image: bitnami/kafka:2.8.1
+        image: bitnami/kafka:latest
         ports:
         - containerPort: $PREDECOS_KAFKA_PORT
         env:
