@@ -38,7 +38,7 @@ class CollectionService {
         this._producer = producer;
         this._logger = logger;
 
-        this._topicCreation([{topic: 'TWEETS_COLLECTED'}]).then(async() => {
+        this._topicCreation([{topic: 'TWEETS_COLLECTED', replicationFactor: 1}]).then(async() => {
 
             const economicEntities = await this._economicEntityMemo.readEconomicEntities();
             for (const economicEntity of economicEntities) {

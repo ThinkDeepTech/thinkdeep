@@ -23,7 +23,8 @@ class AnalysisService {
         this._producer = producer;
         this._logger = logger;
 
-        this._topicCreation([{ topic: 'TWEET_SENTIMENT_COMPUTED' }]).then( async() => {
+        this._topicCreation([{ topic: 'TWEETS_COLLECTED' , replicationFactor: 1},
+            { topic: 'TWEET_SENTIMENT_COMPUTED' , replicationFactor: 1}]).then( async() => {
 
             await this._consumer.subscribe({ topic: 'TWEETS_COLLECTED', fromBeginning: true });
 
