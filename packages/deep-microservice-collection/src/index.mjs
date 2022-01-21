@@ -57,10 +57,6 @@ const startApolloServer = async () => {
   await admin.connect();
   await producer.connect();
 
-  await new Promise((resolve, reject) => {
-    setTimeout(resolve, 2 * 60 * 1000);
-  })
-
   console.log("Connected successfully to server");
 
   const twitterAPI = new TwitterAPI();
