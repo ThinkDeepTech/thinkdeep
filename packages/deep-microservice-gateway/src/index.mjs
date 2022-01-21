@@ -111,6 +111,6 @@ const startGatewayService = async () => {
   );
 };
 
-startGatewayService().then(() => { /* Do nothing */ }, (reason) => {
-  logger.error(`An Error Occurred: ${JSON.stringify(reason)}`);
+startGatewayService().then(() => { /* Do nothing */ }).catch((error) => {
+  logger.error(`An Error Occurred: ${JSON.stringify(error)}, message: ${error.message.toString()}`);
 });
