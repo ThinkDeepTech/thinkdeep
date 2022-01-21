@@ -38,14 +38,12 @@ class CollectionService {
         this._producer = producer;
         this._logger = logger;
 
-        this._economicEntityMemo.readEconomicEntities().then(async (economicEntities) => {
+        this._topicCreation([{topic: 'TWEETS_COLLECTED'}]).then(async() => {
 
-            await this._topicCreation(['TWEETS_COLLECTED']);
+            const economicEntities = await this._economicEntityMemo.readEconomicEntities();
             for (const economicEntity of economicEntities) {
                 this._startDataCollection(economicEntity.name, economicEntity.type);
             }
-        }, (reason) => {
-            this._logger.error(`Failed to read memoized economic entities. Reason: ${JSON.stringify(reason)}`);
         });
     }
 
