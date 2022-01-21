@@ -25,6 +25,8 @@ class AnalysisService {
 
         this._consumer.subscribe({ topic: 'TWEETS_COLLECTED', fromBeginning: true }).then(async () => {
 
+            await this._topicCreation(['TWEET_SENTIMENT_COMPUTED']);
+
             await this._consumer.run({
                 eachMessage: async ({message}) => {
 
@@ -100,7 +102,6 @@ class AnalysisService {
 
         this._logger.info(`Adding event with value: ${JSON.stringify(event)}`);
 
-        await this._topicCreation(['TWEET_SENTIMENT_COMPUTED']);
         await this._producer.send({
             topic: `TWEET_SENTIMENT_COMPUTED`,
             messages: [

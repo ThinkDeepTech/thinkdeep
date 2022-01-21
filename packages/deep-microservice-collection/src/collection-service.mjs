@@ -38,7 +38,9 @@ class CollectionService {
         this._producer = producer;
         this._logger = logger;
 
-        this._economicEntityMemo.readEconomicEntities().then((economicEntities) => {
+        this._economicEntityMemo.readEconomicEntities().then(async (economicEntities) => {
+
+            await this._topicCreation(['TWEETS_COLLECTED']);
             for (const economicEntity of economicEntities) {
                 this._startDataCollection(economicEntity.name, economicEntity.type);
             }
@@ -160,7 +162,6 @@ class CollectionService {
 
         this._logger.info(`Adding collection event with value: ${JSON.stringify(event)}`);
 
-        await this._topicCreation(['TWEETS_COLLECTED']);
         this._producer.send({
             topic: 'TWEETS_COLLECTED',
             messages: [
