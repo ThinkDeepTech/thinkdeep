@@ -23,9 +23,9 @@ class AnalysisService {
         this._producer = producer;
         this._logger = logger;
 
-        this._consumer.subscribe({ topic: 'TWEETS_COLLECTED', fromBeginning: true }).then(async () => {
+        this._topicCreation(['TWEETS_COLLECTED', 'TWEET_SENTIMENT_COMPUTED']).then( async() => {
 
-            await this._topicCreation(['TWEET_SENTIMENT_COMPUTED']);
+            await this._consumer.subscribe({ topic: 'TWEETS_COLLECTED', fromBeginning: true });
 
             await this._consumer.run({
                 eachMessage: async ({message}) => {
@@ -36,10 +36,7 @@ class AnalysisService {
                     await this._computeSentiment(economicEntityName, economicEntityType, timeSeriesItems);
                 }
             });
-
-        }, (reason) => {
-            this._logger.error(`An error occurred while subscribing to collection microservice events: ${JSON.stringify(reason)}`);
-        });
+        })
     }
 
     /**
@@ -158,7 +155,7 @@ class AnalysisService {
             });
         } catch (error) {
             /** An error is thrown when the topic has already been created */
-            this._logger.warn(`Creation of topics ${JSON.stringify(topics)} exited with error: ${JSON.stringify(error)}`);
+            this._logger.warn(`Creation of topics ${JSON.stringify(topics)} exited with error: ${JSON.stringify(error)}, message: ${error.message.toString()}`);
         }
     }
 }

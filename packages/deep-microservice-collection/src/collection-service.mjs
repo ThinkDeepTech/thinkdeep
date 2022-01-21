@@ -189,7 +189,7 @@ class CollectionService {
             });
         } catch (error) {
             /** An error is thrown when the topic has already been created */
-            this._logger.warn(`Creation of topics ${JSON.stringify(topics)} exited with error: ${JSON.stringify(error)}`);
+            this._logger.warn(`Creation of topics ${JSON.stringify(topics)} exited with error: ${JSON.stringify(error)}, message: message: ${error.message.toString()}`);
         }
     }
 }
