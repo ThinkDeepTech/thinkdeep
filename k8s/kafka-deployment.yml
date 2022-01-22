@@ -34,3 +34,7 @@ spec:
             value: "CLIENT://$PREDECOS_KAFKA_HOST:9092,EXTERNAL://$PREDECOS_KAFKA_HOST:$PREDECOS_KAFKA_PORT"
           - name: KAFKA_CFG_INTER_BROKER_LISTENER_NAME
             value: "$KAFKA_CFG_INTER_BROKER_LISTENER_NAME"
+          - name: KAFKA_CFG_BROKER_ID
+            value: 1
+          - name: KAFKA_CFG_UNCLEAN_LEADER_ELECTION_ENABLE
+            value: "false"
