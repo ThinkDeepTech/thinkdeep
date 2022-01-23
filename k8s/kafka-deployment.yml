@@ -5,7 +5,7 @@ metadata:
   labels:
     app: kafka
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: kafka
@@ -38,3 +38,5 @@ spec:
             value: "1"
           - name: KAFKA_CFG_UNCLEAN_LEADER_ELECTION_ENABLE
             value: "false"
+          - name: KAFKA_CFG_LOG4J_LOGGER_KAFKA
+            value: "DEBUG"
