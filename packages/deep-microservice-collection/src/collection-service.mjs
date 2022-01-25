@@ -9,12 +9,7 @@ import { hasReadAllAccess } from './permissions.mjs';
  * NOTE: Due to twitter developer account limitations only 500,000 tweets can be consumed per month.
  * As a result, ~400 businesses can be watched.
  */
-// TODO: Reintroduce after validation in public dev env
-// const TWITTER_FETCH_INTERVAL = 6 * 60 * 60 * 1000; /** hrs * min * seconds * ms */
-
-// TODO: Remove after validation. This update frequency is being used because I need to be able to test the
-// subscription service in public dev. After confirmation it'll be removed due to twitter api quota.
-const TWITTER_FETCH_INTERVAL = 2 * 60 * 1000; /** min * seconds * ms */
+const TWITTER_FETCH_INTERVAL = 6 * 60 * 60 * 1000; /** hrs * min * seconds * ms */
 
 class CollectionService {
 
