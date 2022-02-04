@@ -19,3 +19,5 @@ spec:
         image: thinkdeeptech/deep-microservice-collection:latest
         ports:
         - containerPort: 4002
+      imagePullSecrets:
+        - name: docker-secret

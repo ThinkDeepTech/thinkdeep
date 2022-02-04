@@ -38,3 +38,5 @@ spec:
             value: "$PREDECOS_KAFKA_PORT"
           - name: NODE_ENV
             value: "$NODE_ENV"
+      imagePullSecrets:
+        - name: docker-secret
