@@ -47,7 +47,7 @@ jobs:
         - k8s/initialize:
             cluster: predecos-kubernetes-cluster
         - run:
-            command: docker build -t thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis:latest --build-arg PREDECOS_MONGODB_CONNECTION_STRING=$PREDECOS_MONGODB_CONNECTION_STRING --build-arg PREDECOS_PG_CONNECTION_STRING=$PREDECOS_PG_CONNECTION_STRING --build-arg PREDECOS_KAFKA_HOST=$PREDECOS_KAFKA_HOST --build-arg PREDECOS_KAFKA_PORT=$PREDECOS_KAFKA_PORT --build-arg NODE_ENV=$NODE_ENV .
+            command: docker build -t thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis:latest --build-arg PREDECOS_MONGODB_CONNECTION_STRING=$PREDECOS_MONGODB_CONNECTION_STRING --build-arg PREDECOS_KAFKA_HOST=$PREDECOS_KAFKA_HOST --build-arg PREDECOS_KAFKA_PORT=$PREDECOS_KAFKA_PORT --build-arg NODE_ENV=$NODE_ENV .
             working_directory: ./packages/deep-microservice-analysis
         - run: docker push thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-analysis:latest
@@ -249,29 +249,29 @@ jobs:
             resource-name: deployment/mongodb-deployment
             show-kubectl-command: true
 
-    deploy_postgres:
-      docker:
-        - image: 'cimg/base:stable'
+    # deploy_postgres:
+    #   docker:
+    #     - image: 'cimg/base:stable'
 
-      working_directory: ~/project
+    #   working_directory: ~/project
 
-      steps:
-        - checkout
-        - envsubst/install
-        - setup_remote_docker:
-            version: 20.10.7
-        - login_docker
-        - k8s/install
-        - k8s/initialize:
-            cluster: predecos-kubernetes-cluster
-        - kubernetes/delete-resource:
-            now: true
-            resource-names: postgres-deployment
-            resource-types: deployments
-            wait: true
-        - run:
-            command: envsubst < ./postgres-deployment.yml | kubectl apply -f -
-            working_directory: ./packages/deep-microservice-analysis/k8s
+    #   steps:
+    #     - checkout
+    #     - envsubst/install
+    #     - setup_remote_docker:
+    #         version: 20.10.7
+    #     - login_docker
+    #     - k8s/install
+    #     - k8s/initialize:
+    #         cluster: predecos-kubernetes-cluster
+    #     - kubernetes/delete-resource:
+    #         now: true
+    #         resource-names: postgres-deployment
+    #         resource-types: deployments
+    #         wait: true
+    #     - run:
+    #         command: envsubst < ./postgres-deployment.yml | kubectl apply -f -
+    #         working_directory: ./packages/deep-microservice-analysis/k8s
 
     deploy_ui:
       docker:
@@ -304,10 +304,10 @@ workflows:
             branches:
               only: master
 
-      - deploy_postgres:
-          filters:
-            branches:
-              only: master
+      # - deploy_postgres:
+      #     filters:
+      #       branches:
+      #         only: master
 
       - build_and_deploy_microservice_collection:
           requires:
@@ -319,9 +319,9 @@ workflows:
 
       - build_and_deploy_microservice_analysis:
           requires:
+            - build_and_deploy_microservice_collection
             - deploy_kafka
             - deploy_mongodb
-            - build_and_deploy_microservice_collection
           filters:
             branches:
               only: master
@@ -344,10 +344,10 @@ workflows:
 
       - build_and_deploy_microservice_subscription:
           requires:
-            - deploy_kafka
             - build_and_deploy_microservice_collection
             - build_and_deploy_microservice_analysis
             - build_and_deploy_microservice_configuration
+            - deploy_kafka
           filters:
             branches:
               only: master
@@ -356,9 +356,9 @@ workflows:
 
       - deploy_ui:
           requires:
-            - build_ui
             - build_and_deploy_microservice_gateway
             - build_and_deploy_microservice_subscription
+            - build_ui
           filters:
             branches:
               only: master
