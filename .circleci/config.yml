@@ -163,7 +163,8 @@ jobs:
       working_directory: ~/project
 
       steps:
-          - browser-tools/install-browser-tools
+          - browser-tools/install-browser-tools:
+              firefox-version: 96.0
           - checkout
           - install_monorepo
           - test_monorepo
