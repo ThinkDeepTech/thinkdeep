@@ -163,8 +163,8 @@ jobs:
       working_directory: ~/project
 
       steps:
-          - run: apt-get update
-          - run: apt-get install libasound-dev
+          - run: sudo apt-get update
+          - run: sudo apt-get install -y libasound-dev
           - browser-tools/install-browser-tools
           - checkout
           - install_monorepo
