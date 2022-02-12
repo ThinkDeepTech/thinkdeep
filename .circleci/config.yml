@@ -51,11 +51,6 @@ jobs:
             working_directory: ./packages/deep-microservice-analysis
         - run: docker push thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-analysis:latest
-        - kubernetes/delete-resource:
-            now: true
-            resource-names: deep-microservice-analysis-deployment
-            resource-types: deployments
-            wait: true
         - kubernetes/create-or-update-resource:
             get-rollout-status: true
             resource-file-path: ./packages/deep-microservice-analysis/k8s/deep-microservice-analysis-deployment.yml
@@ -81,11 +76,6 @@ jobs:
             working_directory: ./packages/deep-microservice-collection
         - run: docker push thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-collection:latest
-        - kubernetes/delete-resource:
-            now: true
-            resource-names: deep-microservice-collection-deployment
-            resource-types: deployments
-            wait: true
         - kubernetes/create-or-update-resource:
             get-rollout-status: true
             resource-file-path: ./packages/deep-microservice-collection/k8s/deep-microservice-collection-deployment.yml
@@ -111,11 +101,6 @@ jobs:
             working_directory: ./packages/deep-microservice-configuration
         - run: docker push thinkdeeptech/deep-microservice-configuration:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-configuration:latest
-        - kubernetes/delete-resource:
-            now: true
-            resource-names: deep-microservice-configuration-deployment
-            resource-types: deployments
-            wait: true
         - kubernetes/create-or-update-resource:
             get-rollout-status: true
             resource-file-path: ./packages/deep-microservice-configuration/k8s/deep-microservice-configuration-deployment.yml
@@ -141,11 +126,6 @@ jobs:
             working_directory: ./packages/deep-microservice-gateway
         - run: docker push thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-gateway:latest
-        - kubernetes/delete-resource:
-            now: true
-            resource-names: deep-microservice-gateway-deployment
-            resource-types: deployments
-            wait: true
         - kubernetes/create-or-update-resource:
             get-rollout-status: true
             resource-file-path: ./packages/deep-microservice-gateway/k8s/deep-microservice-gateway-deployment.yml
@@ -172,11 +152,6 @@ jobs:
             working_directory: ./packages/deep-microservice-subscription
         - run: docker push thinkdeeptech/deep-microservice-subscription:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-subscription:latest
-        - kubernetes/delete-resource:
-            now: true
-            resource-names: deep-microservice-subscription-deployment
-            resource-types: deployments
-            wait: true
         - run:
             command: envsubst < ./deep-microservice-subscription-deployment.yml | kubectl apply -f -
             working_directory: ./packages/deep-microservice-subscription/k8s
@@ -238,40 +213,20 @@ jobs:
         - k8s/install
         - k8s/initialize:
             cluster: predecos-kubernetes-cluster
-        - kubernetes/delete-resource:
-            now: true
-            resource-names: mongodb-deployment
-            resource-types: deployments
-            wait: true
-        - kubernetes/create-or-update-resource:
-            get-rollout-status: true
-            resource-file-path: ./packages/deep-microservice-collection/k8s/mongodb-deployment.yml
-            resource-name: deployment/mongodb-deployment
-            show-kubectl-command: true
-
-    # deploy_postgres:
-    #   docker:
-    #     - image: 'cimg/base:stable'
-
-    #   working_directory: ~/project
-
-    #   steps:
-    #     - checkout
-    #     - envsubst/install
-    #     - setup_remote_docker:
-    #         version: 20.10.7
-    #     - login_docker
-    #     - k8s/install
-    #     - k8s/initialize:
-    #         cluster: predecos-kubernetes-cluster
-    #     - kubernetes/delete-resource:
-    #         now: true
-    #         resource-names: postgres-deployment
-    #         resource-types: deployments
-    #         wait: true
-    #     - run:
-    #         command: envsubst < ./postgres-deployment.yml | kubectl apply -f -
-    #         working_directory: ./packages/deep-microservice-analysis/k8s
+        - helm/install-helm-client:
+            version: v3.7.2
+        - run:
+            name: Add Bitnami Repository
+            command: helm repo add bitnami https://charts.bitnami.com/bitnami
+        - run:
+            name: Update Repositories
+            command: helm repo update
+        - run:
+            name: Delete MongoDB
+            command: helm delete mongodb-latest
+        - run:
+            name: Install MongoDB
+            command: helm install mongodb-latest bitnami/mongodb
 
     deploy_ui:
       docker:
@@ -303,11 +258,6 @@ workflows:
           filters:
             branches:
               only: master
-
-      # - deploy_postgres:
-      #     filters:
-      #       branches:
-      #         only: master
 
       - build_and_deploy_microservice_collection:
           requires:
