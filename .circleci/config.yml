@@ -164,7 +164,7 @@ jobs:
 
       steps:
           - browser-tools/install-browser-tools:
-              firefox-version: 96.0
+              firefox-version: "96.0"
           - checkout
           - install_monorepo
           - test_monorepo
