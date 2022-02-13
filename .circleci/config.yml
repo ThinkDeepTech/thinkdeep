@@ -226,7 +226,7 @@ jobs:
             command: helm repo update
         - run:
             name: Install MongoDB
-            command: helm upgrade mongodb-latest bitnami/mongodb
+            command: helm upgrade --set auth.rootPassword=$MONGODB_ROOT_PASSWORD mongodb-latest bitnami/mongodb
 
     deploy_ui:
       docker:
