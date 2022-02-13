@@ -163,8 +163,13 @@ jobs:
       working_directory: ~/project
 
       steps:
-          - browser-tools/install-browser-tools:
-              firefox-version: "96.0"
+          - run:
+              name: Update repositories
+              command: sudo apt-get update
+          - run:
+              name: Install firefox dependency (take this out when browser-tools orb is fixed)
+              command: sudo apt-get install -y libasound-dev
+          - browser-tools/install-browser-tools
           - checkout
           - install_monorepo
           - test_monorepo
@@ -194,11 +199,8 @@ jobs:
             name: Update Repositories
             command: helm repo update
         - run:
-            name: Delete Kafka
-            command: helm delete kafka-latest
-        - run:
             name: Install Kafka
-            command: helm install kafka-latest bitnami/kafka --set autoCreateTopicsEnable=true
+            command: helm upgrade --set autoCreateTopicsEnable=true kafka-latest bitnami/kafka
 
     deploy_mongodb:
       docker:
@@ -223,11 +225,8 @@ jobs:
             name: Update Repositories
             command: helm repo update
         - run:
-            name: Delete MongoDB
-            command: helm delete mongodb-latest
-        - run:
             name: Install MongoDB
-            command: helm install mongodb-latest bitnami/mongodb
+            command: helm upgrade mongodb-latest bitnami/mongodb
 
     deploy_ui:
       docker:
