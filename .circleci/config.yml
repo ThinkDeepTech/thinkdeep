@@ -224,8 +224,11 @@ jobs:
             name: Update Repositories
             command: helm repo update
         - run:
+            name: Delete Kafka
+            command: helm delete kafka-latest
+        - run:
             name: Install Kafka
-            command: helm upgrade --set autoCreateTopicsEnable=true kafka-latest bitnami/kafka
+            command: helm install --set autoCreateTopicsEnable=true kafka-latest bitnami/kafka
 
     deploy_mongodb:
       docker:
@@ -250,8 +253,11 @@ jobs:
             name: Update Repositories
             command: helm repo update
         - run:
+            name: Delete MongoDB
+            command: helm delete mongodb-latest
+        - run:
             name: Install MongoDB
-            command: helm upgrade --set auth.rootPassword=$MONGODB_ROOT_PASSWORD mongodb-latest bitnami/mongodb
+            command: helm install --set auth.rootPassword=$MONGODB_ROOT_PASSWORD mongodb-latest bitnami/mongodb
 
     deploy_ui:
       docker:
