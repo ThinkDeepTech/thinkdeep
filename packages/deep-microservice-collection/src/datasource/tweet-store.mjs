@@ -50,7 +50,7 @@ class TweetStore extends MongoDataSource {
             return true;
         } catch(e) {
             console.log(`
-                Insertion failed for:
+                Database insertion failed for:
                     economicEntityName: ${economicEntityName}
                     economicEntityType: ${economicEntityType}
                     tweets: ${JSON.stringify(tweets)}
