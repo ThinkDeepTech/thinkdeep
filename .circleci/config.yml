@@ -51,6 +51,11 @@ jobs:
             working_directory: ./packages/deep-microservice-analysis
         - run: docker push thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-analysis:latest
+        - kubernetes/delete-resource:
+            now: true
+            resource-names: deep-microservice-analysis-deployment
+            resource-types: deployments
+            wait: true
         - kubernetes/create-or-update-resource:
             get-rollout-status: true
             resource-file-path: ./packages/deep-microservice-analysis/k8s/deep-microservice-analysis-deployment.yml
@@ -76,6 +81,11 @@ jobs:
             working_directory: ./packages/deep-microservice-collection
         - run: docker push thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-collection:latest
+        - kubernetes/delete-resource:
+            now: true
+            resource-names: deep-microservice-collection-deployment
+            resource-types: deployments
+            wait: true
         - kubernetes/create-or-update-resource:
             get-rollout-status: true
             resource-file-path: ./packages/deep-microservice-collection/k8s/deep-microservice-collection-deployment.yml
@@ -101,6 +111,11 @@ jobs:
             working_directory: ./packages/deep-microservice-configuration
         - run: docker push thinkdeeptech/deep-microservice-configuration:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-configuration:latest
+        - kubernetes/delete-resource:
+            now: true
+            resource-names: deep-microservice-configuration-deployment
+            resource-types: deployments
+            wait: true
         - kubernetes/create-or-update-resource:
             get-rollout-status: true
             resource-file-path: ./packages/deep-microservice-configuration/k8s/deep-microservice-configuration-deployment.yml
@@ -126,6 +141,11 @@ jobs:
             working_directory: ./packages/deep-microservice-gateway
         - run: docker push thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-gateway:latest
+        - kubernetes/delete-resource:
+            now: true
+            resource-names: deep-microservice-gateway-deployment
+            resource-types: deployments
+            wait: true
         - kubernetes/create-or-update-resource:
             get-rollout-status: true
             resource-file-path: ./packages/deep-microservice-gateway/k8s/deep-microservice-gateway-deployment.yml
@@ -152,6 +172,11 @@ jobs:
             working_directory: ./packages/deep-microservice-subscription
         - run: docker push thinkdeeptech/deep-microservice-subscription:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-subscription:latest
+        - kubernetes/delete-resource:
+            now: true
+            resource-names: deep-microservice-subscription-deployment
+            resource-types: deployments
+            wait: true
         - run:
             command: envsubst < ./deep-microservice-subscription-deployment.yml | kubectl apply -f -
             working_directory: ./packages/deep-microservice-subscription/k8s
