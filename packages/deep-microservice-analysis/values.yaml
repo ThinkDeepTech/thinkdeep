@@ -5,8 +5,9 @@
   nodeEnv: "development" # TODO: Default to production
 
   mongodb:
-    username: "root"
-    password: ""
+    auth:
+      rootUser: "root"
+      rootPassword: ""
 
   kafka:
     host: ""
