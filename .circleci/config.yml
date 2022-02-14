@@ -241,7 +241,7 @@ jobs:
             command: helm uninstall kafka-latest
         - run:
             name: Install Kafka
-            command: helm install --set autoCreateTopicsEnable=true kafka-latest bitnami/kafka
+            command: helm install --set autoCreateTopicsEnable=true kafka-latest bitnami/kafka --version "15.1.0"
 
     deploy_mongodb:
       docker:
