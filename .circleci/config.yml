@@ -47,7 +47,7 @@ jobs:
         - k8s/initialize:
             cluster: predecos-kubernetes-cluster
         - run:
-            command: docker build -t thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis:latest --build-arg PREDECOS_MONGODB_CONNECTION_STRING=$PREDECOS_MONGODB_CONNECTION_STRING --build-arg PREDECOS_KAFKA_HOST=$PREDECOS_KAFKA_HOST --build-arg PREDECOS_KAFKA_PORT=$PREDECOS_KAFKA_PORT --build-arg NODE_ENV=$NODE_ENV .
+            command: docker build -t thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis:latest .
             working_directory: ./packages/deep-microservice-analysis
         - run: docker push thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-analysis:latest
