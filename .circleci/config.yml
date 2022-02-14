@@ -270,7 +270,7 @@ jobs:
             command: helm uninstall mongodb-latest
         - run:
             name: Install MongoDB
-            command: helm install --set auth.rootPassword=$MONGODB_ROOT_PASSWORD mongodb-latest bitnami/mongodb
+            command: helm install --set auth.enabled=false --set auth.rootPassword=$MONGODB_ROOT_PASSWORD mongodb-latest bitnami/mongodb
 
     deploy_ui:
       docker:
