@@ -6,6 +6,7 @@
 
   mongodb:
     auth:
+      enabled: false
       rootUser: "root"
       rootPassword: ""
 
