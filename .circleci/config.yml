@@ -53,10 +53,10 @@ jobs:
         - run: docker push thinkdeeptech/deep-microservice-analysis:latest
         - helm/install-helm-client:
             version: v3.7.2
-
         - run:
             name: Download project dependencies
             command: helm dependency update
+            working_directory: ./packages/deep-microservice-analysis
         - run:
             name: Delete Microservice
             command: helm uninstall deep-microservice-analysis-latest
