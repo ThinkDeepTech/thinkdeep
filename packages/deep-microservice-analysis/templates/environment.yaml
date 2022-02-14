@@ -3,6 +3,4 @@ kind: "ConfigMap"
 metadata:
     name: {{ printf "%s-config-map" .Release.Name | quote}}
 data:
-    PREDECOS_KAFKA_HOST: {{ required "A valid Kafka host is required." .Values.kafka.host | quote}}
-    PREDECOS_KAFKA_PORT: {{ required "A valid kafka port is required." .Values.kafka.port | quote}}
     NODE_ENV: {{ required "A valid node environment is required" .Values.nodeEnv | quote}}
