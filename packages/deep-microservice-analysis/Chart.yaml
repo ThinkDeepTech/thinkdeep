@@ -5,6 +5,6 @@ dependencies:
     repository: "https://charts.bitnami.com/bitnami"
     tags:
       - "bitnami-mongodb"
-    version: "latest"
+    version: "11.0.3"
 name: "deep-microservice-analysis"
 version: "0.0.8"
