@@ -51,16 +51,25 @@ jobs:
             working_directory: ./packages/deep-microservice-analysis
         - run: docker push thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-analysis:latest
-        - kubernetes/delete-resource:
-            now: true
-            resource-names: deep-microservice-analysis-deployment
-            resource-types: deployments
-            wait: true
-        - kubernetes/create-or-update-resource:
-            get-rollout-status: true
-            resource-file-path: ./packages/deep-microservice-analysis/k8s/deep-microservice-analysis-deployment.yml
-            resource-name: deployment/deep-microservice-analysis-deployment
-            show-kubectl-command: true
+        - helm/install-helm-client:
+            version: v3.7.2
+        - run:
+            name: Delete Microservice
+            command: helm uninstall deep-microservice-analysis-latest
+        - run:
+            name: Install Microservice
+            command: helm install --set mongodb.username=$MONGODB_USERNAME --set mongodb.password=$MONGODB_ROOT_PASSWORD --set namespace=default --set replicas=1 --set kafka.host=$PREDECOS_KAFKA_HOST --set kafka.port=$PREDECOS_KAFKA_PORT deep-microservice-analysis-latest ./deep-microservice-analysis
+            working_directory: ./packages
+        # - kubernetes/delete-resource:
+        #     now: true
+        #     resource-names: deep-microservice-analysis-deployment
+        #     resource-types: deployments
+        #     wait: true
+        # - kubernetes/create-or-update-resource:
+        #     get-rollout-status: true
+        #     resource-file-path: ./packages/deep-microservice-analysis/k8s/deep-microservice-analysis-deployment.yml
+        #     resource-name: deployment/deep-microservice-analysis-deployment
+        #     show-kubectl-command: true
 
     build_and_deploy_microservice_collection:
       docker:
@@ -224,8 +233,8 @@ jobs:
             name: Update Repositories
             command: helm repo update
         - run:
-            name: Delete Kafka
-            command: helm delete kafka-latest
+            name: Uninstall previous Kafka chart
+            command: helm uninstall kafka-latest
         - run:
             name: Install Kafka
             command: helm install --set autoCreateTopicsEnable=true kafka-latest bitnami/kafka
@@ -253,8 +262,8 @@ jobs:
             name: Update Repositories
             command: helm repo update
         - run:
-            name: Delete MongoDB
-            command: helm delete mongodb-latest
+            name: Uninstall previous MongoDB chart
+            command: helm uninstall mongodb-latest
         - run:
             name: Install MongoDB
             command: helm install --set auth.rootPassword=$MONGODB_ROOT_PASSWORD mongodb-latest bitnami/mongodb

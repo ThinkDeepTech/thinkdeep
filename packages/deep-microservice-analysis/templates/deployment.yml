@@ -1,0 +1,30 @@
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: {{ printf "%s-deployment" .Release.Name | quote}}
+  labels:
+    app: "deep-microservice-analysis"
+    app.kubernetes.io/managed-by: "helm"
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: "deep-microservice-analysis"
+  template:
+    metadata:
+      labels:
+        app: "deep-microservice-analysis"
+    spec:
+      containers:
+      - name: "deep-microservice-analysis"
+        image: "thinkdeeptech/deep-microservice-analysis:latest"
+        envFrom:
+        - configMapRef:
+            name: {{ printf "%s-config-map" .Release.Name | quote}}
+        - secretRef:
+            name: {{ printf "%s-secrets" .Release.Name | quote}}
+        ports:
+        - containerPort: 4001
+        imagePullPolicy: "Always"
+      imagePullSecrets:
+        - name: "docker-secret"
