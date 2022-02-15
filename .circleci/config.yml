@@ -57,13 +57,22 @@ jobs:
             name: Download project dependencies
             command: helm dependency update
             working_directory: ./packages/deep-microservice-analysis
-        - run:
-            name: Delete Microservice
-            command: helm uninstall deep-microservice-analysis-latest
-        - run:
-            name: Install Microservice
-            command: helm install deep-microservice-analysis-latest ./deep-microservice-analysis --set mongodb.auth.rootUser=$MONGODB_USERNAME --set mongodb.auth.rootPassword=$MONGODB_ROOT_PASSWORD --set namespace=default --set replicas=1 --set kafka.host=$PREDECOS_KAFKA_HOST --set kafka.port=$PREDECOS_KAFKA_PORT
-            working_directory: ./packages
+        - helm/upgrade-helm-chart:
+            chart: "./packages/deep-microservice-analysis"
+            helm-version: "v3.7.2"
+            namespace: "default"
+            recreate-pods: true
+            release-name: "deep-microservice-analysis-latest"
+            reuse-values: true
+            update-repositories: true
+            wait: true
+        # - run:
+        #     name: Delete Microservice
+        #     command: helm uninstall deep-microservice-analysis-latest
+        # - run:
+        #     name: Install Microservice
+        #     command: helm install deep-microservice-analysis-latest ./deep-microservice-analysis --set mongodb.auth.rootUser=$MONGODB_USERNAME --set mongodb.auth.rootPassword=$MONGODB_ROOT_PASSWORD --set namespace=default --set replicas=1 --set kafka.host=$PREDECOS_KAFKA_HOST --set kafka.port=$PREDECOS_KAFKA_PORT
+        #     working_directory: ./packages
         # - kubernetes/delete-resource:
         #     now: true
         #     resource-names: deep-microservice-analysis-deployment
@@ -262,15 +271,25 @@ jobs:
         - run:
             name: Add Bitnami Repository
             command: helm repo add bitnami https://charts.bitnami.com/bitnami
-        - run:
-            name: Update Repositories
-            command: helm repo update
-        - run:
-            name: Uninstall previous MongoDB chart
-            command: helm uninstall mongodb-latest
-        - run:
-            name: Install MongoDB
-            command: helm install mongodb-latest bitnami/mongodb --version="11.0.3" --set auth.enabled=false --set auth.rootPassword=$MONGODB_ROOT_PASSWORD
+        # - run:
+        #     name: Update Repositories
+        #     command: helm repo update
+        # - run:
+        #     name: Uninstall previous MongoDB chart
+        #     command: helm uninstall mongodb-latest
+        - helm/upgrade-helm-chart:
+            chart: "bitnami/mongodb"
+            version: "11.0.3"
+            helm-version: "v3.7.2"
+            namespace: "default"
+            recreate-pods: true
+            release-name: "mongodb-latest"
+            reuse-values: true
+            update-repositories: true
+
+        # - run:
+        #     name: Install MongoDB
+        #     command: helm install mongodb-latest bitnami/mongodb --version="11.0.3"
 
     deploy_ui:
       docker:
