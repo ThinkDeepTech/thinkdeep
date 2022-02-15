@@ -61,11 +61,11 @@ jobs:
             chart: "./packages/deep-microservice-analysis"
             helm-version: "v3.7.2"
             namespace: "default"
-            recreate-pods: "true"
+            recreate-pods: true
             release-name: "deep-microservice-analysis-latest"
-            reuse-values: "true"
-            update-repositories: "true"
-            wait: "true"
+            reuse-values: true
+            update-repositories: true
+            wait: true
         # - run:
         #     name: Delete Microservice
         #     command: helm uninstall deep-microservice-analysis-latest
@@ -282,11 +282,10 @@ jobs:
             version: "11.0.3"
             helm-version: "v3.7.2"
             namespace: "default"
-            recreate-pods: "true"
+            recreate-pods: true
             release-name: "mongodb-latest"
-            reuse-values: "true"
-            update-repositories: "true"
-            wait: "true"
+            reuse-values: true
+            update-repositories: true
 
         # - run:
         #     name: Install MongoDB
