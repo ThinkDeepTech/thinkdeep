@@ -5,6 +5,8 @@
   nodeEnv: "development" # TODO: Default to production
 
   mongodb:
+    readinessProbe:
+      enabled: false
     auth:
       enabled: false
       rootUser: "root"
