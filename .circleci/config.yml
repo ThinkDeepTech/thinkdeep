@@ -62,7 +62,7 @@ jobs:
             command: helm uninstall deep-microservice-analysis-latest
         - run:
             name: Install Microservice
-            command: helm install --set mongodb.auth.rootUser=$MONGODB_USERNAME --set mongodb.auth.rootPassword=$MONGODB_ROOT_PASSWORD --set namespace=default --set replicas=1 --set kafka.host=$PREDECOS_KAFKA_HOST --set kafka.port=$PREDECOS_KAFKA_PORT deep-microservice-analysis-latest ./deep-microservice-analysis
+            command: helm install deep-microservice-analysis-latest ./deep-microservice-analysis --set mongodb.auth.rootUser=$MONGODB_USERNAME --set mongodb.auth.rootPassword=$MONGODB_ROOT_PASSWORD --set namespace=default --set replicas=1 --set kafka.host=$PREDECOS_KAFKA_HOST --set kafka.port=$PREDECOS_KAFKA_PORT
             working_directory: ./packages
         # - kubernetes/delete-resource:
         #     now: true
@@ -270,7 +270,7 @@ jobs:
             command: helm uninstall mongodb-latest
         - run:
             name: Install MongoDB
-            command: helm install --set readinessProbe.enabled=false --set auth.enabled=false --set auth.rootPassword=$MONGODB_ROOT_PASSWORD mongodb-latest bitnami/mongodb --version="11.0.3"
+            command: helm install mongodb-latest bitnami/mongodb --version="11.0.3" --set auth.enabled=false --set auth.rootPassword=$MONGODB_ROOT_PASSWORD
 
     deploy_ui:
       docker:
