@@ -57,7 +57,7 @@ jobs:
             name: Download project dependencies
             command: helm dependency update
             working_directory: ./packages/deep-microservice-analysis
-        - upgrade-helm-chart:
+        - helm/upgrade-helm-chart:
             chart: "./packages/deep-microservice-analysis"
             helm-version: "v3.7.2"
             namespace: "default"
@@ -277,7 +277,7 @@ jobs:
         # - run:
         #     name: Uninstall previous MongoDB chart
         #     command: helm uninstall mongodb-latest
-        - upgrade-helm-chart:
+        - helm/upgrade-helm-chart:
             chart: "bitnami/mongodb"
             version: "11.0.3"
             helm-version: "v3.7.2"
