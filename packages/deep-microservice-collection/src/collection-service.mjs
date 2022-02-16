@@ -10,7 +10,7 @@ import { hasReadAllAccess } from './permissions.mjs';
  * As a result, ~400 businesses can be watched.
  */
 // const TWITTER_FETCH_INTERVAL = 6 * 60 * 60 * 1000; /** hrs * min * seconds * ms */
-const TWITTER_FETCH_INTERVAL = 2 * 60 * 60 * 1000; /** min * seconds * ms */
+const TWITTER_FETCH_INTERVAL = 2 * 60 * 1000; /** min * seconds * ms */
 
 class CollectionService {
 
