@@ -7,5 +7,5 @@
   mongodb:
     auth:
       enabled: false
-      # rootUser: "root"
-      # rootPassword: ""
+      rootUser: "root"
+      rootPassword: ""

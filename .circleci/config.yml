@@ -63,7 +63,7 @@ jobs:
             namespace: "default"
             recreate-pods: true
             release-name: "deep-microservice-analysis-latest"
-            values-to-override: "kafka.host=$PREDECOS_KAFKA_HOST,kafka.port=$PREDECOS_KAFKA_PORT,namespace=default,nodeEnv=$NODE_ENV"
+            values-to-override: "mongodb.auth.rootUser=$MONGODB_USERNAME,mongodb.auth.rootPassword=$MONGODB_ROOT_PASSWORD,kafka.host=$PREDECOS_KAFKA_HOST,kafka.port=$PREDECOS_KAFKA_PORT,namespace=default,nodeEnv=$NODE_ENV"
             update-repositories: true
             wait: true
         # - run:
@@ -115,7 +115,7 @@ jobs:
             namespace: "default"
             recreate-pods: true
             release-name: "deep-microservice-collection-latest"
-            values-to-override: "kafka.host=$PREDECOS_KAFKA_HOST,kafka.port=$PREDECOS_KAFKA_PORT,twitter.bearer=$PREDECOS_TWITTER_BEARER,nodeEnv=$NODE_ENV"
+            values-to-override: "mongodb.auth.rootUser=$MONGODB_USERNAME,mongodb.auth.rootPassword=$MONGODB_ROOT_PASSWORD,kafka.host=$PREDECOS_KAFKA_HOST,kafka.port=$PREDECOS_KAFKA_PORT,twitter.bearer=$PREDECOS_TWITTER_BEARER,namespace=default,nodeEnv=$NODE_ENV"
             update-repositories: true
             wait: true
         # - kubernetes/delete-resource:
@@ -160,7 +160,7 @@ jobs:
             namespace: "default"
             recreate-pods: true
             release-name: "deep-microservice-configuration-latest"
-            values-to-override: "namespace=default,nodeEnv=$NODE_ENV"
+            values-to-override: "mongodb.auth.rootUser=$MONGODB_USERNAME,mongodb.auth.rootPassword=$MONGODB_ROOT_PASSWORD,namespace=default,nodeEnv=$NODE_ENV"
             update-repositories: true
             wait: true
         # - kubernetes/delete-resource:
