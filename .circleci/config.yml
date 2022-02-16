@@ -5,7 +5,6 @@ orbs:
     kubernetes: circleci/kubernetes@1.3.0
     k8s: digitalocean/k8s@0.1.1
     helm: circleci/helm@1.2.0
-    envsubst: sawadashota/envsubst@1.1.0
 
 commands:
     install_monorepo:
@@ -66,23 +65,6 @@ jobs:
             values-to-override: "mongodb.auth.rootUser=$MONGODB_USERNAME,mongodb.auth.rootPassword=$MONGODB_ROOT_PASSWORD,kafka.host=$PREDECOS_KAFKA_HOST,kafka.port=$PREDECOS_KAFKA_PORT,namespace=default,nodeEnv=$NODE_ENV"
             update-repositories: true
             wait: true
-        # - run:
-        #     name: Delete Microservice
-        #     command: helm uninstall deep-microservice-analysis-latest
-        # - run:
-        #     name: Install Microservice
-        #     command: helm install deep-microservice-analysis-latest ./deep-microservice-analysis --set mongodb.auth.rootUser=$MONGODB_USERNAME --set mongodb.auth.rootPassword=$MONGODB_ROOT_PASSWORD --set namespace=default --set replicas=1 --set kafka.host=$PREDECOS_KAFKA_HOST --set kafka.port=$PREDECOS_KAFKA_PORT
-        #     working_directory: ./packages
-        # - kubernetes/delete-resource:
-        #     now: true
-        #     resource-names: deep-microservice-analysis-deployment
-        #     resource-types: deployments
-        #     wait: true
-        # - kubernetes/create-or-update-resource:
-        #     get-rollout-status: true
-        #     resource-file-path: ./packages/deep-microservice-analysis/k8s/deep-microservice-analysis-deployment.yml
-        #     resource-name: deployment/deep-microservice-analysis-deployment
-        #     show-kubectl-command: true
 
     build_and_deploy_microservice_collection:
       docker:
@@ -118,16 +100,6 @@ jobs:
             values-to-override: "mongodb.auth.rootUser=$MONGODB_USERNAME,mongodb.auth.rootPassword=$MONGODB_ROOT_PASSWORD,kafka.host=$PREDECOS_KAFKA_HOST,kafka.port=$PREDECOS_KAFKA_PORT,twitter.bearer=$PREDECOS_TWITTER_BEARER,namespace=default,nodeEnv=$NODE_ENV"
             update-repositories: true
             wait: true
-        # - kubernetes/delete-resource:
-        #     now: true
-        #     resource-names: deep-microservice-collection-deployment
-        #     resource-types: deployments
-        #     wait: true
-        # - kubernetes/create-or-update-resource:
-        #     get-rollout-status: true
-        #     resource-file-path: ./packages/deep-microservice-collection/k8s/deep-microservice-collection-deployment.yml
-        #     resource-name: deployment/deep-microservice-collection-deployment
-        #     show-kubectl-command: true
 
     build_and_deploy_microservice_configuration:
       docker:
@@ -163,16 +135,6 @@ jobs:
             values-to-override: "mongodb.auth.rootUser=$MONGODB_USERNAME,mongodb.auth.rootPassword=$MONGODB_ROOT_PASSWORD,namespace=default,nodeEnv=$NODE_ENV"
             update-repositories: true
             wait: true
-        # - kubernetes/delete-resource:
-        #     now: true
-        #     resource-names: deep-microservice-configuration-deployment
-        #     resource-types: deployments
-        #     wait: true
-        # - kubernetes/create-or-update-resource:
-        #     get-rollout-status: true
-        #     resource-file-path: ./packages/deep-microservice-configuration/k8s/deep-microservice-configuration-deployment.yml
-        #     resource-name: deployment/deep-microservice-configuration-deployment
-        #     show-kubectl-command: true
 
     build_and_deploy_microservice_gateway:
       docker:
@@ -205,19 +167,9 @@ jobs:
             namespace: "default"
             recreate-pods: true
             release-name: "deep-microservice-gateway-latest"
-            values-to-override: "auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=PREDECOS_AUTH_ISSUER,microservice.analysis.url=$PREDECOS_MICROSERVICE_ANALYSIS_URL,microservice.collection.url=$PREDECOS_MICROSERVICE_COLLECTION_URL,microservice.configuration.url=$PREDECOS_MICROSERVICE_CONFIGURATION_URL,replicas=1,namespace=default,nodeEnv=$NODE_ENV"
+            values-to-override: "auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,microservice.analysis.url=$PREDECOS_MICROSERVICE_ANALYSIS_URL,microservice.collection.url=$PREDECOS_MICROSERVICE_COLLECTION_URL,microservice.configuration.url=$PREDECOS_MICROSERVICE_CONFIGURATION_URL,replicas=1,namespace=default,nodeEnv=$NODE_ENV"
             update-repositories: true
             wait: true
-        # - kubernetes/delete-resource:
-        #     now: true
-        #     resource-names: deep-microservice-gateway-deployment
-        #     resource-types: deployments
-        #     wait: true
-        # - kubernetes/create-or-update-resource:
-        #     get-rollout-status: true
-        #     resource-file-path: ./packages/deep-microservice-gateway/k8s/deep-microservice-gateway-deployment.yml
-        #     resource-name: deployment/deep-microservice-gateway-deployment
-        #     show-kubectl-command: true
 
     build_and_deploy_microservice_subscription:
       docker:
@@ -227,7 +179,6 @@ jobs:
 
       steps:
         - checkout
-        - envsubst/install
         - setup_remote_docker:
             version: 20.10.7
         - login_docker
@@ -251,17 +202,9 @@ jobs:
             namespace: "default"
             recreate-pods: true
             release-name: "deep-microservice-subscription-latest"
-            values-to-override: "auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=PREDECOS_AUTH_ISSUER,kafka.host=$PREDECOS_KAFKA_HOST,kafka.port=$PREDECOS_KAFKA_PORT,microservice.analysis.url=$PREDECOS_MICROSERVICE_ANALYSIS_URL,microservice.collection.url=$PREDECOS_MICROSERVICE_COLLECTION_URL,microservice.configuration.url=$PREDECOS_MICROSERVICE_CONFIGURATION_URL,replicas=1,namespace=default,nodeEnv=$NODE_ENV"
+            values-to-override: "auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,kafka.host=$PREDECOS_KAFKA_HOST,kafka.port=$PREDECOS_KAFKA_PORT,microservice.analysis.url=$PREDECOS_MICROSERVICE_ANALYSIS_URL,microservice.collection.url=$PREDECOS_MICROSERVICE_COLLECTION_URL,microservice.configuration.url=$PREDECOS_MICROSERVICE_CONFIGURATION_URL,replicas=1,namespace=default,nodeEnv=$NODE_ENV"
             update-repositories: true
             wait: true
-        # - kubernetes/delete-resource:
-        #     now: true
-        #     resource-names: deep-microservice-subscription-deployment
-        #     resource-types: deployments
-        #     wait: true
-        # - run:
-        #     command: envsubst < ./deep-microservice-subscription-deployment.yml | kubectl apply -f -
-        #     working_directory: ./packages/deep-microservice-subscription/k8s
 
     build_ui:
       docker:
@@ -302,9 +245,6 @@ jobs:
         - run:
             name: Add Bitnami Repository
             command: helm repo add bitnami https://charts.bitnami.com/bitnami
-        # - run:
-        #     name: Update Repositories
-        #     command: helm repo update
         - helm/upgrade-helm-chart:
             chart: "bitnami/kafka"
             version: "15.1.0"
@@ -313,51 +253,6 @@ jobs:
             release-name: "kafka-latest"
             reuse-values: true
             update-repositories: true
-        # - run:
-        #     name: Uninstall previous Kafka chart
-        #     command: helm uninstall kafka-latest
-        # - run:
-        #     name: Install Kafka
-        #     command: helm install --set autoCreateTopicsEnable=true kafka-latest bitnami/kafka --version "15.1.0"
-
-    # deploy_mongodb:
-    #   docker:
-    #     - image: 'cimg/base:stable'
-
-    #   working_directory: ~/project
-
-    #   steps:
-    #     - checkout
-    #     - setup_remote_docker:
-    #         version: 20.10.7
-    #     - login_docker
-    #     - k8s/install
-    #     - k8s/initialize:
-    #         cluster: predecos-kubernetes-cluster
-    #     - helm/install-helm-client:
-    #         version: v3.7.2
-    #     - run:
-    #         name: Add Bitnami Repository
-    #         command: helm repo add bitnami https://charts.bitnami.com/bitnami
-        # - run:
-        #     name: Update Repositories
-        #     command: helm repo update
-        # - run:
-        #     name: Uninstall previous MongoDB chart
-        #     command: helm uninstall mongodb-latest
-        # - helm/upgrade-helm-chart:
-        #     chart: "bitnami/mongodb"
-        #     version: "11.0.3"
-        #     helm-version: "v3.7.2"
-        #     namespace: "default"
-        #     recreate-pods: true
-        #     release-name: "mongodb-latest"
-        #     reuse-values: true
-        #     update-repositories: true
-
-        # - run:
-        #     name: Install MongoDB
-        #     command: helm install mongodb-latest bitnami/mongodb --version="11.0.3"
 
     deploy_ui:
       docker:
@@ -385,15 +280,9 @@ workflows:
             branches:
               only: master
 
-      # - deploy_mongodb:
-      #     filters:
-      #       branches:
-      #         only: master
-
       - build_and_deploy_microservice_collection:
           requires:
             - deploy_kafka
-            # - deploy_mongodb
           filters:
             branches:
               only: master
@@ -402,14 +291,11 @@ workflows:
           requires:
             - build_and_deploy_microservice_collection
             - deploy_kafka
-            # - deploy_mongodb
           filters:
             branches:
               only: master
 
       - build_and_deploy_microservice_configuration:
-          # requires:
-          #   - deploy_mongodb
           filters:
             branches:
               only: master
