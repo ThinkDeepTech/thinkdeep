@@ -1,0 +1,4 @@
+apiVersion: "v2"
+appVersion: "4.4.12"
+name: "deep-microservice-gateway"
+version: "0.0.8"

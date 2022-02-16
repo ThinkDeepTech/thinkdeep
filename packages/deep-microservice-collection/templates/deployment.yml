@@ -1,0 +1,29 @@
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: {{ printf "%s-deployment" .Release.Name | quote }}
+  labels:
+    app: "deep-microservice-collection"
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: "deep-microservice-collection"
+  template:
+    metadata:
+      labels:
+        app: "deep-microservice-collection"
+    spec:
+      containers:
+      - name: "deep-microservice-collection"
+        image: "thinkdeeptech/deep-microservice-collection:latest"
+        envFrom:
+        - configMapRef:
+            name: {{ printf "%s-config-map" .Release.Name | quote}}
+        - secretRef:
+            name: {{ printf "%s-secrets" .Release.Name | quote}}
+        ports:
+        - containerPort: 4002
+        imagePullPolicy: "Always"
+      imagePullSecrets:
+        - name: "docker-secret"

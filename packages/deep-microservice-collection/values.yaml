@@ -1,0 +1,18 @@
+  namespace: "default"
+
+  replicas: 1
+
+  nodeEnv: "development" # TODO: Default to production
+
+  mongodb:
+    auth:
+      enabled: false
+      rootUser: "root"
+      rootPassword: ""
+
+  kafka:
+    host: ""
+    port: 9092
+
+  twitter:
+    bearer: ""

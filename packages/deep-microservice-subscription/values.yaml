@@ -1,0 +1,22 @@
+  namespace: "default"
+
+  replicas: 1
+
+  nodeEnv: "development" # TODO: Default to production
+
+  microservice:
+    analysis:
+      url: ""
+    collection:
+      url: ""
+    configuration:
+      url: ""
+
+  auth:
+    audience: ""
+    jwksUri: ""
+    issuer: ""
+
+  kafka:
+    host: ""
+    port: 9092
