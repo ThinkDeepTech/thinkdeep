@@ -27,6 +27,7 @@
     "@apollo/federation": "^0.29.1",
     "@apollo/gateway": "^0.38.2",
     "@apollo/subgraph": "^0.1.5",
+    "@kubernetes/client-node": "0.15",
     "apollo-datasource": "^3.1.0",
     "apollo-datasource-mongodb": "^0.5.2",
     "apollo-datasource-rest": "^3.4.0",
@@ -37,7 +38,8 @@
     "kafkajs": "^1.15.0",
     "log4js": "^6.3.0",
     "moment": "^2.29.1",
-    "mongodb": "^4.2.1"
+    "mongodb": "^4.2.1",
+    "twitter-api-v2": "^1.11.0"
   },
   "private": true
 }

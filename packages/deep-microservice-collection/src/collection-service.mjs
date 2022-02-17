@@ -1,15 +1,7 @@
-import {Command} from './command.mjs';
+import {FetchTweets} from './command/fetch-tweets-command.mjs';
 import { validString } from './helpers.mjs';
 import moment from 'moment';
 import { hasReadAllAccess } from './permissions.mjs';
-
-/**
- * Time interval between each twitter API call.
- *
- * NOTE: Due to twitter developer account limitations only 500,000 tweets can be consumed per month.
- * As a result, ~400 businesses can be watched.
- */
-const TWITTER_FETCH_INTERVAL = 6 * 60 * 60 * 1000; /** hrs * min * seconds * ms */
 
 class CollectionService {
 
@@ -118,7 +110,7 @@ class CollectionService {
     _commands(entityName, entityType) {
         const type = entityType.toLowerCase();
         if (type === 'business') {
-            const command = new Command(TWITTER_FETCH_INTERVAL, this._collectTweets.bind(this, entityName, entityType));
+            const command = new FetchTweetsCommand(entityName, entityType);
             return [command];
         } else {
             throw new Error('The specified economic type was unknown.')
@@ -131,39 +123,39 @@ class CollectionService {
      * @param {String} entityType - Economic entity type (i.e, 'BUSINESS').
      * @returns {Boolean} - True if the function succeeds, false otherwise.
      */
-    async _collectTweets(entityName, entityType) {
+    // async _collectTweets(entityName, entityType) {
 
-        if (!validString(entityName)) return false;
+    //     if (!validString(entityName)) return false;
 
-        if (!validString(entityType)) return false;
+    //     if (!validString(entityType)) return false;
 
-        this._logger.info(`Fetching data from the twitter API for: name ${entityName}, type ${entityType}.`);
-        const tweets = await this._twitterAPI.tweets(entityName);
+    //     this._logger.info(`Fetching data from the twitter API for: name ${entityName}, type ${entityType}.`);
+    //     const tweets = await this._twitterAPI.tweets(entityName);
 
-        const timestamp = moment().unix();
+    //     const timestamp = moment().unix();
 
-        this._logger.info(`Adding timeseries entry to tweet store with timestamp ${timestamp}, tweets ${JSON.stringify(tweets)}`);
-        const tweetsCreated = await this._tweetStore.createTweets(timestamp, entityName, entityType, tweets);
+    //     this._logger.info(`Adding timeseries entry to tweet store with timestamp ${timestamp}, tweets ${JSON.stringify(tweets)}`);
+    //     const tweetsCreated = await this._tweetStore.createTweets(timestamp, entityName, entityType, tweets);
 
-        const timeSeriesItems = await this._tweetStore.readRecentTweets(entityName, entityType, 10);
+    //     const timeSeriesItems = await this._tweetStore.readRecentTweets(entityName, entityType, 10);
 
-        const event = {
-            economicEntityName: entityName,
-            economicEntityType: entityType,
-            timeSeriesItems
-        };
+    //     const event = {
+    //         economicEntityName: entityName,
+    //         economicEntityType: entityType,
+    //         timeSeriesItems
+    //     };
 
-        this._logger.info(`Adding collection event with value: ${JSON.stringify(event)}`);
+    //     this._logger.info(`Adding collection event with value: ${JSON.stringify(event)}`);
 
-        this._producer.send({
-            topic: 'TWEETS_COLLECTED',
-            messages: [
-                { value: JSON.stringify(event) }
-            ]
-        });
+    //     this._producer.send({
+    //         topic: 'TWEETS_COLLECTED',
+    //         messages: [
+    //             { value: JSON.stringify(event) }
+    //         ]
+    //     });
 
-        return tweetsCreated;
-    }
+    //     return tweetsCreated;
+    // }
 
     /**
      * Create the specified topics.
