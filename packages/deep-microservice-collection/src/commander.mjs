@@ -14,7 +14,7 @@ class Commander {
      * @param {Array} commands - Command objects to execute.
      * @throws {Error} Will throw an error if the key is not a valid string.
      */
-    execute(key, commands) {
+    async execute(key, commands) {
 
         if (!validString(key)) throw new Error(`Key must be a valid string. Received: ${key}`);
 
@@ -24,19 +24,19 @@ class Commander {
 
         this._logger.info(`Executing commands for key ${key}`);
         for (const command of this._commands(key)) {
-            command.execute();
+            await command.execute();
         }
     }
 
     /**
      * Stop all the running commands.
      */
-    stopAllCommands() {
+    async stopAllCommands() {
 
         for (const [key, commands] of Object.entries(this._commandMap)) {
 
             this._logger.info(`Clearing commands for key ${key}`);
-            this._stopCommands(commands);
+            await this._stopCommands(commands);
         }
     }
 
@@ -45,12 +45,12 @@ class Commander {
      * @param {Array} commands - Command objects.
      * @returns
      */
-    _stopCommands(commands) {
+    async _stopCommands(commands) {
 
         if (!Array.isArray(commands)) return;
 
         for (const command of commands) {
-            command.stop();
+            await command.stop();
         }
     }
 

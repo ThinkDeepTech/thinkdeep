@@ -33,7 +33,7 @@ const performCleanup = async () => {
   await producer.disconnect();
   await admin.disconnect();
 
-  commander.stopAllCommands();
+  await commander.stopAllCommands();
 };
 
 const attachExitHandler = async (callback) => {

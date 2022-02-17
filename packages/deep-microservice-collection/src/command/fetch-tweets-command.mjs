@@ -1,5 +1,5 @@
 import "./command.mjs"
-import "../cron-job.mjs"
+import "../k8s/cron-job.mjs"
 
 /**
  * Time interval between each twitter API call.
@@ -7,7 +7,7 @@ import "../cron-job.mjs"
  * NOTE: Due to twitter developer account limitations only 500,000 tweets can be consumed per month.
  * As a result, ~400 businesses can be watched.
  */
-const TWITTER_FETCH_INTERVAL = 6 * 60 * 60 * 1000; /** hrs * min * seconds * ms */
+// const TWITTER_FETCH_INTERVAL = 6 * 60 * 60 * 1000; /** hrs * min * seconds * ms */
 
 class FetchTweetsCommand extends Command {
 
@@ -18,19 +18,27 @@ class FetchTweetsCommand extends Command {
         this._economicEntityType = economicEntityType;
 
         this._cronJob = new CronJob({
-            // TODO: Translate TWITTER_FETCH_INTERVAL into schedule
-            schedule: `* * * * *`,
-            command: 'node',
-            args: `--economicEntityName=${economicEntityName} --economicEntityType=${economicEntityType} fetch-tweets.mjs`
+            name: `fetch-tweets-${economicEntityName.toLowerCase()}-${economicEntityType.toLowerCase()}`,
+            namespace: 'default',
+             // TODO: Translate TWITTER_FETCH_INTERVAL into schedule
+             /** min | hour | day | month | weekday */
+            schedule: `0 6 * * *`,
+            // TODO:
+            // image: 'thinkdeeptech/collect-data:latest',
+            image: 'busybox:latest',
+            command: 'sleep',
+            args: ['10']
+            // command: 'node',
+            // args: ['collect-data.mjs', `--entityName=${economicEntityName}`, `--entityType=${economicEntityType}`, '--operation-type=fetch-tweets']
         });
     }
 
-    execute() {
-        this._cronJob.execute();
+    async execute() {
+        await this._cronJob.execute();
     }
 
-    stop() {
-        this._cronJob.stop();
+    async stop() {
+        await this._cronJob.stop();
     }
 }
 

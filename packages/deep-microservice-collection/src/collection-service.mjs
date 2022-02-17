@@ -98,6 +98,8 @@ class CollectionService {
 
         const commands = this._commands(entityName, entityType);
 
+        // TODO: Should execute really be awaited? If cron jobs start it doesn't really require waiting.
+        // await this._commander.execute(`${entityName}:${entityType}`, commands);
         this._commander.execute(`${entityName}:${entityType}`, commands);
     }
 
