@@ -1,4 +1,4 @@
-import { FetchTweetsCommand } from './command/fetch-tweets-command.mjs';
+import { K8sCronJob } from './command/k8s-cron-job.mjs';
 import { validString } from './helpers.mjs';
 import moment from 'moment';
 import { hasReadAllAccess } from './permissions.mjs';
@@ -14,15 +14,17 @@ class CollectionService {
      * @param {Object} admin - KafkaJS admin.
      * @param {Object} producer - KafkaJS producer to use.
      * @param {Object} consumer - KafkaJS consumer to use.
+     * @param {Object} k8s - Kubernetes Javascript Client import.
      * @param {Object} logger - Logger to use.
      */
-    constructor(tweetStore, economicEntityMemo, commander, admin, producer, consumer, logger) {
+    constructor(tweetStore, economicEntityMemo, commander, admin, producer, consumer, k8s, logger) {
         this._tweetStore = tweetStore;
         this._economicEntityMemo = economicEntityMemo;
         this._commander = commander;
         this._admin = admin;
         this._producer = producer;
         this._consumer = consumer;
+        this._k8s = k8s;
         this._logger = logger;
 
         this._topicCreation([{topic: 'TWEETS_COLLECTED', replicationFactor: 1}, { topic: 'TWEETS_FETCHED', replicationFactor: 1}]).then(async() => {
@@ -111,8 +113,6 @@ class CollectionService {
 
         const commands = this._commands(entityName, entityType);
 
-        // TODO: Should execute really be awaited? If cron jobs start it doesn't really require waiting.
-        // await this._commander.execute(`${entityName}:${entityType}`, commands);
         this._commander.execute(`${entityName}:${entityType}`, commands);
     }
 
@@ -125,7 +125,24 @@ class CollectionService {
     _commands(entityName, entityType) {
         const type = entityType.toLowerCase();
         if (type === 'business') {
-            const command = new FetchTweetsCommand(entityName, entityType);
+
+            const command = new K8sCronJob({
+                name: `fetch-tweets-${entityName.toLowerCase()}-${entityType.toLowerCase()}`,
+                namespace: 'default',
+                 /**
+                 * Time interval between each twitter API call.
+                 *
+                 * NOTE: Due to twitter developer account limitations only 500,000 tweets can be consumed per month.
+                 * As a result, ~400 businesses can be watched when fetched every 6 hours.
+                 */
+                 /** min | hour | day | month | weekday */
+                schedule: `0 6 * * *`,
+                // TODO:
+                image: 'thinkdeeptech/collect-data:latest',
+                command: 'node',
+                args: ['collect-data.mjs', `--entity-name=${entityName}`, `--entity-type=${entityType}`, '--operation-type=fetch-tweets']
+            }, this._k8s);
+
             return [command];
         } else {
             throw new Error('The specified economic type was unknown.')

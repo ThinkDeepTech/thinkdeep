@@ -1,4 +1,5 @@
 import {buildSubgraphSchema} from '@apollo/subgraph';
+import k8s from '@kubernetes/client-node'
 import {ApolloServer} from 'apollo-server-express';
 import {CollectionService} from './collection-service.mjs';
 import {Commander} from './commander.mjs';
@@ -63,7 +64,7 @@ const startApolloServer = async () => {
 
   const tweetStore = new TweetStore(mongoClient.db('admin').collection('tweets'));
   const economicEntityMemo = new EconomicEntityMemo(mongoClient.db('admin').collection('memo'), logger);
-  const collectionService = new CollectionService(tweetStore, economicEntityMemo, commander, admin, producer, consumer, logger);
+  const collectionService = new CollectionService(tweetStore, economicEntityMemo, commander, admin, producer, consumer, k8s, logger);
 
   const server = new ApolloServer({
     schema: buildSubgraphSchema([{typeDefs, resolvers}]),

@@ -1,8 +1,9 @@
-import k8s from '@kubernetes/client-node'
+import {Command} from './command.mjs';
 import {validString} from '../helpers.mjs';
 
-class CronJob {
-    constructor(options) {
+class K8sCronJob extends Command {
+    constructor(options, k8s) {
+        super();
 
         if (!validString(options.name) || !validString(options.schedule) || !validString(options.command) ||
             !validString(options.image) || !validString(options.namespace) || !Array.isArray(options.args))
@@ -12,8 +13,10 @@ class CronJob {
         cronJob.apiVersion = "batch/v1";
         cronJob.kind = "CronJob";
 
-        const metadata = new k8s.V1ObjectMeta();
-        metadata.name = options.name;
+        const metadata = new k8s.V1ObjectMeta({
+            name: options.name
+        });
+        // metadata.name = options.name;
         cronJob.metadata = metadata;
 
         const cronJobSpec = new k8s.V1CronJobSpec();
@@ -33,7 +36,7 @@ class CronJob {
         jobTemplateSpec.spec = jobSpec;
         cronJobSpec.jobTemplate = jobTemplateSpec;
 
-        const kubeConfig = k8s.KubeConfig();
+        const kubeConfig = new k8s.KubeConfig();
         const batchApi = kubeConfig.makeApiClient(k8s.BatchV1Api);
 
         this._cronJob = cronJob;
@@ -50,4 +53,4 @@ class CronJob {
     }
 }
 
-export { CronJob };
+export { K8sCronJob };
