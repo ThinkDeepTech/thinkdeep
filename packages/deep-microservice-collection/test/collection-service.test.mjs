@@ -337,14 +337,79 @@ describe('collection-service', () => {
 
             const commands = subject._commands(entityName, entityType);
             const containers = commands[0]._cronJob.spec.jobTemplate.spec.template.spec.containers;
-            const args = containers[0].args;
+            const k8sCommands = containers[0].command;
+            const k8sArgs = containers[0].args;
 
             expect(commands[0].constructor.name).to.equal('K8sCronJob');
-            expect(args[3]).to.equal('--operation-type=fetch-tweets');
+            expect(k8sCommands[0]).to.equal('node');
+            expect(k8sArgs[0]).to.equal('collect-data.mjs');
+            expect(k8sArgs[3]).to.equal('--operation-type=fetch-tweets');
         })
     });
 
     describe('_handleTweetsFetched', () => {
+
+        it('should not store the tweets if the entity name is empty', async () => {
+            const tweets = [{
+                text: 'sometweet'
+            }, {
+                text: 'another tweet'
+            }]
+
+            await subject._handleTweetsFetched('', 'BUSINESS', tweets);
+
+            expect(tweetStore.createTweets).not.to.have.been.called;
+        })
+
+        it('should not store the tweets if the entity name is not a string', async () => {
+            const tweets = [{
+                text: 'sometweet'
+            }, {
+                text: 'another tweet'
+            }]
+
+            await subject._handleTweetsFetched({}, 'BUSINESS', tweets);
+
+            expect(tweetStore.createTweets).not.to.have.been.called;
+        })
+
+        it('should not store the tweets if the entity type is empty', async () => {
+            const tweets = [{
+                text: 'sometweet'
+            }, {
+                text: 'another tweet'
+            }]
+
+            await subject._handleTweetsFetched('Google', '', tweets);
+
+            expect(tweetStore.createTweets).not.to.have.been.called;
+        })
+
+        it('should not store the tweets if the entity type is not a string', async () => {
+            const tweets = [{
+                text: 'sometweet'
+            }, {
+                text: 'another tweet'
+            }]
+
+            await subject._handleTweetsFetched('Google', 1, tweets);
+
+            expect(tweetStore.createTweets).not.to.have.been.called;
+        })
+
+        it('should not store the tweets if tweets is not an array', async () => {
+
+            await subject._handleTweetsFetched('Google', 'BUSINESS', "notarray");
+
+            expect(tweetStore.createTweets).not.to.have.been.called;
+        })
+
+        it('should not store the tweets if the tweets array is empty', async () => {
+
+            await subject._handleTweetsFetched('Google', 'BUSINESS', []);
+
+            expect(tweetStore.createTweets).not.to.have.been.called;
+        })
 
         it('should store the tweets', async () => {
             const tweets = [{
