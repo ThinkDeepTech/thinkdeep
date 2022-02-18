@@ -1,4 +1,4 @@
-import {FetchTweets} from './command/fetch-tweets-command.mjs';
+import { FetchTweetsCommand } from './command/fetch-tweets-command.mjs';
 import { validString } from './helpers.mjs';
 import moment from 'moment';
 import { hasReadAllAccess } from './permissions.mjs';
@@ -8,29 +8,42 @@ class CollectionService {
     /**
      * Business layer associated with data collection.
      *
-     * @param {Object} twitterAPI - RESTDataSource tied to the twitter API.
      * @param {Object} tweetStore - MongoDataSource tied to the tweet collection.
      * @param {Object} economicEntityMemo - EconomicEntityMemo object to be used.
      * @param {Object} commander - Commander object to be used.
      * @param {Object} admin - KafkaJS admin.
      * @param {Object} producer - KafkaJS producer to use.
+     * @param {Object} consumer - KafkaJS consumer to use.
      * @param {Object} logger - Logger to use.
      */
-    constructor(twitterAPI, tweetStore, economicEntityMemo, commander, admin, producer, logger) {
-        this._twitterAPI = twitterAPI;
+    constructor(tweetStore, economicEntityMemo, commander, admin, producer, consumer, logger) {
         this._tweetStore = tweetStore;
         this._economicEntityMemo = economicEntityMemo;
         this._commander = commander;
         this._admin = admin;
         this._producer = producer;
+        this._consumer = consumer;
         this._logger = logger;
 
-        this._topicCreation([{topic: 'TWEETS_COLLECTED', replicationFactor: 1}]).then(async() => {
+        this._topicCreation([{topic: 'TWEETS_COLLECTED', replicationFactor: 1}, { topic: 'TWEETS_FETCHED', replicationFactor: 1}]).then(async() => {
 
             const economicEntities = await this._economicEntityMemo.readEconomicEntities();
             for (const economicEntity of economicEntities) {
                 this._startDataCollection(economicEntity.name, economicEntity.type);
             }
+
+            await this._consumer.subscribe({ topic: 'TWEETS_FETCHED', fromBeginning: true });
+
+            await this._consumer.run({
+                eachMessage: async ({message}) => {
+
+                    this._logger.debug(`Received kafka message: ${message.value.toString()}`);
+
+                    const { economicEntityName, economicEntityType, tweets} = JSON.parse(message.value.toString());
+                    await this._handleTweetsFetched(economicEntityName, economicEntityType, tweets);
+                }
+            });
+
         });
     }
 
@@ -120,44 +133,44 @@ class CollectionService {
     }
 
     /**
-     * Collect tweets for a given entity name and type.
+     * Handle the tweets fetched event.
      * @param {String} entityName - Economic entity name (i.e, 'Google').
      * @param {String} entityType - Economic entity type (i.e, 'BUSINESS').
+     * @param {Array} tweets - Array of tweet objects of the form { text: '...' }.
      * @returns {Boolean} - True if the function succeeds, false otherwise.
      */
-    // async _collectTweets(entityName, entityType) {
+    async _handleTweetsFetched(entityName, entityType, tweets) {
 
-    //     if (!validString(entityName)) return false;
+        if (!validString(entityName)) return false;
 
-    //     if (!validString(entityType)) return false;
+        if (!validString(entityType)) return false;
 
-    //     this._logger.info(`Fetching data from the twitter API for: name ${entityName}, type ${entityType}.`);
-    //     const tweets = await this._twitterAPI.tweets(entityName);
+        if (!Array.isArray(tweets) || !(tweets.length > 0)) return false;
 
-    //     const timestamp = moment().unix();
+        const timestamp = moment().unix();
 
-    //     this._logger.info(`Adding timeseries entry to tweet store with timestamp ${timestamp}, tweets ${JSON.stringify(tweets)}`);
-    //     const tweetsCreated = await this._tweetStore.createTweets(timestamp, entityName, entityType, tweets);
+        this._logger.info(`Adding timeseries entry to tweet store with timestamp ${timestamp}, tweets ${JSON.stringify(tweets)}`);
+        const tweetsCreated = await this._tweetStore.createTweets(timestamp, entityName, entityType, tweets);
 
-    //     const timeSeriesItems = await this._tweetStore.readRecentTweets(entityName, entityType, 10);
+        const timeSeriesItems = await this._tweetStore.readRecentTweets(entityName, entityType, 10);
 
-    //     const event = {
-    //         economicEntityName: entityName,
-    //         economicEntityType: entityType,
-    //         timeSeriesItems
-    //     };
+        const event = {
+            economicEntityName: entityName,
+            economicEntityType: entityType,
+            timeSeriesItems
+        };
 
-    //     this._logger.info(`Adding collection event with value: ${JSON.stringify(event)}`);
+        this._logger.info(`Adding collection event with value: ${JSON.stringify(event)}`);
 
-    //     this._producer.send({
-    //         topic: 'TWEETS_COLLECTED',
-    //         messages: [
-    //             { value: JSON.stringify(event) }
-    //         ]
-    //     });
+        await this._producer.send({
+            topic: 'TWEETS_COLLECTED',
+            messages: [
+                { value: JSON.stringify(event) }
+            ]
+        });
 
-    //     return tweetsCreated;
-    // }
+        return tweetsCreated;
+    }
 
     /**
      * Create the specified topics.

@@ -1,8 +1,10 @@
 import { Command, Option } from "commander";
 import { Kafka } from 'kafkajs';
+import log4js from "log4js";
 import { TwitterApi } from 'twitter-api-v2';
 
-debugger;
+const logger = log4js.getLogger();
+logger.level = "debug";
 
 try {
 
@@ -16,7 +18,14 @@ try {
             .choices(['fetch-tweets'])
     );
 
-    program.requiredOption('-n, --entity-name <entity name>', 'Specify the name of the economic entity for which the operation will be performed.');
+    program.addOption(
+        new Option('-n, --entity-name <entity name>', 'Specify the name of the economic entity for which the operation will be performed.')
+    );
+
+    program.addOption(
+        new Option('-m, --num-tweets [num tweets]', 'Specify the number of tweets to be fetched at once.')
+            .default(10, 'The default number to fetch.')
+    );
 
     program.addOption(
         new Option('-t, --entity-type <entity type>', 'Specify the type of the economic entity for which the operation will be performed.')
@@ -27,17 +36,10 @@ try {
 
     const options = program.opts();
 
-    if (!options.operationType)
-        throw new Error('An operation type is required.');
-
-    if (!options.entityType)
-        throw new Error('An entity type is required');
-
     if (options.operationType) {
 
         switch(options.operationType) {
             case 'fetch-tweets': {
-                console.log(options.operationType)
 
                 const fetchTweets = async () => {
 
@@ -45,11 +47,9 @@ try {
                     const twitterClient = new TwitterApi(process.env.PREDECOS_TWITTER_BEARER);
                     const readOnlyClient = twitterClient.readOnly;
 
-                    debugger;
-
                     const tweets = await readOnlyClient.v2.get('tweets/search/recent', {
                         query: `${options.entityName} lang:en`,
-                        max_results: 10
+                        max_results: options.numTweets
                     });
 
                     console.log(`Collected tweets: ${JSON.stringify(tweets)}`);
@@ -58,8 +58,6 @@ try {
                         clientId: 'collect-data',
                         brokers: [`${process.env.PREDECOS_KAFKA_HOST}:${process.env.PREDECOS_KAFKA_PORT}`]
                     });
-
-                    debugger;
 
                     const admin = kafka.admin();
                     const producer = kafka.producer();
@@ -84,18 +82,16 @@ try {
 
                     attachExitHandler(performCleanup);
 
-                    console.log('Connecting to kafka.');
+                    logger.debug('Connecting to kafka.');
 
                     await admin.connect();
                     await producer.connect();
 
-
-                    console.log('Creating TWEET_FETCHED kafka topic.');
-                    // Add data to kafka topic
+                    logger.info('Creating kafka topic.');
                     await admin.createTopics({
                         waitForLeaders: true,
                         topics: [{
-                            topic: 'TWEET_FETCHED',
+                            topic: 'TWEETS_FETCHED',
                             replicationFactor: 1
                         }]
                     });
@@ -106,13 +102,15 @@ try {
                         tweets
                     };
 
-                    console.log('Sending TWEET_FETCHED event into stream.');
-                    producer.send({
-                        topic: 'TWEET_FETCHED',
+                    logger.info('Sending event into stream.');
+                    await producer.send({
+                        topic: 'TWEETS_FETCHED',
                         messages: [
                             { value: JSON.stringify(event) }
                         ]
                     });
+
+                    process.exit(0);
                 };
                 fetchTweets();
                 break;
@@ -125,5 +123,5 @@ try {
     }
 
 } catch (e) {
-    console.error(e.message.toString());
+    logger.error(e.message.toString());
 }

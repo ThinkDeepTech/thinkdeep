@@ -29,7 +29,7 @@ class FetchTweetsCommand extends Command {
             command: 'sleep',
             args: ['10']
             // command: 'node',
-            // args: ['collect-data.mjs', `--entityName=${economicEntityName}`, `--entityType=${economicEntityType}`, '--operation-type=fetch-tweets']
+            // args: ['collect-data.mjs', `--entity-name=${economicEntityName}`, `--entity-type=${economicEntityType}`, '--operation-type=fetch-tweets']
         });
     }
 

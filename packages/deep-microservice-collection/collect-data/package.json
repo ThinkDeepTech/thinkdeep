@@ -1,0 +1,18 @@
+{
+  "name": "collect-data",
+  "version": "0.0.8",
+  "description": "CLI handling data collection operations.",
+  "main": "collect-data.mjs",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hayden McParlane",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^9.0.0",
+    "kafkajs": "^1.15.0",
+    "log4js": "^6.3.0",
+    "twitter-api-v2": "^1.11.0"
+  }
+}
