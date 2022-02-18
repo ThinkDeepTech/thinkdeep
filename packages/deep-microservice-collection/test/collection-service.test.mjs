@@ -84,8 +84,6 @@ describe('collection-service', () => {
             KubeConfig: sinon.stub()
         };
 
-        k8sClient.k
-
         k8s.V1CronJob.returns( sinon.createStubInstance(k8sClient.V1CronJob.constructor) );
         k8s.V1ObjectMeta.returns( sinon.createStubInstance(k8sClient.V1ObjectMeta.constructor) );
         k8s.V1CronJobSpec.returns( sinon.createStubInstance(k8sClient.V1CronJobSpec.constructor) );
@@ -107,6 +105,42 @@ describe('collection-service', () => {
     });
 
     describe('constructor', () => {
+
+        it('should create the tweets collected and tweets fetched topics', () => {
+            const args = admin.createTopics.getCall(0).args;
+            const topics = args[0].topics;
+            expect(topics[0].topic).to.equal('TWEETS_COLLECTED');
+            expect(topics[1].topic).to.equal('TWEETS_FETCHED');
+        })
+
+        it('should subscribe to the tweets fetched event', () => {
+            const args = consumer.subscribe.getCall(0).args;
+            expect(args[0].topic).to.equal('TWEETS_FETCHED');
+        })
+
+        it('should process each of the tweets fetched with its handler', async () => {
+            const message = JSON.stringify({
+                economicEntityName: 'Google',
+                economicEntityType: 'BUSINESS',
+                tweets: [{
+                    text: "tweet1"
+                },{
+                    text: "tweet2"
+                }]
+            });
+            const args = consumer.run.getCall(0).args;
+
+            console.log(JSON.stringify(args));
+            const perMessageCallback = args[0].eachMessage;
+
+            await perMessageCallback({ message: {
+                value: {
+                    toString: () => message
+                }
+            }});
+
+            expect(tweetStore.createTweets).to.have.been.called;
+        })
 
         it('should read all of the economic entities stored', () => {
             expect(economicEntityMemo.readEconomicEntities).to.have.been.calledOnce;
@@ -297,13 +331,16 @@ describe('collection-service', () => {
             expect(subject._commands.bind(subject, entityName, entityType)).to.throw(Error);
         })
 
-        it('should include a command to collect tweets for type business', () => {
+        it('should include a repetative command to collect tweets for type business', () => {
             const entityName = 'somebusiness';
             const entityType = 'BUSINESS';
 
             const commands = subject._commands(entityName, entityType);
+            const containers = commands[0]._cronJob.spec.jobTemplate.spec.template.spec.containers;
+            const args = containers[0].args;
 
             expect(commands[0].constructor.name).to.equal('K8sCronJob');
+            expect(args[3]).to.equal('--operation-type=fetch-tweets');
         })
     });
 

@@ -32,9 +32,11 @@ class K8sCronJob extends Command {
         container.args = options.args
 
         podSpec.containers = [ container ];
+        podTemplateSpec.spec = podSpec;
         jobSpec.template = podTemplateSpec;
         jobTemplateSpec.spec = jobSpec;
         cronJobSpec.jobTemplate = jobTemplateSpec;
+        cronJob.spec = cronJobSpec;
 
         const kubeConfig = new k8s.KubeConfig();
         const batchApi = kubeConfig.makeApiClient(k8s.BatchV1Api);
