@@ -39,7 +39,7 @@
     "kafkajs": "^1.15.0",
     "log4js": "^6.3.0",
     "moment": "^2.29.1",
-    "mongodb": "^4.2.1",
+    "mongodb": "^4.2.1"
   },
   "private": true
 }
