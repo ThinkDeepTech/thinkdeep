@@ -127,7 +127,6 @@ class CollectionService {
         if (type === 'business') {
 
             const command = new K8sCronJob({
-                name: `fetch-tweets-${entityName.toLowerCase()}-${entityType.toLowerCase()}`,
                 namespace: 'default',
                  /**
                  * Time interval between each twitter API call.

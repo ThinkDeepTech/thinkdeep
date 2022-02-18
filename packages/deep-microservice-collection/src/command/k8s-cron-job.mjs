@@ -5,18 +5,14 @@ class K8sCronJob extends Command {
     constructor(options, k8s) {
         super();
 
-        if (!validString(options.name) || !validString(options.schedule) || !validString(options.command) ||
-            !validString(options.image) || !validString(options.namespace) || !Array.isArray(options.args))
-            throw new Error(`A cron job requires a name, schedule, command and arguments`);
+        if (!validString(options.schedule) || !validString(options.image) || !validString(options.command))
+            throw new Error(`A cron job requires a schedule, image and command`);
 
         const cronJob = new k8s.V1CronJob();
         cronJob.apiVersion = "batch/v1";
         cronJob.kind = "CronJob";
 
-        const metadata = new k8s.V1ObjectMeta({
-            name: options.name
-        });
-        // metadata.name = options.name;
+        const metadata = new k8s.V1ObjectMeta();
         cronJob.metadata = metadata;
 
         const cronJobSpec = new k8s.V1CronJobSpec();
@@ -29,7 +25,7 @@ class K8sCronJob extends Command {
         const container = new k8s.V1Container();
         container.image = options.image;
         container.command = [ options.command ];
-        container.args = options.args
+        container.args = options.args || []
 
         podSpec.containers = [ container ];
         podTemplateSpec.spec = podSpec;
@@ -43,7 +39,7 @@ class K8sCronJob extends Command {
 
         this._cronJob = cronJob;
         this._api = batchApi;
-        this._namespace = options.namespace;
+        this._namespace = options.namespace || 'default';
     }
 
     async execute() {

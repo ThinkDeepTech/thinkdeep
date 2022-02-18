@@ -1,4 +1,4 @@
-import k8sClient from '@kubernetes/client-node';
+import k8s from '@kubernetes/client-node';
 
 import chai from 'chai';
 import sinon from 'sinon';
@@ -24,7 +24,7 @@ describe('collection-service', () => {
     let admin;
     let producer;
     let consumer;
-    let k8s;
+    let mockK8s;
     let logger;
     let subject;
     beforeEach(() => {
@@ -72,7 +72,7 @@ describe('collection-service', () => {
         consumer.subscribe.returns( Promise.resolve() );
         consumer.run.returns( Promise.resolve() );
 
-        k8s = {
+        mockK8s = {
             V1CronJob: sinon.stub(),
             V1ObjectMeta: sinon.stub(),
             V1CronJobSpec: sinon.stub(),
@@ -84,24 +84,24 @@ describe('collection-service', () => {
             KubeConfig: sinon.stub()
         };
 
-        k8s.V1CronJob.returns( sinon.createStubInstance(k8sClient.V1CronJob.constructor) );
-        k8s.V1ObjectMeta.returns( sinon.createStubInstance(k8sClient.V1ObjectMeta.constructor) );
-        k8s.V1CronJobSpec.returns( sinon.createStubInstance(k8sClient.V1CronJobSpec.constructor) );
-        k8s.V1JobTemplateSpec.returns( sinon.createStubInstance(k8sClient.V1JobTemplateSpec.constructor) );
-        k8s.V1JobSpec.returns( sinon.createStubInstance(k8sClient.V1JobSpec.constructor) );
-        k8s.V1PodTemplateSpec.returns( sinon.createStubInstance(k8sClient.V1PodTemplateSpec.constructor) );
-        k8s.V1PodSpec.returns( sinon.createStubInstance(k8sClient.V1PodSpec.constructor) );
-        k8s.V1Container.returns( sinon.createStubInstance(k8sClient.V1Container.constructor) );
+        mockK8s.V1CronJob.returns( sinon.createStubInstance(k8s.V1CronJob.constructor) );
+        mockK8s.V1ObjectMeta.returns( sinon.createStubInstance(k8s.V1ObjectMeta.constructor) );
+        mockK8s.V1CronJobSpec.returns( sinon.createStubInstance(k8s.V1CronJobSpec.constructor) );
+        mockK8s.V1JobTemplateSpec.returns( sinon.createStubInstance(k8s.V1JobTemplateSpec.constructor) );
+        mockK8s.V1JobSpec.returns( sinon.createStubInstance(k8s.V1JobSpec.constructor) );
+        mockK8s.V1PodTemplateSpec.returns( sinon.createStubInstance(k8s.V1PodTemplateSpec.constructor) );
+        mockK8s.V1PodSpec.returns( sinon.createStubInstance(k8s.V1PodSpec.constructor) );
+        mockK8s.V1Container.returns( sinon.createStubInstance(k8s.V1Container.constructor) );
 
         const k8sApiClient = {
             createNamespacedCronJob: sinon.stub(),
             deleteCollectionNamespacedCronJob: sinon.stub()
         }
-        const kubeConfig = sinon.createStubInstance(k8sClient.KubeConfig.constructor);
+        const kubeConfig = sinon.createStubInstance(k8s.KubeConfig.constructor);
         kubeConfig.makeApiClient = sinon.stub().returns(k8sApiClient)
-        k8s.KubeConfig.returns( kubeConfig );
+        mockK8s.KubeConfig.returns( kubeConfig );
 
-        subject = new CollectionService(tweetStore, economicEntityMemo, commander, admin, producer, consumer, k8s, logger);
+        subject = new CollectionService(tweetStore, economicEntityMemo, commander, admin, producer, consumer, mockK8s, logger);
     });
 
     describe('constructor', () => {
