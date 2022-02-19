@@ -161,7 +161,7 @@ class CollectionService {
 
         if (!validString(entityType)) return false;
 
-        if (!Array.isArray(tweets) || !(tweets.length > 0)) return false;
+        if (!Array.isArray(tweets) || (tweets.length === 0)) return false;
 
         const timestamp = moment().unix();
 
