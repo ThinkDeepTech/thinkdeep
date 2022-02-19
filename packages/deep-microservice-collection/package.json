@@ -33,12 +33,15 @@
     "apollo-datasource-rest": "^3.4.0",
     "apollo-server": "^3.2.0",
     "apollo-server-express": "^3.5.0",
+    "commander": "^9.0.0",
+    "concat-stream": "^2.0.0",
     "express": "^4.17.1",
     "graphql": "^15.5.1",
     "kafkajs": "^1.15.0",
     "log4js": "^6.3.0",
     "moment": "^2.29.1",
-    "mongodb": "^4.2.1"
+    "mongodb": "^4.2.1",
+    "twitter-api-v2": "^1.11.0"
   },
   "private": true
 }
