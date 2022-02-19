@@ -51,6 +51,26 @@ describe('collect-data', () => {
 
     describe('fetch-tweets', () => {
 
+        it('should fetch tweets from the twitter API', async () => {
+            const entityName = 'Google';
+            const entityType = 'BUSINESS';
+            const operationType = 'fetch-tweets'
+
+            const response = await execute(modulePath, [
+                `--entity-name=${entityName}`, `--entity-type=${entityType}`, `--operation-type=${operationType}`, '--mock-run'
+            ], { env: process.env });
+
+            const recentTweets = [{
+                text: 'tweet 1'
+            }, {
+                text: 'tweet 2'
+            }, {
+                text: 'tweet 3'
+            }];
+            expect(response.trim()).to.include('Querying recent tweets');
+            expect(response.trim()).to.include(`Retrieved the following tweets: ${JSON.stringify(recentTweets)}`)
+        })
+
         it('should add the TWEETS_FETCHED event to kafka', async () => {
             const entityName = 'Google';
             const entityType = 'BUSINESS';
