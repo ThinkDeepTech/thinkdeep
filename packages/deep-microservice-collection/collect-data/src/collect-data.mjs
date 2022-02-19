@@ -2,6 +2,7 @@ import { CollectDataClient } from "./collect-data-client.mjs";
 import { Command, Option } from "commander";
 import { Kafka } from 'kafkajs';
 import log4js from "log4js";
+import sinon from 'sinon';
 import { TwitterApi } from 'twitter-api-v2';
 
 const logger = log4js.getLogger();
@@ -20,7 +21,7 @@ try {
 
     program.addOption(
         new Option('-t, --entity-type <entity type>', 'Specify the type of the economic entity for which the operation will be performed.')
-            .choices(['business'])
+            .choices(['BUSINESS'])
     );
 
     program.addOption(
@@ -33,19 +34,63 @@ try {
             .default(10, 'The default number to fetch.')
     );
 
+    program.addOption(
+        new Option('--mock-run', 'Trigger mocking of the cli.')
+    );
+
     program.parse(process.argv);
 
     const options = program.opts();
 
+    if(!options.entityName)
+        throw new Error(`Entity name is required`);
+
+    if(!options.entityType)
+        throw new Error(`Entity type is required`);
+
+    if(!options.operationType)
+        throw new Error('Operation type is required');
+
     switch(options.operationType) {
         case 'fetch-tweets': {
 
-            const twitterClient = (new TwitterApi(process.env.PREDECOS_TWITTER_BEARER)).readOnly;
+            logger.info('Fetching tweets.');
+            let twitterClient;
+            let kafkaClient;
+            if (!options.mockRun) {
+                twitterClient = (new TwitterApi(process.env.PREDECOS_TWITTER_BEARER)).readOnly;
 
-            const kafkaClient = new Kafka({
-                clientId: 'collect-data',
-                brokers: [`${process.env.PREDECOS_KAFKA_HOST}:${process.env.PREDECOS_KAFKA_PORT}`]
-            });
+                kafkaClient = new Kafka({
+                    clientId: 'collect-data',
+                    brokers: [`${process.env.PREDECOS_KAFKA_HOST}:${process.env.PREDECOS_KAFKA_PORT}`]
+                });
+            } else {
+                twitterClient = {
+                    v2: {
+                        get: sinon.stub().returns({
+                            data: [{
+                                text: 'tweet 1'
+                            }, {
+                                text: 'tweet 2'
+                            }, {
+                                text: 'tweet 3'
+                            }]
+                        })
+                    }
+                };
+                kafkaClient = {
+                    admin: sinon.stub().returns({
+                        connect: sinon.stub(),
+                        createTopics: sinon.stub(),
+                        disconnect: sinon.stub()
+                    }),
+                    producer: sinon.stub().returns({
+                        connect: sinon.stub(),
+                        send: sinon.stub(),
+                        disconnect: sinon.stub()
+                    })
+                };
+            }
 
             const collectDataClient = new CollectDataClient(twitterClient, kafkaClient, logger);
 
@@ -73,11 +118,9 @@ try {
 
             break;
         }
-        default: {
-            throw new Error('Operation type is required.');
-        }
     }
 
 } catch (e) {
     logger.error(e.message.toString());
+    throw e;
 }

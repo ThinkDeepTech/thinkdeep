@@ -15,7 +15,7 @@
   },
   "scripts": {
     "start": "node ./src/index.mjs",
-    "tests": "mocha ./test/**/*.test.mjs ./test/*.test.mjs --exit; mocha ./collect-data/test/**/*.test.mjs;"
+    "tests": "mocha ./test/**/*.test.mjs ./test/*.test.mjs --exit; cd ./collect-data && mocha ./test/**/*.test.mjs;"
   },
   "devDependencies": {
     "chai": "^4.3.4",
