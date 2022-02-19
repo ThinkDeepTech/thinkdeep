@@ -7,7 +7,7 @@ chai.use(sinonChai);
 
 import { CollectDataClient } from '../src/collect-data-client.mjs';
 
-describe('collection-service', () => {
+describe('collect-data-client', () => {
 
     let twitterClient;
     let kafkaClient;
