@@ -347,7 +347,7 @@ describe('collection-service', () => {
 
             expect(commands[0].constructor.name).to.equal('K8sCronJob');
             expect(k8sCommands[0]).to.equal('node');
-            expect(k8sArgs[0]).to.equal('collect-data.mjs');
+            expect(k8sArgs[0]).to.equal('src/collect-data.mjs');
             expect(k8sArgs[3]).to.equal('--operation-type=fetch-tweets');
         })
     });

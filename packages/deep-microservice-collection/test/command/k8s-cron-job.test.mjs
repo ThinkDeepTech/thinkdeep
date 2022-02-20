@@ -17,10 +17,18 @@ describe('k8s-cron-job', () => {
         namespace: 'default',
         command: 'node'
     };
+    let logger;
     let k8sApiClient;
     let mockK8s;
     let subject;
     beforeEach(() => {
+
+        logger = {
+            debug: sinon.stub(),
+            info: sinon.stub(),
+            warn: sinon.stub(),
+            error: sinon.stub()
+        };
 
         mockK8s = {
             V1CronJob: sinon.stub(),
@@ -69,7 +77,7 @@ describe('k8s-cron-job', () => {
                     image: 'busybox',
                     namespace: 'default',
                     command: 'node'
-                }, mockK8s);
+                }, mockK8s, logger);
                 assert.fail('An error should have been thrown.');
             } catch (e) {
                 expect(e.message.toString()).to.equal(requiredOptionsErrorMessage);
@@ -84,7 +92,7 @@ describe('k8s-cron-job', () => {
                     image: 'busybox',
                     namespace: 'default',
                     command: 'node'
-                }, mockK8s);
+                }, mockK8s, logger);
                 assert.fail('An error should have been thrown.');
             } catch (e) {
                 expect(e.message.toString()).to.equal(requiredOptionsErrorMessage);
@@ -99,7 +107,7 @@ describe('k8s-cron-job', () => {
                     image: 'busybox',
                     namespace: 'default',
                     command: 'node'
-                }, mockK8s);
+                }, mockK8s, logger);
                 assert.fail('An error should have been thrown.');
             } catch (e) {
                 expect(e.message.toString()).to.equal(requiredOptionsErrorMessage);
@@ -114,7 +122,7 @@ describe('k8s-cron-job', () => {
                     image: 'busybox',
                     namespace: 'default',
                     command: 'node'
-                }, mockK8s);
+                }, mockK8s, logger);
                 assert.fail('An error should have been thrown.');
             } catch (e) {
                 expect(e.message.toString()).to.equal(requiredOptionsErrorMessage);
@@ -129,7 +137,7 @@ describe('k8s-cron-job', () => {
                     image: '',
                     namespace: 'default',
                     command: 'node'
-                }, mockK8s);
+                }, mockK8s, logger);
                 assert.fail('An error should have been thrown.');
             } catch (e) {
                 expect(e.message.toString()).to.equal(requiredOptionsErrorMessage);
@@ -144,7 +152,7 @@ describe('k8s-cron-job', () => {
                     image: {},
                     namespace: 'default',
                     command: 'node'
-                }, mockK8s);
+                }, mockK8s, logger);
                 assert.fail('An error should have been thrown.');
             } catch (e) {
                 expect(e.message.toString()).to.equal(requiredOptionsErrorMessage);
@@ -159,7 +167,7 @@ describe('k8s-cron-job', () => {
                     image: 'busybox',
                     namespace: 'default',
                     command: ''
-                }, mockK8s);
+                }, mockK8s, logger);
                 assert.fail('An error should have been thrown.');
             } catch (e) {
                 expect(e.message.toString()).to.equal(requiredOptionsErrorMessage);
@@ -174,7 +182,7 @@ describe('k8s-cron-job', () => {
                     image: 'busybox',
                     namespace: 'default',
                     command: 1
-                }, mockK8s);
+                }, mockK8s, logger);
                 assert.fail('An error should have been thrown.');
             } catch (e) {
                 expect(e.message.toString()).to.equal(requiredOptionsErrorMessage);
@@ -183,7 +191,7 @@ describe('k8s-cron-job', () => {
 
         it('should construct an object of the correct structure for a k8s cron job', () => {
 
-            subject = new K8sCronJob(options, mockK8s);
+            subject = new K8sCronJob(options, mockK8s, logger);
 
             /**
              * The structure of the created cron job should be what's expected by k8s. If any point in the chain
@@ -195,7 +203,7 @@ describe('k8s-cron-job', () => {
 
         it('should attach the collection microservices secrets to the cron job environment', () => {
 
-            subject = new K8sCronJob(options, mockK8s);
+            subject = new K8sCronJob(options, mockK8s, logger);
 
             const containerConfig = subject._cronJob.spec.jobTemplate.spec.template.spec.containers[0];
             const secretReference = containerConfig.envFrom.secretRef;
@@ -206,7 +214,7 @@ describe('k8s-cron-job', () => {
 
     describe('execute', () => {
         it('should create a cron job', async () => {
-            subject = new K8sCronJob(options, mockK8s);
+            subject = new K8sCronJob(options, mockK8s, logger);
 
             await subject.execute();
 
@@ -216,7 +224,7 @@ describe('k8s-cron-job', () => {
 
     describe('stop', () => {
         it('should delete the cron job', async () => {
-            subject = new K8sCronJob(options, mockK8s);
+            subject = new K8sCronJob(options, mockK8s, logger);
 
             await subject.stop();
 

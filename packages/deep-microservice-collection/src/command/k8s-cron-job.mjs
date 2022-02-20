@@ -2,21 +2,20 @@ import {Command} from './command.mjs';
 import {validString} from '../helpers.mjs';
 
 class K8sCronJob extends Command {
-    constructor(options, k8s) {
+    constructor(options, k8s, logger) {
         super();
 
         if (!validString(options.name) || !validString(options.schedule) || !validString(options.image) || !validString(options.command))
             throw new Error(`A cron job requires a name, schedule, image and command`);
+
 
         const cronJob = new k8s.V1CronJob();
         cronJob.apiVersion = "batch/v1";
         cronJob.kind = "CronJob";
 
         const metadata = new k8s.V1ObjectMeta();
-
         Object.defineProperty(metadata, "name", { writable: true });
         metadata.name = options.name;
-
         cronJob.metadata = metadata;
 
         const cronJobSpec = new k8s.V1CronJobSpec();
@@ -58,16 +57,21 @@ class K8sCronJob extends Command {
         kubeConfig.loadFromCluster();
         const batchApi = kubeConfig.makeApiClient(k8s.BatchV1Api);
 
+        logger.debug(`Configured cron job with metadata.name ${metadata.name} which will reference secret ${secretRef.name}`);
+
+        this._logger = logger;
         this._cronJob = cronJob;
         this._api = batchApi;
         this._namespace = options.namespace || 'default';
     }
 
     async execute() {
+        this._logger.info(`Creating cron job with metadata.name: ${this._cronJob.metadata.name}`);
         await this._api.createNamespacedCronJob(this._namespace, this._cronJob, "true");
     }
 
     async stop() {
+        this._logger.info(`Deleting cron job with metadata.name: ${this._cronJob.metadata.name}`);
         await this._api.deleteCollectionNamespacedCronJob(this._namespace, "true");
     }
 }
