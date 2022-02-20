@@ -5,7 +5,7 @@ function execute(processPath, args = [], opts = {}) {
     const { env = null } = opts;
     const childProcess = createProcess(processPath, args, env);
     childProcess.stdin.setEncoding('utf-8');
-    const promise = new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       childProcess.stderr.once('data', err => {
         reject(err.toString());
       });
@@ -16,7 +16,6 @@ function execute(processPath, args = [], opts = {}) {
         })
       );
     });
-    return promise;
   }
 
 export { execute };
