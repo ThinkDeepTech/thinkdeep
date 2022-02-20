@@ -8,9 +8,10 @@ chai.use(sinonChai);
 
 import { K8sCronJob } from '../../src/command/k8s-cron-job.mjs';
 
-describe('collection-service', () => {
+describe('k8s-cron-job', () => {
 
     let options = {
+        name: 'fetch-tweets-google-business',
         schedule: '* * * * *',
         image: 'busybox',
         namespace: 'default',
@@ -30,6 +31,8 @@ describe('collection-service', () => {
             V1PodTemplateSpec: sinon.stub(),
             V1PodSpec: sinon.stub(),
             V1Container: sinon.stub(),
+            V1EnvFromSource: sinon.stub(),
+            V1SecretEnvSource: sinon.stub(),
             KubeConfig: sinon.stub()
         };
 
@@ -41,21 +44,57 @@ describe('collection-service', () => {
         mockK8s.V1PodTemplateSpec.returns( sinon.createStubInstance(k8s.V1PodTemplateSpec.constructor) );
         mockK8s.V1PodSpec.returns( sinon.createStubInstance(k8s.V1PodSpec.constructor) );
         mockK8s.V1Container.returns( sinon.createStubInstance(k8s.V1Container.constructor) );
+        mockK8s.V1EnvFromSource.returns( sinon.createStubInstance(k8s.V1EnvFromSource.constructor) );
+        mockK8s.V1SecretEnvSource.returns( sinon.createStubInstance(k8s.V1SecretEnvSource.constructor) );
 
         k8sApiClient = {
             createNamespacedCronJob: sinon.stub(),
             deleteCollectionNamespacedCronJob: sinon.stub()
         }
         const kubeConfig = sinon.createStubInstance(k8s.KubeConfig.constructor);
+        kubeConfig.loadFromCluster = sinon.stub();
         kubeConfig.makeApiClient = sinon.stub().returns(k8sApiClient)
         mockK8s.KubeConfig.returns( kubeConfig );
     });
 
     describe('constructor', () => {
 
+        const requiredOptionsErrorMessage = "A cron job requires a name, schedule, image and command";
+
+        it('should throw an error if the name is empty', () => {
+            try {
+                subject = new K8sCronJob({
+                    name: '',
+                    schedule: '* * * * *',
+                    image: 'busybox',
+                    namespace: 'default',
+                    command: 'node'
+                }, mockK8s);
+                assert.fail('An error should have been thrown.');
+            } catch (e) {
+                expect(e.message.toString()).to.equal(requiredOptionsErrorMessage);
+            }
+        })
+
+        it('should throw an error if the name is not a string', () => {
+            try {
+                subject = new K8sCronJob({
+                    name: 1,
+                    schedule: '* * * * *',
+                    image: 'busybox',
+                    namespace: 'default',
+                    command: 'node'
+                }, mockK8s);
+                assert.fail('An error should have been thrown.');
+            } catch (e) {
+                expect(e.message.toString()).to.equal(requiredOptionsErrorMessage);
+            }
+        })
+
         it('should throw an error if the schedule is empty', () => {
             try {
                 subject = new K8sCronJob({
+                    name: 'fetch-tweets-google-business',
                     schedule: '',
                     image: 'busybox',
                     namespace: 'default',
@@ -63,13 +102,14 @@ describe('collection-service', () => {
                 }, mockK8s);
                 assert.fail('An error should have been thrown.');
             } catch (e) {
-                expect(e.message.toString()).to.equal(`A cron job requires a schedule, image and command`);
+                expect(e.message.toString()).to.equal(requiredOptionsErrorMessage);
             }
         })
 
         it('should throw an error if the schedule is not a string', () => {
             try {
                 subject = new K8sCronJob({
+                    name: 'fetch-tweets-google-business',
                     schedule: [],
                     image: 'busybox',
                     namespace: 'default',
@@ -77,13 +117,14 @@ describe('collection-service', () => {
                 }, mockK8s);
                 assert.fail('An error should have been thrown.');
             } catch (e) {
-                expect(e.message.toString()).to.equal(`A cron job requires a schedule, image and command`);
+                expect(e.message.toString()).to.equal(requiredOptionsErrorMessage);
             }
         })
 
         it('should throw an error if the image is empty', () => {
             try {
                 subject = new K8sCronJob({
+                    name: 'fetch-tweets-google-business',
                     schedule: '* * * * *',
                     image: '',
                     namespace: 'default',
@@ -91,13 +132,14 @@ describe('collection-service', () => {
                 }, mockK8s);
                 assert.fail('An error should have been thrown.');
             } catch (e) {
-                expect(e.message.toString()).to.equal(`A cron job requires a schedule, image and command`);
+                expect(e.message.toString()).to.equal(requiredOptionsErrorMessage);
             }
         })
 
         it('should throw an error if the image is not a string', () => {
             try {
                 subject = new K8sCronJob({
+                    name: 'fetch-tweets-google-business',
                     schedule: '* * * * *',
                     image: {},
                     namespace: 'default',
@@ -105,13 +147,14 @@ describe('collection-service', () => {
                 }, mockK8s);
                 assert.fail('An error should have been thrown.');
             } catch (e) {
-                expect(e.message.toString()).to.equal(`A cron job requires a schedule, image and command`);
+                expect(e.message.toString()).to.equal(requiredOptionsErrorMessage);
             }
         })
 
         it('should throw an error if the command is empty', () => {
             try {
                 subject = new K8sCronJob({
+                    name: 'fetch-tweets-google-business',
                     schedule: '* * * * *',
                     image: 'busybox',
                     namespace: 'default',
@@ -119,13 +162,14 @@ describe('collection-service', () => {
                 }, mockK8s);
                 assert.fail('An error should have been thrown.');
             } catch (e) {
-                expect(e.message.toString()).to.equal(`A cron job requires a schedule, image and command`);
+                expect(e.message.toString()).to.equal(requiredOptionsErrorMessage);
             }
         })
 
         it('should throw an error if the command is not a string', () => {
             try {
                 subject = new K8sCronJob({
+                    name: 'fetch-tweets-google-business',
                     schedule: '* * * * *',
                     image: 'busybox',
                     namespace: 'default',
@@ -133,7 +177,7 @@ describe('collection-service', () => {
                 }, mockK8s);
                 assert.fail('An error should have been thrown.');
             } catch (e) {
-                expect(e.message.toString()).to.equal(`A cron job requires a schedule, image and command`);
+                expect(e.message.toString()).to.equal(requiredOptionsErrorMessage);
             }
         })
 
@@ -148,12 +192,24 @@ describe('collection-service', () => {
             expect(subject._cronJob.spec.schedule).not.to.equal(undefined);
             expect(subject._cronJob.spec.jobTemplate.spec.template.spec.containers[0].args).not.to.equal(undefined);
         })
+
+        it('should attach the collection microservices secrets to the cron job environment', () => {
+
+            subject = new K8sCronJob(options, mockK8s);
+
+            const containerConfig = subject._cronJob.spec.jobTemplate.spec.template.spec.containers[0];
+            const secretReference = containerConfig.envFrom.secretRef;
+            expect(containerConfig).not.to.equal(undefined);
+            expect(secretReference.name).to.equal('deep-microservice-collection-secrets');
+        })
     })
 
     describe('execute', () => {
         it('should create a cron job', async () => {
             subject = new K8sCronJob(options, mockK8s);
+
             await subject.execute();
+
             expect(k8sApiClient.createNamespacedCronJob).to.have.been.called;
         })
     })
@@ -161,7 +217,9 @@ describe('collection-service', () => {
     describe('stop', () => {
         it('should delete the cron job', async () => {
             subject = new K8sCronJob(options, mockK8s);
+
             await subject.stop();
+
             expect(k8sApiClient.deleteCollectionNamespacedCronJob).to.have.been.called;
         })
     })

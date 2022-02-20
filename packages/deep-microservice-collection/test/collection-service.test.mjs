@@ -81,6 +81,8 @@ describe('collection-service', () => {
             V1PodTemplateSpec: sinon.stub(),
             V1PodSpec: sinon.stub(),
             V1Container: sinon.stub(),
+            V1EnvFromSource: sinon.stub(),
+            V1SecretEnvSource: sinon.stub(),
             KubeConfig: sinon.stub()
         };
 
@@ -92,12 +94,15 @@ describe('collection-service', () => {
         mockK8s.V1PodTemplateSpec.returns( sinon.createStubInstance(k8s.V1PodTemplateSpec.constructor) );
         mockK8s.V1PodSpec.returns( sinon.createStubInstance(k8s.V1PodSpec.constructor) );
         mockK8s.V1Container.returns( sinon.createStubInstance(k8s.V1Container.constructor) );
+        mockK8s.V1EnvFromSource.returns( sinon.createStubInstance(k8s.V1EnvFromSource.constructor) );
+        mockK8s.V1SecretEnvSource.returns( sinon.createStubInstance(k8s.V1SecretEnvSource.constructor) );
 
         const k8sApiClient = {
             createNamespacedCronJob: sinon.stub(),
             deleteCollectionNamespacedCronJob: sinon.stub()
         }
         const kubeConfig = sinon.createStubInstance(k8s.KubeConfig.constructor);
+        kubeConfig.loadFromCluster = sinon.stub();
         kubeConfig.makeApiClient = sinon.stub().returns(k8sApiClient)
         mockK8s.KubeConfig.returns( kubeConfig );
 

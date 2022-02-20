@@ -5,14 +5,18 @@ class K8sCronJob extends Command {
     constructor(options, k8s) {
         super();
 
-        if (!validString(options.schedule) || !validString(options.image) || !validString(options.command))
-            throw new Error(`A cron job requires a schedule, image and command`);
+        if (!validString(options.name) || !validString(options.schedule) || !validString(options.image) || !validString(options.command))
+            throw new Error(`A cron job requires a name, schedule, image and command`);
 
         const cronJob = new k8s.V1CronJob();
         cronJob.apiVersion = "batch/v1";
         cronJob.kind = "CronJob";
 
         const metadata = new k8s.V1ObjectMeta();
+
+        Object.defineProperty(metadata, "name", { writable: true });
+        metadata.name = options.name;
+
         cronJob.metadata = metadata;
 
         const cronJobSpec = new k8s.V1CronJobSpec();
@@ -27,6 +31,22 @@ class K8sCronJob extends Command {
         container.command = [ options.command ];
         container.args = options.args || []
 
+        const envFromConfig = new k8s.V1EnvFromSource();
+        const secretRef = new k8s.V1SecretEnvSource();
+
+        /**
+         * NOTE: This definition is required otherwise name can't be written to. It's a hack but it works.
+         */
+        Object.defineProperty(secretRef, "name", { writable: true });
+
+        /**
+         * NOTE: This name must match that in the secrets helm template. Otherwise, the cron job won't work.
+         */
+        secretRef.name = 'deep-microservice-collection-secrets';
+
+        envFromConfig.secretRef = secretRef;
+        container.envFrom = envFromConfig;
+
         podSpec.containers = [ container ];
         podTemplateSpec.spec = podSpec;
         jobSpec.template = podTemplateSpec;
@@ -35,6 +55,7 @@ class K8sCronJob extends Command {
         cronJob.spec = cronJobSpec;
 
         const kubeConfig = new k8s.KubeConfig();
+        kubeConfig.loadFromCluster();
         const batchApi = kubeConfig.makeApiClient(k8s.BatchV1Api);
 
         this._cronJob = cronJob;
