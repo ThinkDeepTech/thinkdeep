@@ -38,6 +38,7 @@ describe('k8s-cron-job', () => {
             V1JobSpec: sinon.stub(),
             V1PodTemplateSpec: sinon.stub(),
             V1PodSpec: sinon.stub(),
+            V1LocalObjectReference: sinon.stub(),
             V1Container: sinon.stub(),
             V1EnvFromSource: sinon.stub(),
             V1SecretEnvSource: sinon.stub(),
@@ -54,7 +55,7 @@ describe('k8s-cron-job', () => {
         mockK8s.V1Container.returns( sinon.createStubInstance(k8s.V1Container.constructor) );
         mockK8s.V1EnvFromSource.returns( sinon.createStubInstance(k8s.V1EnvFromSource.constructor) );
         mockK8s.V1SecretEnvSource.returns( sinon.createStubInstance(k8s.V1SecretEnvSource.constructor) );
-
+        mockK8s.V1LocalObjectReference.returns( sinon.createStubInstance(k8s.V1LocalObjectReference.constructor) );
         k8sApiClient = {
             createNamespacedCronJob: sinon.stub(),
             deleteCollectionNamespacedCronJob: sinon.stub()

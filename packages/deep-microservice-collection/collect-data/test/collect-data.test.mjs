@@ -5,6 +5,10 @@ const expect = chai.expect;
 
 describe('collect-data', () => {
 
+    /**
+     * NOTE: This path is relative to the current working directory which, when tests are executed,
+     * is the root of the project.
+     */
     const modulePath = './src/collect-data.mjs';
 
     it('should require the entity name', async () => {

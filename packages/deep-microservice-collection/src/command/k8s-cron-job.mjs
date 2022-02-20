@@ -2,6 +2,13 @@ import {Command} from './command.mjs';
 import {validString} from '../helpers.mjs';
 
 class K8sCronJob extends Command {
+    /**
+     * Constructs a kubernetes cron job with the specified configuration.
+     *
+     * @param {Object} options - Options desired for cron job of the form: { name: 'cron-job-name', schedule: '* * * * *', image: 'busybox', command: 'ls', args: ['-l']}
+     * @param {Object} k8s - Kubernetes javascript module import found at https://github.com/kubernetes-client/javascript
+     * @param {Object} logger - Logger object.
+     */
     constructor(options, k8s, logger) {
         super();
 
@@ -24,6 +31,11 @@ class K8sCronJob extends Command {
         const jobSpec = new k8s.V1JobSpec();
         const podTemplateSpec = new k8s.V1PodTemplateSpec();
         const podSpec = new k8s.V1PodSpec();
+
+        const dockerSecretRef = new k8s.V1LocalObjectReference();
+        Object.defineProperty(dockerSecretRef, "name", { writable: true });
+        dockerSecretRef.name = 'docker-secret';
+        podSpec.imagePullSecrets = [dockerSecretRef];
 
         const container = new k8s.V1Container();
         container.image = options.image;
@@ -57,7 +69,13 @@ class K8sCronJob extends Command {
         kubeConfig.loadFromCluster();
         const batchApi = kubeConfig.makeApiClient(k8s.BatchV1Api);
 
-        logger.debug(`Configured cron job with metadata.name ${metadata.name} which will reference secret ${secretRef.name}`);
+        logger.debug(`
+
+            Configured cron job with metadata.name ${metadata.name} which will reference secret ${secretRef.name}:
+
+            ${JSON.stringify(cronJob)}
+
+        `);
 
         this._logger = logger;
         this._cronJob = cronJob;
@@ -65,11 +83,17 @@ class K8sCronJob extends Command {
         this._namespace = options.namespace || 'default';
     }
 
+    /**
+     * Execute the cron job.
+     */
     async execute() {
         this._logger.info(`Creating cron job with metadata.name: ${this._cronJob.metadata.name}`);
         await this._api.createNamespacedCronJob(this._namespace, this._cronJob, "true");
     }
 
+    /**
+     * Stop the cron job.
+     */
     async stop() {
         this._logger.info(`Deleting cron job with metadata.name: ${this._cronJob.metadata.name}`);
         await this._api.deleteCollectionNamespacedCronJob(this._namespace, "true");

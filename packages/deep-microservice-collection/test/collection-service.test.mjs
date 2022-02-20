@@ -80,6 +80,7 @@ describe('collection-service', () => {
             V1JobSpec: sinon.stub(),
             V1PodTemplateSpec: sinon.stub(),
             V1PodSpec: sinon.stub(),
+            V1LocalObjectReference: sinon.stub(),
             V1Container: sinon.stub(),
             V1EnvFromSource: sinon.stub(),
             V1SecretEnvSource: sinon.stub(),
@@ -96,6 +97,7 @@ describe('collection-service', () => {
         mockK8s.V1Container.returns( sinon.createStubInstance(k8s.V1Container.constructor) );
         mockK8s.V1EnvFromSource.returns( sinon.createStubInstance(k8s.V1EnvFromSource.constructor) );
         mockK8s.V1SecretEnvSource.returns( sinon.createStubInstance(k8s.V1SecretEnvSource.constructor) );
+        mockK8s.V1LocalObjectReference.returns( sinon.createStubInstance(k8s.V1LocalObjectReference.constructor) );
 
         const k8sApiClient = {
             createNamespacedCronJob: sinon.stub(),
@@ -346,6 +348,7 @@ describe('collection-service', () => {
             const k8sArgs = containers[0].args;
 
             expect(commands[0].constructor.name).to.equal('K8sCronJob');
+            expect(containers[0].image).to.equal('thinkdeeptech/collect-data:latest');
             expect(k8sCommands[0]).to.equal('node');
             expect(k8sArgs[0]).to.equal('src/collect-data.mjs');
             expect(k8sArgs[3]).to.equal('--operation-type=fetch-tweets');

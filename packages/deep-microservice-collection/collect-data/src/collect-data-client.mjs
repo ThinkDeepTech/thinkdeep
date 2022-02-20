@@ -1,5 +1,12 @@
-
+/**
+ * Client used to execute data collection tasks.
+ */
 class CollectDataClient {
+    /**
+     * @param {Object} twitterClient - Twitter API v2 client. See: https://github.com/PLhery/node-twitter-api-v2
+     * @param {Object} kafkaClient - KafkaJS client. See: https://github.com/tulios/kafkajs
+     * @param {Object} logger - The logger to use.
+     */
     constructor(twitterClient, kafkaClient, logger) {
         this._twitterClient = twitterClient;
         this._kafkaClient = kafkaClient;
@@ -9,6 +16,9 @@ class CollectDataClient {
         this._producer = this._kafkaClient.producer();
     }
 
+    /**
+     * Connect to all the services on which the client depends.
+     */
     async connect() {
 
         const performCleanup = (async () => {
@@ -38,6 +48,10 @@ class CollectDataClient {
         await this._producer.connect();
     }
 
+    /**
+     * Fetch recent tweets from the twitter API.
+     * @param {Object} query - Query to send to the API. I.e, { query: 'Google', max_results: 100}.
+     */
     async fetchRecentTweets(query) {
 
         this._logger.debug(`Querying recent tweets. Query: ${JSON.stringify(query)}`);
@@ -45,6 +59,11 @@ class CollectDataClient {
         return response.data;
     }
 
+    /**
+     * Emit the specified event into kafka.
+     * @param {String} eventName - Name of the event.
+     * @param {Object} data - The data associated with the event.
+     */
     async emitEvent(eventName, data) {
 
         this._logger.debug(`Creating event ${eventName} in kafka if it does not already exist.`);
