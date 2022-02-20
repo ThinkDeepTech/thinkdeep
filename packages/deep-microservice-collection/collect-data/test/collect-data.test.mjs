@@ -2,6 +2,7 @@ import chai from 'chai';
 import { execute } from './execute.mjs';
 
 const expect = chai.expect;
+mocha.timeout(10000);
 
 describe('collect-data', () => {
 
