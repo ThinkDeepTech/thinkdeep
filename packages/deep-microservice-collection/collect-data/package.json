@@ -5,7 +5,7 @@
   "main": "src/collect-data.mjs",
   "type": "module",
   "scripts": {
-    "tests": "mocha ./test/**/*.test.mjs ./test/*.test.mjs"
+    "tests": "mocha ./test/**/*.test.mjs ./test/*.test.mjs --timeout 10000"
   },
   "author": "Hayden McParlane",
   "license": "ISC",
