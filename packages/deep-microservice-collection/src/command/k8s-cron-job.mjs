@@ -88,7 +88,11 @@ class K8sCronJob extends Command {
      */
     async execute() {
         this._logger.info(`Creating cron job with metadata.name: ${this._cronJob.metadata.name}`);
-        await this._api.createNamespacedCronJob(this._namespace, this._cronJob, "true");
+        try {
+            await this._api.createNamespacedCronJob(this._namespace, this._cronJob, "true");
+        } catch (e) {
+            this._logger.error(`An error occurred while creating cron job ${this._cronJob.metadata.name}: ${e.message.toString()}`);
+        }
     }
 
     /**
@@ -96,7 +100,11 @@ class K8sCronJob extends Command {
      */
     async stop() {
         this._logger.info(`Deleting cron job with metadata.name: ${this._cronJob.metadata.name}`);
-        await this._api.deleteCollectionNamespacedCronJob(this._namespace, "true");
+        try {
+            await this._api.deleteCollectionNamespacedCronJob(this._namespace, "true");
+        } catch (e) {
+            this._logger.error(`An error occurred while deleting cron job ${this._cronJob.metadata.name}: ${e.message.toString()}`);
+        }
     }
 }
 
