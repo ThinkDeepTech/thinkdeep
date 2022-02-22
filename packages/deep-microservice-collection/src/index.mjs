@@ -1,10 +1,10 @@
 import {buildSubgraphSchema} from '@apollo/subgraph';
+import k8s from '@kubernetes/client-node'
 import {ApolloServer} from 'apollo-server-express';
 import {CollectionService} from './collection-service.mjs';
 import {Commander} from './commander.mjs';
 import {EconomicEntityMemo} from './datasource/economic-entity-memo.mjs';
 import {TweetStore} from './datasource/tweet-store.mjs';
-import {TwitterAPI} from './datasource/twitter-api.mjs';
 import express from 'express';
 import {getLogger} from './get-logger.mjs';
 import {getPublicIP} from './get-public-ip.mjs';
@@ -25,15 +25,17 @@ const kafka = new Kafka({
 });
 const admin = kafka.admin();
 const producer = kafka.producer();
+const consumer = kafka.consumer({ groupId: 'deep-microservice-collection-consumer' });
 
 const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRING);
 
 const performCleanup = async () => {
   await mongoClient.close();
   await producer.disconnect();
+  await consumer.disconnect();
   await admin.disconnect();
 
-  commander.stopAllCommands();
+  await commander.stopAllCommands();
 };
 
 const attachExitHandler = async (callback) => {
@@ -56,13 +58,13 @@ const startApolloServer = async () => {
   await mongoClient.connect();
   await admin.connect();
   await producer.connect();
+  await consumer.connect();
 
   console.log("Connected successfully to server");
 
-  const twitterAPI = new TwitterAPI();
   const tweetStore = new TweetStore(mongoClient.db('admin').collection('tweets'));
   const economicEntityMemo = new EconomicEntityMemo(mongoClient.db('admin').collection('memo'), logger);
-  const collectionService = new CollectionService(twitterAPI, tweetStore, economicEntityMemo, commander, admin, producer, logger);
+  const collectionService = new CollectionService(tweetStore, economicEntityMemo, commander, admin, producer, consumer, k8s, logger);
 
   const server = new ApolloServer({
     schema: buildSubgraphSchema([{typeDefs, resolvers}]),

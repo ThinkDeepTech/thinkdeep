@@ -20,9 +20,9 @@ spec:
         image: "thinkdeeptech/deep-microservice-subscription:latest"
         envFrom:
         - configMapRef:
-            name: {{ printf "%s-config-map" .Release.Name | quote}}
+            name: "deep-microservice-subscription-config-map"
         - secretRef:
-            name: {{ printf "%s-secrets" .Release.Name | quote}}
+            name: "deep-microservice-subscription-secrets"
         ports:
         - containerPort: 4004
         imagePullPolicy: "Always"

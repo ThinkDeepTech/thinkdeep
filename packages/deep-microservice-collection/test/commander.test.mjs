@@ -39,36 +39,37 @@ describe('commander', () => {
 
     describe('execute', () => {
 
-        it('should throw an error if the key is empty', () => {
+        it('should throw an error if the key is empty', async () => {
             try {
-                subject.execute('', commands);
+                await subject.execute('', commands);
                 assert.fail(['Expected an error but none were thrown.']);
             } catch (e) {
                 expect(e.message).to.equal(`Key must be a valid string. Received: `)
             }
         })
 
-        it('should throw an error if the key is not a string', () => {
+        it('should throw an error if the key is not a string', async () => {
             try {
-                subject.execute(1, commands);
+                await subject.execute(1, commands);
                 assert.fail(['Expected an error but none were thrown.']);
             } catch (e) {
                 expect(e.message).to.equal(`Key must be a valid string. Received: 1`)
             }
         })
 
-        it('should do nothing if commands is not an array', () => {
-            subject.execute('key', { });
+        it('should do nothing if commands is not an array', async () => {
+            await subject.execute('key', { });
             expect(logger.info).not.to.have.been.called;
         })
 
-        it('should track commands', () => {
-            subject.execute('key', commands);
+        it('should track commands', async () => {
+            await subject.execute('key', commands);
             expect(subject._commandMap['key']).to.equal(commands);
         })
 
-        it('should execute the commands', () => {
-            subject.execute('key', commands);
+        it('should execute the commands', async () => {
+            await subject.execute('key', commands);
+
             expect(commands[0].execute).to.have.been.calledOnce;
             expect(commands[1].execute).to.have.been.calledOnce;
             expect(commands[2].execute).to.have.been.calledOnce;
@@ -77,10 +78,10 @@ describe('commander', () => {
 
     describe('stopAllCommands', () => {
 
-        it('should stop each command', () => {
-            subject.execute('key', commands);
+        it('should stop each command', async () => {
+            await subject.execute('key', commands);
 
-            subject.stopAllCommands();
+            await subject.stopAllCommands();
 
             expect(commands[0].stop).to.have.been.calledOnce;
             expect(commands[1].stop).to.have.been.calledOnce;
@@ -90,8 +91,9 @@ describe('commander', () => {
 
     describe('_stopCommands', () => {
 
-        it('should stop each command', () => {
-            subject._stopCommands(commands);
+        it('should stop each command', async () => {
+            await subject._stopCommands(commands);
+
             expect(commands[0].stop).to.have.been.calledOnce;
             expect(commands[1].stop).to.have.been.calledOnce;
             expect(commands[2].stop).to.have.been.calledOnce;

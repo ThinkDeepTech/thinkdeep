@@ -1,3 +1,5 @@
+import k8s from '@kubernetes/client-node';
+
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
@@ -16,19 +18,16 @@ describe('collection-service', () => {
         type: 'BUSINESS'
     }];
 
-    let twitterAPI;
     let tweetStore;
     let economicEntityMemo;
     let commander;
     let admin;
     let producer;
+    let consumer;
+    let mockK8s;
     let logger;
     let subject;
     beforeEach(() => {
-
-        twitterAPI = {
-            tweets: sinon.stub()
-        };
 
         tweetStore = {
             createTweets: sinon.stub(),
@@ -65,10 +64,90 @@ describe('collection-service', () => {
             send: sinon.stub()
         };
 
-        subject = new CollectionService(twitterAPI, tweetStore, economicEntityMemo, commander, admin, producer, logger);
+        consumer = {
+            subscribe: sinon.stub(),
+            run: sinon.stub()
+        }
+
+        consumer.subscribe.returns( Promise.resolve() );
+        consumer.run.returns( Promise.resolve() );
+
+        mockK8s = {
+            V1CronJob: sinon.stub(),
+            V1ObjectMeta: sinon.stub(),
+            V1CronJobSpec: sinon.stub(),
+            V1JobTemplateSpec: sinon.stub(),
+            V1JobSpec: sinon.stub(),
+            V1PodTemplateSpec: sinon.stub(),
+            V1PodSpec: sinon.stub(),
+            V1LocalObjectReference: sinon.stub(),
+            V1Container: sinon.stub(),
+            V1EnvFromSource: sinon.stub(),
+            V1SecretEnvSource: sinon.stub(),
+            KubeConfig: sinon.stub()
+        };
+
+        mockK8s.V1CronJob.returns( sinon.createStubInstance(k8s.V1CronJob.constructor) );
+        mockK8s.V1ObjectMeta.returns( sinon.createStubInstance(k8s.V1ObjectMeta.constructor) );
+        mockK8s.V1CronJobSpec.returns( sinon.createStubInstance(k8s.V1CronJobSpec.constructor) );
+        mockK8s.V1JobTemplateSpec.returns( sinon.createStubInstance(k8s.V1JobTemplateSpec.constructor) );
+        mockK8s.V1JobSpec.returns( sinon.createStubInstance(k8s.V1JobSpec.constructor) );
+        mockK8s.V1PodTemplateSpec.returns( sinon.createStubInstance(k8s.V1PodTemplateSpec.constructor) );
+        mockK8s.V1PodSpec.returns( sinon.createStubInstance(k8s.V1PodSpec.constructor) );
+        mockK8s.V1Container.returns( sinon.createStubInstance(k8s.V1Container.constructor) );
+        mockK8s.V1EnvFromSource.returns( sinon.createStubInstance(k8s.V1EnvFromSource.constructor) );
+        mockK8s.V1SecretEnvSource.returns( sinon.createStubInstance(k8s.V1SecretEnvSource.constructor) );
+        mockK8s.V1LocalObjectReference.returns( sinon.createStubInstance(k8s.V1LocalObjectReference.constructor) );
+
+        const k8sApiClient = {
+            createNamespacedCronJob: sinon.stub(),
+            deleteCollectionNamespacedCronJob: sinon.stub()
+        }
+        const kubeConfig = sinon.createStubInstance(k8s.KubeConfig.constructor);
+        kubeConfig.loadFromCluster = sinon.stub();
+        kubeConfig.makeApiClient = sinon.stub().returns(k8sApiClient)
+        mockK8s.KubeConfig.returns( kubeConfig );
+
+        subject = new CollectionService(tweetStore, economicEntityMemo, commander, admin, producer, consumer, mockK8s, logger);
     });
 
     describe('constructor', () => {
+
+        it('should create the tweets collected and tweets fetched topics', () => {
+            const args = admin.createTopics.getCall(0).args;
+            const topics = args[0].topics;
+            expect(topics[0].topic).to.equal('TWEETS_COLLECTED');
+            expect(topics[1].topic).to.equal('TWEETS_FETCHED');
+        })
+
+        it('should subscribe to the tweets fetched event', () => {
+            const args = consumer.subscribe.getCall(0).args;
+            expect(args[0].topic).to.equal('TWEETS_FETCHED');
+        })
+
+        it('should process each of the tweets fetched with its handler', async () => {
+            const message = JSON.stringify({
+                economicEntityName: 'Google',
+                economicEntityType: 'BUSINESS',
+                tweets: [{
+                    text: "tweet1"
+                },{
+                    text: "tweet2"
+                }]
+            });
+            const args = consumer.run.getCall(0).args;
+
+            console.log(JSON.stringify(args));
+            const perMessageCallback = args[0].eachMessage;
+
+            await perMessageCallback({ message: {
+                value: {
+                    toString: () => message
+                }
+            }});
+
+            expect(tweetStore.createTweets).to.have.been.called;
+        })
 
         it('should read all of the economic entities stored', () => {
             expect(economicEntityMemo.readEconomicEntities).to.have.been.calledOnce;
@@ -244,41 +323,111 @@ describe('collection-service', () => {
             const entityName = 'somebusiness';
             const entityType1 = 'BUSINESS';
             const entityType2 = 'bUsInEss';
+
             const firstCommands = subject._commands(entityName, entityType1);
             const secondCommands = subject._commands(entityName, entityType2);
-            expect(firstCommands._callback).to.equal(secondCommands._callback);
+
+            expect(firstCommands.constructor.name).not.to.equal(undefined);
+            expect(firstCommands.constructor.name).to.equal(secondCommands.constructor.name);
         })
 
         it('should throw an error if the entity type is unknown', () => {
             const entityName = 'somebusiness';
             const entityType = 'unknownentity';
+
             expect(subject._commands.bind(subject, entityName, entityType)).to.throw(Error);
         })
 
-        it('should include a command to collect tweets for type business', () => {
+        it('should include a repetative command to collect tweets for type business', () => {
             const entityName = 'somebusiness';
             const entityType = 'BUSINESS';
 
             const commands = subject._commands(entityName, entityType);
+            const containers = commands[0]._cronJob.spec.jobTemplate.spec.template.spec.containers;
+            const k8sCommands = containers[0].command;
+            const k8sArgs = containers[0].args;
 
-            const actualCommand = commands[0]._callback;
-            expect(actualCommand.name).to.include('_collectTweets');
+            expect(commands[0].constructor.name).to.equal('K8sCronJob');
+            expect(containers[0].image).to.equal('thinkdeeptech/collect-data:latest');
+            expect(k8sCommands[0]).to.equal('node');
+            expect(k8sArgs[0]).to.equal('src/collect-data.mjs');
+            expect(k8sArgs[3]).to.equal('--operation-type=fetch-tweets');
         })
     });
 
-    describe('_collectTweets', () => {
+    describe('_handleTweetsFetched', () => {
 
-        it('should fetch tweets associated with the specified business', async () => {
-            const entityName = 'somebusiness';
-            const entityType = 'BUSINESS';
-            await subject._collectTweets(entityName, entityType);
-            expect(twitterAPI.tweets.withArgs(entityName)).to.have.been.called;
+        it('should not store the tweets if the entity name is empty', async () => {
+            const tweets = [{
+                text: 'sometweet'
+            }, {
+                text: 'another tweet'
+            }]
+
+            await subject._handleTweetsFetched('', 'BUSINESS', tweets);
+
+            expect(tweetStore.createTweets).not.to.have.been.called;
+        })
+
+        it('should not store the tweets if the entity name is not a string', async () => {
+            const tweets = [{
+                text: 'sometweet'
+            }, {
+                text: 'another tweet'
+            }]
+
+            await subject._handleTweetsFetched({}, 'BUSINESS', tweets);
+
+            expect(tweetStore.createTweets).not.to.have.been.called;
+        })
+
+        it('should not store the tweets if the entity type is empty', async () => {
+            const tweets = [{
+                text: 'sometweet'
+            }, {
+                text: 'another tweet'
+            }]
+
+            await subject._handleTweetsFetched('Google', '', tweets);
+
+            expect(tweetStore.createTweets).not.to.have.been.called;
+        })
+
+        it('should not store the tweets if the entity type is not a string', async () => {
+            const tweets = [{
+                text: 'sometweet'
+            }, {
+                text: 'another tweet'
+            }]
+
+            await subject._handleTweetsFetched('Google', 1, tweets);
+
+            expect(tweetStore.createTweets).not.to.have.been.called;
+        })
+
+        it('should not store the tweets if tweets is not an array', async () => {
+
+            await subject._handleTweetsFetched('Google', 'BUSINESS', "notarray");
+
+            expect(tweetStore.createTweets).not.to.have.been.called;
+        })
+
+        it('should not store the tweets if the tweets array is empty', async () => {
+
+            await subject._handleTweetsFetched('Google', 'BUSINESS', []);
+
+            expect(tweetStore.createTweets).not.to.have.been.called;
         })
 
         it('should store the tweets', async () => {
+            const tweets = [{
+                text: 'sometweet'
+            }, {
+                text: 'another tweet'
+            }]
             tweetStore.createTweets.returns(true);
 
-            await subject._collectTweets('someonebusiness', 'BUSINESS');
+            await subject._handleTweetsFetched('someonebusiness', 'BUSINESS', tweets);
 
             expect(tweetStore.createTweets).to.have.been.called;
         })
@@ -298,10 +447,9 @@ describe('collection-service', () => {
                 tweets
             }];
 
-            twitterAPI.tweets.returns(tweets);
             tweetStore.readRecentTweets.returns(timeSeriesData);
 
-            await subject._collectTweets(economicEntityName, economicEntityType);
+            await subject._handleTweetsFetched(economicEntityName, economicEntityType, tweets);
 
             const adminArg = admin.createTopics.getCall(0).args[0];
             expect(admin.createTopics).to.have.been.calledOnce;
@@ -323,10 +471,9 @@ describe('collection-service', () => {
                 tweets
             }];
 
-            twitterAPI.tweets.returns(tweets);
             tweetStore.readRecentTweets.returns(timeSeriesData);
 
-            await subject._collectTweets(economicEntityName, economicEntityType);
+            await subject._handleTweetsFetched(economicEntityName, economicEntityType, tweets);
 
             const sendArg = producer.send.getCall(0).args[0];
             const sentEvent = JSON.parse(sendArg.messages[0].value);

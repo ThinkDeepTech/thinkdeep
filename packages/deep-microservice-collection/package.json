@@ -15,7 +15,7 @@
   },
   "scripts": {
     "start": "node ./src/index.mjs",
-    "tests": "mocha ./test/**/*.test.mjs ./test/*.test.mjs --exit"
+    "tests": "mocha ./test/**/*.test.mjs ./test/*.test.mjs --exit; cd ./collect-data && yarn run tests;"
   },
   "devDependencies": {
     "chai": "^4.3.4",
@@ -27,17 +27,21 @@
     "@apollo/federation": "^0.29.1",
     "@apollo/gateway": "^0.38.2",
     "@apollo/subgraph": "^0.1.5",
+    "@kubernetes/client-node": "0.15",
     "apollo-datasource": "^3.1.0",
     "apollo-datasource-mongodb": "^0.5.2",
     "apollo-datasource-rest": "^3.4.0",
     "apollo-server": "^3.2.0",
     "apollo-server-express": "^3.5.0",
+    "commander": "^9.0.0",
+    "concat-stream": "^2.0.0",
     "express": "^4.17.1",
     "graphql": "^15.5.1",
     "kafkajs": "^1.15.0",
     "log4js": "^6.3.0",
     "moment": "^2.29.1",
-    "mongodb": "^4.2.1"
+    "mongodb": "^4.2.1",
+    "twitter-api-v2": "^1.11.0"
   },
   "private": true
 }

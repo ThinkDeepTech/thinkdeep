@@ -1,0 +1,25 @@
+{
+  "name": "collect-data",
+  "version": "0.0.8",
+  "description": "CLI handling data collection operations.",
+  "main": "src/collect-data.mjs",
+  "type": "module",
+  "scripts": {
+    "tests": "mocha ./test/**/*.test.mjs ./test/*.test.mjs --timeout 10000"
+  },
+  "author": "Hayden McParlane",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^9.1.3",
+    "serve": "^10.1.1"
+  },
+  "dependencies": {
+    "commander": "^9.0.0",
+    "concat-stream": "^2.0.0",
+    "kafkajs": "^1.15.0",
+    "log4js": "^6.3.0",
+    "sinon": "^12.0.1",
+    "twitter-api-v2": "^1.11.0"
+  }
+}

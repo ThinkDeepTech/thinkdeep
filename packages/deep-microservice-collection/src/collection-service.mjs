@@ -1,44 +1,51 @@
-import {Command} from './command.mjs';
+import { K8sCronJob } from './command/k8s-cron-job.mjs';
 import { validString } from './helpers.mjs';
 import moment from 'moment';
 import { hasReadAllAccess } from './permissions.mjs';
-
-/**
- * Time interval between each twitter API call.
- *
- * NOTE: Due to twitter developer account limitations only 500,000 tweets can be consumed per month.
- * As a result, ~400 businesses can be watched.
- */
-const TWITTER_FETCH_INTERVAL = 6 * 60 * 60 * 1000; /** hrs * min * seconds * ms */
 
 class CollectionService {
 
     /**
      * Business layer associated with data collection.
      *
-     * @param {Object} twitterAPI - RESTDataSource tied to the twitter API.
      * @param {Object} tweetStore - MongoDataSource tied to the tweet collection.
      * @param {Object} economicEntityMemo - EconomicEntityMemo object to be used.
      * @param {Object} commander - Commander object to be used.
      * @param {Object} admin - KafkaJS admin.
      * @param {Object} producer - KafkaJS producer to use.
+     * @param {Object} consumer - KafkaJS consumer to use.
+     * @param {Object} k8s - Kubernetes Javascript Client import.
      * @param {Object} logger - Logger to use.
      */
-    constructor(twitterAPI, tweetStore, economicEntityMemo, commander, admin, producer, logger) {
-        this._twitterAPI = twitterAPI;
+    constructor(tweetStore, economicEntityMemo, commander, admin, producer, consumer, k8s, logger) {
         this._tweetStore = tweetStore;
         this._economicEntityMemo = economicEntityMemo;
         this._commander = commander;
         this._admin = admin;
         this._producer = producer;
+        this._consumer = consumer;
+        this._k8s = k8s;
         this._logger = logger;
 
-        this._topicCreation([{topic: 'TWEETS_COLLECTED', replicationFactor: 1}]).then(async() => {
+        this._topicCreation([{topic: 'TWEETS_COLLECTED', replicationFactor: 1}, { topic: 'TWEETS_FETCHED', replicationFactor: 1}]).then(async() => {
 
             const economicEntities = await this._economicEntityMemo.readEconomicEntities();
             for (const economicEntity of economicEntities) {
                 this._startDataCollection(economicEntity.name, economicEntity.type);
             }
+
+            await this._consumer.subscribe({ topic: 'TWEETS_FETCHED', fromBeginning: true });
+
+            await this._consumer.run({
+                eachMessage: async ({message}) => {
+
+                    this._logger.debug(`Received kafka message: ${message.value.toString()}`);
+
+                    const { economicEntityName, economicEntityType, tweets} = JSON.parse(message.value.toString());
+                    await this._handleTweetsFetched(economicEntityName, economicEntityType, tweets);
+                }
+            });
+
         });
     }
 
@@ -118,7 +125,23 @@ class CollectionService {
     _commands(entityName, entityType) {
         const type = entityType.toLowerCase();
         if (type === 'business') {
-            const command = new Command(TWITTER_FETCH_INTERVAL, this._collectTweets.bind(this, entityName, entityType));
+
+            const command = new K8sCronJob({
+                name: `fetch-tweets-${entityName.toLowerCase()}-${entityType.toLowerCase()}`,
+                namespace: 'default',
+                 /**
+                 * Time interval between each twitter API call.
+                 *
+                 * NOTE: Due to twitter developer account limitations only 500,000 tweets can be consumed per month.
+                 * As a result, ~400 businesses can be watched when fetched every 6 hours.
+                 */
+                 /** min | hour | day | month | weekday */
+                schedule: `0 6 * * *`,
+                image: 'thinkdeeptech/collect-data:latest',
+                command: 'node',
+                args: ['src/collect-data.mjs', `--entity-name=${entityName}`, `--entity-type=${entityType}`, '--operation-type=fetch-tweets']
+            }, this._k8s, this._logger);
+
             return [command];
         } else {
             throw new Error('The specified economic type was unknown.')
@@ -126,19 +149,19 @@ class CollectionService {
     }
 
     /**
-     * Collect tweets for a given entity name and type.
+     * Handle the tweets fetched event.
      * @param {String} entityName - Economic entity name (i.e, 'Google').
      * @param {String} entityType - Economic entity type (i.e, 'BUSINESS').
+     * @param {Array} tweets - Array of tweet objects of the form { text: '...' }.
      * @returns {Boolean} - True if the function succeeds, false otherwise.
      */
-    async _collectTweets(entityName, entityType) {
+    async _handleTweetsFetched(entityName, entityType, tweets) {
 
         if (!validString(entityName)) return false;
 
         if (!validString(entityType)) return false;
 
-        this._logger.info(`Fetching data from the twitter API for: name ${entityName}, type ${entityType}.`);
-        const tweets = await this._twitterAPI.tweets(entityName);
+        if (!Array.isArray(tweets) || (tweets.length === 0)) return false;
 
         const timestamp = moment().unix();
 
@@ -155,7 +178,7 @@ class CollectionService {
 
         this._logger.info(`Adding collection event with value: ${JSON.stringify(event)}`);
 
-        this._producer.send({
+        await this._producer.send({
             topic: 'TWEETS_COLLECTED',
             messages: [
                 { value: JSON.stringify(event) }

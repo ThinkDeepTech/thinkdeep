@@ -19,9 +19,9 @@ spec:
         image: "thinkdeeptech/deep-microservice-collection:latest"
         envFrom:
         - configMapRef:
-            name: {{ printf "%s-config-map" .Release.Name | quote}}
+            name: "deep-microservice-collection-config-map"
         - secretRef:
-            name: {{ printf "%s-secrets" .Release.Name | quote}}
+            name: "deep-microservice-collection-secrets"
         ports:
         - containerPort: 4002
         imagePullPolicy: "Always"

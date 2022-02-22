@@ -1,26 +1,14 @@
-## Dependencies
-- [Postgres](https://www.postgresql.org/)
-    1. Ubuntu help doc (https://www.digitalocean.com/community/tutorials/how-to-install-postgresql-on-ubuntu-20-04-quickstart)
+# Purpose
+The analysis microservice is responsible for all data analysis operations. After data collection occurs, it's routed to analysis
+where various algorithms will process that data and store the results to display for the user. Currently, there are no analytics
+but that's soon to come.
 
 ## Developer Setup (Ubuntu)
-- Execute setup script.
 ```console
-    node ./setup.js
+    yarn install
 ```
-- Currently, the database is young. So, execution of setupDB.sql will only partially work.
 - Add the following environment variables:
-    1. PREDECOS_PG_CONNECTION_STRING : Ensure this is equal to the postgres connection string associated with the database.
-    1. POSTGRES_PASSWORD
-    1. PREDECOS_KAFKA_HOST
-    1. PREDECOS_KAFKA_PORT
-    1. NODE_ENV
-
-## Notes
-
-- Running postgres on kubernetes requires passing values into envsubstr to avoid storing sensitive info in git.
-Use the following command to achieve that.
-```console
-
-    envsubst < deployment.yaml | kubectl apply -f -
-
-```
+    1. PREDECOS_KAFKA_HOST : Host providing access to the cluster brokers.
+    1. PREDECOS_KAFKA_PORT : Port at which kafka can be accessed.
+    1. PREDECOS_MONGODB_CONNECTION_STRING : Connection string for MongoDB.
+    1. NODE_ENV : The node environment (i.e, development, production).
