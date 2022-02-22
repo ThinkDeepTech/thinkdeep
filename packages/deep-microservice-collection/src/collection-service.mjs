@@ -126,6 +126,7 @@ class CollectionService {
         const type = entityType.toLowerCase();
         if (type === 'business') {
 
+            // TODO: Make sure correct commands are being used.
             const command = new K8sCronJob({
                 name: `fetch-tweets-${entityName.toLowerCase()}-${entityType.toLowerCase()}`,
                 namespace: 'default',
@@ -138,9 +139,12 @@ class CollectionService {
                  /** min | hour | day | month | weekday */
                 // schedule: `0 6 * * *`,
                 schedule: `* * * * *`,
-                image: 'thinkdeeptech/collect-data:latest',
-                command: 'node',
-                args: ['src/collect-data.mjs', `--entity-name=${entityName}`, `--entity-type=${entityType}`, '--operation-type=fetch-tweets']
+                // image: 'thinkdeeptech/collect-data:latest',
+                image: 'busybox',
+                command: 'sleep',
+                args: ['10']
+                // command: 'node',
+                // args: ['src/collect-data.mjs', `--entity-name=${entityName}`, `--entity-type=${entityType}`, '--operation-type=fetch-tweets']
             }, this._k8s, this._logger);
 
             return [command];
