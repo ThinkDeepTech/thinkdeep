@@ -91,7 +91,11 @@ class K8sCronJob extends Command {
         try {
             await this._api.createNamespacedCronJob(this._namespace, this._cronJob, "true");
         } catch (e) {
-            this._logger.error(`An error occurred while creating cron job ${this._cronJob.metadata.name}: ${e.message.toString()}`);
+            this._logger.error(`An error occurred while creating cron job ${this._cronJob.metadata.name}: ${e.message.toString()}
+
+            ${JSON.stringify(e)}
+
+            `);
         }
     }
 
