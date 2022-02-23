@@ -15,18 +15,14 @@ RUN apt-get update
 
 RUN apt-get install -y nodejs
 
-RUN npm i --global yarn
-
-RUN yarn --version
-
 RUN mkdir ./src
 
 COPY src/ ./src/
 
 COPY package.json $BASE_DIRECTORY/
 
-RUN yarn install
+RUN npm install
 
 EXPOSE 4001
 
-CMD ["yarn", "run", "start"]
+CMD ["npm", "run", "start"]

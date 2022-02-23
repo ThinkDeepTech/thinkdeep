@@ -4,7 +4,7 @@ metadata:
     namespace: {{ .Values.namespace | quote }}
     name: {{ printf "%s-data-collector" .Release.Name | quote }}
 rules:
-    - apiGroups: [""]
+    - apiGroups: ["", "batch"]
       resources:
           - "cronjobs"
       verbs:

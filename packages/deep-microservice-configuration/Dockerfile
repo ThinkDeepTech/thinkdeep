@@ -13,16 +13,12 @@ RUN apt-get update
 
 RUN apt-get install -y nodejs
 
-RUN npm i --global yarn
-
-RUN yarn --version
-
 COPY src/ ./src
 
 COPY package.json ./
 
-RUN yarn install
+RUN npm install
 
 EXPOSE 4003
 
-CMD ["yarn", "run", "start"]
+CMD ["npm", "run", "start"]
