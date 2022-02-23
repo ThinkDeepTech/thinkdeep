@@ -51,7 +51,7 @@ class K8sCronJob extends Command {
         container.envFrom = [envFromConfig];
 
         podSpec.containers = [ container ];
-        podSpec.serviceAccountName = `${process.env.HELM_RELEASE_NAME}-service-account`;
+        podSpec.serviceAccountName = `${process.env.HELM_RELEASE_NAME}-secret-accessor-service-account`;
         podTemplateSpec.spec = podSpec;
         jobSpec.template = podTemplateSpec;
         jobTemplateSpec.spec = jobSpec;
