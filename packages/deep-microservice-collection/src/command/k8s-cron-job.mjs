@@ -32,7 +32,6 @@ class K8sCronJob extends Command {
         const podSpec = new k8s.V1PodSpec();
 
         const dockerSecretRef = new k8s.V1LocalObjectReference();
-        // TODO: Move docker secret into each ms template
         dockerSecretRef.name = 'docker-secret';
         podSpec.imagePullSecrets = [dockerSecretRef];
         podSpec.restartPolicy = 'Never';
@@ -97,11 +96,7 @@ class K8sCronJob extends Command {
      */
     async stop() {
         this._logger.info(`Deleting cron job with metadata.name: ${this._cronJob.metadata.name}`);
-        try {
-            await this._api.deleteNamespacedCronJob(this._cronJob.metadata.name, this._namespace);
-        } catch (e) {
-            this._logger.error(`An error occurred while deleting cron job ${this._cronJob.metadata.name}: ${e.message.toString()}`);
-        }
+        await this._api.deleteNamespacedCronJob(this._cronJob.metadata.name, this._namespace);
     }
 }
 
