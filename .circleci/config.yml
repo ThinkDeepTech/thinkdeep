@@ -312,7 +312,6 @@ workflows:
 
       - build_and_deploy_microservice_analysis:
           requires:
-            - build_and_deploy_microservice_collection
             - deploy_kafka
           filters:
             branches:
