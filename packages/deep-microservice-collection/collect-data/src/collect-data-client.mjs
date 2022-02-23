@@ -36,6 +36,9 @@ class CollectDataClient {
             process.on('SIGINT', () => {
                 process.exit(2);
             });
+            process.on('SIGTERM', () => {
+                process.exit(3);
+              });
             process.on('uncaughtException', () => {
                 process.exit(99);
             });
