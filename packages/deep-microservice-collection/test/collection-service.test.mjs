@@ -106,7 +106,7 @@ describe('collection-service', () => {
 
         const container = sinon.createStubInstance(k8s.V1Container.constructor);
         Object.defineProperty(container, "name", { writable: true });
-        mockK8s.V1Container.returns( sinon.createStubInstance(k8s.V1Container.constructor) );
+        mockK8s.V1Container.returns( container );
 
         const secretRef = sinon.createStubInstance(k8s.V1SecretEnvSource.constructor);
         Object.defineProperty(secretRef, "name", { writable: true });
