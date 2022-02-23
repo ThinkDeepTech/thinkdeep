@@ -35,7 +35,7 @@ class K8sCronJob extends Command {
         // TODO: Move docker secret into each ms template
         dockerSecretRef.name = 'docker-secret';
         podSpec.imagePullSecrets = [dockerSecretRef];
-        podSpec.restartPolicy = 'Never';
+        podSpec.restartPolicy = 'OnFailure';
 
         const container = new k8s.V1Container();
         container.name = `${process.env.HELM_RELEASE_NAME}-data-collector`;
