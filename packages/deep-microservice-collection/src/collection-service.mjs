@@ -126,9 +126,12 @@ class CollectionService {
         const type = entityType.toLowerCase();
         if (type === 'business') {
 
+            const kababCaseName = entityName.toLowerCase().split(' ').join('-');
+            const kababCaseType = entityType.toLowerCase().split(' ').join('-');
+            const cronName = `fetch-tweets-${kababCaseName}-${kababCaseType}`;
             // TODO: Make sure correct commands are being used.
             const command = new K8sCronJob({
-                name: `fetch-tweets-${entityName.toLowerCase()}-${entityType.toLowerCase()}`,
+                name: cronName,
                 namespace: 'default',
                  /**
                  * Time interval between each twitter API call.
