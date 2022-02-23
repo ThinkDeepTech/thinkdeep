@@ -119,7 +119,7 @@ describe('collection-service', () => {
 
         const k8sApiClient = {
             createNamespacedCronJob: sinon.stub(),
-            deleteCollectionNamespacedCronJob: sinon.stub()
+            deleteNamespacedCronJob: sinon.stub()
         }
         const kubeConfig = sinon.createStubInstance(k8s.KubeConfig.constructor);
         kubeConfig.loadFromCluster = sinon.stub();
@@ -365,12 +365,11 @@ describe('collection-service', () => {
             const k8sCommands = containers[0].command;
             const k8sArgs = containers[0].args;
 
-            // TODO
             expect(commands[0].constructor.name).to.equal('K8sCronJob');
-            // expect(containers[0].image).to.equal('thinkdeeptech/collect-data:latest');
-            // expect(k8sCommands[0]).to.equal('node');
-            // expect(k8sArgs[0]).to.equal('src/collect-data.mjs');
-            // expect(k8sArgs[3]).to.equal('--operation-type=fetch-tweets');
+            expect(containers[0].image).to.equal('thinkdeeptech/collect-data:latest');
+            expect(k8sCommands[0]).to.equal('node');
+            expect(k8sArgs[0]).to.equal('src/collect-data.mjs');
+            expect(k8sArgs[3]).to.equal('--operation-type=fetch-tweets');
         })
     });
 

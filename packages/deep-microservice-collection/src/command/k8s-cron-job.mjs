@@ -98,7 +98,7 @@ class K8sCronJob extends Command {
     async stop() {
         this._logger.info(`Deleting cron job with metadata.name: ${this._cronJob.metadata.name}`);
         try {
-            await this._api.deleteCollectionNamespacedCronJob(this._namespace, "true");
+            await this._api.deleteNamespacedCronJob(this._cronJob.metadata.name, this._namespace);
         } catch (e) {
             this._logger.error(`An error occurred while deleting cron job ${this._cronJob.metadata.name}: ${e.message.toString()}`);
         }
