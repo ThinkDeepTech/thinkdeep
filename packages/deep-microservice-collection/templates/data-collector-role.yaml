@@ -1,0 +1,12 @@
+apiVersion: "rbac.authorization.k8s.io/v1"
+kind: "Role"
+metadata:
+    namespace: {{ .Values.namespace | quote }}
+    name: {{ printf "%s-data-collector" .Release.Name | quote }}
+rules:
+    - apiGroups: [""]
+      resources:
+          - "cronjobs"
+      verbs:
+          - "create"
+          - "delete"
