@@ -119,7 +119,7 @@ describe('collection-service', () => {
 
         const k8sApiClient = {
             createNamespacedCronJob: sinon.stub(),
-            deleteCollectionNamespacedCronJob: sinon.stub()
+            deleteNamespacedCronJob: sinon.stub()
         }
         const kubeConfig = sinon.createStubInstance(k8s.KubeConfig.constructor);
         kubeConfig.loadFromCluster = sinon.stub();

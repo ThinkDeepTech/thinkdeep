@@ -76,7 +76,7 @@ describe('k8s-cron-job', () => {
 
         k8sApiClient = {
             createNamespacedCronJob: sinon.stub(),
-            deleteCollectionNamespacedCronJob: sinon.stub()
+            deleteNamespacedCronJob: sinon.stub()
         }
         const kubeConfig = sinon.createStubInstance(k8s.KubeConfig.constructor);
         kubeConfig.loadFromCluster = sinon.stub();
@@ -247,7 +247,7 @@ describe('k8s-cron-job', () => {
 
             await subject.stop();
 
-            expect(k8sApiClient.deleteCollectionNamespacedCronJob).to.have.been.called;
+            expect(k8sApiClient.deleteNamespacedCronJob).to.have.been.called;
         })
     })
 });
