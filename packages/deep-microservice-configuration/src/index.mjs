@@ -15,11 +15,11 @@ const logger = getLogger();
 
 const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRING);
 
-const performCleanup = async () => {
-  await mongoClient.close();
+const performCleanup = () => {
+  mongoClient.close();
 };
 
-const attachExitHandler = async (callback) => {
+const attachExitHandler = (callback) => {
   process.on('cleanup', callback);
   process.on('exit', () => {
     process.emit('cleanup');

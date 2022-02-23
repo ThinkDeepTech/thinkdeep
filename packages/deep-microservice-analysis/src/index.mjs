@@ -25,14 +25,14 @@ const admin = kafka.admin();
 const consumer = kafka.consumer({ groupId: 'deep-microservice-analysis-consumer' });
 const producer = kafka.producer();
 
-const performCleanup = async () => {
-  await admin.disconnect();
-  await consumer.disconnect();
-  await producer.disconnect();
-  await mongoClient.close();
+const performCleanup = () => {
+  admin.disconnect();
+  consumer.disconnect();
+  producer.disconnect();
+  mongoClient.close();
 };
 
-const attachExitHandler = async (callback) => {
+const attachExitHandler = (callback) => {
   process.on('cleanup', callback);
   process.on('exit', () => {
     process.emit('cleanup');

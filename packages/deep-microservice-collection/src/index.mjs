@@ -29,16 +29,15 @@ const consumer = kafka.consumer({ groupId: 'deep-microservice-collection-consume
 
 const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRING);
 
-const performCleanup = async () => {
-  await mongoClient.close();
-  await producer.disconnect();
-  await consumer.disconnect();
-  await admin.disconnect();
-
-  await commander.stopAllCommands();
+const performCleanup = () => {
+  mongoClient.close();
+  producer.disconnect();
+  consumer.disconnect();
+  admin.disconnect();
+  commander.stopAllCommands();
 };
 
-const attachExitHandler = async (callback) => {
+const attachExitHandler = (callback) => {
   process.on('cleanup', callback);
   process.on('exit', () => {
     process.emit('cleanup');
