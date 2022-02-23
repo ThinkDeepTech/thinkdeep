@@ -46,17 +46,25 @@ describe('k8s-cron-job', () => {
         };
 
         mockK8s.V1CronJob.returns( sinon.createStubInstance(k8s.V1CronJob.constructor) );
-
-        const metadata = sinon.createStubInstance(k8s.V1ObjectMeta.constructor);
-        Object.defineProperty(metadata, "name", { writable: true });
-        mockK8s.V1ObjectMeta.returns( metadata );
         mockK8s.V1CronJobSpec.returns( sinon.createStubInstance(k8s.V1CronJobSpec.constructor) );
         mockK8s.V1JobTemplateSpec.returns( sinon.createStubInstance(k8s.V1JobTemplateSpec.constructor) );
         mockK8s.V1JobSpec.returns( sinon.createStubInstance(k8s.V1JobSpec.constructor) );
         mockK8s.V1PodTemplateSpec.returns( sinon.createStubInstance(k8s.V1PodTemplateSpec.constructor) );
         mockK8s.V1PodSpec.returns( sinon.createStubInstance(k8s.V1PodSpec.constructor) );
-        mockK8s.V1Container.returns( sinon.createStubInstance(k8s.V1Container.constructor) );
         mockK8s.V1EnvFromSource.returns( sinon.createStubInstance(k8s.V1EnvFromSource.constructor) );
+
+        /**
+         * NOTE: Oddly, createStubInstance seems to be creating an object with a readonly name
+         * property. Therefore, I have to overwrite that for the tests to run properly. The system
+         * works properly when deployed.
+         */
+        const metadata = sinon.createStubInstance(k8s.V1ObjectMeta.constructor);
+        Object.defineProperty(metadata, "name", { writable: true });
+        mockK8s.V1ObjectMeta.returns( metadata );
+
+        const container = sinon.createStubInstance(k8s.V1Container.constructor);
+        Object.defineProperty(container, "name", { writable: true });
+        mockK8s.V1Container.returns( container );
 
         const secretRef = sinon.createStubInstance(k8s.V1SecretEnvSource.constructor);
         Object.defineProperty(secretRef, "name", { writable: true });
@@ -217,7 +225,7 @@ describe('k8s-cron-job', () => {
             subject = new K8sCronJob(options, mockK8s, logger);
 
             const containerConfig = subject._cronJob.spec.jobTemplate.spec.template.spec.containers[0];
-            const secretReference = containerConfig.envFrom.secretRef;
+            const secretReference = containerConfig.envFrom[0].secretRef;
             expect(containerConfig).not.to.equal(undefined);
             expect(secretReference.name).to.equal(`${process.env.HELM_RELEASE_NAME}-secrets`);
         })
