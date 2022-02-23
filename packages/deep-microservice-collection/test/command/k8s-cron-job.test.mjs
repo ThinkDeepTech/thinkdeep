@@ -225,7 +225,7 @@ describe('k8s-cron-job', () => {
             subject = new K8sCronJob(options, mockK8s, logger);
 
             const containerConfig = subject._cronJob.spec.jobTemplate.spec.template.spec.containers[0];
-            const secretReference = containerConfig.envFrom.secretRef;
+            const secretReference = containerConfig.envFrom[0].secretRef;
             expect(containerConfig).not.to.equal(undefined);
             expect(secretReference.name).to.equal(`${process.env.HELM_RELEASE_NAME}-secrets`);
         })
