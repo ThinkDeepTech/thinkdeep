@@ -1,6 +1,7 @@
 apiVersion: "v1"
 kind: "ConfigMap"
 metadata:
-    name: "deep-microservice-collection-config-map"
+    name: {{ printf "%s-config-map" .Release.Name | quote }}
 data:
+    HELM_RELEASE_NAME: {{ .Release.Name | quote }}
     NODE_ENV: {{ required "A valid node environment is required" .Values.nodeEnv | quote}}

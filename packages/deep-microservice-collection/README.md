@@ -3,6 +3,7 @@ Data collection drives this microservice. It's responsible for spinning up proce
 trigger kafka events at which point it stores the data in MongoDB.
 
 ## Environment Variables
+1. HELM_RELEASE_NAME : Release name taken from helm.
 1. PREDECOS_MONGODB_CONNECTION_STRING : MongoDB connection string.
 1. PREDECOS_KAFKA_HOST : Host at which Kafka can be accessed.
 1. PREDECOS_KAFKA_PORT : Port at which Kafka can be accessed.

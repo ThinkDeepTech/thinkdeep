@@ -34,6 +34,7 @@ class K8sCronJob extends Command {
 
         const dockerSecretRef = new k8s.V1LocalObjectReference();
         Object.defineProperty(dockerSecretRef, "name", { writable: true });
+        // TODO: Move docker secret into each ms template
         dockerSecretRef.name = 'docker-secret';
         podSpec.imagePullSecrets = [dockerSecretRef];
 
@@ -53,12 +54,13 @@ class K8sCronJob extends Command {
         /**
          * NOTE: This name must match that in the secrets helm template. Otherwise, the cron job won't work.
          */
-        secretRef.name = 'deep-microservice-collection-secrets';
+        secretRef.name = `${process.env.HELM_RELEASE_NAME}-secrets`;
 
         envFromConfig.secretRef = secretRef;
         container.envFrom = envFromConfig;
 
         podSpec.containers = [ container ];
+        podSpec.serviceAccountName = `${process.env.HELM_RELEASE_NAME}-service-account`;
         podTemplateSpec.spec = podSpec;
         jobSpec.template = podTemplateSpec;
         jobTemplateSpec.spec = jobSpec;
@@ -71,7 +73,7 @@ class K8sCronJob extends Command {
 
         logger.debug(`
 
-            Configured cron job with metadata.name ${metadata.name} which will reference secret ${secretRef.name}:
+            Configured cron job with metadata.name ${metadata.name} which will reference secret ${secretRef.name} and use service account ${podSpec.serviceAccountName}:
 
             ${JSON.stringify(cronJob)}
 
