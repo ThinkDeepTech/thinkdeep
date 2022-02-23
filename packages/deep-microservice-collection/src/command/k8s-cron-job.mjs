@@ -21,7 +21,6 @@ class K8sCronJob extends Command {
         cronJob.kind = "CronJob";
 
         const metadata = new k8s.V1ObjectMeta();
-        Object.defineProperty(metadata, "name", { writable: true });
         metadata.name = options.name;
         cronJob.metadata = metadata;
 
@@ -33,7 +32,6 @@ class K8sCronJob extends Command {
         const podSpec = new k8s.V1PodSpec();
 
         const dockerSecretRef = new k8s.V1LocalObjectReference();
-        Object.defineProperty(dockerSecretRef, "name", { writable: true });
         // TODO: Move docker secret into each ms template
         dockerSecretRef.name = 'docker-secret';
         podSpec.imagePullSecrets = [dockerSecretRef];
@@ -45,15 +43,6 @@ class K8sCronJob extends Command {
 
         const envFromConfig = new k8s.V1EnvFromSource();
         const secretRef = new k8s.V1SecretEnvSource();
-
-        /**
-         * NOTE: This definition is required otherwise name can't be written to. It's a hack but it works.
-         */
-        Object.defineProperty(secretRef, "name", { writable: true });
-
-        /**
-         * NOTE: This name must match that in the secrets helm template. Otherwise, the cron job won't work.
-         */
         secretRef.name = `${process.env.HELM_RELEASE_NAME}-secrets`;
 
         envFromConfig.secretRef = secretRef;

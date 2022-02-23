@@ -88,7 +88,10 @@ describe('collection-service', () => {
         };
 
         mockK8s.V1CronJob.returns( sinon.createStubInstance(k8s.V1CronJob.constructor) );
-        mockK8s.V1ObjectMeta.returns( sinon.createStubInstance(k8s.V1ObjectMeta.constructor) );
+
+        const metadata = sinon.createStubInstance(k8s.V1ObjectMeta.constructor);
+        Object.defineProperty(metadata, "name", { writable: true });
+        mockK8s.V1ObjectMeta.returns( metadata );
         mockK8s.V1CronJobSpec.returns( sinon.createStubInstance(k8s.V1CronJobSpec.constructor) );
         mockK8s.V1JobTemplateSpec.returns( sinon.createStubInstance(k8s.V1JobTemplateSpec.constructor) );
         mockK8s.V1JobSpec.returns( sinon.createStubInstance(k8s.V1JobSpec.constructor) );
@@ -96,8 +99,14 @@ describe('collection-service', () => {
         mockK8s.V1PodSpec.returns( sinon.createStubInstance(k8s.V1PodSpec.constructor) );
         mockK8s.V1Container.returns( sinon.createStubInstance(k8s.V1Container.constructor) );
         mockK8s.V1EnvFromSource.returns( sinon.createStubInstance(k8s.V1EnvFromSource.constructor) );
-        mockK8s.V1SecretEnvSource.returns( sinon.createStubInstance(k8s.V1SecretEnvSource.constructor) );
-        mockK8s.V1LocalObjectReference.returns( sinon.createStubInstance(k8s.V1LocalObjectReference.constructor) );
+
+        const secretRef = sinon.createStubInstance(k8s.V1SecretEnvSource.constructor);
+        Object.defineProperty(secretRef, "name", { writable: true });
+        mockK8s.V1SecretEnvSource.returns( secretRef );
+
+        const dockerSecret = sinon.createStubInstance(k8s.V1LocalObjectReference.constructor);
+        Object.defineProperty(dockerSecret, "name", { writable: true });
+        mockK8s.V1LocalObjectReference.returns( dockerSecret );
 
         const k8sApiClient = {
             createNamespacedCronJob: sinon.stub(),
