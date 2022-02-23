@@ -35,8 +35,10 @@ class K8sCronJob extends Command {
         // TODO: Move docker secret into each ms template
         dockerSecretRef.name = 'docker-secret';
         podSpec.imagePullSecrets = [dockerSecretRef];
+        podSpec.restartPolicy = 'Always';
 
         const container = new k8s.V1Container();
+        container.name = `${process.env.HELM_RELEASE_NAME}-data-collector`;
         container.image = options.image;
         container.command = [ options.command ];
         container.args = options.args || []
@@ -46,7 +48,7 @@ class K8sCronJob extends Command {
         secretRef.name = `${process.env.HELM_RELEASE_NAME}-secrets`;
 
         envFromConfig.secretRef = secretRef;
-        container.envFrom = envFromConfig;
+        container.envFrom = [envFromConfig];
 
         podSpec.containers = [ container ];
         podSpec.serviceAccountName = `${process.env.HELM_RELEASE_NAME}-service-account`;
