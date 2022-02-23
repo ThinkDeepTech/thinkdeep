@@ -129,7 +129,6 @@ class CollectionService {
             const kababCaseName = entityName.toLowerCase().split(' ').join('-');
             const kababCaseType = entityType.toLowerCase().split(' ').join('-');
             const cronName = `fetch-tweets-${kababCaseName}-${kababCaseType}`;
-            // TODO: Make sure correct commands are being used.
             const command = new K8sCronJob({
                 name: cronName,
                 namespace: 'default',
