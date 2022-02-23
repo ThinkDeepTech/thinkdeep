@@ -14,6 +14,7 @@ spec:
       labels:
         app: "deep-microservice-collection"
     spec:
+      serviceAccountName: {{ printf "%s-service-account" .Release.Name | quote }}
       containers:
       - name: "deep-microservice-collection"
         image: "thinkdeeptech/deep-microservice-collection:latest"
