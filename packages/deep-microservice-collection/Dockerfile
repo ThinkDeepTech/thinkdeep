@@ -23,8 +23,7 @@ RUN npm install
 ENV TINI_VERSION v0.19.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /bin/tini
 RUN chmod +x /bin/tini
-ENTRYPOINT ["tini", "-s", "--"]
 
 EXPOSE 4002
 
-CMD ["npm", "run", "start"]
+CMD ["tini", "-s", "--", "npm", "run", "start"]
