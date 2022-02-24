@@ -19,11 +19,6 @@ COPY package.json ./
 
 RUN npm install
 
-# Add Tini
-ENV TINI_VERSION v0.19.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /bin/tini
-RUN chmod +x /bin/tini
-
 EXPOSE 4002
 
-CMD ["tini", "-s", "--", "node", "src/index.mjs"]
+CMD ["npm", "run", "start"]
