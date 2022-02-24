@@ -70,10 +70,10 @@ const startApolloServer = async () => {
 
   await attachExitHandler(performCleanup);
 
-  await mongoClient.connect();
   await admin.connect();
   await producer.connect();
   await consumer.connect();
+  await mongoClient.connect();
 
   console.log("Connected successfully to server");
 
