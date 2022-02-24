@@ -21,14 +21,14 @@ class CollectDataClient {
      */
     async connect() {
 
-        const performCleanup = (() => {
+        const performCleanup = (async () => {
 
             this._logger.info('Disconnecting from kafka.');
-            this._admin.disconnect();
-            this._producer.disconnect();
+            await this._admin.disconnect();
+            await this._producer.disconnect();
         }).bind(this);
 
-        const attachExitHandler = (callback) => {
+        const attachExitHandler = async (callback) => {
             process.once('cleanup', callback);
             process.on('exit', () => {
                 process.emit('cleanup');
