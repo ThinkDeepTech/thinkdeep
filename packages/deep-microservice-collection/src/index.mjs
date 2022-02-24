@@ -30,6 +30,8 @@ const consumer = kafka.consumer({ groupId: 'deep-microservice-collection-consume
 const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRING);
 
 const performCleanup = async () => {
+
+  logger.info(`Cleanup up application resources.`);
   await mongoClient.close();
   await producer.disconnect();
   await consumer.disconnect();
@@ -43,19 +45,19 @@ const attachExitHandler = async (callback) => {
     process.emit('cleanup');
   });
   process.on('SIGINT', () => {
-    process.exit(2);
+    process.emit('cleanup');
   });
   process.on('SIGTERM', () => {
-    process.exit(3);
+    process.emit('cleanup');
   });
   process.on('uncaughtException', () => {
-    process.exit(99);
+    process.emit('cleanup');
   });
 };
 
 const startApolloServer = async () => {
 
-  attachExitHandler(performCleanup);
+  await attachExitHandler(performCleanup);
 
   await mongoClient.connect();
   await admin.connect();
