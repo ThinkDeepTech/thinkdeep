@@ -33,6 +33,7 @@ class Commander {
      */
     async stopAllCommands() {
 
+        this._logger.info(`Stopping all commands`);
         for (const [key, commands] of Object.entries(this._commandMap)) {
 
             this._logger.info(`Clearing commands for key ${key}, ${JSON.stringify(commands)}`);
