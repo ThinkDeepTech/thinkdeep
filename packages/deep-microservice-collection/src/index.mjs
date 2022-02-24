@@ -32,39 +32,37 @@ const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRI
 const performCleanup = async () => {
 
   logger.info('Stopping all commands');
-  await commander.stopAllCommands();
+  commander.stopAllCommands();
 
   logger.info('Disconnecting from kafka producer');
-  await producer.disconnect();
+  producer.disconnect();
 
   logger.info('Disconnecting from kafka consumer');
-  await consumer.disconnect();
+  consumer.disconnect();
 
   logger.info('Disconnecting from kafka admin');
-  await admin.disconnect();
+  admin.disconnect();
 
   logger.info('Closing MongoDB connection');
-  await mongoClient.close();
-
-  process.exit(0);
+  mongoClient.close();
 };
 
 const attachExitHandler = async (callback) => {
-  process.on('exit', async () => {
+  process.on('exit', () => {
     logger.debug('Handling exit.');
-    await callback();
+    callback();
   });
-  process.on('SIGINT', async () => {
+  process.on('SIGINT', () => {
     logger.debug('Handling SIGINT.');
-    await callback();
+    callback();
   });
-  process.on('SIGTERM', async () => {
+  process.on('SIGTERM', () => {
     logger.debug('Handling SIGTERM.');
-    await callback();
+    callback();
   });
-  process.on('uncaughtException', async () => {
+  process.on('uncaughtException', () => {
     logger.debug('Handling uncaughtException.');
-    await callback();
+    callback();
   });
 };
 
