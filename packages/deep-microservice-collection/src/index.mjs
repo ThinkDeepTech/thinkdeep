@@ -45,6 +45,8 @@ const performCleanup = async () => {
 
   logger.info('Closing MongoDB connection');
   await mongoClient.close();
+
+  process.exit(0);
 };
 
 const attachExitHandler = async (callback) => {
