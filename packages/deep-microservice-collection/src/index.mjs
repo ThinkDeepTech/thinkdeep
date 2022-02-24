@@ -40,18 +40,21 @@ const performCleanup = async () => {
 };
 
 const attachExitHandler = async (callback) => {
-  process.on('cleanup', callback);
-  process.on('exit', () => {
-    process.emit('cleanup');
+  process.on('exit', async () => {
+    logger.debug('Handling exit.');
+    await callback();
   });
-  process.on('SIGINT', () => {
-    process.emit('cleanup');
+  process.on('SIGINT', async () => {
+    logger.debug('Handling SIGINT.');
+    await callback();
   });
-  process.on('SIGTERM', () => {
-    process.emit('cleanup');
+  process.on('SIGTERM', async () => {
+    logger.debug('Handling SIGTERM.');
+    await callback();
   });
-  process.on('uncaughtException', () => {
-    process.emit('cleanup');
+  process.on('uncaughtException', async () => {
+    logger.debug('Handling uncaughtException.');
+    await callback();
   });
 };
 
