@@ -31,7 +31,6 @@ const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRI
 
 const performCleanup = async () => {
 
-  logger.info('Stopping all commands');
   await commander.stopAllCommands();
 
   logger.info('Disconnecting from kafka producer');
