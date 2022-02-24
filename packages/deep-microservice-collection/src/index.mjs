@@ -32,37 +32,35 @@ const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRI
 const performCleanup = async () => {
 
   logger.info('Stopping all commands');
-  commander.stopAllCommands();
+  await commander.stopAllCommands();
 
   logger.info('Disconnecting from kafka producer');
-  producer.disconnect();
+  await producer.disconnect();
 
   logger.info('Disconnecting from kafka consumer');
-  consumer.disconnect();
+  await consumer.disconnect();
 
   logger.info('Disconnecting from kafka admin');
-  admin.disconnect();
+  await admin.disconnect();
 
   logger.info('Closing MongoDB connection');
-  mongoClient.close();
+  await mongoClient.close();
+
+  process.exit(0);
 };
 
 const attachExitHandler = async (callback) => {
-  process.on('exit', () => {
-    logger.debug('Handling exit.');
-    callback();
-  });
-  process.on('SIGINT', () => {
+  process.on('SIGINT', async () => {
     logger.debug('Handling SIGINT.');
-    callback();
+    await callback();
   });
-  process.on('SIGTERM', () => {
+  process.on('SIGTERM', async () => {
     logger.debug('Handling SIGTERM.');
-    callback();
+    await callback();
   });
-  process.on('uncaughtException', () => {
+  process.on('uncaughtException', async () => {
     logger.debug('Handling uncaughtException.');
-    callback();
+    await callback();
   });
 };
 
@@ -128,4 +126,5 @@ const startApolloServer = async () => {
 
 startApolloServer().then(() => { /* Do nothing */ }).catch((error) => {
   logger.error(`An Error Occurred: ${JSON.stringify(error)}, message: ${error.message.toString()}`);
+  process.emit('SIGTERM');
 });
