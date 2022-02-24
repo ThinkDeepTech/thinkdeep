@@ -31,12 +31,20 @@ const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRI
 
 const performCleanup = async () => {
 
-  logger.info(`Cleanup up application resources.`);
-  await mongoClient.close();
-  await producer.disconnect();
-  await consumer.disconnect();
-  await admin.disconnect();
+  logger.info('Stopping all commands');
   await commander.stopAllCommands();
+
+  logger.info('Disconnecting from kafka producer');
+  await producer.disconnect();
+
+  logger.info('Disconnecting from kafka consumer');
+  await consumer.disconnect();
+
+  logger.info('Disconnecting from kafka admin');
+  await admin.disconnect();
+
+  logger.info('Closing MongoDB connection');
+  await mongoClient.close();
 };
 
 const attachExitHandler = async (callback) => {
@@ -62,10 +70,10 @@ const startApolloServer = async () => {
 
   await attachExitHandler(performCleanup);
 
-  await mongoClient.connect();
   await admin.connect();
   await producer.connect();
   await consumer.connect();
+  await mongoClient.connect();
 
   console.log("Connected successfully to server");
 
