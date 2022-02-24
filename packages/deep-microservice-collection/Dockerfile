@@ -26,4 +26,4 @@ RUN chmod +x /bin/tini
 
 EXPOSE 4002
 
-CMD ["tini", "-s", "--", "npm", "run", "start"]
+CMD ["tini", "-s", "--", "node", "src/index.mjs"]
