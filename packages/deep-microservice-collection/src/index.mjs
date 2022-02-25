@@ -94,7 +94,7 @@ const startApolloServer = async () => {
   const app = express();
 
   // NOTE: x-powered-by can allow attackers to determine what technologies are being used by software and
-  // therefore how to attack. Therefore, it's disabled here.
+  // therefore how to attack.
   app.disable('x-powered-by');
 
   // NOTE: Placing a forward slash at the end of any allowed origin causes a preflight error.
