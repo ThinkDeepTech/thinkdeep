@@ -1,3 +1,4 @@
+import {attachExitHandler} from '@thinkdeep/attach-exit-handler';
 import moment from 'moment';
 import { hasReadAllAccess } from './permissions.mjs';
 
@@ -10,34 +11,52 @@ class AnalysisService {
      *
      * @param {Object} analysisDataStore - AnalysisDataStore to use when interacting with the database.
      * @param {Object} sentimentLib - Library to use for sentiment analysis. This is an instance of Sentiment from 'sentiment' package.
-     * @param {Object} admin - KafkaJS admin.
-     * @param {Object} consumer - Kafkajs consumer.
-     * @param {Object} producer  - Kafkajs producer.
      * @param {Object} logger - Logger to use.
      */
-    constructor(analysisDataStore, sentimentLib, admin, consumer, producer, logger) {
+    constructor(analysisDataStore, sentimentLib, kafkaClient, logger) {
         this._analysisDataStore = analysisDataStore;
         this._sentimentLib = sentimentLib;
-        this._admin = admin;
-        this._consumer = consumer;
-        this._producer = producer;
+        this._kafkaClient = kafkaClient;
+
+        this._admin = this._kafkaClient.admin();
+        this._consumer = this._kafkaClient.consumer({ groupId: 'deep-microservice-analysis-consumer' });
+        this._producer = this._kafkaClient.producer();
+
         this._logger = logger;
+    }
 
-        this._topicCreation([{ topic: 'TWEETS_COLLECTED' , replicationFactor: 1},
-            { topic: 'TWEET_SENTIMENT_COMPUTED' , replicationFactor: 1}]).then( async() => {
+    async connect() {
 
-            await this._consumer.subscribe({ topic: 'TWEETS_COLLECTED', fromBeginning: true });
+        await attachExitHandler(( async () => {
 
-            await this._consumer.run({
-                eachMessage: async ({message}) => {
+            this._logger.info('Cleaning up kafka connections.');
+            await this._admin.disconnect();
+            await this._consumer.disconnect();
+            await this._producer.disconnect();
 
-                    this._logger.debug(`Received kafka message: ${message.value.toString()}`);
+        }).bind(this));
 
-                    const { economicEntityName, economicEntityType, timeSeriesItems} = JSON.parse(message.value.toString());
-                    await this._computeSentiment(economicEntityName, economicEntityType, timeSeriesItems);
-                }
-            });
-        })
+        this._logger.info('Connecting to Kafka.');
+        await this._admin.connect();
+        await this._consumer.connect();
+        await this._producer.connect();
+
+        // TODO: Split out into shared package.
+        await this._topicCreation([{ topic: 'TWEETS_COLLECTED' , replicationFactor: 1}, { topic: 'TWEET_SENTIMENT_COMPUTED' , replicationFactor: 1}]);
+
+        this._logger.info(`Subscribing to TWEETS_COLLECTED topic`);
+        await this._consumer.subscribe({ topic: 'TWEETS_COLLECTED', fromBeginning: true });
+
+        this._logger.info(`Running consumer handlers on each message.`);
+        await this._consumer.run({
+            eachMessage: async ({message}) => {
+
+                this._logger.debug(`Received kafka message: ${message.value.toString()}`);
+
+                const { economicEntityName, economicEntityType, timeSeriesItems} = JSON.parse(message.value.toString());
+                await this._computeSentiment(economicEntityName, economicEntityType, timeSeriesItems);
+            }
+        });
     }
 
     /**
@@ -146,6 +165,7 @@ class AnalysisService {
      */
     async _topicCreation(topics) {
         try {
+            this._logger.info(`Creating topics ${JSON.stringify(topics)}`);
             await this._admin.createTopics({
                 /**
                  * NOTE: If you don't wait for leaders the system throws an error when trying to write to the topic if a leader
