@@ -1,6 +1,8 @@
 import {buildSubgraphSchema} from '@apollo/subgraph';
 import { AnalysisClient } from './analysis-client.mjs';
+import {AnalysisService} from './analysis-service.mjs';
 import {ApolloServer} from 'apollo-server-express';
+import {SentimentStore} from './datasource/sentiment-store.mjs';
 import express from 'express';
 import { getLogger } from './get-logger.mjs';
 import { Kafka } from 'kafkajs';
@@ -8,6 +10,7 @@ import { loggingPlugin } from './logging-plugin.mjs';
 import {MongoClient} from 'mongodb';
 import {resolvers} from './resolvers.mjs';
 import {typeDefs} from './schema.mjs';
+import Sentiment from 'sentiment';
 
 const logger = getLogger();
 
@@ -19,6 +22,10 @@ const kafkaClient = new Kafka({
   clientId: 'deep-microservice-analysis',
   brokers: [kafkaBroker]
 });
+
+
+const sentimentStore = new SentimentStore(mongoClient.db('admin').collection('sentiments'), logger);
+const analysisService = new AnalysisService(sentimentStore, new Sentiment(), kafkaClient, logger);
 
 const apolloServer = new ApolloServer({
   schema: buildSubgraphSchema([{typeDefs, resolvers}]),
@@ -34,7 +41,7 @@ const apolloServer = new ApolloServer({
 
 (async () => {
 
-  const microserviceClient = new AnalysisClient(mongoClient, kafkaClient, apolloServer, express(), logger);
+  const microserviceClient = new AnalysisClient(mongoClient, kafkaClient, apolloServer, express(), analysisService, logger);
 
   await microserviceClient.connect();
 
