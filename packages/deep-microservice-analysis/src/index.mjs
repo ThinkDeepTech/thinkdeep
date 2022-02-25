@@ -1,11 +1,11 @@
 import {buildSubgraphSchema} from '@apollo/subgraph';
+import {attachExitHandler} from '@thinkdeep/attach-exit-handler';
+import {getPublicIP} from '@thinkdeep/get-public-ip';
 import {ApolloServer} from 'apollo-server-express';
 import {AnalysisService} from './analysis-service.mjs';
-// import {PostgresDataSource} from './datasource/postgres-datasource.mjs';
 import {SentimentStore} from './datasource/sentiment-store.mjs';
 import express from 'express';
 import { getLogger } from './get-logger.mjs';
-import { getPublicIP } from './get-public-ip.mjs';
 import { Kafka } from 'kafkajs';
 import { loggingPlugin } from './logging-plugin.mjs';
 import {MongoClient} from 'mongodb';
@@ -25,44 +25,27 @@ const admin = kafka.admin();
 const consumer = kafka.consumer({ groupId: 'deep-microservice-analysis-consumer' });
 const producer = kafka.producer();
 
-const performCleanup = async () => {
-  await admin.disconnect();
-  await consumer.disconnect();
-  await producer.disconnect();
-  await mongoClient.close();
-};
-
-const attachExitHandler = async (callback) => {
-  process.on('cleanup', callback);
-  process.on('exit', () => {
-    process.emit('cleanup');
-  });
-  process.on('SIGINT', () => {
-    process.exit(2);
-  });
-  process.on('SIGTERM', () => {
-    process.exit(3);
-  });
-  process.on('uncaughtException', () => {
-    process.exit(99);
-  });
-};
-
 const startApolloServer = async () => {
 
-  attachExitHandler(performCleanup);
+  await attachExitHandler( async () => {
 
+    logger.info('Cleaning up kafka connections.');
+    await admin.disconnect();
+    await consumer.disconnect();
+    await producer.disconnect();
+
+    logger.info('Closing MongoDB connection.');
+    await mongoClient.close();
+  });
+
+  logger.info('Connecting to MongoDB.');
   await mongoClient.connect();
+
+  logger.info('Connecting to Kafka.');
   await admin.connect();
   await consumer.connect();
   await producer.connect();
 
-  // TODO: Migrate to postgres
-  // const knexConfig = {
-  //   client: 'pg',
-  //   connection: process.env.PREDECOS_PG_CONNECTION_STRING,
-  // };
-  // const postgresDataSource = new PostgresDataSource(knexConfig);
   const sentimentStore = new SentimentStore(mongoClient.db('admin').collection('sentiments'), logger);
   const analysisService = new AnalysisService(sentimentStore, new Sentiment(), admin, consumer, producer, logger);
 
@@ -111,4 +94,5 @@ const startApolloServer = async () => {
 
 startApolloServer().then(() => { /* Do nothing */ }).catch((error) => {
   logger.error(`An Error Occurred: ${JSON.stringify(error)}, message: ${error.message.toString()}`);
+  process.emit('SIGTERM');
 });

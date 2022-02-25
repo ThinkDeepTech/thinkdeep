@@ -1,5 +1,7 @@
 import {buildSubgraphSchema} from '@apollo/subgraph';
 import k8s from '@kubernetes/client-node'
+import {attachExitHandler} from '@thinkdeep/attach-exit-handler';
+import {getPublicIP} from '@thinkdeep/get-public-ip';
 import {ApolloServer} from 'apollo-server-express';
 import {CollectionService} from './collection-service.mjs';
 import {Commander} from './commander.mjs';
@@ -7,7 +9,6 @@ import {EconomicEntityMemo} from './datasource/economic-entity-memo.mjs';
 import {TweetStore} from './datasource/tweet-store.mjs';
 import express from 'express';
 import {getLogger} from './get-logger.mjs';
-import {getPublicIP} from './get-public-ip.mjs';
 import { Kafka } from 'kafkajs';
 import {loggingPlugin} from './logging-plugin.mjs';
 import {MongoClient} from 'mongodb';
@@ -29,43 +30,20 @@ const consumer = kafka.consumer({ groupId: 'deep-microservice-collection-consume
 
 const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRING);
 
-const performCleanup = async () => {
-
-  await commander.stopAllCommands();
-
-  logger.info('Disconnecting from kafka producer');
-  await producer.disconnect();
-
-  logger.info('Disconnecting from kafka consumer');
-  await consumer.disconnect();
-
-  logger.info('Disconnecting from kafka admin');
-  await admin.disconnect();
-
-  logger.info('Closing MongoDB connection');
-  await mongoClient.close();
-
-  process.exit(0);
-};
-
-const attachExitHandler = async (callback) => {
-  process.on('SIGINT', async () => {
-    logger.debug('Handling SIGINT.');
-    await callback();
-  });
-  process.on('SIGTERM', async () => {
-    logger.debug('Handling SIGTERM.');
-    await callback();
-  });
-  process.on('uncaughtException', async () => {
-    logger.debug('Handling uncaughtException.');
-    await callback();
-  });
-};
-
 const startApolloServer = async () => {
 
-  await attachExitHandler(performCleanup);
+  await attachExitHandler( async () => {
+
+    await commander.stopAllCommands();
+
+    logger.info('Closing Kafka connections.');
+    await producer.disconnect();
+    await consumer.disconnect();
+    await admin.disconnect();
+
+    logger.info('Closing MongoDB connection');
+    await mongoClient.close();
+  });
 
   await admin.connect();
   await producer.connect();
@@ -94,7 +72,7 @@ const startApolloServer = async () => {
   const app = express();
 
   // NOTE: x-powered-by can allow attackers to determine what technologies are being used by software and
-  // therefore how to attack. Therefore, it's disabled here.
+  // therefore how to attack.
   app.disable('x-powered-by');
 
   // NOTE: Placing a forward slash at the end of any allowed origin causes a preflight error.
