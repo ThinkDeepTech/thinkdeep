@@ -1,4 +1,5 @@
 import {attachExitHandler} from '@thinkdeep/attach-exit-handler';
+import {getPublicIP} from '@thinkdeep/get-public-ip';
 import {AnalysisService} from './analysis-service.mjs';
 import {SentimentStore} from './datasource/sentiment-store.mjs';
 import Sentiment from 'sentiment';
@@ -69,7 +70,8 @@ class AnalysisClient {
         });
 
         const port = 4001;
-        return new Promise((resolve) => this._expressApp.listen({port}, resolve));
+        await new Promise((resolve) => this._expressApp.listen({port}, resolve));
+        this._logger.info(`🚀 Server ready at http://${getPublicIP()}:${port}${this._apolloServer.graphqlPath}`);
     }
 }
 
