@@ -1,20 +1,15 @@
 import {attachExitHandler} from '@thinkdeep/attach-exit-handler';
 import {getPublicIP} from '@thinkdeep/get-public-ip';
-import {AnalysisService} from './analysis-service.mjs';
-import {SentimentStore} from './datasource/sentiment-store.mjs';
-import Sentiment from 'sentiment';
 
 class AnalysisClient {
 
-    constructor(mongoClient, kafkaClient, apolloServer, expressApp, logger) {
+    constructor(mongoClient, kafkaClient, apolloServer, expressApp, analysisService, logger) {
         this._mongoClient = mongoClient;
         this._kafkaClient = kafkaClient;
         this._apolloServer = apolloServer;
         this._expressApp = expressApp;
+        this._analysisService = analysisService;
         this._logger = logger;
-
-        this._sentimentStore = undefined;
-        this._analysisService = undefined;
     }
 
 
@@ -37,9 +32,6 @@ class AnalysisClient {
         await this._mongoClient.connect();
 
         this._logger.info(`Connecting to analysis service.`);
-        this._sentimentStore = new SentimentStore(this._mongoClient.db('admin').collection('sentiments'), this._logger);
-        this._analysisService = new AnalysisService(this._sentimentStore, new Sentiment(), this._kafkaClient, this._logger);
-
         await this._analysisService.connect();
     }
 
@@ -70,7 +62,7 @@ class AnalysisClient {
         });
 
         const port = 4001;
-        await new Promise((resolve) => this._expressApp.listen({port}, resolve));
+        await new Promise(((resolve) => this._expressApp.listen({port}, resolve)).bind(this));
         this._logger.info(`🚀 Server ready at http://${getPublicIP()}:${port}${this._apolloServer.graphqlPath}`);
     }
 }

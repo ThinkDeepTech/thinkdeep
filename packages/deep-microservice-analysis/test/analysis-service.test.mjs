@@ -121,24 +121,6 @@ describe('analysis-service', () => {
         })
 
         it('should wait for topic creation', async () => {
-            const economicEntityName = "SomeBusinessName";
-            const economicEntityType = "BUSINESS";
-            const tweets = [{
-                    text: 'something'
-                }, {
-                    text: 'something else'
-                }];
-            const timeSeriesData = [{
-                timestamp: 1,
-                economicEntityName: 'irrelevant',
-                economicEntityType: 'irrelevant',
-                tweets
-            }];
-
-            const sentimentResult = {
-                score: 1
-            };
-            sentimentLib.analyze.returns(sentimentResult);
 
             await subject.connect();
 
