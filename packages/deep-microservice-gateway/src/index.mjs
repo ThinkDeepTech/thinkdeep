@@ -1,9 +1,9 @@
 import {ApolloGateway, RemoteGraphQLDataSource} from '@apollo/gateway';
+import {getPublicIP} from '@thinkdeep/get-public-ip';
 import {ApolloServer} from 'apollo-server-express';
 import express from 'express';
 import jwt from 'express-jwt';
 import {getLogger} from './get-logger.mjs'
-import {getPublicIP} from './get-public-ip.mjs';
 import jwks from 'jwks-rsa';
 
 const logger = getLogger();

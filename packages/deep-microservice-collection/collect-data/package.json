@@ -15,6 +15,7 @@
     "serve": "^10.1.1"
   },
   "dependencies": {
+    "@thinkdeep/attach-exit-handler": "^1.0.0",
     "commander": "^9.0.0",
     "concat-stream": "^2.0.0",
     "kafkajs": "^1.15.0",

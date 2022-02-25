@@ -1,11 +1,11 @@
 import {ApolloGateway} from '@apollo/gateway';
 import {makeExecutableSchema} from '@graphql-tools/schema';
+import {getPublicIP} from '@thinkdeep/get-public-ip';
 import {gql} from 'apollo-server-express';
 import cors from 'cors';
 import express from 'express';
 import jwt from 'express-jwt';
 import {getLogger} from './get-logger.mjs';
-import {getPublicIP} from './get-public-ip.mjs';
 import {execute, subscribe, printSchema, parse, getOperationAST, GraphQLError, validate} from 'graphql';
 import { useServer } from 'graphql-ws/lib/use/ws';
 import { createServer } from 'http';
@@ -90,6 +90,7 @@ const startApolloServer = async () => {
 
     });
 
+    // TODO: Split this and the above logic into shared function + callback
     await new Promise((resolve) => {
 
       const dummyNext = (error) => {

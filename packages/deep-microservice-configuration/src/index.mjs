@@ -1,10 +1,11 @@
 import {buildSubgraphSchema} from '@apollo/subgraph';
+import {attachExitHandler} from '@thinkdeep/attach-exit-handler';
+import {getPublicIP} from '@thinkdeep/get-public-ip';
 import {ApolloServer} from 'apollo-server-express';
 import { ConfigurationService } from './configuration-service.mjs';
 import {ConfigurationStore} from './datasource/configuration-store.mjs';
 import express from 'express';
 import {getLogger} from './get-logger.mjs';
-import {getPublicIP} from './get-public-ip.mjs';
 import {loggingPlugin} from './logging-plugin.mjs';
 import {MongoClient} from 'mongodb';
 import process from 'process';
@@ -15,29 +16,11 @@ const logger = getLogger();
 
 const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRING);
 
-const performCleanup = async () => {
-  await mongoClient.close();
-};
-
-const attachExitHandler = async (callback) => {
-  process.on('cleanup', callback);
-  process.on('exit', () => {
-    process.emit('cleanup');
-  });
-  process.on('SIGINT', () => {
-    process.exit(2);
-  });
-  process.on('SIGTERM', () => {
-    process.exit(3);
-  });
-  process.on('uncaughtException', () => {
-    process.exit(99);
-  });
-};
-
 const startApolloServer = async () => {
 
-  attachExitHandler(performCleanup);
+  await attachExitHandler(async () => {
+    await mongoClient.close();
+  });
 
   await mongoClient.connect();
 
@@ -94,4 +77,5 @@ const startApolloServer = async () => {
 
 startApolloServer().then(() => { /* Do nothing */ }).catch((error) => {
   logger.error(`An Error Occurred: ${JSON.stringify(error)}, message: ${error.message.toString()}`);
+  process.emit('SIGTERM');
 });

@@ -1,3 +1,5 @@
+import {attachExitHandler} from '@thinkdeep/attach-exit-handler';
+
 /**
  * Client used to execute data collection tasks.
  */
@@ -21,30 +23,13 @@ class CollectDataClient {
      */
     async connect() {
 
-        const performCleanup = (async () => {
+        await attachExitHandler((async () => {
 
             this._logger.info('Disconnecting from kafka.');
             await this._admin.disconnect();
             await this._producer.disconnect();
-        }).bind(this);
 
-        const attachExitHandler = async (callback) => {
-            process.once('cleanup', callback);
-            process.on('exit', () => {
-                process.emit('cleanup');
-            });
-            process.on('SIGINT', () => {
-                process.exit(2);
-            });
-            process.on('SIGTERM', () => {
-                process.exit(3);
-              });
-            process.on('uncaughtException', () => {
-                process.exit(99);
-            });
-        };
-
-        await attachExitHandler(performCleanup);
+        }).bind(this));
 
         this._logger.info('Connecting to kafka.');
         await this._admin.connect();
