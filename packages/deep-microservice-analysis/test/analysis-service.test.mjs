@@ -11,6 +11,7 @@ describe('analysis-service', () => {
     let analysisDataStore;
     let sentimentLib;
     let logger;
+    let kafkaClient;
     let admin;
     let consumer;
     let producer;
@@ -24,14 +25,20 @@ describe('analysis-service', () => {
             analyze: sinon.stub()
         };
         admin = {
-            createTopics: sinon.stub()
+            createTopics: sinon.stub(),
+            connect: sinon.stub(),
+            disconnect: sinon.stub()
         };
         consumer = {
             subscribe: sinon.stub().returns(Promise.resolve()),
-            run: sinon.stub().returns(Promise.resolve())
+            run: sinon.stub().returns(Promise.resolve()),
+            connect: sinon.stub(),
+            disconnect: sinon.stub()
         };
         producer = {
-            send: sinon.stub()
+            send: sinon.stub(),
+            connect: sinon.stub(),
+            disconnect: sinon.stub()
         };
         logger = {
             debug: sinon.stub(),
@@ -39,18 +46,25 @@ describe('analysis-service', () => {
             warn: sinon.stub(),
             error: sinon.stub()
         }
-        subject = new AnalysisService(analysisDataStore, sentimentLib, admin, consumer, producer, logger);
+        kafkaClient = {
+            admin: sinon.stub().returns(admin),
+            producer: sinon.stub().returns(producer),
+            consumer: sinon.stub().returns(consumer)
+        };
+        subject = new AnalysisService(analysisDataStore, sentimentLib, kafkaClient, logger);
         done();
     });
 
-    describe('constuctor', () => {
+    describe('connect', () => {
 
         it('should subscribe to receive updates when tweets are collected', async () => {
+            await subject.connect();
             const subscriptionOptions = consumer.subscribe.getCall(0).args[0];
             expect(subscriptionOptions.topic).to.equal('TWEETS_COLLECTED');
         })
 
         it('should read all tweets that have collected', async () => {
+            await subject.connect();
             const subscriptionOptions = consumer.subscribe.getCall(0).args[0];
             expect(subscriptionOptions.fromBeginning).to.equal(true);
         })
@@ -96,6 +110,7 @@ describe('analysis-service', () => {
             };
             sentimentLib.analyze.returns(sentimentResult);
 
+            await subject.connect();
             const options = consumer.run.getCall(0).args[0];
             const messageProcessor = options.eachMessage;
 
@@ -103,6 +118,33 @@ describe('analysis-service', () => {
             await messageProcessor({message: message2});
 
             expect(sentimentLib.analyze).to.have.been.calledThrice;
+        })
+
+        it('should wait for topic creation', async () => {
+            const economicEntityName = "SomeBusinessName";
+            const economicEntityType = "BUSINESS";
+            const tweets = [{
+                    text: 'something'
+                }, {
+                    text: 'something else'
+                }];
+            const timeSeriesData = [{
+                timestamp: 1,
+                economicEntityName: 'irrelevant',
+                economicEntityType: 'irrelevant',
+                tweets
+            }];
+
+            const sentimentResult = {
+                score: 1
+            };
+            sentimentLib.analyze.returns(sentimentResult);
+
+            await subject.connect();
+
+            const adminArg = admin.createTopics.getCall(0).args[0];
+            expect(admin.createTopics).to.have.been.calledOnce;
+            expect(adminArg.waitForLeaders).to.equal(true);
         })
     })
 
@@ -328,33 +370,6 @@ describe('analysis-service', () => {
             await subject._computeSentiment(economicEntityName, economicEntityType, timeSeriesData);
 
             expect(sentimentLib.analyze).not.to.have.been.called;
-        })
-
-        it('should wait for topic creation before adding to the message queue', async () => {
-            const economicEntityName = "SomeBusinessName";
-            const economicEntityType = "BUSINESS";
-            const tweets = [{
-                    text: 'something'
-                }, {
-                    text: 'something else'
-                }];
-            const timeSeriesData = [{
-                timestamp: 1,
-                economicEntityName: 'irrelevant',
-                economicEntityType: 'irrelevant',
-                tweets
-            }];
-
-            const sentimentResult = {
-                score: 1
-            };
-            sentimentLib.analyze.returns(sentimentResult);
-
-            await subject._computeSentiment(economicEntityName, economicEntityType, timeSeriesData);
-
-            const adminArg = admin.createTopics.getCall(0).args[0];
-            expect(admin.createTopics).to.have.been.calledOnce;
-            expect(adminArg.waitForLeaders).to.equal(true);
         })
 
         it('should add a message to the queue indicating the sentiments computed', async () => {
