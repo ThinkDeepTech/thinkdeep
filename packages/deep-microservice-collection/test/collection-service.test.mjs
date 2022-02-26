@@ -76,6 +76,7 @@ describe('collection-service', () => {
             V1CronJob: sinon.stub(),
             V1ObjectMeta: sinon.stub(),
             V1CronJobSpec: sinon.stub(),
+            V1Job: sinon.stub(),
             V1JobTemplateSpec: sinon.stub(),
             V1JobSpec: sinon.stub(),
             V1PodTemplateSpec: sinon.stub(),
@@ -89,6 +90,8 @@ describe('collection-service', () => {
 
         mockK8s.V1CronJob.returns( sinon.createStubInstance(k8s.V1CronJob.constructor) );
         mockK8s.V1CronJobSpec.returns( sinon.createStubInstance(k8s.V1CronJobSpec.constructor) );
+        mockK8s.V1JobSpec.returns( sinon.createStubInstance(k8s.V1Job.constructor) );
+        mockK8s.V1JobSpec.returns( sinon.createStubInstance(k8s.V1JobSpec.constructor) );
         mockK8s.V1JobTemplateSpec.returns( sinon.createStubInstance(k8s.V1JobTemplateSpec.constructor) );
         mockK8s.V1JobSpec.returns( sinon.createStubInstance(k8s.V1JobSpec.constructor) );
         mockK8s.V1PodTemplateSpec.returns( sinon.createStubInstance(k8s.V1PodTemplateSpec.constructor) );
@@ -119,7 +122,9 @@ describe('collection-service', () => {
 
         const k8sApiClient = {
             createNamespacedCronJob: sinon.stub(),
-            deleteNamespacedCronJob: sinon.stub()
+            deleteNamespacedCronJob: sinon.stub(),
+            createNamespacedJob: sinon.stub(),
+            deleteNamespacedJob: sinon.stub()
         }
         const kubeConfig = sinon.createStubInstance(k8s.KubeConfig.constructor);
         kubeConfig.loadFromCluster = sinon.stub();
@@ -361,11 +366,29 @@ describe('collection-service', () => {
             const entityType = 'BUSINESS';
 
             const commands = subject._commands(entityName, entityType);
-            const containers = commands[0]._cronJob.spec.jobTemplate.spec.template.spec.containers;
+            const classObj = commands[0];
+            const containers = classObj._cronJob.spec.jobTemplate.spec.template.spec.containers;
             const k8sCommands = containers[0].command;
             const k8sArgs = containers[0].args;
 
-            expect(commands[0].constructor.name).to.equal('K8sCronJob');
+            expect(classObj.constructor.name).to.equal('K8sCronJob');
+            expect(containers[0].image).to.equal('thinkdeeptech/collect-data:latest');
+            expect(k8sCommands[0]).to.equal('node');
+            expect(k8sArgs[0]).to.equal('src/collect-data.mjs');
+            expect(k8sArgs[3]).to.equal('--operation-type=fetch-tweets');
+        })
+
+        it('should include a command to collect tweets for type business immediately', () => {
+            const entityName = 'somebusiness';
+            const entityType = 'BUSINESS';
+
+            const commands = subject._commands(entityName, entityType);
+            const classObj = commands[1];
+            const containers = classObj._job.spec.template.spec.containers;
+            const k8sCommands = containers[0].command;
+            const k8sArgs = containers[0].args;
+
+            expect(classObj.constructor.name).to.equal('K8sJob');
             expect(containers[0].image).to.equal('thinkdeeptech/collect-data:latest');
             expect(k8sCommands[0]).to.equal('node');
             expect(k8sArgs[0]).to.equal('src/collect-data.mjs');

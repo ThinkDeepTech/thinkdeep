@@ -1,4 +1,5 @@
 import { K8sCronJob } from './command/k8s-cron-job.mjs';
+import { K8sJob } from './command/k8s-job.mjs';
 import { validString } from './helpers.mjs';
 import moment from 'moment';
 import { hasReadAllAccess } from './permissions.mjs';
@@ -128,9 +129,9 @@ class CollectionService {
 
             const kababCaseName = entityName.toLowerCase().split(' ').join('-');
             const kababCaseType = entityType.toLowerCase().split(' ').join('-');
-            const cronName = `fetch-tweets-${kababCaseName}-${kababCaseType}`;
-            const command = new K8sCronJob({
-                name: cronName,
+            const name = `fetch-tweets-${kababCaseName}-${kababCaseType}`;
+            const fetchTweetsOnSchedule = new K8sCronJob({
+                name: name,
                 namespace: 'default',
                  /**
                  * Time interval between each twitter API call.
@@ -145,7 +146,15 @@ class CollectionService {
                 args: ['src/collect-data.mjs', `--entity-name=${entityName}`, `--entity-type=${entityType}`, '--operation-type=fetch-tweets']
             }, this._k8s, this._logger);
 
-            return [command];
+            const fetchTweetsImmediately = new K8sJob({
+                name: name,
+                namespace: 'default',
+                image: 'thinkdeeptech/collect-data:latest',
+                command: 'node',
+                args: ['src/collect-data.mjs', `--entity-name=${entityName}`, `--entity-type=${entityType}`, '--operation-type=fetch-tweets']
+            }, this._k8s, this._logger);
+
+            return [fetchTweetsOnSchedule, fetchTweetsImmediately];
         } else {
             throw new Error('The specified economic type was unknown.')
         }
