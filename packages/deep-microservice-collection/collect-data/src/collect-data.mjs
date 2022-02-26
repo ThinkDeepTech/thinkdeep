@@ -100,7 +100,7 @@ try {
                 await collectDataClient.connect();
 
                 const recentTweets = await collectDataClient.fetchRecentTweets({
-                    query: `${options.entityName} lang:en -is:retweets`,
+                    query: `${options.entityName} lang:en -is:retweet`,
                     max_results: options.numTweets
                 });
                 logger.debug(`Retrieved the following tweets: ${JSON.stringify(recentTweets)}`);
