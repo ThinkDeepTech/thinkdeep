@@ -11,6 +11,7 @@ class AnalysisService {
      *
      * @param {Object} analysisDataStore - AnalysisDataStore to use when interacting with the database.
      * @param {Object} sentimentLib - Library to use for sentiment analysis. This is an instance of Sentiment from 'sentiment' package.
+     * @param {Object} kafkaClient - KafkaJS client to use.
      * @param {Object} logger - Logger to use.
      */
     constructor(analysisDataStore, sentimentLib, kafkaClient, logger) {
@@ -25,23 +26,27 @@ class AnalysisService {
         this._logger = logger;
     }
 
+    /**
+     * Connect the analysis service to underlying support systems.
+     */
     async connect() {
 
-        await attachExitHandler(( async () => {
+        this._logger.info(`Connecting to analysis service support systems.`);
+
+        await attachExitHandler( async () => {
 
             this._logger.info('Cleaning up kafka connections.');
             await this._admin.disconnect();
             await this._consumer.disconnect();
             await this._producer.disconnect();
 
-        }).bind(this));
+        });
 
         this._logger.info('Connecting to Kafka.');
         await this._admin.connect();
         await this._consumer.connect();
         await this._producer.connect();
 
-        // TODO: Split out into shared package.
         await this._topicCreation([{ topic: 'TWEETS_COLLECTED' , replicationFactor: 1}, { topic: 'TWEET_SENTIMENT_COMPUTED' , replicationFactor: 1}]);
 
         this._logger.info(`Subscribing to TWEETS_COLLECTED topic`);
