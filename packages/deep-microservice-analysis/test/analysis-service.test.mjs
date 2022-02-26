@@ -16,7 +16,7 @@ describe('analysis-service', () => {
     let consumer;
     let producer;
     let subject;
-    beforeEach((done) => {
+    beforeEach(() => {
         analysisDataStore = {
             readMostRecentSentiments: sinon.stub(),
             createSentiments: sinon.stub()
@@ -52,8 +52,29 @@ describe('analysis-service', () => {
             consumer: sinon.stub().returns(consumer)
         };
         subject = new AnalysisService(analysisDataStore, sentimentLib, kafkaClient, logger);
-        done();
     });
+
+    describe('constructor', () => {
+
+        it('should create a kafka admin', () => {
+            expect(kafkaClient.admin).to.have.been.called;
+        })
+
+        it('should create a kafka producer', () => {
+            expect(kafkaClient.producer).to.have.been.called;
+        })
+
+        it('should create a kafka consumer', () => {
+            expect(kafkaClient.consumer).to.have.been.called;
+        })
+
+        it('should assign the consumer to a consumer group', () => {
+            const args = kafkaClient.consumer.getCall(0).args;
+            expect(args[0].groupId).not.to.equal(undefined);
+            expect(args[0].groupId).not.to.equal(null);
+            expect(args[0].groupId).not.to.equal('');
+        })
+    })
 
     describe('connect', () => {
 
