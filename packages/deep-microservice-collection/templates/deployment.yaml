@@ -14,7 +14,7 @@ spec:
       labels:
         app: "deep-microservice-collection"
     spec:
-      serviceAccountName: {{ printf "%s-cron-manager-service-account" .Release.Name | quote }}
+      serviceAccountName: {{ printf "%s-collection-manager-service-account" .Release.Name | quote }}
       containers:
       - name: "deep-microservice-collection"
         image: "thinkdeeptech/deep-microservice-collection:latest"
