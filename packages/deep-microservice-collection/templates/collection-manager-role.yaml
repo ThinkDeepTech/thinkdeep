@@ -2,11 +2,12 @@ apiVersion: "rbac.authorization.k8s.io/v1"
 kind: "Role"
 metadata:
     namespace: {{ .Values.namespace | quote }}
-    name: {{ printf "%s-cron-manager-role" .Release.Name | quote }}
+    name: {{ printf "%s-collection-manager-role" .Release.Name | quote }}
 rules:
     - apiGroups: ["", "batch"]
       resources:
           - "cronjobs"
+          - "jobs"
       verbs:
           - "create"
           - "delete"

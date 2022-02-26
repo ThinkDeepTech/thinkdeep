@@ -2,12 +2,12 @@ apiVersion: "rbac.authorization.k8s.io/v1"
 kind: "RoleBinding"
 metadata:
     namespace: {{ .Values.namespace | quote }}
-    name: {{ printf "%s-cron-manager-role-binding" .Release.Name | quote }}
+    name: {{ printf "%s-collection-manager-role-binding" .Release.Name | quote }}
 subjects:
     - kind: "ServiceAccount"
-      name: {{ printf "%s-cron-manager-service-account" .Release.Name | quote }}
+      name: {{ printf "%s-collection-manager-service-account" .Release.Name | quote }}
       namespace: {{ .Values.namespace | quote }}
 roleRef:
     kind: "Role"
-    name: {{ printf "%s-cron-manager-role" .Release.Name | quote }}
+    name: {{ printf "%s-collection-manager-role" .Release.Name | quote }}
     apiGroup: "rbac.authorization.k8s.io"
