@@ -152,52 +152,38 @@ export class DeepTemplateAnalyzer extends i18nMixin(LitElement) {
       <mwc-top-app-bar-fixed>
         <div slot="title">${this.companyName}</div>
 
-        <!--
-          NOTE: An anchor tag is used here because direct use of @vaadin/router's Router.go(...) method causes routing errors
-          during testing. Navigation ends up at a blank page with text that says "Not Found". Include anchor tags in all routes.
-      -->
-        <a href="/" slot="actionItems">
-          <mwc-icon-button
-            icon="home"
-            aria-label="${translate('translations:homePageLabel')}"
-          >
-          </mwc-icon-button>
-        </a>
+        <mwc-icon-button
+          @click=${() => Router.go('/')}
+          icon="home"
+          aria-label="${translate('translations:homePageLabel')}"
+        >
+        </mwc-icon-button>
 
         ${this.user.loggedIn
           ? html`
-              <a
-                href="${translate('translations:summaryPageLabel')}"
-                slot="actionItems"
+              <mwc-icon-button
+                @click=${() =>
+                  Router.go('/' + translate('translations:summaryPageLabel'))}
+                icon="space_dashboard"
+                aria-label="${translate('translations:summaryPageLabel')}"
               >
-                <mwc-icon-button
-                  icon="space_dashboard"
-                  aria-label="${translate('translations:summaryPageLabel')}"
-                >
-                </mwc-icon-button>
-              </a>
-              <a
-                href="${translate('translations:logoutPageLabel')}"
-                slot="actionItems"
+              </mwc-icon-button>
+              <mwc-icon-button
+                @click="${() =>
+                  Router.go('/' + translate('translations:logoutPageLabel'))}"
+                icon="logout"
+                aria-label="${translate('translations:logoutPageLabel')}"
               >
-                <mwc-icon-button
-                  icon="logout"
-                  aria-label="${translate('translations:logoutPageLabel')}"
-                >
-                </mwc-icon-button>
-              </a>
+              </mwc-icon-button>
             `
           : html`
-              <a
-                href="${translate('translations:loginPageLabel')}"
-                slot="actionItems"
+              <mwc-icon-button
+                @click="${() =>
+                  Router.go('/' + translate('translations:loginPageLabel'))}"
+                icon="login"
+                aria-label="${translate('translations:loginPageLabel')}"
               >
-                <mwc-icon-button
-                  icon="login"
-                  aria-label="${translate('translations:loginPageLabel')}"
-                >
-                </mwc-icon-button>
-              </a>
+              </mwc-icon-button>
             `}
       </mwc-top-app-bar-fixed>
 
