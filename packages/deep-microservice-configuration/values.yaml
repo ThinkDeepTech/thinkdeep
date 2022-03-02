@@ -2,6 +2,10 @@
     namespace: "default"
     nodeEnv: "development"
 
+  graphql:
+    path: "/graphql"
+    port: 4003
+
   replicas: 1
 
   mongodb:

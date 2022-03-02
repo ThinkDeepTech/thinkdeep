@@ -8,4 +8,4 @@ spec:
     app: {{ printf "%s-deep-microservice-configuration-deployment" .Release.Name | quote }}
   ports:
     - protocol: "TCP"
-      port: {{ .Values.port }}
+      port: {{ .Values.graphql.port }}

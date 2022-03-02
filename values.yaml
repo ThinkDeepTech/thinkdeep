@@ -1,29 +1,47 @@
   global:
     namespace: "default"
     nodeEnv: "development"
+    microservice:
+      url:
+        secretName: "deep-microservice-url-secret"
+      auth:
+        secretName: "deep-microservice-auth-secret"
+
+  auth:
+      audience: ""
+      jwksUri: ""
+      issuer: ""
 
   microservice:
     analysis:
-      port: 4001
-      path: "/graphql"
+      graphql:
+        port: 4001
+        path: "/graphql"
       replicas: 1
 
     collection:
-      port: 4002
-      path: "/graphql"
+      graphql:
+        port: 4002
+        path: "/graphql"
       replicas: 1
 
     configuration:
-      port: 4003
-      path: "/graphql"
+      graphql:
+        port: 4003
+        path: "/graphql"
       replicas: 1
 
     gateway:
-      secret:
-        name: ""
-      config:
-        name: ""
+      graphql:
+        port: 4000
+        path: "/graphql"
+      replicas: 1
 
+    subscription:
+      graphql:
+        port: 4004
+        path: "/graphql"
+      replicas: 1
 
   kafka:
     host: ""

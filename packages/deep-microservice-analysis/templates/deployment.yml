@@ -25,7 +25,7 @@ spec:
         - secretRef:
             name: {{ printf "%s-deep-microservice-analysis-secrets" .Release.Name | quote }}
         ports:
-        - containerPort: {{ .Values.port }}
+        - containerPort: {{ .Values.graphql.port }}
         imagePullPolicy: "Always"
       imagePullSecrets:
         - name: "docker-secret"

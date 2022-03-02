@@ -4,9 +4,9 @@
 
   replicas: 1
 
-  port: 4002
-
-  path: "/graphql"
+  graphql:
+    port: 4002
+    path: "/graphql"
 
   mongodb:
     auth:

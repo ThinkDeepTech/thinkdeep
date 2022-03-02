@@ -2,9 +2,9 @@
     namespace: "default"
     nodeEnv: "development"
 
-  port: 4001
-
-  path: "/graphql"
+  graphql:
+    port: 4001
+    path: "/graphql"
 
   replicas: 1
 

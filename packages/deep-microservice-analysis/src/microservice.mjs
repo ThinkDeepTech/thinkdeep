@@ -30,7 +30,7 @@ class Microservice {
             allowedOrigins = allowedOrigins.concat(['https://localhost:8000', 'http://localhost:8000', 'https://studio.apollographql.com']);
         }
 
-        const path = process.env.PATH;
+        const path = process.env.GRAPHQL_PATH;
         if (!path) {
             throw new Error(`A path at which the application can be accessed is required (i.e, /graphql). Received: ${path}`);
         }
@@ -46,7 +46,7 @@ class Microservice {
             },
         });
 
-        const port = process.env.PORT;
+        const port = process.env.GRAPHQL_PORT;
         if (!port) {
             throw new Error(`A port at which the application can be accessed is required. Received: ${port}`);
         }

@@ -1,13 +1,17 @@
   global:
     namespace: "default"
     nodeEnv: "development"
+    microservice:
+      url:
+        secretName: ""
+      auth:
+        secretName: ""
 
   replicas: 1
 
-  auth:
-    audience: ""
-    jwksUri: ""
-    issuer: ""
+  graphql:
+    port: 4000
+    path: "/graphql"
 
   microservice:
     analysis:
@@ -16,3 +20,8 @@
       url: ""
     configuration:
       url: ""
+
+  auth:
+      audience: ""
+      jwksUri: ""
+      issuer: ""

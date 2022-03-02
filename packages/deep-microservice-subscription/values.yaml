@@ -1,8 +1,17 @@
   global:
     namespace: "default"
     nodeEnv: "development"
+    microservice:
+      url:
+        secretName: ""
+      auth:
+        secretName: ""
 
   replicas: 1
+
+  graphql:
+    port: 4004
+    path: "/graphql"
 
   microservice:
     analysis:
