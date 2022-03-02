@@ -1,8 +1,8 @@
 apiVersion: "apps/v1"
 kind: "Deployment"
 metadata:
-  name: {{ printf "%s-deployment" .Release.Name | quote }}
-  namespace: {{ .Values.global.namespace | quote }}
+  name: {{ printf "%s-deep-microservice-analysis-deployment" (.Release.Name) | quote }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     app: {{ printf "%s-deep-microservice-analysis-deployment" .Release.Name | quote }}
     app.kubernetes.io/managed-by: "helm"

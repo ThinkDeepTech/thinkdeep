@@ -1,5 +1,4 @@
   global:
-    namespace: "default"
     nodeEnv: "development"
     kafka:
       secretName: ""

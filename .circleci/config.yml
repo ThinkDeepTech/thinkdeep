@@ -63,7 +63,7 @@ jobs:
             namespace: "default"
             recreate-pods: true
             release-name: "deep-microservice-analysis-latest"
-            values-to-override: "mongodb.auth.rootUser=$MONGODB_USERNAME,mongodb.auth.rootPassword=$MONGODB_ROOT_PASSWORD,kafka.host=$PREDECOS_KAFKA_HOST,kafka.port=$PREDECOS_KAFKA_PORT,global.namespace=default,global.nodeEnv=$NODE_ENV"
+            values-to-override: "mongodb.auth.rootUser=$MONGODB_USERNAME,mongodb.auth.rootPassword=$MONGODB_ROOT_PASSWORD,kafka.host=$PREDECOS_KAFKA_HOST,kafka.port=$PREDECOS_KAFKA_PORT,global.nodeEnv=$NODE_ENV"
             update-repositories: true
             wait: true
 
@@ -98,7 +98,7 @@ jobs:
             namespace: "default"
             recreate-pods: true
             release-name: "deep-microservice-collection-latest"
-            values-to-override: "mongodb.auth.rootUser=$MONGODB_USERNAME,mongodb.auth.rootPassword=$MONGODB_ROOT_PASSWORD,kafka.host=$PREDECOS_KAFKA_HOST,kafka.port=$PREDECOS_KAFKA_PORT,twitter.bearer=$PREDECOS_TWITTER_BEARER,global.namespace=default,global.nodeEnv=$NODE_ENV"
+            values-to-override: "mongodb.auth.rootUser=$MONGODB_USERNAME,mongodb.auth.rootPassword=$MONGODB_ROOT_PASSWORD,kafka.host=$PREDECOS_KAFKA_HOST,kafka.port=$PREDECOS_KAFKA_PORT,twitter.bearer=$PREDECOS_TWITTER_BEARER,global.nodeEnv=$NODE_ENV"
             update-repositories: true
             wait: true
 
@@ -133,7 +133,7 @@ jobs:
             namespace: "default"
             recreate-pods: true
             release-name: "deep-microservice-configuration-latest"
-            values-to-override: "mongodb.auth.rootUser=$MONGODB_USERNAME,mongodb.auth.rootPassword=$MONGODB_ROOT_PASSWORD,global.namespace=default,global.nodeEnv=$NODE_ENV"
+            values-to-override: "mongodb.auth.rootUser=$MONGODB_USERNAME,mongodb.auth.rootPassword=$MONGODB_ROOT_PASSWORD,global.nodeEnv=$NODE_ENV"
             update-repositories: true
             wait: true
 
@@ -168,7 +168,7 @@ jobs:
             namespace: "default"
             recreate-pods: true
             release-name: "deep-microservice-gateway-latest"
-            values-to-override: "auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,microservice.analysis.url=$PREDECOS_MICROSERVICE_ANALYSIS_URL,microservice.collection.url=$PREDECOS_MICROSERVICE_COLLECTION_URL,microservice.configuration.url=$PREDECOS_MICROSERVICE_CONFIGURATION_URL,replicas=1,global.namespace=default,global.nodeEnv=$NODE_ENV"
+            values-to-override: "auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,microservice.analysis.url=$PREDECOS_MICROSERVICE_ANALYSIS_URL,microservice.collection.url=$PREDECOS_MICROSERVICE_COLLECTION_URL,microservice.configuration.url=$PREDECOS_MICROSERVICE_CONFIGURATION_URL,replicas=1,global.nodeEnv=$NODE_ENV"
             update-repositories: true
             wait: true
 
@@ -203,7 +203,7 @@ jobs:
             namespace: "default"
             recreate-pods: true
             release-name: "deep-microservice-subscription-latest"
-            values-to-override: "auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,kafka.host=$PREDECOS_KAFKA_HOST,kafka.port=$PREDECOS_KAFKA_PORT,microservice.analysis.url=$PREDECOS_MICROSERVICE_ANALYSIS_URL,microservice.collection.url=$PREDECOS_MICROSERVICE_COLLECTION_URL,microservice.configuration.url=$PREDECOS_MICROSERVICE_CONFIGURATION_URL,replicas=1,global.namespace=default,global.nodeEnv=$NODE_ENV"
+            values-to-override: "auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,kafka.host=$PREDECOS_KAFKA_HOST,kafka.port=$PREDECOS_KAFKA_PORT,microservice.analysis.url=$PREDECOS_MICROSERVICE_ANALYSIS_URL,microservice.collection.url=$PREDECOS_MICROSERVICE_COLLECTION_URL,microservice.configuration.url=$PREDECOS_MICROSERVICE_CONFIGURATION_URL,replicas=1,global.nodeEnv=$NODE_ENV"
             update-repositories: true
             wait: true
 

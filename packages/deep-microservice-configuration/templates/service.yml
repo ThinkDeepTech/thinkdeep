@@ -2,7 +2,7 @@ apiVersion: "v1"
 kind: "Service"
 metadata:
   name: {{ printf "%s-deep-microservice-configuration-service" .Release.Name | quote}}
-  namespace: {{ .Values.global.namespace | quote }}
+  namespace: {{ .Release.Namespace | quote }}
 spec:
   selector:
     app: {{ printf "%s-deep-microservice-configuration-deployment" .Release.Name | quote }}
