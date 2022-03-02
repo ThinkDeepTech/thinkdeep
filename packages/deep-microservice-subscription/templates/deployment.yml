@@ -36,6 +36,10 @@ spec:
           {{ else }}
             name: {{ printf "%s" .Values.global.microservice.auth.secretName | quote }}
           {{ end }}
+        {{ if .Values.global.kafka.secretName }}
+        - secretRef:
+            name: {{ printf "%s" .Values.global.kafka.secretName | quote }}
+        {{ end }}
 
         ports:
         - containerPort: {{ .Values.graphql.port }}

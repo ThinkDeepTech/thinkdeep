@@ -24,6 +24,10 @@ spec:
             name: {{ printf "%s-deep-microservice-analysis-config-map" .Release.Name | quote }}
         - secretRef:
             name: {{ printf "%s-deep-microservice-analysis-secrets" .Release.Name | quote }}
+        {{ if .Values.global.kafka.secretName }}
+        - secretRef:
+            name: {{ printf "%s" .Values.global.kafka.secretName | quote }}
+        {{ end }}
         ports:
         - containerPort: {{ .Values.graphql.port }}
         imagePullPolicy: "Always"

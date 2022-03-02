@@ -7,8 +7,7 @@
       auth:
         secretName: "deep-microservice-auth-secret"
     kafka:
-      host: ""
-      port: 9092
+        secretName: "deep-kafka-secret"
 
   auth:
       audience: ""

@@ -2,6 +2,7 @@
     namespace: "default"
     nodeEnv: "development"
     kafka:
+      secretName: ""
       host: ""
       port: 9092
 
