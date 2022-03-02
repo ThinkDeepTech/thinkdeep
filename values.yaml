@@ -6,6 +6,9 @@
         secretName: "deep-microservice-url-secret"
       auth:
         secretName: "deep-microservice-auth-secret"
+    kafka:
+      host: ""
+      port: 9092
 
   auth:
       audience: ""
@@ -42,7 +45,3 @@
         port: 4004
         path: "/graphql"
       replicas: 1
-
-  kafka:
-    host: ""
-    port: ""

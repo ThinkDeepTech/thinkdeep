@@ -6,6 +6,9 @@
         secretName: ""
       auth:
         secretName: ""
+    kafka:
+      host: ""
+      port: 9092
 
   replicas: 1
 
@@ -25,7 +28,3 @@
     audience: ""
     jwksUri: ""
     issuer: ""
-
-  kafka:
-    host: ""
-    port: 9092

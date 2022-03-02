@@ -1,6 +1,9 @@
   global:
     namespace: "default"
     nodeEnv: "development"
+    kafka:
+      host: ""
+      port: 9092
 
   replicas: 1
 
@@ -13,10 +16,6 @@
       enabled: false
       rootUser: "root"
       rootPassword: ""
-
-  kafka:
-    host: ""
-    port: 9092
 
   twitter:
     bearer: ""
