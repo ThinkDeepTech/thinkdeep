@@ -1,8 +1,12 @@
-  namespace: "default"
+  global:
+    namespace: "default"
+    nodeEnv: "development"
+
+  port: 4001
+
+  path: "/graphql"
 
   replicas: 1
-
-  nodeEnv: "development" # TODO: Default to production
 
   mongodb:
     auth:

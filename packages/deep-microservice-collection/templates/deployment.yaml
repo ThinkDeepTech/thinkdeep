@@ -1,18 +1,19 @@
 apiVersion: "apps/v1"
 kind: "Deployment"
 metadata:
-  name: {{ printf "%s-deployment" .Release.Name | quote }}
+  name: {{ printf "%s-deep-microservice-collection-deployment" .Release.Name | quote }}
+  namespace: {{ .Values.global.namespace | quote }}
   labels:
-    app: "deep-microservice-collection"
+    app: {{ printf "%s-deep-microservice-collection-deployment" .Release.Name | quote }}
 spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: "deep-microservice-collection"
+      app: {{ printf "%s-deep-microservice-collection-deployment" .Release.Name | quote }}
   template:
     metadata:
       labels:
-        app: "deep-microservice-collection"
+        app: {{ printf "%s-deep-microservice-collection-deployment" .Release.Name | quote }}
     spec:
       serviceAccountName: {{ printf "%s-collection-manager-service-account" .Release.Name | quote }}
       containers:
@@ -20,11 +21,11 @@ spec:
         image: "thinkdeeptech/deep-microservice-collection:latest"
         envFrom:
         - configMapRef:
-            name: {{ printf "%s-config-map" .Release.Name | quote }}
+            name: {{ printf "%s-deep-microservice-collection-config-map" .Release.Name | quote }}
         - secretRef:
-            name: {{ printf "%s-secrets" .Release.Name | quote }}
+            name: {{ printf "%s-deep-microservice-collection-secret" .Release.Name | quote }}
         ports:
-        - containerPort: 4002
+        - containerPort: {{ .Values.port }}
         imagePullPolicy: "Always"
       imagePullSecrets:
         - name: "docker-secret"

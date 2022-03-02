@@ -1,8 +1,8 @@
-  namespace: "default"
+  global:
+    namespace: "default"
+    nodeEnv: "development"
 
   replicas: 1
-
-  nodeEnv: "development" # TODO: Default to production
 
   mongodb:
     auth:

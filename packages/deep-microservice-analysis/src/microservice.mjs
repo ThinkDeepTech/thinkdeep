@@ -30,9 +30,15 @@ class Microservice {
             allowedOrigins = allowedOrigins.concat(['https://localhost:8000', 'http://localhost:8000', 'https://studio.apollographql.com']);
         }
 
+        const path = process.env.PATH;
+        if (!path) {
+            throw new Error(`A path at which the application can be accessed is required (i.e, /graphql). Received: ${path}`);
+        }
+
         this._logger.debug(`Applying middleware.`);
         this._apolloServer.applyMiddleware({
             app: this._expressApp,
+            path,
             cors: {
                 origin: allowedOrigins,
                 methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE',
@@ -40,7 +46,11 @@ class Microservice {
             },
         });
 
-        const port = 4001;
+        const port = process.env.PORT;
+        if (!port) {
+            throw new Error(`A port at which the application can be accessed is required. Received: ${port}`);
+        }
+
         await new Promise(((resolve) => this._expressApp.listen({port}, resolve)).bind(this));
         this._logger.info(`🚀 Server ready at http://${getPublicIP()}:${port}${this._apolloServer.graphqlPath}`);
     }

@@ -3,4 +3,4 @@ kind: "ConfigMap"
 metadata:
     name: "deep-microservice-gateway-config-map"
 data:
-    NODE_ENV: {{ required "A valid node environment is required" .Values.nodeEnv | quote}}
+    NODE_ENV: {{ required "A valid node environment is required" .Values.global.nodeEnv | quote}}

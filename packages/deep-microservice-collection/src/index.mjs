@@ -82,9 +82,14 @@ const startApolloServer = async () => {
     allowedOrigins = allowedOrigins.concat(['https://localhost:8000', 'http://localhost:8000', 'https://studio.apollographql.com']);
   }
 
+  const path = process.env.PATH;
+  if (!path) {
+      throw new Error(`A path at which the application can be accessed is required (i.e, /graphql). Received: ${path}`);
+  }
 
   server.applyMiddleware({
     app,
+    path,
     cors: {
       origin: allowedOrigins,
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE',
@@ -92,8 +97,10 @@ const startApolloServer = async () => {
     },
   });
 
-
-  const port = 4002;
+  const port = process.env.PORT;
+  if (!port) {
+      throw new Error(`A port at which the application can be accessed is required. Received: ${port}`);
+  }
   await new Promise((resolve) => app.listen({port}, resolve));
 
   logger.info(

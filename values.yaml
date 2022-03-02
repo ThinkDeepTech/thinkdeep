@@ -1,0 +1,30 @@
+  global:
+    namespace: "default"
+    nodeEnv: "development"
+
+  microservice:
+    analysis:
+      port: 4001
+      path: "/graphql"
+      replicas: 1
+
+    collection:
+      port: 4002
+      path: "/graphql"
+      replicas: 1
+
+    configuration:
+      port: 4003
+      path: "/graphql"
+      replicas: 1
+
+    gateway:
+      secret:
+        name: ""
+      config:
+        name: ""
+
+
+  kafka:
+    host: ""
+    port: ""

@@ -1,4 +1,11 @@
 import {playwrightLauncher} from '@web/test-runner-playwright';
+import rollupGraphQL from '@rollup/plugin-graphql';
+import rollupReplace from '@rollup/plugin-replace';
+import { fromRollup } from '@web/dev-server-rollup';
+
+const graphql = fromRollup(rollupGraphQL);
+const replace = fromRollup(rollupReplace);
+
 import getPort from 'get-port';
 
 const browsers = {
@@ -29,5 +36,11 @@ export default {
       timeout: 10000,
     },
   },
-  port
+  port,
+  mimeTypes: {
+    '**/*.graphql': 'js'
+  },
+  plugins: [
+    graphql(),
+  ],
 };

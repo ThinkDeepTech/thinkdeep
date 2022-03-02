@@ -1,7 +1,11 @@
 apiVersion: "v1"
 kind: "ConfigMap"
 metadata:
-    name: {{ printf "%s-config-map" .Release.Name | quote }}
+    name: {{ printf "%s-deep-microservice-collection-config-map" .Release.Name | quote }}
+    namespace: {{ .Values.global.namespace | quote }}
 data:
+    PORT: {{ required "A valid port at which the application can be accessed is required" .Values.port }}
+    PATH: {{ required "A valid path at which the application can be accessed is required (i.e, /graphql)" .Values.path | quote}}
+    NAMESPACE: {{ .Values.global.namespace | quote }}
     HELM_RELEASE_NAME: {{ .Release.Name | quote }}
-    NODE_ENV: {{ required "A valid node environment is required" .Values.nodeEnv | quote}}
+    NODE_ENV: {{ required "A valid node environment is required" .Values.global.nodeEnv | quote}}
