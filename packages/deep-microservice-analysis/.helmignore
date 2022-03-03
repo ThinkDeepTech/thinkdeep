@@ -1,6 +1,5 @@
 # Custom entries
 log.txt
-**/log.txt
 
 # General files for the project
 pkg/*
@@ -36,7 +35,7 @@ Session.vim
 .netrwhist
 
 # Chart dependencies
-**/charts/*.tgz
+charts/*.tgz
 
 .history
 
