@@ -213,28 +213,28 @@ jobs:
         - helm/install-helm-client:
             version: v3.7.2
         - run:
-            name: Download project dependencies
-            command: helm dependency update
-        - run:
-            name: Download project dependencies
+            name: Download analysis microservice project dependencies
             command: helm dependency update
             working_directory: ./packages/deep-microservice-analysis
         - run:
-            name: Download project dependencies
+            name: Download collection microservice project dependencies
             command: helm dependency update
             working_directory: ./packages/deep-microservice-collection
         - run:
-            name: Download project dependencies
+            name: Download configuration microservice project dependencies
             command: helm dependency update
             working_directory: ./packages/deep-microservice-configuration
         - run:
-            name: Download project dependencies
+            name: Download gateway microservice project dependencies
             command: helm dependency update
             working_directory: ./packages/deep-microservice-gateway
         - run:
-            name: Download project dependencies
+            name: Download subscription microservice project dependencies
             command: helm dependency update
             working_directory: ./packages/deep-microservice-subscription
+        - run:
+            name: Download project dependencies
+            command: helm dependency update
         - helm/upgrade-helm-chart:
             chart: "."
             helm-version: "v3.7.2"
