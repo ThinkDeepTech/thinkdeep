@@ -87,9 +87,9 @@ const startApolloServer = async () => {
       throw new Error(`A path at which the application can be accessed is required (i.e, /graphql). Received: ${path}`);
   }
 
-  this._logger.debug(`Applying middleware.`);
-  this._apolloServer.applyMiddleware({
-      app: this._expressApp,
+  logger.debug(`Applying middleware.`);
+  server.applyMiddleware({
+      app,
       path,
       cors: {
           origin: allowedOrigins,
