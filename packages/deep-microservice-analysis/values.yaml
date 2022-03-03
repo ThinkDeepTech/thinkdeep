@@ -3,12 +3,12 @@
     kafka:
       secretName: ""
       host: ""
-      port: 9092
+      port: "9092"
     docker:
       secretName: ""
 
   graphql:
-    port: 4001
+    port: "4001"
     path: "/graphql"
 
   replicas: 1
