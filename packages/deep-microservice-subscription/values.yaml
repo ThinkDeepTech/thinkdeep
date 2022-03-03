@@ -9,6 +9,8 @@
       secretName: ""
       host: ""
       port: 9092
+    docker:
+      secretName: ""
 
   replicas: 1
 
@@ -28,3 +30,6 @@
     audience: ""
     jwksUri: ""
     issuer: ""
+
+  service:
+    certificateId: ""

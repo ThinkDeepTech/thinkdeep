@@ -1,5 +1,7 @@
   global:
     nodeEnv: "development"
+    docker:
+      secretName: ""
 
   graphql:
     path: "/graphql"

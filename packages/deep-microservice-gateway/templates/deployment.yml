@@ -21,7 +21,7 @@ spec:
         image: "thinkdeeptech/deep-microservice-gateway:latest"
         envFrom:
         - configMapRef:
-            name: {{ printf "%s-deep-microservice-gateway-auth-secret" .Release.Name | quote }}
+            name: {{ printf "%s-deep-microservice-gateway-config-map" .Release.Name | quote }}
         - secretRef:
           {{ if not .Values.global.microservice.url.secretName }}
             name: {{ printf "%s-deep-microservice-gateway-microservice-url-secret" .Release.Name | quote }}
@@ -30,7 +30,7 @@ spec:
           {{ end }}
         - secretRef:
           {{ if not .Values.global.microservice.auth.secretName }}
-            name: {{ printf "%s-deep-microservice-gateway-secret" .Release.Name | quote }}
+            name: {{ printf "%s-deep-microservice-gateway-auth-secret" .Release.Name | quote }}
           {{ else }}
             name: {{ printf "%s" .Values.global.microservice.auth.secretName | quote }}
           {{ end }}
@@ -39,4 +39,4 @@ spec:
         - containerPort: {{ .Values.graphql.port }}
         imagePullPolicy: "Always"
       imagePullSecrets:
-        - name: "docker-secret"
+        - name: {{ required "A docker secret is required to pull from private repositories" .Values.global.docker.secretName | quote }}

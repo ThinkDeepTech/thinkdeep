@@ -5,6 +5,8 @@
         secretName: ""
       auth:
         secretName: ""
+    docker:
+      secretName: ""
 
   replicas: 1
 
@@ -24,3 +26,6 @@
       audience: ""
       jwksUri: ""
       issuer: ""
+
+  service:
+    certificateId: ""

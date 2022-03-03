@@ -1,4 +1,5 @@
   global:
+    setupServices: false
     nodeEnv: "development"
     microservice:
       url:
@@ -8,6 +9,8 @@
     kafka:
       secretName: "deep-kafka-secret"
       port: 9092
+    docker:
+      secretName: ""
 
   analysis:
     graphql:
@@ -34,12 +37,16 @@
       port: 4000
       path: "/graphql"
     replicas: 1
+    service:
+      certificateId: ""
 
   subscription:
     graphql:
       port: 4004
       path: "/graphql"
     replicas: 1
+    service:
+      certificateId: ""
 
   auth:
     audience: ""

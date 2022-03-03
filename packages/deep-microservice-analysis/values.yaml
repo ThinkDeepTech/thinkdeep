@@ -4,6 +4,8 @@
       secretName: ""
       host: ""
       port: 9092
+    docker:
+      secretName: ""
 
   graphql:
     port: 4001

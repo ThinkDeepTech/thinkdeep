@@ -5,10 +5,13 @@ metadata:
   namespace: {{ .Release.Namespace | quote }}
   annotations:
     # No TLS port annotation needed since 443 is assumed for HTTPS when another TLS option annotation is given.
-    service.beta.kubernetes.io/do-loadbalancer-certificate-id: "c0498386-47b7-4c82-9938-7d5e8734469a"
+    # service.beta.kubernetes.io/do-loadbalancer-certificate-id: "c0498386-47b7-4c82-9938-7d5e8734469a"
+    {{ if .Values.service.certificateId }}
+    service.beta.kubernetes.io/do-loadbalancer-certificate-id: {{ .Values.service.certificateId | quote }}
     service.beta.kubernetes.io/do-loadbalancer-protocol: "http"
     service.beta.kubernetes.io/do-loadbalancer-algorithm: "round_robin"
     service.beta.kubernetes.io/do-loadbalancer-tls-ports: "443"
+    {{ end }}
 spec:
   type: LoadBalancer
   selector:
@@ -17,7 +20,9 @@ spec:
     - name: http
       protocol: TCP
       port: {{ .Values.graphql.port }}
+    {{ if .Values.service.certificateId }}
     - name: https
       protocol: TCP
       port: 443
       targetPort: {{ .Values.graphql.port }}
+    {{ end }}

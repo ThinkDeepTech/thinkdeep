@@ -32,4 +32,4 @@ spec:
         - containerPort: {{ .Values.graphql.port }}
         imagePullPolicy: "Always"
       imagePullSecrets:
-        - name: "docker-secret"
+        - name: {{ required "A docker secret is required to pull from private repositories" .Values.global.docker.secretName | quote }}
