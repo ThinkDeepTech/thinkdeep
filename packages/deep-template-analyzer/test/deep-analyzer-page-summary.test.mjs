@@ -14,8 +14,8 @@
 //     beforeEach(async () => {
 
 //         globalThis.PREDECOS_AUTH_AUDIENCE = 'thing';
-//         globalThis.PREDECOS_MICROSERVICE_GATEWAY_URL = 'http://thisisatest:4000/graphql';
-//         globalThis.PREDECOS_MICROSERVICE_SUBSCRIPTION_URL = 'ws://thisisatest:4004/graphql';
+//         globalThis.PREDECOS_MICROSERVICE_GATEWAY_URL = 'http://104.248.104.235:4000/graphql';
+//         globalThis.PREDECOS_MICROSERVICE_SUBSCRIPTION_URL = 'ws://159.203.52.236:4004/graphql';
 
 //         // TODO: Use sinon.createStubInstance(...) for authClient in all files.
 //         authClient = {
@@ -34,8 +34,7 @@
 
 
 //         console.log('Apollo client: ' + JSON.stringify(globalThis.__APOLLO_CLIENT__))
-//         // setApolloClientForTesting(sinon.createStubInstance(ApolloClient));
-//         await initApolloClient(true);
+//         await initApolloClient();
 //     });
 
 //     it('should allow users to collect data for a desired business', async () => {

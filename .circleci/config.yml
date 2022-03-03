@@ -47,7 +47,7 @@ jobs:
         - k8s/initialize:
             cluster: predecos-kubernetes-cluster
         - run:
-            command: docker build -t thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis:latest .
+            command: docker build -t thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis:latest --build-arg PORT=$MICROSERVICE_ANALYSIS_PORT .
             working_directory: ./packages/deep-microservice-analysis
         - run: docker push thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-analysis:latest
@@ -82,7 +82,7 @@ jobs:
         - k8s/initialize:
             cluster: predecos-kubernetes-cluster
         - run:
-            command: docker build -t thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-collection:latest .
+            command: docker build -t thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-collection:latest --build-arg PORT=$MICROSERVICE_COLLECTION_PORT .
             working_directory: ./packages/deep-microservice-collection
         - run: docker push thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-collection:latest
@@ -117,7 +117,7 @@ jobs:
         - k8s/initialize:
             cluster: predecos-kubernetes-cluster
         - run:
-            command: docker build -t thinkdeeptech/deep-microservice-configuration:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-configuration:latest .
+            command: docker build -t thinkdeeptech/deep-microservice-configuration:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-configuration:latest --build-arg PORT=$MICROSERVICE_CONFIGURATION_PORT .
             working_directory: ./packages/deep-microservice-configuration
         - run: docker push thinkdeeptech/deep-microservice-configuration:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-configuration:latest
@@ -152,7 +152,7 @@ jobs:
         - k8s/initialize:
             cluster: predecos-kubernetes-cluster
         - run:
-            command: docker build -t thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-gateway:latest .
+            command: docker build -t thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-gateway:latest --build-arg PORT=$MICROSERVICE_GATEWAY_PORT .
             working_directory: ./packages/deep-microservice-gateway
         - run: docker push thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-gateway:latest
@@ -187,7 +187,7 @@ jobs:
         - k8s/initialize:
             cluster: predecos-kubernetes-cluster
         - run:
-            command: docker build -t thinkdeeptech/deep-microservice-subscription:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-subscription:latest .
+            command: docker build -t thinkdeeptech/deep-microservice-subscription:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-subscription:latest --build-arg PORT=$MICROSERVICE_SUBSCRIPTION_PORT .
             working_directory: ./packages/deep-microservice-subscription
         - run: docker push thinkdeeptech/deep-microservice-subscription:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-subscription:latest
