@@ -11,7 +11,7 @@
     port: 4002
     path: "/graphql"
 
-  collectionMongoDB:
+  collectionmongodb:
     auth:
       enabled: false
       rootUser: "root"

@@ -2,7 +2,7 @@ apiVersion: "v2"
 appVersion: "4.4.12"
 dependencies:
   - name: "mongodb"
-    alias: "configurationMongoDB"
+    alias: "configurationmongodb"
     repository: "https://charts.bitnami.com/bitnami"
     tags:
       - "bitnami-mongodb"

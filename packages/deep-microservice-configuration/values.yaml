@@ -7,7 +7,7 @@
 
   replicas: 1
 
-  configurationMongoDB:
+  configurationmongodb:
     auth:
       enabled: false
       rootUser: "root"
