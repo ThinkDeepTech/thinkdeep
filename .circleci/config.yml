@@ -32,7 +32,7 @@ commands:
 
 jobs:
 
-    build_and_deploy_microservice_analysis:
+    build_microservice_analysis:
       docker:
         - image: 'cimg/base:stable'
 
@@ -47,27 +47,12 @@ jobs:
         - k8s/initialize:
             cluster: predecos-kubernetes-cluster
         - run:
-            command: docker build -t thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis:latest .
+            command: docker build -t thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis:latest --build-arg PORT=$MICROSERVICE_ANALYSIS_PORT .
             working_directory: ./packages/deep-microservice-analysis
         - run: docker push thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-analysis:latest
-        - helm/install-helm-client:
-            version: v3.7.2
-        - run:
-            name: Download project dependencies
-            command: helm dependency update
-            working_directory: ./packages/deep-microservice-analysis
-        - helm/upgrade-helm-chart:
-            chart: "./packages/deep-microservice-analysis"
-            helm-version: "v3.7.2"
-            namespace: "default"
-            recreate-pods: true
-            release-name: "deep-microservice-analysis-latest"
-            values-to-override: "mongodb.auth.rootUser=$MONGODB_USERNAME,mongodb.auth.rootPassword=$MONGODB_ROOT_PASSWORD,kafka.host=$PREDECOS_KAFKA_HOST,kafka.port=$PREDECOS_KAFKA_PORT,namespace=default,nodeEnv=$NODE_ENV"
-            update-repositories: true
-            wait: true
 
-    build_and_deploy_microservice_collection:
+    build_microservice_collection:
       docker:
         - image: 'cimg/base:stable'
 
@@ -82,27 +67,12 @@ jobs:
         - k8s/initialize:
             cluster: predecos-kubernetes-cluster
         - run:
-            command: docker build -t thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-collection:latest .
+            command: docker build -t thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-collection:latest --build-arg PORT=$MICROSERVICE_COLLECTION_PORT .
             working_directory: ./packages/deep-microservice-collection
         - run: docker push thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-collection:latest
-        - helm/install-helm-client:
-            version: v3.7.2
-        - run:
-            name: Download project dependencies
-            command: helm dependency update
-            working_directory: ./packages/deep-microservice-collection
-        - helm/upgrade-helm-chart:
-            chart: "./packages/deep-microservice-collection"
-            helm-version: "v3.7.2"
-            namespace: "default"
-            recreate-pods: true
-            release-name: "deep-microservice-collection-latest"
-            values-to-override: "mongodb.auth.rootUser=$MONGODB_USERNAME,mongodb.auth.rootPassword=$MONGODB_ROOT_PASSWORD,kafka.host=$PREDECOS_KAFKA_HOST,kafka.port=$PREDECOS_KAFKA_PORT,twitter.bearer=$PREDECOS_TWITTER_BEARER,namespace=default,nodeEnv=$NODE_ENV"
-            update-repositories: true
-            wait: true
 
-    build_and_deploy_microservice_configuration:
+    build_microservice_configuration:
       docker:
         - image: 'cimg/base:stable'
 
@@ -117,27 +87,12 @@ jobs:
         - k8s/initialize:
             cluster: predecos-kubernetes-cluster
         - run:
-            command: docker build -t thinkdeeptech/deep-microservice-configuration:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-configuration:latest .
+            command: docker build -t thinkdeeptech/deep-microservice-configuration:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-configuration:latest --build-arg PORT=$MICROSERVICE_CONFIGURATION_PORT .
             working_directory: ./packages/deep-microservice-configuration
         - run: docker push thinkdeeptech/deep-microservice-configuration:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-configuration:latest
-        - helm/install-helm-client:
-            version: v3.7.2
-        - run:
-            name: Download project dependencies
-            command: helm dependency update
-            working_directory: ./packages/deep-microservice-configuration
-        - helm/upgrade-helm-chart:
-            chart: "./packages/deep-microservice-configuration"
-            helm-version: "v3.7.2"
-            namespace: "default"
-            recreate-pods: true
-            release-name: "deep-microservice-configuration-latest"
-            values-to-override: "mongodb.auth.rootUser=$MONGODB_USERNAME,mongodb.auth.rootPassword=$MONGODB_ROOT_PASSWORD,namespace=default,nodeEnv=$NODE_ENV"
-            update-repositories: true
-            wait: true
 
-    build_and_deploy_microservice_gateway:
+    build_microservice_gateway:
       docker:
         - image: 'cimg/base:stable'
 
@@ -152,27 +107,12 @@ jobs:
         - k8s/initialize:
             cluster: predecos-kubernetes-cluster
         - run:
-            command: docker build -t thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-gateway:latest .
+            command: docker build -t thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-gateway:latest --build-arg PORT=$MICROSERVICE_GATEWAY_PORT .
             working_directory: ./packages/deep-microservice-gateway
         - run: docker push thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-gateway:latest
-        - helm/install-helm-client:
-            version: v3.7.2
-        - run:
-            name: Download project dependencies
-            command: helm dependency update
-            working_directory: ./packages/deep-microservice-gateway
-        - helm/upgrade-helm-chart:
-            chart: "./packages/deep-microservice-gateway"
-            helm-version: "v3.7.2"
-            namespace: "default"
-            recreate-pods: true
-            release-name: "deep-microservice-gateway-latest"
-            values-to-override: "auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,microservice.analysis.url=$PREDECOS_MICROSERVICE_ANALYSIS_URL,microservice.collection.url=$PREDECOS_MICROSERVICE_COLLECTION_URL,microservice.configuration.url=$PREDECOS_MICROSERVICE_CONFIGURATION_URL,replicas=1,namespace=default,nodeEnv=$NODE_ENV"
-            update-repositories: true
-            wait: true
 
-    build_and_deploy_microservice_subscription:
+    build_microservice_subscription:
       docker:
         - image: 'cimg/base:stable'
 
@@ -187,25 +127,10 @@ jobs:
         - k8s/initialize:
             cluster: predecos-kubernetes-cluster
         - run:
-            command: docker build -t thinkdeeptech/deep-microservice-subscription:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-subscription:latest .
+            command: docker build -t thinkdeeptech/deep-microservice-subscription:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-subscription:latest --build-arg PORT=$MICROSERVICE_SUBSCRIPTION_PORT .
             working_directory: ./packages/deep-microservice-subscription
         - run: docker push thinkdeeptech/deep-microservice-subscription:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-subscription:latest
-        - helm/install-helm-client:
-            version: v3.7.2
-        - run:
-            name: Download project dependencies
-            command: helm dependency update
-            working_directory: ./packages/deep-microservice-subscription
-        - helm/upgrade-helm-chart:
-            chart: "./packages/deep-microservice-subscription"
-            helm-version: "v3.7.2"
-            namespace: "default"
-            recreate-pods: true
-            release-name: "deep-microservice-subscription-latest"
-            values-to-override: "auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,kafka.host=$PREDECOS_KAFKA_HOST,kafka.port=$PREDECOS_KAFKA_PORT,microservice.analysis.url=$PREDECOS_MICROSERVICE_ANALYSIS_URL,microservice.collection.url=$PREDECOS_MICROSERVICE_COLLECTION_URL,microservice.configuration.url=$PREDECOS_MICROSERVICE_CONFIGURATION_URL,replicas=1,namespace=default,nodeEnv=$NODE_ENV"
-            update-repositories: true
-            wait: true
 
     build_collect_data:
       docker:
@@ -224,7 +149,7 @@ jobs:
         - run: docker push thinkdeeptech/collect-data:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/collect-data:latest
 
-    build_ui:
+    build_ui_and_test_system:
       docker:
           - image: 'cimg/node:14.17.6'
 
@@ -243,8 +168,35 @@ jobs:
           - test_monorepo
           - build_ui_command
 
+    # deploy_kafka:
+    #   docker:
+    #     - image: 'cimg/base:stable'
 
-    deploy_kafka:
+    #   working_directory: ~/project
+
+    #   steps:
+    #     - checkout
+    #     - setup_remote_docker:
+    #         version: 20.10.7
+    #     - login_docker
+    #     - k8s/install
+    #     - k8s/initialize:
+    #         cluster: predecos-kubernetes-cluster
+    #     - helm/install-helm-client:
+    #         version: v3.7.2
+    #     - run:
+    #         name: Add Bitnami Repository
+    #         command: helm repo add bitnami https://charts.bitnami.com/bitnami
+    #     - helm/upgrade-helm-chart:
+    #         chart: "bitnami/kafka"
+    #         version: "15.1.0"
+    #         helm-version: "v3.7.2"
+    #         recreate-pods: true
+    #         release-name: "kafka-latest"
+    #         reuse-values: true
+    #         update-repositories: true
+
+    deploy_microservices:
       docker:
         - image: 'cimg/base:stable'
 
@@ -261,16 +213,18 @@ jobs:
         - helm/install-helm-client:
             version: v3.7.2
         - run:
-            name: Add Bitnami Repository
-            command: helm repo add bitnami https://charts.bitnami.com/bitnami
+            name: Download project dependencies
+            command: helm dependency update
         - helm/upgrade-helm-chart:
-            chart: "bitnami/kafka"
-            version: "15.1.0"
+            chart: "."
             helm-version: "v3.7.2"
+            namespace: "default"
             recreate-pods: true
-            release-name: "kafka-latest"
-            reuse-values: true
+            release-name: "v1"
+            values-to-override: "auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,replicas=1,global.docker.secretName=docker-secret,global.nodeEnv=$NODE_ENV"
             update-repositories: true
+            wait: true
+
 
     deploy_ui:
       docker:
@@ -293,14 +247,7 @@ workflows:
 
     jobs:
 
-      - deploy_kafka:
-          filters:
-            branches:
-              only: master
-
-      - build_and_deploy_microservice_collection:
-          requires:
-            - deploy_kafka
+      - build_microservice_collection:
           filters:
             branches:
               only: master
@@ -310,44 +257,37 @@ workflows:
             branches:
               only: master
 
-      - build_and_deploy_microservice_analysis:
-          requires:
-            - deploy_kafka
+      - build_microservice_analysis:
           filters:
             branches:
               only: master
 
-      - build_and_deploy_microservice_configuration:
+      - build_microservice_configuration:
           filters:
             branches:
               only: master
 
-      - build_and_deploy_microservice_gateway:
-          requires:
-            - build_and_deploy_microservice_collection
-            - build_and_deploy_microservice_analysis
-            - build_and_deploy_microservice_configuration
+      - build_microservice_gateway:
           filters:
             branches:
               only: master
 
-      - build_and_deploy_microservice_subscription:
-          requires:
-            - build_and_deploy_microservice_collection
-            - build_and_deploy_microservice_analysis
-            - build_and_deploy_microservice_configuration
-            - deploy_kafka
+      - build_microservice_subscription:
           filters:
             branches:
               only: master
 
-      - build_ui
+      - deploy_microservices:
+          filters:
+            branches:
+              only: master
+
+      - build_ui_and_test_system
 
       - deploy_ui:
           requires:
-            - build_and_deploy_microservice_gateway
-            - build_and_deploy_microservice_subscription
-            - build_ui
+            - deploy_microservices
+            - build_ui_and_test_system
           filters:
             branches:
               only: master

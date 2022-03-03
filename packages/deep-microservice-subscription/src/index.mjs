@@ -20,8 +20,6 @@ const logger = getLogger();
 
 const startApolloServer = async () => {
 
-  const port = 4004;
-
   const validateAndAppendPermissions = jwt({
     secret: jwks.expressJwtSecret({
       cache: true,
@@ -115,7 +113,7 @@ const startApolloServer = async () => {
   let allowedOrigins = ['https://predecos.com', 'https://www.predecos.com', 'https://thinkdeep-d4624.web.app', 'https://www.thinkdeep-d4624.web.app']
   const isProduction = process.env.NODE_ENV.toLowerCase() === 'production';
   if (!isProduction) {
-    allowedOrigins = allowedOrigins.concat(['https://localhost:8000', 'http://localhost:8000', 'https://studio.apollographql.com']);
+    allowedOrigins = ['*'];
   }
   const corsOptions = {
     origin: allowedOrigins,
@@ -130,10 +128,13 @@ const startApolloServer = async () => {
   app.disable('x-powered-by');
 
   const httpServer = createServer(app);
-  const webSocketServer = new ws.Server({
-    server: httpServer,
-    path: '/graphql'
-  });
+
+  const path = process.env.GRAPHQL_PATH;
+  if (!path) {
+      throw new Error(`A path at which the application can be accessed is required (i.e, /graphql). Received: ${path}`);
+  }
+
+  const webSocketServer = new ws.Server({ server: httpServer, path });
 
   let schema = null;
   const gatewayProxy = new ApolloGateway({
@@ -214,6 +215,11 @@ const startApolloServer = async () => {
       return args;
     },
   }, webSocketServer);
+
+  const port = process.env.GRAPHQL_PORT;
+  if (!port) {
+      throw new Error(`A port at which the application can be accessed is required. Received: ${port}`);
+  }
 
   httpServer.listen({ port }, () => {
     logger.info(`🚀 Subscriptions ready at ws://${getPublicIP()}:${port}${webSocketServer.options.path}`);

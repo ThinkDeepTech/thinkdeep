@@ -23,23 +23,11 @@ const wait = async (milliseconds) => {
  * Therefore, a value << 2000 ms is ideal.
  */
 const delayForPageRender = async () => {
-    await wait(1200);
-};
-
-/**
- * Get the path specified at the end of the href of an anchor tag.
- * @param {HTMLElement} anchor
- * @returns {String} The string component occuring after the host and port (i.e, https://localhost:4000/graphql would return 'graphql').
- */
-const path = (anchor) => {
-    const href = anchor.href;
-    const components = href.split('/');
-    return components[3];
+    await wait(1500);
 };
 
 export {
     delayForPageRender,
-    path,
     wait,
     sleep
 };

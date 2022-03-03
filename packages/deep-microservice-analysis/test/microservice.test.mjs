@@ -14,6 +14,9 @@ describe('microservice', () => {
     let subject;
     beforeEach(() => {
 
+        process.env.GRAPHQL_PORT = 4001;
+        process.env.GRAPHQL_PATH = "/graphql";
+
         apolloServer = {
             start: sinon.stub(),
             applyMiddleware: sinon.stub()

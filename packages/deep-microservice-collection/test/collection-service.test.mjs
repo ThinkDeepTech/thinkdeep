@@ -10,6 +10,8 @@ import { CollectionService } from '../src/collection-service.mjs';
 
 describe('collection-service', () => {
 
+    process.env.NAMESPACE = 'default';
+
     const memoizedEconomicEntities = [{
         name: 'firstbusiness',
         type: 'BUSINESS'

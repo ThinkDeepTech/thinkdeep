@@ -127,12 +127,17 @@ class CollectionService {
         const type = entityType.toLowerCase();
         if (type === 'business') {
 
+            const namespace = process.env.NAMESPACE;
+            if (!namespace) {
+                throw new Error(`A namespace in which to run jobs and cronjobs is required. Received: ${namespace}`);
+            }
+
             const kababCaseName = entityName.toLowerCase().split(' ').join('-');
             const kababCaseType = entityType.toLowerCase().split(' ').join('-');
             const name = `fetch-tweets-${kababCaseName}-${kababCaseType}`;
             const fetchTweetsOnSchedule = new K8sCronJob({
                 name: name,
-                namespace: 'default',
+                namespace,
                  /**
                  * Time interval between each twitter API call.
                  *
@@ -148,7 +153,7 @@ class CollectionService {
 
             const fetchTweetsImmediately = new K8sJob({
                 name: name,
-                namespace: 'default',
+                namespace,
                 image: 'thinkdeeptech/collect-data:latest',
                 command: 'node',
                 args: ['src/collect-data.mjs', `--entity-name=${entityName}`, `--entity-type=${entityType}`, '--operation-type=fetch-tweets']

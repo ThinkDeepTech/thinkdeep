@@ -1,18 +1,23 @@
-  namespace: "default"
+  global:
+    nodeEnv: "development"
+    kafka:
+      secretName: ""
+      host: ""
+      port: 9092
+    docker:
+      secretName: ""
 
   replicas: 1
 
-  nodeEnv: "development" # TODO: Default to production
+  graphql:
+    port: 4002
+    path: "/graphql"
 
-  mongodb:
+  collectionmongodb:
     auth:
       enabled: false
       rootUser: "root"
       rootPassword: ""
-
-  kafka:
-    host: ""
-    port: 9092
 
   twitter:
     bearer: ""

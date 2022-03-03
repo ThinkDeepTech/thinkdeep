@@ -1,10 +1,15 @@
-  namespace: "default"
+  global:
+    nodeEnv: "development"
+    docker:
+      secretName: ""
+
+  graphql:
+    path: "/graphql"
+    port: 4003
 
   replicas: 1
 
-  nodeEnv: "development" # TODO: Default to production
-
-  mongodb:
+  configurationmongodb:
     auth:
       enabled: false
       rootUser: "root"

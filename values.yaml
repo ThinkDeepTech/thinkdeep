@@ -1,0 +1,54 @@
+  global:
+    setupServices: false
+    nodeEnv: "development"
+    microservice:
+      url:
+        secretName: "deep-microservice-url-secret"
+      auth:
+        secretName: "deep-microservice-auth-secret"
+    kafka:
+      secretName: "deep-kafka-secret"
+      port: 9092
+    docker:
+      secretName: ""
+
+  analysis:
+    graphql:
+      port: 4001
+      path: "/graphql"
+    replicas: 1
+
+  collection:
+    graphql:
+      port: 4002
+      path: "/graphql"
+    replicas: 1
+    twitter:
+      bearer: ""
+
+  configuration:
+    graphql:
+      port: 4003
+      path: "/graphql"
+    replicas: 1
+
+  gateway:
+    graphql:
+      port: 4000
+      path: "/graphql"
+    replicas: 1
+    service:
+      certificateId: ""
+
+  subscription:
+    graphql:
+      port: 4004
+      path: "/graphql"
+    replicas: 1
+    service:
+      certificateId: ""
+
+  auth:
+    audience: ""
+    jwksUri: ""
+    issuer: ""

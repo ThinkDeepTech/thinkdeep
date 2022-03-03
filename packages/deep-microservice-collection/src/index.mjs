@@ -79,21 +79,30 @@ const startApolloServer = async () => {
   let allowedOrigins = ['https://predecos.com', 'https://www.predecos.com', 'https://thinkdeep-d4624.web.app', 'https://www.thinkdeep-d4624.web.app']
   const isProduction = process.env.NODE_ENV === 'production';
   if (!isProduction) {
-    allowedOrigins = allowedOrigins.concat(['https://localhost:8000', 'http://localhost:8000', 'https://studio.apollographql.com']);
+    allowedOrigins = ['*'];
   }
 
+  const path = process.env.GRAPHQL_PATH;
+  if (!path) {
+      throw new Error(`A path at which the application can be accessed is required (i.e, /graphql). Received: ${path}`);
+  }
 
-  server.applyMiddleware({
-    app,
-    cors: {
-      origin: allowedOrigins,
-      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE',
-      credentials: true,
-    },
+  this._logger.debug(`Applying middleware.`);
+  this._apolloServer.applyMiddleware({
+      app: this._expressApp,
+      path,
+      cors: {
+          origin: allowedOrigins,
+          methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE',
+          credentials: true,
+      },
   });
 
+  const port = process.env.GRAPHQL_PORT;
+  if (!port) {
+      throw new Error(`A port at which the application can be accessed is required. Received: ${port}`);
+  }
 
-  const port = 4002;
   await new Promise((resolve) => app.listen({port}, resolve));
 
   logger.info(

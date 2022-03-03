@@ -1,13 +1,18 @@
-  namespace: "default"
+  global:
+    nodeEnv: "development"
+    microservice:
+      url:
+        secretName: ""
+      auth:
+        secretName: ""
+    docker:
+      secretName: ""
 
   replicas: 1
 
-  nodeEnv: "development" # TODO: Default to production
-
-  auth:
-    audience: ""
-    jwksUri: ""
-    issuer: ""
+  graphql:
+    port: 4000
+    path: "/graphql"
 
   microservice:
     analysis:
@@ -16,3 +21,11 @@
       url: ""
     configuration:
       url: ""
+
+  auth:
+      audience: ""
+      jwksUri: ""
+      issuer: ""
+
+  service:
+    certificateId: ""

@@ -1,30 +1,31 @@
 apiVersion: "apps/v1"
 kind: "Deployment"
 metadata:
-  name: {{ printf "%s-deployment" .Release.Name | quote}}
+  name: {{ printf "%s-deep-microservice-configuration-deployment" .Release.Name | quote }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
-    app: "deep-microservice-configuration"
+    app: {{ printf "%s-deep-microservice-configuration-deployment" .Release.Name | quote }}
     app.kubernetes.io/managed-by: "helm"
 spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: "deep-microservice-configuration"
+      app: {{ printf "%s-deep-microservice-configuration-deployment" .Release.Name | quote }}
   template:
     metadata:
       labels:
-        app: "deep-microservice-configuration"
+        app: {{ printf "%s-deep-microservice-configuration-deployment" .Release.Name | quote }}
     spec:
       containers:
       - name: "deep-microservice-configuration"
         image: "thinkdeeptech/deep-microservice-configuration:latest"
         envFrom:
         - configMapRef:
-            name: "deep-microservice-configuration-config-map"
+            name: {{ printf "%s-deep-microservice-configuration-config-map" .Release.Name | quote }}
         - secretRef:
-            name: "deep-microservice-configuration-secrets"
+            name: {{ printf "%s-deep-microservice-configuration-secret" .Release.Name | quote }}
         ports:
-        - containerPort: 4003
+        - containerPort: {{ .Values.graphql.port }}
         imagePullPolicy: "Always"
       imagePullSecrets:
-        - name: "docker-secret"
+        - name: {{ required "A docker secret is required to pull from private repositories" .Values.global.docker.secretName | quote }}

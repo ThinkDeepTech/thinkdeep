@@ -1,6 +1,9 @@
 apiVersion: "v1"
 kind: "ConfigMap"
 metadata:
-    name: "deep-microservice-configuration-config-map"
+    name: {{ printf "%s-deep-microservice-configuration-config-map" .Release.Name | quote }}
+    namespace: {{ .Release.Namespace | quote }}
 data:
-    NODE_ENV: {{ required "A valid node environment is required" .Values.nodeEnv | quote}}
+    GRAPHQL_PORT: {{ printf "%d" (required "A valid port at which the application can be accessed is required" .Values.graphql.port) | quote }}
+    GRAPHQL_PATH: {{ required "A valid path at which the application can be accessed is required (i.e, /graphql)" .Values.graphql.path | quote}}
+    NODE_ENV: {{ required "A valid node environment is required" .Values.global.nodeEnv | quote}}
