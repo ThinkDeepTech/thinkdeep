@@ -216,7 +216,7 @@ const startApolloServer = async () => {
     },
   }, webSocketServer);
 
-  const port = process.env.GRAPHQL_PORT;
+  const port = Number(process.env.GRAPHQL_PORT);
   if (!port) {
       throw new Error(`A port at which the application can be accessed is required. Received: ${port}`);
   }

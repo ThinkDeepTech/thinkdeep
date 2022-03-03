@@ -4,6 +4,6 @@ metadata:
     name: {{ printf "%s-deep-microservice-subscription-environment" .Release.Name | quote }}
     namespace: {{ .Release.Namespace | quote }}
 data:
-    GRAPHQL_PORT: {{ printf "%d" (required "A valid port at which the application can be accessed is required" .Values.graphql.port) | quote }}
+    GRAPHQL_PORT: {{ required "A valid port at which the application can be accessed is required" .Values.graphql.port | quote }}
     GRAPHQL_PATH: {{ required "A valid path at which the application can be accessed is required (i.e, /graphql)" .Values.graphql.path | quote}}
     NODE_ENV: {{ required "A valid node environment is required" .Values.global.nodeEnv | quote}}

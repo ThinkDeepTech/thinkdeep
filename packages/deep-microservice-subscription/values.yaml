@@ -8,14 +8,14 @@
     kafka:
       secretName: ""
       host: ""
-      port: 9092
+      port: "9092"
     docker:
       secretName: ""
 
   replicas: 1
 
   graphql:
-    port: 4004
+    port: "4004"
     path: "/graphql"
 
   microservice:

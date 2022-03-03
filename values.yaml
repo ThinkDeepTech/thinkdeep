@@ -8,19 +8,19 @@
         secretName: "deep-microservice-auth-secret"
     kafka:
       secretName: "deep-kafka-secret"
-      port: 9092
+      port: "9092"
     docker:
       secretName: ""
 
   analysis:
     graphql:
-      port: 4001
+      port: "4001"
       path: "/graphql"
     replicas: 1
 
   collection:
     graphql:
-      port: 4002
+      port: "4002"
       path: "/graphql"
     replicas: 1
     twitter:
@@ -28,13 +28,13 @@
 
   configuration:
     graphql:
-      port: 4003
+      port: "4003"
       path: "/graphql"
     replicas: 1
 
   gateway:
     graphql:
-      port: 4000
+      port: "4000"
       path: "/graphql"
     replicas: 1
     service:
@@ -42,7 +42,7 @@
 
   subscription:
     graphql:
-      port: 4004
+      port: "4004"
       path: "/graphql"
     replicas: 1
     service:
