@@ -215,6 +215,26 @@ jobs:
         - run:
             name: Download project dependencies
             command: helm dependency update
+        - run:
+            name: Download project dependencies
+            command: helm dependency update
+            working_directory: ./packages/deep-microservice-analysis
+        - run:
+            name: Download project dependencies
+            command: helm dependency update
+            working_directory: ./packages/deep-microservice-collection
+        - run:
+            name: Download project dependencies
+            command: helm dependency update
+            working_directory: ./packages/deep-microservice-configuration
+        - run:
+            name: Download project dependencies
+            command: helm dependency update
+            working_directory: ./packages/deep-microservice-gateway
+        - run:
+            name: Download project dependencies
+            command: helm dependency update
+            working_directory: ./packages/deep-microservice-subscription
         - helm/upgrade-helm-chart:
             chart: "."
             helm-version: "v3.7.2"
