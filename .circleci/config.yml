@@ -243,7 +243,7 @@ jobs:
             release-name: "v1"
             values-to-override: "gateway.service.certificateId=2b25c4eb-828e-4e9c-8c55-9f3deb85e331,subscription.service.certificateId=5fba8346-80ac-44a4-8521-3f7ab7dd3153,auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,replicas=1,global.docker.secretName=docker-secret,global.nodeEnv=$NODE_ENV"
             update-repositories: true
-            timeout: "600s"
+            timeout: "1200s"
             wait: true
 
 
