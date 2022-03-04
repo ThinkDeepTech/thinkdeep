@@ -77,6 +77,8 @@ const startApolloServer = async () => {
       throw new Error(`A port at which the application can be accessed is required. Received: ${port}`);
   }
 
+  await new Promise((resolve) => app.listen({port}, resolve));
+
   logger.info(
     `🚀 Server ready at http://${getPublicIP()}:${port}${server.graphqlPath}`
   );
