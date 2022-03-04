@@ -5,7 +5,7 @@
 
   graphql:
     path: "/graphql"
-    port: 4003
+    port: "4003"
 
   replicas: 1
 
