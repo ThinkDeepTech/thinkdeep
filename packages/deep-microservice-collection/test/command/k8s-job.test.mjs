@@ -185,7 +185,7 @@ describe('k8s-job', () => {
             const containerConfig = subject._job.spec.template.spec.containers[0];
             const secretReference = containerConfig.envFrom[0].secretRef;
             expect(containerConfig).not.to.equal(undefined);
-            expect(secretReference.name).to.equal(`${process.env.HELM_RELEASE_NAME}-secrets`);
+            expect(secretReference.name).to.equal(`${process.env.HELM_RELEASE_NAME}-deep-microservice-collection-secret`);
         })
     })
 

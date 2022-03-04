@@ -38,12 +38,24 @@ class K8sJob extends Command {
         container.command = [ options.command ];
         container.args = options.args || []
 
-        const envFromConfig = new k8s.V1EnvFromSource();
-        const secretRef = new k8s.V1SecretEnvSource();
-        secretRef.name = `${process.env.HELM_RELEASE_NAME}-secrets`;
+        let environmentConfigs = [];
+        const collectionSecret = new k8s.V1EnvFromSource();
+        const collectionSecretRef = new k8s.V1SecretEnvSource();
+        collectionSecretRef.name = `${process.env.HELM_RELEASE_NAME}-deep-microservice-collection-secret`;
+        collectionSecret.secretRef = collectionSecretRef;
 
-        envFromConfig.secretRef = secretRef;
-        container.envFrom = [envFromConfig];
+        environmentConfigs.push(collectionSecret);
+
+        if (process.env.PREDECOS_KAFKA_SECRET) {
+            const kafkaSecret = new k8s.V1EnvFromSource();
+            const kafkaSecretRef = new k8s.V1SecretEnvSource();
+            kafkaSecretRef.name = `${process.env.PREDECOS_KAFKA_SECRET}`;
+            kafkaSecret.secretRef = kafkaSecretRef;
+
+            environmentConfigs.push(kafkaSecret);
+        }
+
+        container.envFrom = environmentConfigs;
 
         podSpec.containers = [ container ];
         podSpec.serviceAccountName = `${process.env.HELM_RELEASE_NAME}-secret-accessor-service-account`;
@@ -57,7 +69,7 @@ class K8sJob extends Command {
 
         logger.debug(`
 
-            Configured job with metadata.name ${metadata.name} which will reference secret ${secretRef.name} and use service account ${podSpec.serviceAccountName}:
+            Configured job with metadata.name ${metadata.name}:
 
             ${JSON.stringify(job)}
 
