@@ -227,7 +227,7 @@ describe('k8s-cron-job', () => {
             const containerConfig = subject._cronJob.spec.jobTemplate.spec.template.spec.containers[0];
             const secretReference = containerConfig.envFrom[0].secretRef;
             expect(containerConfig).not.to.equal(undefined);
-            expect(secretReference.name).to.equal(`${process.env.HELM_RELEASE_NAME}-secrets`);
+            expect(secretReference.name).to.equal(`${process.env.HELM_RELEASE_NAME}-deep-microservice-collection-secret`);
         })
     })
 
