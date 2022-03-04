@@ -136,7 +136,7 @@ class CollectionService {
             const kababCaseType = entityType.toLowerCase().split(' ').join('-');
             const name = `fetch-tweets-${kababCaseName}-${kababCaseType}`;
             const fetchTweetsOnSchedule = new K8sCronJob({
-                name: name,
+                name,
                 namespace,
                  /**
                  * Time interval between each twitter API call.
@@ -152,7 +152,7 @@ class CollectionService {
             }, this._k8s, this._logger);
 
             const fetchTweetsImmediately = new K8sJob({
-                name: name,
+                name,
                 namespace,
                 image: 'thinkdeeptech/collect-data:latest',
                 command: 'node',

@@ -38,12 +38,23 @@ class K8sJob extends Command {
         container.command = [ options.command ];
         container.args = options.args || []
 
-        const envFromConfig = new k8s.V1EnvFromSource();
-        const secretRef = new k8s.V1SecretEnvSource();
-        secretRef.name = `${process.env.HELM_RELEASE_NAME}-secrets`;
+        container.envFrom = [];
 
-        envFromConfig.secretRef = secretRef;
-        container.envFrom = [envFromConfig];
+        const collectionSecret = new k8s.V1EnvFromSource();
+        const collectionSecretRef = new k8s.V1SecretEnvSource();
+        collectionSecretRef.name = `${process.env.HELM_RELEASE_NAME}-deep-microservice-collection-secret`;
+        collectionSecret.secretRef = collectionSecretRef;
+
+        container.envFrom.push(collectionSecret);
+
+        if (process.env.PREDECOS_KAFKA_SECRET) {
+            const kafkaSecret = new k8s.V1EnvFromSource();
+            const kafkaSecretRef = new k8s.V1SecretEnvSource();
+            kafkaSecretRef.name = `${process.env.PREDECOS_KAFKA_SECRET}`;
+            kafkaSecret.secretRef = kafkaSecretRef;
+
+            container.envFrom.push(kafkaSecret);
+        }
 
         podSpec.containers = [ container ];
         podSpec.serviceAccountName = `${process.env.HELM_RELEASE_NAME}-secret-accessor-service-account`;
