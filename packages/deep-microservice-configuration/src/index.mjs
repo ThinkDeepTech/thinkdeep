@@ -53,7 +53,7 @@ const startApolloServer = async () => {
   let allowedOrigins = ['https://predecos.com', 'https://www.predecos.com', 'https://thinkdeep-d4624.web.app', 'https://www.thinkdeep-d4624.web.app']
   const isProduction = process.env.NODE_ENV === 'production';
   if (!isProduction) {
-    allowedOrigins = allowedOrigins.concat([/^https?:\/\/localhost:[0-9]{1,5})/, 'https://studio.apollographql.com']);
+    allowedOrigins = allowedOrigins.concat([/^https?:\/\/localhost:[0-9]{1,5}/, 'https://studio.apollographql.com']);
   }
 
   const path = process.env.GRAPHQL_PATH;
