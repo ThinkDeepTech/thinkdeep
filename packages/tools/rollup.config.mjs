@@ -2,7 +2,7 @@ import graphql from '@rollup/plugin-graphql';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import babel from '@rollup/plugin-babel';
 import eslint from '@rollup/plugin-eslint';
-import replace from '@rollup/plugin-replace';
+import injectEnv from 'rollup-plugin-inject-process-env';
 import html from '@web/rollup-plugin-html';
 import copy from 'rollup-plugin-copy'
 import merge from 'deepmerge';
@@ -30,15 +30,17 @@ export default merge(createSpaConfig, {
   },
   plugins: [
     nodeResolve(),
-    replace({
-      PREDECOS_AUTH_AUDIENCE: JSON.stringify(process.env.PREDECOS_AUTH_AUDIENCE),
-      PREDECOS_MICROSERVICE_GATEWAY_URL: JSON.stringify(process.env.PREDECOS_MICROSERVICE_GATEWAY_URL),
-      PREDECOS_MICROSERVICE_SUBSCRIPTION_URL: JSON.stringify(process.env.PREDECOS_MICROSERVICE_SUBSCRIPTION_URL)
-    }),
     eslint(),
     babel({ babelHelpers: 'bundled', rootMode: "upward" }),
     html(),
     graphql(),
+    injectEnv({
+      PREDECOS_AUTH_DOMAIN: process.env.PREDECOS_AUTH_DOMAIN,
+      PREDECOS_AUTH_CLIENT_ID: process.env.PREDECOS_AUTH_CLIENT_ID,
+      PREDECOS_AUTH_AUDIENCE: process.env.PREDECOS_AUTH_AUDIENCE,
+      PREDECOS_MICROSERVICE_GATEWAY_URL: process.env.PREDECOS_MICROSERVICE_GATEWAY_URL,
+      PREDECOS_MICROSERVICE_SUBSCRIPTION_URL: process.env.PREDECOS_MICROSERVICE_SUBSCRIPTION_URL
+    }),
     copy({
       targets: [
         { src: 'img/**/*', dest: 'build/img' },

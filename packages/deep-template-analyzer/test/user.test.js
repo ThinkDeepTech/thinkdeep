@@ -13,8 +13,6 @@ describe('user', () => {
   describe('getUser', () => {
     let authClient = null;
     beforeEach(() => {
-      globalThis.PREDECOS_AUTH_AUDIENCE = 'thing';
-      globalThis.PREDECOS_MICROSERVICE_GATEWAY_URL = 'notimportant';
       authClient = {
         logout: sinon.stub(),
         loginWithRedirect: sinon.stub(),

@@ -8,9 +8,9 @@ globalThis.auth0 = null;
  * @returns {Object} User object.
  */
 const getUser = async (options = {
-    domain: 'predecos.us.auth0.com',
-    clientId: 'T4NyuF1MTRTLTHmEvCC5hEDV5zsmG6aQ',
-    audience: PREDECOS_AUTH_AUDIENCE,
+    domain: process.env.PREDECOS_AUTH_DOMAIN,
+    clientId: process.env.PREDECOS_AUTH_CLIENT_ID,
+    audience: process.env.PREDECOS_AUTH_AUDIENCE,
 }) => {
     if (!globalThis.auth0) {
         await initAuth(options);
@@ -76,15 +76,17 @@ const getUser = async (options = {
 /**
  * Show the login window and prompt for user login.
  */
-const login = async () => {
-    return auth0.loginWithRedirect();
+const login = async (redirectUri = globalThis.location.origin) => {
+    return globalThis.auth0.loginWithRedirect({
+        redirect_uri: redirectUri
+      });
 };
 
 /**
  * Log the user out.
  */
 const logout = async () => {
-    return auth0.logout({
+    return globalThis.auth0.logout({
         returnTo: globalThis.location.origin,
     });
 };

@@ -12,8 +12,6 @@ describe('deep-site-configuration', () => {
     let authClient;
     beforeEach(async () => {
 
-        globalThis.PREDECOS_AUTH_AUDIENCE = 'thing';
-        globalThis.PREDECOS_MICROSERVICE_GATEWAY_URL = 'notimportant';
         authClient = {
             getUser: sinon.stub(),
             isAuthenticated: sinon.stub(),
