@@ -15,7 +15,7 @@ class K8sCronJob extends Command {
         if (!validString(options.name) || !validString(options.schedule) || !validString(options.image) || !validString(options.command))
             throw new Error(`A cron job requires a name, schedule, image and command`);
 
-        const cronjob = k8s`
+        const cronJob = k8s`
             apiVersion: "batch/v1"
             kind: "CronJob"
             metadata:
