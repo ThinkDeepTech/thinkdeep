@@ -31,7 +31,9 @@ class K8sCronJob extends Command {
                                     - name: "${process.env.HELM_RELEASE_NAME}-data-collector"
                                       image: "${options.image}"
                                       command: "${options.command}"
-                                      args: ${options.args}
+                                      args: ${options.args.map((arg) => `
+                                        - ${arg}
+                                      `)}
                                       envFrom:
                                         - secretRef:
                                             name: "${process.env.HELM_RELEASE_NAME}-deep-microservice-collection-secret"
