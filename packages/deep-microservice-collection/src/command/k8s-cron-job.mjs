@@ -62,7 +62,7 @@ class K8sCronJob extends Command {
      */
     async execute() {
         try {
-            await this._cronJob.create();
+            // await this._cronJob.create();
         } catch (e) {
             this._logger.error(`An error occurred while creating cron job: ${e.message.toString()}`);
         }
@@ -73,7 +73,7 @@ class K8sCronJob extends Command {
      */
     async stop() {
         try {
-            await this._cronJob.delete();
+            // await this._cronJob.delete();
         } catch (e) {
             this._logger.error(`An error occurred while deleting cron job: ${e.message.toString()}`);
         }
