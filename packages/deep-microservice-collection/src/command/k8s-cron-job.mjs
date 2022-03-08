@@ -29,10 +29,10 @@ class K8sCronJob extends Command {
                             spec:
                                 containers:
                                     - name: "${process.env.HELM_RELEASE_NAME}-data-collector"
-                                    image: "${options.image}"
-                                    command: "${options.command}"
-                                    args: ${options.args}
-                                    envFrom:
+                                      image: "${options.image}"
+                                      command: "${options.command}"
+                                      args: ${options.args}
+                                      envFrom:
                                         - secretRef:
                                             name: "${process.env.HELM_RELEASE_NAME}-deep-microservice-collection-secret"
                                         ${ process.env.PREDECOS_KAFKA_SECRET ? `
