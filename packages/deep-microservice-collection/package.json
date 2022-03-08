@@ -30,7 +30,7 @@
     "@kubernetes/client-node": "0.15",
     "@thinkdeep/attach-exit-handler": "^1.0.0",
     "@thinkdeep/get-public-ip": "^1.0.0",
-    "@thinkdeep/k8s-tag": "^0.0.1",
+    "@thinkdeep/k8s-tag": "^1.0.0",
     "apollo-datasource": "^3.1.0",
     "apollo-datasource-mongodb": "^0.5.2",
     "apollo-datasource-rest": "^3.4.0",
