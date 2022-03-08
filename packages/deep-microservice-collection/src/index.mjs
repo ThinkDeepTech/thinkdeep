@@ -18,19 +18,19 @@ import {typeDefs} from './schema.mjs';
 
 const logger = getLogger();
 
-const commander = new Commander(logger);
-
-const kafka = new Kafka({
-  clientId: 'deep-microservice-collection',
-  brokers: [`${process.env.PREDECOS_KAFKA_HOST}:${process.env.PREDECOS_KAFKA_PORT}`]
-});
-const admin = kafka.admin();
-const producer = kafka.producer();
-const consumer = kafka.consumer({ groupId: 'deep-microservice-collection-consumer' });
-
-const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRING);
-
 const startApolloServer = async () => {
+
+  const commander = new Commander(logger);
+
+  const kafka = new Kafka({
+    clientId: 'deep-microservice-collection',
+    brokers: [`${process.env.PREDECOS_KAFKA_HOST}:${process.env.PREDECOS_KAFKA_PORT}`]
+  });
+  const admin = kafka.admin();
+  const producer = kafka.producer();
+  const consumer = kafka.consumer({ groupId: 'deep-microservice-collection-consumer' });
+
+  const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRING);
 
   await attachExitHandler( async () => {
 
