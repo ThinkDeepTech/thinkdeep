@@ -52,6 +52,26 @@ jobs:
         - run: docker push thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-analysis:latest
 
+    build_microservice_analysis_dev:
+      docker:
+        - image: 'cimg/base:stable'
+
+      working_directory: ~/project
+
+      steps:
+        - checkout
+        - setup_remote_docker:
+            version: 20.10.7
+        - login_docker
+        - k8s/install
+        - k8s/initialize:
+            cluster: predecos-kubernetes-cluster
+        - run:
+            command: docker build -t thinkdeeptech/deep-microservice-analysis-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis-dev:latest --build-arg PORT=$MICROSERVICE_ANALYSIS_PORT .
+            working_directory: ./packages/deep-microservice-analysis
+        - run: docker push thinkdeeptech/deep-microservice-analysis-dev:${CIRCLE_BUILD_NUM}
+        - run: docker push thinkdeeptech/deep-microservice-analysis-dev:latest
+
     build_microservice_collection:
       docker:
         - image: 'cimg/base:stable'
@@ -71,6 +91,27 @@ jobs:
             working_directory: ./packages/deep-microservice-collection
         - run: docker push thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-collection:latest
+
+
+    build_microservice_collection_dev:
+      docker:
+        - image: 'cimg/base:stable'
+
+      working_directory: ~/project
+
+      steps:
+        - checkout
+        - setup_remote_docker:
+            version: 20.10.7
+        - login_docker
+        - k8s/install
+        - k8s/initialize:
+            cluster: predecos-kubernetes-cluster
+        - run:
+            command: docker build -t thinkdeeptech/deep-microservice-collection-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-collection-dev:latest --build-arg PORT=$MICROSERVICE_COLLECTION_PORT .
+            working_directory: ./packages/deep-microservice-collection
+        - run: docker push thinkdeeptech/deep-microservice-collection-dev:${CIRCLE_BUILD_NUM}
+        - run: docker push thinkdeeptech/deep-microservice-collection-dev:latest
 
     build_microservice_configuration:
       docker:
@@ -92,6 +133,27 @@ jobs:
         - run: docker push thinkdeeptech/deep-microservice-configuration:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-configuration:latest
 
+    build_microservice_configuration_dev:
+      docker:
+        - image: 'cimg/base:stable'
+
+      working_directory: ~/project
+
+      steps:
+        - checkout
+        - setup_remote_docker:
+            version: 20.10.7
+        - login_docker
+        - k8s/install
+        - k8s/initialize:
+            cluster: predecos-kubernetes-cluster
+        - run:
+            command: docker build -t thinkdeeptech/deep-microservice-configuration-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-configuration-dev:latest --build-arg PORT=$MICROSERVICE_CONFIGURATION_PORT .
+            working_directory: ./packages/deep-microservice-configuration
+        - run: docker push thinkdeeptech/deep-microservice-configuration-dev:${CIRCLE_BUILD_NUM}
+        - run: docker push thinkdeeptech/deep-microservice-configuration-dev:latest
+
+
     build_microservice_gateway:
       docker:
         - image: 'cimg/base:stable'
@@ -111,6 +173,27 @@ jobs:
             working_directory: ./packages/deep-microservice-gateway
         - run: docker push thinkdeeptech/deep-microservice-gateway:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-gateway:latest
+
+    build_microservice_gateway_dev:
+      docker:
+        - image: 'cimg/base:stable'
+
+      working_directory: ~/project
+
+      steps:
+        - checkout
+        - setup_remote_docker:
+            version: 20.10.7
+        - login_docker
+        - k8s/install
+        - k8s/initialize:
+            cluster: predecos-kubernetes-cluster
+        - run:
+            command: docker build -t thinkdeeptech/deep-microservice-gateway-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-gateway-dev:latest --build-arg PORT=$MICROSERVICE_GATEWAY_PORT .
+            working_directory: ./packages/deep-microservice-gateway
+        - run: docker push thinkdeeptech/deep-microservice-gateway-dev:${CIRCLE_BUILD_NUM}
+        - run: docker push thinkdeeptech/deep-microservice-gateway-dev:latest
+
 
     build_microservice_subscription:
       docker:
@@ -132,6 +215,27 @@ jobs:
         - run: docker push thinkdeeptech/deep-microservice-subscription:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/deep-microservice-subscription:latest
 
+    build_microservice_subscription_dev:
+      docker:
+        - image: 'cimg/base:stable'
+
+      working_directory: ~/project
+
+      steps:
+        - checkout
+        - setup_remote_docker:
+            version: 20.10.7
+        - login_docker
+        - k8s/install
+        - k8s/initialize:
+            cluster: predecos-kubernetes-cluster
+        - run:
+            command: docker build -t thinkdeeptech/deep-microservice-subscription-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-subscription-dev:latest --build-arg PORT=$MICROSERVICE_SUBSCRIPTION_PORT .
+            working_directory: ./packages/deep-microservice-subscription
+        - run: docker push thinkdeeptech/deep-microservice-subscription-dev:${CIRCLE_BUILD_NUM}
+        - run: docker push thinkdeeptech/deep-microservice-subscription-dev:latest
+
+
     build_collect_data:
       docker:
         - image: 'cimg/base:stable'
@@ -148,6 +252,23 @@ jobs:
             working_directory: ./packages/deep-microservice-collection/collect-data
         - run: docker push thinkdeeptech/collect-data:${CIRCLE_BUILD_NUM}
         - run: docker push thinkdeeptech/collect-data:latest
+
+    build_collect_data_dev:
+      docker:
+        - image: 'cimg/base:stable'
+
+      working_directory: ~/project
+
+      steps:
+        - checkout
+        - setup_remote_docker:
+            version: 20.10.7
+        - login_docker
+        - run:
+            command: docker build -t thinkdeeptech/collect-data-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/collect-data-dev:latest .
+            working_directory: ./packages/deep-microservice-collection/collect-data
+        - run: docker push thinkdeeptech/collect-data-dev:${CIRCLE_BUILD_NUM}
+        - run: docker push thinkdeeptech/collect-data-dev:latest
 
     build_ui_and_test_system:
       docker:
@@ -219,6 +340,57 @@ jobs:
             wait: true
 
 
+    deploy_microservices_dev:
+      docker:
+        - image: 'cimg/base:stable'
+
+      working_directory: ~/project
+
+      steps:
+        - checkout
+        - setup_remote_docker:
+            version: 20.10.7
+        - login_docker
+        - k8s/install
+        - k8s/initialize:
+            cluster: predecos-kubernetes-cluster
+        - helm/install-helm-client:
+            version: v3.7.2
+        - run:
+            name: Download analysis microservice project dependencies
+            command: helm dependency update
+            working_directory: ./packages/deep-microservice-analysis
+        - run:
+            name: Download collection microservice project dependencies
+            command: helm dependency update
+            working_directory: ./packages/deep-microservice-collection
+        - run:
+            name: Download configuration microservice project dependencies
+            command: helm dependency update
+            working_directory: ./packages/deep-microservice-configuration
+        - run:
+            name: Download gateway microservice project dependencies
+            command: helm dependency update
+            working_directory: ./packages/deep-microservice-gateway
+        - run:
+            name: Download subscription microservice project dependencies
+            command: helm dependency update
+            working_directory: ./packages/deep-microservice-subscription
+        - run:
+            name: Download project dependencies
+            command: helm dependency update
+        - helm/upgrade-helm-chart:
+            chart: "."
+            helm-version: "v3.7.2"
+            namespace: "development"
+            recreate-pods: true
+            release-name: "v1"
+            values-to-override: "auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,replicas=1,global.docker.secretName=docker-secret,analysis.container.image=thinkdeeptech/deep-microservice-analysis-dev:latest,collection.container.image=thinkdeeptech/deep-microservice-collection-dev:latest,configuration.container.image=thinkdeeptech/deep-microservice-configuration-dev:latest,gateway.container.image=thinkdeeptech/deep-microservice-gateway-dev:latest,subscription.container.image=thinkdeeptech/deep-microservice-subscription-dev:latest,global.nodeEnv=$NODE_ENV"
+            update-repositories: true
+            timeout: "600s"
+            wait: true
+
+
     deploy_ui:
       docker:
           - image: 'cimg/node:14.17.6'
@@ -239,6 +411,30 @@ workflows:
   build_and_deploy_if_master:
 
     jobs:
+
+      - build_microservice_analysis_dev
+
+      - build_microservice_collection_dev
+
+      - build_collect_data_dev
+
+      - build_microservice_configuration_dev
+
+      - build_microservice_gateway_dev
+
+      - build_microservice_subscription_dev
+
+      - deploy_microservices_dev:
+          requires:
+            - build_microservice_analysis_dev
+            - build_microservice_collection_dev
+            - build_microservice_configuration_dev
+            - build_microservice_gateway_dev
+            - build_microservice_subscription_dev
+
+      - build_ui_and_test_system:
+          requires:
+            - deploy_microservices_dev
 
       - build_microservice_collection:
           filters:
@@ -280,8 +476,6 @@ workflows:
           filters:
             branches:
               only: master
-
-      - build_ui_and_test_system
 
       - deploy_ui:
           requires:

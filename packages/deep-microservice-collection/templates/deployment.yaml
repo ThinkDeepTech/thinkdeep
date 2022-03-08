@@ -18,7 +18,7 @@ spec:
       serviceAccountName: {{ printf "%s-collection-manager-service-account" .Release.Name | quote }}
       containers:
       - name: "deep-microservice-collection"
-        image: "thinkdeeptech/deep-microservice-collection:latest"
+        image: {{ required "A container image is required." .Values.container.image | quote }}
         envFrom:
         - configMapRef:
             name: {{ printf "%s-deep-microservice-collection-config-map" .Release.Name | quote }}

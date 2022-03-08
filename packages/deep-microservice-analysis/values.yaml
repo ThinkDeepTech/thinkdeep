@@ -13,6 +13,9 @@
 
   replicas: 1
 
+  container:
+    image: "thinkdeeptech/deep-microservice-analysis:latest"
+
   analysismongodb:
     auth:
       enabled: false
