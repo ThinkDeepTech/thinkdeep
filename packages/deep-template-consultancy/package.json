@@ -39,7 +39,6 @@
     "@rollup/plugin-eslint": "^8.0.1",
     "@rollup/plugin-image": "^2.1.1",
     "@rollup/plugin-node-resolve": "^11.0.1",
-    "@rollup/plugin-replace": "^3.0.0",
     "@thinkdeep/deep-styles": "^0.0.8",
     "@thinkdeep/tools": "^0.0.8",
     "@web/dev-server-esbuild": "^0.2.12",
