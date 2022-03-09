@@ -32,9 +32,11 @@ class CollectionService {
 
             const economicEntities = await this._economicEntityMemo.readEconomicEntities();
             for (const economicEntity of economicEntities) {
+                this._logger.info(`Starting data collection for ${economicEntity.name}, ${economicEntity.type}`);
                 this._startDataCollection(economicEntity.name, economicEntity.type);
             }
 
+            this._logger.info(`Subscribing to topics.`);
             await this._consumer.subscribe({ topic: 'TWEETS_FETCHED', fromBeginning: true });
 
             await this._consumer.run({
@@ -112,6 +114,8 @@ class CollectionService {
 
         if (!validString(entityType)) return;
 
+        this._logger.info(`Executing commands for ${entityName}, ${entityType}`);
+
         const commands = this._commands(entityName, entityType);
 
         this._commander.execute(`${entityName}:${entityType}`, commands);
@@ -135,21 +139,21 @@ class CollectionService {
             const kababCaseName = entityName.toLowerCase().split(' ').join('-');
             const kababCaseType = entityType.toLowerCase().split(' ').join('-');
             const name = `fetch-tweets-${kababCaseName}-${kababCaseType}`;
-            // const fetchTweetsOnSchedule = new K8sCronJob({
-            //     name,
-            //     namespace,
-            //      /**
-            //      * Time interval between each twitter API call.
-            //      *
-            //      * NOTE: Due to twitter developer account limitations only 500,000 tweets can be consumed per month.
-            //      * As a result, ~400 businesses can be watched when fetched every 6 hours.
-            //      */
-            //      /** min | hour | day | month | weekday */
-            //     schedule: `0 */6 * * *`,
-            //     image: 'thinkdeeptech/collect-data:latest',
-            //     command: 'node',
-            //     args: ['src/collect-data.mjs', `--entity-name=${entityName}`, `--entity-type=${entityType}`, '--operation-type=fetch-tweets']
-            // }, this._logger);
+            const fetchTweetsOnSchedule = new K8sCronJob({
+                name,
+                namespace,
+                 /**
+                 * Time interval between each twitter API call.
+                 *
+                 * NOTE: Due to twitter developer account limitations only 500,000 tweets can be consumed per month.
+                 * As a result, ~400 businesses can be watched when fetched every 6 hours.
+                 */
+                 /** min | hour | day | month | weekday */
+                schedule: `0 */6 * * *`,
+                image: 'thinkdeeptech/collect-data:latest',
+                command: 'node',
+                args: ['src/collect-data.mjs', `--entity-name=${entityName}`, `--entity-type=${entityType}`, '--operation-type=fetch-tweets']
+            }, this._logger);
 
             const fetchTweetsImmediately = new K8sJob({
                 name,
