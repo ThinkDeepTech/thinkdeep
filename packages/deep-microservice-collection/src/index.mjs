@@ -45,12 +45,19 @@ const startApolloServer = async () => {
     await mongoClient.close();
   });
 
+  logger.info('Connecting with kafka admin.');
   await admin.connect();
+
+  logger.info('Connecting with kafka producer.');
   await producer.connect();
+
+  logger.info('Connecting with kafka consumer.');
   await consumer.connect();
+
+  logger.info('Connecting with MongoDB.');
   await mongoClient.connect();
 
-  console.log("Connected successfully to server");
+  logger.info("Connected successfully.");
 
   const tweetStore = new TweetStore(mongoClient.db('admin').collection('tweets'));
   const economicEntityMemo = new EconomicEntityMemo(mongoClient.db('admin').collection('memo'), logger);
