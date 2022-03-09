@@ -1,4 +1,3 @@
-import k8s from '@kubernetes/client-node';
 import chai, { assert } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
@@ -11,7 +10,6 @@ import { K8sJob } from '../../src/command/k8s-job.mjs';
 describe('k8s-job', () => {
 
     let logger;
-    let subject;
     beforeEach(() => {
 
         logger = {

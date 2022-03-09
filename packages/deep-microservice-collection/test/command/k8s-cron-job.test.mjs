@@ -1,4 +1,3 @@
-import k8s from '@kubernetes/client-node';
 import chai, { assert } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
