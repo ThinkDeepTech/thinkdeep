@@ -135,21 +135,21 @@ class CollectionService {
             const kababCaseName = entityName.toLowerCase().split(' ').join('-');
             const kababCaseType = entityType.toLowerCase().split(' ').join('-');
             const name = `fetch-tweets-${kababCaseName}-${kababCaseType}`;
-            const fetchTweetsOnSchedule = new K8sCronJob({
-                name,
-                namespace,
-                 /**
-                 * Time interval between each twitter API call.
-                 *
-                 * NOTE: Due to twitter developer account limitations only 500,000 tweets can be consumed per month.
-                 * As a result, ~400 businesses can be watched when fetched every 6 hours.
-                 */
-                 /** min | hour | day | month | weekday */
-                schedule: `0 */6 * * *`,
-                image: 'thinkdeeptech/collect-data:latest',
-                command: 'node',
-                args: ['src/collect-data.mjs', `--entity-name=${entityName}`, `--entity-type=${entityType}`, '--operation-type=fetch-tweets']
-            }, this._logger);
+            // const fetchTweetsOnSchedule = new K8sCronJob({
+            //     name,
+            //     namespace,
+            //      /**
+            //      * Time interval between each twitter API call.
+            //      *
+            //      * NOTE: Due to twitter developer account limitations only 500,000 tweets can be consumed per month.
+            //      * As a result, ~400 businesses can be watched when fetched every 6 hours.
+            //      */
+            //      /** min | hour | day | month | weekday */
+            //     schedule: `0 */6 * * *`,
+            //     image: 'thinkdeeptech/collect-data:latest',
+            //     command: 'node',
+            //     args: ['src/collect-data.mjs', `--entity-name=${entityName}`, `--entity-type=${entityType}`, '--operation-type=fetch-tweets']
+            // }, this._logger);
 
             const fetchTweetsImmediately = new K8sJob({
                 name,
