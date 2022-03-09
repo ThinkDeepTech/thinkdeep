@@ -163,7 +163,7 @@ class CollectionService {
                 image: 'thinkdeeptech/collect-data:latest',
                 command: 'node',
                 args: ['src/collect-data.mjs', `--entity-name=${entityName}`, `--entity-type=${entityType}`, '--operation-type=fetch-tweets']
-            }, this._k8s, this._logger);
+            }, this._logger);
 
             return [fetchTweetsOnSchedule, fetchTweetsImmediately];
         } else {
