@@ -38,6 +38,8 @@ class K8sJob extends Command {
                                     ` : ``}
                             serviceAccountName: "${process.env.HELM_RELEASE_NAME}-secret-accessor-service-account"
                             restartPolicy: "Never"
+                            imagePullSecrets:
+                                - name: "docker-secret"
         `;
 
         logger.debug(`
