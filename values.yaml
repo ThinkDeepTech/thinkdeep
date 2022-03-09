@@ -17,6 +17,8 @@
       port: "4001"
       path: "/graphql"
     replicas: 1
+    container:
+      image: "thinkdeeptech/deep-microservice-analysis:latest"
 
   collection:
     graphql:
@@ -25,12 +27,16 @@
     replicas: 1
     twitter:
       bearer: ""
+    container:
+      image: "thinkdeeptech/deep-microservice-collection:latest"
 
   configuration:
     graphql:
       port: "4003"
       path: "/graphql"
     replicas: 1
+    container:
+      image: "thinkdeeptech/deep-microservice-configuration:latest"
 
   gateway:
     graphql:
@@ -39,6 +45,8 @@
     replicas: 1
     service:
       certificateId: ""
+    container:
+      image: "thinkdeeptech/deep-microservice-gateway:latest"
 
   subscription:
     graphql:
@@ -47,6 +55,8 @@
     replicas: 1
     service:
       certificateId: ""
+    container:
+      image: "thinkdeeptech/deep-microservice-subscription:latest"
 
   auth:
     audience: ""

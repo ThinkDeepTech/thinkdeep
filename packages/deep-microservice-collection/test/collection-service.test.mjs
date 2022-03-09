@@ -369,15 +369,8 @@ describe('collection-service', () => {
 
             const commands = subject._commands(entityName, entityType);
             const classObj = commands[0];
-            const containers = classObj._cronJob.spec.jobTemplate.spec.template.spec.containers;
-            const k8sCommands = containers[0].command;
-            const k8sArgs = containers[0].args;
 
             expect(classObj.constructor.name).to.equal('K8sCronJob');
-            expect(containers[0].image).to.equal('thinkdeeptech/collect-data:latest');
-            expect(k8sCommands[0]).to.equal('node');
-            expect(k8sArgs[0]).to.equal('src/collect-data.mjs');
-            expect(k8sArgs[3]).to.equal('--operation-type=fetch-tweets');
         })
 
         it('should include a command to collect tweets for type business immediately', () => {
@@ -386,15 +379,8 @@ describe('collection-service', () => {
 
             const commands = subject._commands(entityName, entityType);
             const classObj = commands[1];
-            const containers = classObj._job.spec.template.spec.containers;
-            const k8sCommands = containers[0].command;
-            const k8sArgs = containers[0].args;
 
             expect(classObj.constructor.name).to.equal('K8sJob');
-            expect(containers[0].image).to.equal('thinkdeeptech/collect-data:latest');
-            expect(k8sCommands[0]).to.equal('node');
-            expect(k8sArgs[0]).to.equal('src/collect-data.mjs');
-            expect(k8sArgs[3]).to.equal('--operation-type=fetch-tweets');
         })
     });
 

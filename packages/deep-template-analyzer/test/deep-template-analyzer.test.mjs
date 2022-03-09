@@ -16,9 +16,6 @@ describe('deep-template-analyzer', () => {
     let authClient;
     beforeEach(() => {
 
-        globalThis.PREDECOS_AUTH_AUDIENCE = 'thing';
-        globalThis.PREDECOS_MICROSERVICE_GATEWAY_URL = 'notimportant';
-        globalThis.PREDECOS_MICROSERVICE_SUBSCRIPTION_URL = 'notimportant';
         authClient = {
             getUser: sinon.stub(),
             isAuthenticated: sinon.stub(),

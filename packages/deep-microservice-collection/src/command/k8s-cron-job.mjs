@@ -1,105 +1,73 @@
 import {Command} from './command.mjs';
 import {validString} from '../helpers.mjs';
+import {k8s} from '@thinkdeep/k8s-tag';
 
 class K8sCronJob extends Command {
     /**
      * Constructs a kubernetes cron job with the specified configuration.
      *
      * @param {Object} options - Options desired for cron job of the form: { name: 'cron-job-name', schedule: '* * * * *', image: 'busybox', command: 'ls', args: ['-l']}
-     * @param {Object} k8s - Kubernetes javascript module import found at https://github.com/kubernetes-client/javascript
      * @param {Object} logger - Logger object.
      */
-    constructor(options, k8s, logger) {
+    constructor(options, logger) {
         super();
 
-        if (!validString(options.name) || !validString(options.schedule) || !validString(options.image) || !validString(options.command))
+        if (!validString(options.name) || !validString(options.schedule) || !validString(options.image) || !validString(options.command)) {
             throw new Error(`A cron job requires a name, schedule, image and command`);
-
-
-        const cronJob = new k8s.V1CronJob();
-        cronJob.apiVersion = "batch/v1";
-        cronJob.kind = "CronJob";
-
-        const metadata = new k8s.V1ObjectMeta();
-        metadata.name = options.name;
-        cronJob.metadata = metadata;
-
-        const cronJobSpec = new k8s.V1CronJobSpec();
-        cronJobSpec.schedule = options.schedule;
-        const jobTemplateSpec = new k8s.V1JobTemplateSpec();
-        const jobSpec = new k8s.V1JobSpec();
-        const podTemplateSpec = new k8s.V1PodTemplateSpec();
-        const podSpec = new k8s.V1PodSpec();
-
-        const dockerSecretRef = new k8s.V1LocalObjectReference();
-        dockerSecretRef.name = 'docker-secret';
-        podSpec.imagePullSecrets = [dockerSecretRef];
-        podSpec.restartPolicy = 'Never';
-
-        const container = new k8s.V1Container();
-        container.name = `${process.env.HELM_RELEASE_NAME}-data-collector`;
-        container.image = options.image;
-        container.command = [ options.command ];
-        container.args = options.args || []
-
-        let environmentConfigs = [];
-        const collectionSecret = new k8s.V1EnvFromSource();
-        const collectionSecretRef = new k8s.V1SecretEnvSource();
-        collectionSecretRef.name = `${process.env.HELM_RELEASE_NAME}-deep-microservice-collection-secret`;
-        collectionSecret.secretRef = collectionSecretRef;
-
-        environmentConfigs.push(collectionSecret);
-
-        if (process.env.PREDECOS_KAFKA_SECRET) {
-            const kafkaSecret = new k8s.V1EnvFromSource();
-            const kafkaSecretRef = new k8s.V1SecretEnvSource();
-            kafkaSecretRef.name = `${process.env.PREDECOS_KAFKA_SECRET}`;
-            kafkaSecret.secretRef = kafkaSecretRef;
-
-            environmentConfigs.push(kafkaSecret);
         }
 
-        container.envFrom = environmentConfigs;
+        const cronJob = k8s`
+            apiVersion: "batch/v1"
+            kind: "CronJob"
+            metadata:
+                name: "${options.name}"
+                namespace: "${options.namespace || "default"}"
+            spec:
+                schedule: "${options.schedule}"
+                jobTemplate:
+                    spec:
+                        template:
+                            spec:
+                                containers:
+                                    - name: "${process.env.HELM_RELEASE_NAME}-data-collector"
+                                      image: "${options.image}"
+                                      command: ["${options.command}"]
+                                      args: ${options.args}
+                                      envFrom:
+                                        - secretRef:
+                                            name: "${process.env.HELM_RELEASE_NAME}-deep-microservice-collection-secret"
+                                        ${ process.env.PREDECOS_KAFKA_SECRET ? `
+                                        - secretRef:
+                                            name: "${process.env.PREDECOS_KAFKA_SECRET}"
+                                        ` : ``}
+                                serviceAccountName: "${process.env.HELM_RELEASE_NAME}-secret-accessor-service-account"
+                                restartPolicy: "Never"
+                                imagePullSecrets:
+                                    - name: "docker-secret"
 
-        podSpec.containers = [ container ];
-        podSpec.serviceAccountName = `${process.env.HELM_RELEASE_NAME}-secret-accessor-service-account`;
-        podTemplateSpec.spec = podSpec;
-        jobSpec.template = podTemplateSpec;
-        jobTemplateSpec.spec = jobSpec;
-        cronJobSpec.jobTemplate = jobTemplateSpec;
-        cronJob.spec = cronJobSpec;
-
-        const kubeConfig = new k8s.KubeConfig();
-        kubeConfig.loadFromCluster();
-        const batchApi = kubeConfig.makeApiClient(k8s.BatchV1Api);
+        `;
 
         logger.debug(`
 
-            Configured cron job with metadata.name ${metadata.name}:
+            Configured cron job with manifest:
 
-            ${JSON.stringify(cronJob)}
+            ${cronJob.toString()}
 
         `);
 
         this._logger = logger;
         this._cronJob = cronJob;
-        this._api = batchApi;
-        this._namespace = options.namespace || 'default';
     }
 
     /**
      * Execute the cron job.
      */
     async execute() {
-        this._logger.info(`Creating cron job with metadata.name: ${this._cronJob.metadata.name}`);
         try {
-            await this._api.createNamespacedCronJob(this._namespace, this._cronJob, "true");
+            this._logger.info(`Creating cron job.`);
+            await this._cronJob.create();
         } catch (e) {
-            this._logger.error(`An error occurred while creating cron job ${this._cronJob.metadata.name}: ${e.message.toString()}
-
-            ${JSON.stringify(e)}
-
-            `);
+            this._logger.error(`An error occurred while creating cron job: ${e.message.toString()}`);
         }
     }
 
@@ -107,11 +75,11 @@ class K8sCronJob extends Command {
      * Stop the cron job.
      */
     async stop() {
-        this._logger.info(`Deleting cron job with metadata.name: ${this._cronJob.metadata.name}`);
         try {
-            await this._api.deleteNamespacedCronJob(this._cronJob.metadata.name, this._namespace);
+            this._logger.info(`Deleting cron job.`);
+            await this._cronJob.delete();
         } catch (e) {
-            this._logger.error(`An error occurred while deleting cron job ${this._cronJob.metadata.name}: ${e.message.toString()}`);
+            this._logger.error(`An error occurred while deleting cron job: ${e.message.toString()}`);
         }
     }
 }

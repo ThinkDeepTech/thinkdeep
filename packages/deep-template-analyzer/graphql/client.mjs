@@ -25,7 +25,7 @@ const initApolloClient = async () => {
         const cache = new InMemoryCache({ addTypename: false });
 
         const wsLink = new WebSocketLink({
-          url: PREDECOS_MICROSERVICE_SUBSCRIPTION_URL,
+          url: process.env.PREDECOS_MICROSERVICE_SUBSCRIPTION_URL,
           connectionParams: () => {
             const { authorization, me } = authHeaders(user);
             return { authorization, me };
@@ -33,7 +33,7 @@ const initApolloClient = async () => {
         });
 
         const httpLink = new HttpLink({
-            uri: PREDECOS_MICROSERVICE_GATEWAY_URL,
+            uri: process.env.PREDECOS_MICROSERVICE_GATEWAY_URL,
             credentials: 'include'
         });
 

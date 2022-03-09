@@ -10,6 +10,9 @@
 
   replicas: 1
 
+  container:
+    image: "thinkdeeptech/deep-microservice-gateway:latest"
+
   graphql:
     port: "4000"
     path: "/graphql"

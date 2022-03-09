@@ -18,19 +18,19 @@ import {typeDefs} from './schema.mjs';
 
 const logger = getLogger();
 
-const commander = new Commander(logger);
-
-const kafka = new Kafka({
-  clientId: 'deep-microservice-collection',
-  brokers: [`${process.env.PREDECOS_KAFKA_HOST}:${process.env.PREDECOS_KAFKA_PORT}`]
-});
-const admin = kafka.admin();
-const producer = kafka.producer();
-const consumer = kafka.consumer({ groupId: 'deep-microservice-collection-consumer' });
-
-const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRING);
-
 const startApolloServer = async () => {
+
+  const commander = new Commander(logger);
+
+  const kafka = new Kafka({
+    clientId: 'deep-microservice-collection',
+    brokers: [`${process.env.PREDECOS_KAFKA_HOST}:${process.env.PREDECOS_KAFKA_PORT}`]
+  });
+  const admin = kafka.admin();
+  const producer = kafka.producer();
+  const consumer = kafka.consumer({ groupId: 'deep-microservice-collection-consumer' });
+
+  const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRING);
 
   await attachExitHandler( async () => {
 
@@ -45,12 +45,19 @@ const startApolloServer = async () => {
     await mongoClient.close();
   });
 
+  logger.info('Connecting with kafka admin.');
   await admin.connect();
+
+  logger.info('Connecting with kafka producer.');
   await producer.connect();
+
+  logger.info('Connecting with kafka consumer.');
   await consumer.connect();
+
+  logger.info('Connecting with MongoDB.');
   await mongoClient.connect();
 
-  console.log("Connected successfully to server");
+  logger.info("Connected successfully.");
 
   const tweetStore = new TweetStore(mongoClient.db('admin').collection('tweets'));
   const economicEntityMemo = new EconomicEntityMemo(mongoClient.db('admin').collection('memo'), logger);

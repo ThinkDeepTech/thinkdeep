@@ -32,9 +32,11 @@ class CollectionService {
 
             const economicEntities = await this._economicEntityMemo.readEconomicEntities();
             for (const economicEntity of economicEntities) {
+                this._logger.info(`Starting data collection for ${economicEntity.name}, ${economicEntity.type}`);
                 this._startDataCollection(economicEntity.name, economicEntity.type);
             }
 
+            this._logger.info(`Subscribing to topics.`);
             await this._consumer.subscribe({ topic: 'TWEETS_FETCHED', fromBeginning: true });
 
             await this._consumer.run({
@@ -47,6 +49,8 @@ class CollectionService {
                 }
             });
 
+        }).catch((reason) => {
+            this._logger.error(`An error occurred while constructing the collection service: ${JSON.stringify(reason)}`);
         });
     }
 
@@ -112,6 +116,8 @@ class CollectionService {
 
         if (!validString(entityType)) return;
 
+        this._logger.info(`Executing commands for ${entityName}, ${entityType}`);
+
         const commands = this._commands(entityName, entityType);
 
         this._commander.execute(`${entityName}:${entityType}`, commands);
@@ -149,7 +155,7 @@ class CollectionService {
                 image: 'thinkdeeptech/collect-data:latest',
                 command: 'node',
                 args: ['src/collect-data.mjs', `--entity-name=${entityName}`, `--entity-type=${entityType}`, '--operation-type=fetch-tweets']
-            }, this._k8s, this._logger);
+            }, this._logger);
 
             const fetchTweetsImmediately = new K8sJob({
                 name,
@@ -157,7 +163,7 @@ class CollectionService {
                 image: 'thinkdeeptech/collect-data:latest',
                 command: 'node',
                 args: ['src/collect-data.mjs', `--entity-name=${entityName}`, `--entity-type=${entityType}`, '--operation-type=fetch-tweets']
-            }, this._k8s, this._logger);
+            }, this._logger);
 
             return [fetchTweetsOnSchedule, fetchTweetsImmediately];
         } else {

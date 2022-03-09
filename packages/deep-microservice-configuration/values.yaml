@@ -9,6 +9,9 @@
 
   replicas: 1
 
+  container:
+    image: "thinkdeeptech/deep-microservice-configuration:latest"
+
   configurationmongodb:
     auth:
       enabled: false

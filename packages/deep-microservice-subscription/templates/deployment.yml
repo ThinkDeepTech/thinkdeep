@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: "deep-microservice-subscription"
-        image: "thinkdeeptech/deep-microservice-subscription:latest"
+        image: {{ required "A container image is required." .Values.container.image | quote }}
         envFrom:
         - configMapRef:
             name: {{ printf "%s-deep-microservice-subscription-environment" .Release.Name | quote }}
