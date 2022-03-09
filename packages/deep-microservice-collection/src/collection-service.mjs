@@ -49,6 +49,8 @@ class CollectionService {
                 }
             });
 
+        }).catch((reason) => {
+            this._logger.error(`An error occurred while constructing the collection service: ${JSON.stringify(reason)}`);
         });
     }
 
