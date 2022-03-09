@@ -12,34 +12,35 @@ class K8sJob extends Command {
      constructor(options, logger) {
         super();
 
-        if (!validString(options.name) || !validString(options.image) || !validString(options.command))
+        if (!validString(options.name) || !validString(options.image) || !validString(options.command)) {
             throw new Error(`A job requires a name, image and command`);
+        }
 
-            const job = k8s`
-                apiVersion: "batch/v1"
-                kind: "Job"
-                metadata:
-                    name: "${options.name}"
-                    namespace: "${options.namespace || "default"}"
-                spec:
-                    template:
-                        spec:
-                            containers:
-                                - name: "${process.env.HELM_RELEASE_NAME}-data-collector"
-                                  image: "${options.image}"
-                                  command: ["${options.command}"]
-                                  args: ${options.args}
-                                  envFrom:
-                                    - secretRef:
-                                        name: "${process.env.HELM_RELEASE_NAME}-deep-microservice-collection-secret"
-                                    ${ process.env.PREDECOS_KAFKA_SECRET ? `
-                                    - secretRef:
-                                        name: "${process.env.PREDECOS_KAFKA_SECRET}"
-                                    ` : ``}
-                            serviceAccountName: "${process.env.HELM_RELEASE_NAME}-secret-accessor-service-account"
-                            restartPolicy: "Never"
-                            imagePullSecrets:
-                                - name: "docker-secret"
+        const job = k8s`
+            apiVersion: "batch/v1"
+            kind: "Job"
+            metadata:
+                name: "${options.name}"
+                namespace: "${options.namespace || "default"}"
+            spec:
+                template:
+                    spec:
+                        containers:
+                            - name: "${process.env.HELM_RELEASE_NAME}-data-collector"
+                              image: "${options.image}"
+                              command: ["${options.command}"]
+                              args: ${options.args}
+                              envFrom:
+                              - secretRef:
+                                  name: "${process.env.HELM_RELEASE_NAME}-deep-microservice-collection-secret"
+                              ${ process.env.PREDECOS_KAFKA_SECRET ? `
+                              - secretRef:
+                                  name: "${process.env.PREDECOS_KAFKA_SECRET}"
+                              ` : ``}
+                        serviceAccountName: "${process.env.HELM_RELEASE_NAME}-secret-accessor-service-account"
+                        restartPolicy: "Never"
+                        imagePullSecrets:
+                            - name: "docker-secret"
         `;
 
         logger.debug(`
