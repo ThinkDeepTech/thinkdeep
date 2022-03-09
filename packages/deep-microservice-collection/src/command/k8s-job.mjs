@@ -27,7 +27,7 @@ class K8sJob extends Command {
                             containers:
                                 - name: "${process.env.HELM_RELEASE_NAME}-data-collector"
                                   image: "${options.image}"
-                                  command: "${options.command}"
+                                  command: ["${options.command}"]
                                   args: ${options.args}
                                   envFrom:
                                     - secretRef:
