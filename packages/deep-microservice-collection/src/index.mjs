@@ -15,6 +15,7 @@ import {MongoClient} from 'mongodb';
 import process from 'process';
 import {resolvers} from './resolvers.mjs';
 import {typeDefs} from './schema.mjs';
+import { K8sClient } from '@thinkdeep/k8s';
 
 const logger = getLogger();
 
@@ -59,9 +60,10 @@ const startApolloServer = async () => {
 
   logger.info("Connected successfully.");
 
+  const k8sClient = await new K8sClient().init();
   const tweetStore = new TweetStore(mongoClient.db('admin').collection('tweets'));
   const economicEntityMemo = new EconomicEntityMemo(mongoClient.db('admin').collection('memo'), logger);
-  const collectionService = new CollectionService(tweetStore, economicEntityMemo, commander, admin, producer, consumer, k8s, logger);
+  const collectionService = new CollectionService(tweetStore, economicEntityMemo, commander, admin, producer, consumer, k8sClient, logger);
 
   const server = new ApolloServer({
     schema: buildSubgraphSchema([{typeDefs, resolvers}]),

@@ -3,6 +3,7 @@ import { K8sJob } from './command/k8s-job.mjs';
 import { validString } from './helpers.mjs';
 import moment from 'moment';
 import { hasReadAllAccess } from './permissions.mjs';
+import { K8sClient } from '@thinkdeep/k8s';
 
 class CollectionService {
 
@@ -15,17 +16,17 @@ class CollectionService {
      * @param {Object} admin - KafkaJS admin.
      * @param {Object} producer - KafkaJS producer to use.
      * @param {Object} consumer - KafkaJS consumer to use.
-     * @param {Object} k8s - Kubernetes Javascript Client import.
+     * @param {K8sClient} k8sClient - K8s client to use.
      * @param {Object} logger - Logger to use.
      */
-    constructor(tweetStore, economicEntityMemo, commander, admin, producer, consumer, k8s, logger) {
+    constructor(tweetStore, economicEntityMemo, commander, admin, producer, consumer, k8sClient, logger) {
         this._tweetStore = tweetStore;
         this._economicEntityMemo = economicEntityMemo;
         this._commander = commander;
         this._admin = admin;
         this._producer = producer;
         this._consumer = consumer;
-        this._k8s = k8s;
+        this._k8sClient = k8sClient;
         this._logger = logger;
 
         this._topicCreation([{topic: 'TWEETS_COLLECTED', replicationFactor: 1}, { topic: 'TWEETS_FETCHED', replicationFactor: 1}]).then(async() => {
@@ -155,7 +156,7 @@ class CollectionService {
                 image: 'thinkdeeptech/collect-data:latest',
                 command: 'node',
                 args: ['src/collect-data.mjs', `--entity-name=${entityName}`, `--entity-type=${entityType}`, '--operation-type=fetch-tweets']
-            }, this._logger);
+            }, this._k8sClient, this._logger);
 
             const fetchTweetsImmediately = new K8sJob({
                 name,
@@ -163,7 +164,7 @@ class CollectionService {
                 image: 'thinkdeeptech/collect-data:latest',
                 command: 'node',
                 args: ['src/collect-data.mjs', `--entity-name=${entityName}`, `--entity-type=${entityType}`, '--operation-type=fetch-tweets']
-            }, this._logger);
+            }, this._k8sClient, this._logger);
 
             return [fetchTweetsOnSchedule, fetchTweetsImmediately];
         } else {
