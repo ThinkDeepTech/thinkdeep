@@ -11,7 +11,7 @@ rules:
       verbs:
           - "create"
           - "delete"
-    - apiGroups: ["apps"]
+    - apiGroups: ["apps", "extensions"]
       resources:
           - "deployments"
       verbs:
