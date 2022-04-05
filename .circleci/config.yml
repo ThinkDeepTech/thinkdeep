@@ -432,9 +432,7 @@ workflows:
             - build_microservice_gateway_dev
             - build_microservice_subscription_dev
 
-      - build_ui_and_test_system:
-          requires:
-            - deploy_microservices_dev
+      - build_ui_and_test_system
 
       - build_microservice_collection:
           filters:
