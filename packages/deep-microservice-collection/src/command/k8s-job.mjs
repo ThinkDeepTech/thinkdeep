@@ -17,6 +17,7 @@ class K8sJob extends Command {
             throw new Error(`A job requires a name, image and command`);
         }
 
+        this._options = options;
         this._logger = logger;
         this._k8sClient = k8sClient;
         this._obj = null;
@@ -29,16 +30,16 @@ class K8sJob extends Command {
                     apiVersion: "batch/v1"
                     kind: "Job"
                     metadata:
-                        name: "${options.name}"
-                        namespace: "${options.namespace || "default"}"
+                        name: "${this._options.name}"
+                        namespace: "${this._options.namespace || "default"}"
                     spec:
                         template:
                             spec:
                                 containers:
                                     - name: "${process.env.HELM_RELEASE_NAME}-data-collector"
-                                      image: "${options.image}"
-                                      command: ["${options.command}"]
-                                      args: ${JSON.stringify(options.args)}
+                                      image: "${this._options.image}"
+                                      command: ["${this._options.command}"]
+                                      args: ${JSON.stringify(this._options.args)}
                                       envFrom:
                                       - secretRef:
                                           name: "${process.env.HELM_RELEASE_NAME}-deep-microservice-collection-secret"
@@ -54,7 +55,7 @@ class K8sJob extends Command {
 
                 this._logger.debug(`Created job:\n\n${stringify(this._obj)}`);
         } catch (e) {
-            this._logger.error(`An error occurred while creating job: ${e.message.toString()}`);
+            this._logger.error(`An error occurred while creating job: ${e.message.toString()}\n\n${JSON.stringify(e)}`);
         }
     }
 

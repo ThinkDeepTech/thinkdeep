@@ -17,6 +17,7 @@ class K8sCronJob extends Command {
             throw new Error(`A cron job requires a name, schedule, image and command`);
         };
 
+        this._options = options;
         this._logger = logger;
         this._k8sClient = k8sClient;
         this._obj = null;
@@ -35,19 +36,19 @@ class K8sCronJob extends Command {
                     apiVersion: "batch/v1"
                     kind: "CronJob"
                     metadata:
-                        name: "${options.name}"
-                        namespace: "${options.namespace || "default"}"
+                        name: "${this._options.name}"
+                        namespace: "${this._options.namespace || "default"}"
                     spec:
-                        schedule: "${options.schedule}"
+                        schedule: "${this._options.schedule}"
                         jobTemplate:
                             spec:
                                 template:
                                     spec:
                                         containers:
                                             - name: "${process.env.HELM_RELEASE_NAME}-data-collector"
-                                              image: "${options.image}"
-                                              command: ["${options.command}"]
-                                              args: ${JSON.stringify(options.args)}
+                                              image: "${this._options.image}"
+                                              command: ["${this._options.command}"]
+                                              args: ${JSON.stringify(this._options.args)}
                                               envFrom:
                                                 - secretRef:
                                                     name: "${process.env.HELM_RELEASE_NAME}-deep-microservice-collection-secret"
@@ -69,7 +70,7 @@ class K8sCronJob extends Command {
                 this._logger.debug(`Fetched cron job:\n\n${stringify(this._obj)}`);
             }
         } catch (e) {
-            this._logger.error(`An error occurred while creating cron job: ${e.message.toString()}`);
+            this._logger.error(`An error occurred while creating cron job: ${e.message.toString()}\n\n${JSON.stringify(e)}`);
         }
     }
 
