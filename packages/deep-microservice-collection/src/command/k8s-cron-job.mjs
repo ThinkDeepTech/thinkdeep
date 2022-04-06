@@ -68,7 +68,7 @@ class K8sCronJob extends Command {
                 this._logger.debug(`Fetched cron job:\n\n${stringify(this._obj)}`);
             }
         } catch (e) {
-            this._logger.error(`An error occurred while creating cron job: ${e.message.toString()}\n\n${JSON.stringify(e)}`);
+            this._logger.error(`An error occurred while creating cron job: ${e.message.toString()}\n\n${e.stack}`);
         }
     }
 
