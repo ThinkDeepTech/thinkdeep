@@ -31,7 +31,7 @@ class K8sCronJob extends Command {
             const readyReplicas = await this._numMicroserviceReplicasReady(deploymentName, namespace);
             if (readyReplicas === 0) {
 
-                this._obj = await this._k8sClient.apply(`
+                this._obj = await this._k8sClient.create(`
                     apiVersion: "batch/v1"
                     kind: "CronJob"
                     metadata:
@@ -63,7 +63,7 @@ class K8sCronJob extends Command {
 
                 this._logger.debug(`Created cron job:\n\n${stringify(this._obj)}`);
             } else {
-                this._obj = this._k8sClient.get('cronjob', this._options.name, this._options.namespace);
+                this._obj = await this._k8sClient.get('cronjob', this._options.name, this._options.namespace);
 
                 this._logger.debug(`Fetched cron job:\n\n${stringify(this._obj)}`);
             }
