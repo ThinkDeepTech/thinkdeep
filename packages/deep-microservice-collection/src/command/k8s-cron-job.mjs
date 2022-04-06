@@ -63,7 +63,7 @@ class K8sCronJob extends Command {
 
                 `);
 
-                this._logger.debug(`Created cron job:\n\n${stringify(this._obj)}`);
+                this._logger.debug(`Created cron job:\n\n${JSON.stringify(this._obj)}`);
             } else {
                 this._obj = this._k8sClient.get('cronjob', deploymentName, namespace);
 

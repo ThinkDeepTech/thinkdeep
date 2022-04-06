@@ -53,7 +53,7 @@ class K8sJob extends Command {
                                     - name: "docker-secret"
                 `);
 
-                this._logger.debug(`Created job:\n\n${stringify(this._obj)}`);
+                this._logger.debug(`Created job:\n\n${JSON.stringify(this._obj)}`);
         } catch (e) {
             this._logger.error(`An error occurred while creating job: ${e.message.toString()}\n\n${JSON.stringify(e)}`);
         }
