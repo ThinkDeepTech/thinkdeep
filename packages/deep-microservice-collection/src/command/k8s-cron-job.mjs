@@ -62,7 +62,7 @@ class K8sCronJob extends Command {
 
                 `);
 
-                this._logger.debug(`Created cron job:\n\n${stringify(this._obj)}`);
+                this._logger.debug(`Created cron job:\n\n${JSON.stringify(this._obj)}`);
             } else {
                 this._obj = this._k8sClient.get('cronjob', this._options.name, this._options.namespace);
 
@@ -80,7 +80,7 @@ class K8sCronJob extends Command {
             const readyReplicas = await this._numMicroserviceReplicasReady(deploymentName, namespace);
             if (readyReplicas === 1) {
 
-                this._logger.info(`Deleting cron job.`);
+                this._logger.info(`Deleting cron job.\n\n${stringify(this._obj)}`);
                 await this._k8sClient.delete(this._obj);
             }
         } catch (e) {

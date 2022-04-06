@@ -25,7 +25,6 @@ class K8sJob extends Command {
 
     async execute() {
         try {
-                this._logger.info(`Creating job.`);
                 this._obj = await this._k8sClient.create(`
                     apiVersion: "batch/v1"
                     kind: "Job"
