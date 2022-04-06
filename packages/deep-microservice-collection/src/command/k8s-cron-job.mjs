@@ -31,7 +31,7 @@ class K8sCronJob extends Command {
             const readyReplicas = await this._numMicroserviceReplicasReady(deploymentName, namespace);
             if (readyReplicas === 0) {
 
-                this._obj = await this._k8sClient.create(`
+                this._obj = await this._k8sClient.apply(`
                     apiVersion: "batch/v1"
                     kind: "CronJob"
                     metadata:
