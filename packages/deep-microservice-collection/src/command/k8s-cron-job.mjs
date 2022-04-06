@@ -31,7 +31,6 @@ class K8sCronJob extends Command {
             const readyReplicas = await this._numMicroserviceReplicasReady(deploymentName, namespace);
             if (readyReplicas === 0) {
 
-                this._logger.info(`Creating cron job.`);
                 this._obj = await this._k8sClient.create(`
                     apiVersion: "batch/v1"
                     kind: "CronJob"
@@ -63,9 +62,9 @@ class K8sCronJob extends Command {
 
                 `);
 
-                this._logger.debug(`Created cron job:\n\n${JSON.stringify(this._obj)}`);
+                this._logger.debug(`Created cron job:\n\n${stringify(this._obj)}`);
             } else {
-                this._obj = this._k8sClient.get('cronjob', deploymentName, namespace);
+                this._obj = this._k8sClient.get('cronjob', this._options.name, this._options.namespace);
 
                 this._logger.debug(`Fetched cron job:\n\n${stringify(this._obj)}`);
             }
@@ -80,6 +79,7 @@ class K8sCronJob extends Command {
             const namespace = process.env.NAMESPACE;
             const readyReplicas = await this._numMicroserviceReplicasReady(deploymentName, namespace);
             if (readyReplicas === 1) {
+
                 this._logger.info(`Deleting cron job.`);
                 await this._k8sClient.delete(this._obj);
             }
@@ -91,6 +91,8 @@ class K8sCronJob extends Command {
     async _numMicroserviceReplicasReady(deploymentName, namespace) {
 
         const microserviceDeployment = await this._k8sClient.get('deployment', deploymentName, namespace);
+
+        this._logger.debug(`Microservice deployment value:\n\n${stringify(microserviceDeployment)}`);
 
         const numReplicas = microserviceDeployment.status.readyReplicas;
 
