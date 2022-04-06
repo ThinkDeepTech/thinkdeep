@@ -61,7 +61,7 @@ class K8sCronJob extends Command {
                                             - name: "docker-secret"
                 `);
 
-                // this._logger.debug(`Created cron job:\n\n${stringify(this._obj)}`);
+                this._logger.debug(`Created cron job:\n\n${stringify(this._obj)}`);
             } else {
                 this._obj = this._k8sClient.get('cronjob', this._options.name, this._options.namespace);
 
@@ -73,6 +73,9 @@ class K8sCronJob extends Command {
     }
 
     async stop() {
+
+        if (!this._obj) return;
+
         try {
             const deploymentName = process.env.DEPLOYMENT_NAME;
             const namespace = process.env.NAMESPACE;

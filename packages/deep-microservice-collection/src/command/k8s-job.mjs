@@ -59,6 +59,9 @@ class K8sJob extends Command {
     }
 
     async stop() {
+
+        if (!this._obj) return;
+
         try {
             this._logger.info(`Deleting job.`);
             await this._k8sClient.delete(this._obj);
