@@ -63,7 +63,7 @@ class K8sJob extends Command {
             this._logger.info(`Deleting job.`);
             await this._k8sClient.delete(this._obj);
         } catch (e) {
-            this._logger.error(`An error occurred while deleting job: ${e.message.toString()}`);
+            this._logger.error(`An error occurred while deleting job: ${e.message.toString()}\n\n${JSON.stringify(e)}`);
         }
     }
 }

@@ -49,20 +49,19 @@ class K8sCronJob extends Command {
                                               command: ["${this._options.command}"]
                                               args: ${JSON.stringify(this._options.args)}
                                               envFrom:
-                                                - secretRef:
-                                                    name: "${process.env.HELM_RELEASE_NAME}-deep-microservice-collection-secret"
-                                                ${ process.env.PREDECOS_KAFKA_SECRET ? `
-                                                - secretRef:
-                                                    name: "${process.env.PREDECOS_KAFKA_SECRET}"
-                                                ` : ``}
+                                              - secretRef:
+                                                  name: "${process.env.HELM_RELEASE_NAME}-deep-microservice-collection-secret"
+                                              ${ process.env.PREDECOS_KAFKA_SECRET ? `
+                                              - secretRef:
+                                                  name: "${process.env.PREDECOS_KAFKA_SECRET}"
+                                              ` : ``}
                                         serviceAccountName: "${process.env.HELM_RELEASE_NAME}-secret-accessor-service-account"
                                         restartPolicy: "Never"
                                         imagePullSecrets:
                                             - name: "docker-secret"
-
                 `);
 
-                this._logger.debug(`Created cron job:\n\n${JSON.stringify(this._obj)}`);
+                // this._logger.debug(`Created cron job:\n\n${stringify(this._obj)}`);
             } else {
                 this._obj = this._k8sClient.get('cronjob', this._options.name, this._options.namespace);
 
@@ -84,7 +83,7 @@ class K8sCronJob extends Command {
                 await this._k8sClient.delete(this._obj);
             }
         } catch (e) {
-            this._logger.error(`An error occurred while deleting cron job: ${e.message.toString()}`);
+            this._logger.error(`An error occurred while deleting cron job: ${e.message.toString()}\n\n${JSON.stringify(e)}`);
         }
     }
 
