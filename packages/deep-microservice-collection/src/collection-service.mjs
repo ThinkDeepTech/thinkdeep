@@ -16,18 +16,18 @@ class CollectionService {
      * @param {Object} admin - KafkaJS admin.
      * @param {Object} producer - KafkaJS producer to use.
      * @param {Object} applicationConsumer - KafkaJS consumer to use for application-related consuming tasks.
-     * @param {Object} scaleSyncConsumer - KafkaJS consumer to use for syncing microservice replicas.
+     * @param {Object} microserviceSyncConsumer - KafkaJS consumer to use for syncing microservice replicas.
      * @param {K8sClient} k8sClient - K8s client to use.
      * @param {Object} logger - Logger to use.
      */
-    constructor(tweetStore, economicEntityMemo, commander, admin, producer, applicationConsumer, scaleSyncConsumer, k8sClient, logger) {
+    constructor(tweetStore, economicEntityMemo, commander, admin, producer, applicationConsumer, microserviceSyncConsumer, k8sClient, logger) {
         this._tweetStore = tweetStore;
         this._economicEntityMemo = economicEntityMemo;
         this._commander = commander;
         this._admin = admin;
         this._producer = producer;
         this._applicationConsumer = applicationConsumer;
-        this._scaleSyncConsumer = scaleSyncConsumer;
+        this._microserviceSyncConsumer = microserviceSyncConsumer;
         this._k8sClient = k8sClient;
         this._logger = logger;
 
@@ -40,9 +40,9 @@ class CollectionService {
                 topic: 'DATA_COLLECTION_STARTED', replicationFactor: 1
             }]).then(async() => {
 
-            await this._scaleSyncConsumer.subscribe({ topic: 'DATA_COLLECTION_STARTED', fromBeginning: true });
+            await this._microserviceSyncConsumer.subscribe({ topic: 'DATA_COLLECTION_STARTED', fromBeginning: true });
 
-            await this._scaleSyncConsumer.run({
+            await this._microserviceSyncConsumer.run({
                 eachMessage: async ({message}) => {
                     const {economicEntityName, economicEntityType } = JSON.parse(message.value.toString());
                     this._logger.info(`Kafka message received. Starting data collection for ${economicEntityName}, ${economicEntityType}`);

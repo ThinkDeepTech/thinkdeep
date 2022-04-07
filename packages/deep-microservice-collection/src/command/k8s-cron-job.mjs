@@ -28,7 +28,7 @@ class K8sCronJob extends Command {
 
             const alreadyExists = await this._k8sClient.exists('cronjob', this._options.name, this._options.namespace);
             if (!alreadyExists) {
-                this._obj = await this._k8sClient.create(`
+                this._obj = await this._k8sClient.applyAll([`
                     apiVersion: "batch/v1"
                     kind: "CronJob"
                     metadata:
@@ -56,7 +56,7 @@ class K8sCronJob extends Command {
                                         restartPolicy: "Never"
                                         imagePullSecrets:
                                             - name: "docker-secret"
-                `);
+                `]);
 
                 this._logger.debug(`Created cron job:\n\n${stringify(this._obj)}`);
             } else {

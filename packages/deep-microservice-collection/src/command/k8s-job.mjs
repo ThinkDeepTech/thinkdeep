@@ -25,7 +25,7 @@ class K8sJob extends Command {
 
     async execute() {
         try {
-                this._obj = await this._k8sClient.create(`
+                this._obj = await this._k8sClient.createAll([`
                     apiVersion: "batch/v1"
                     kind: "Job"
                     metadata:
@@ -50,7 +50,7 @@ class K8sJob extends Command {
                                 restartPolicy: "Never"
                                 imagePullSecrets:
                                     - name: "docker-secret"
-                `);
+                `]);
 
                 this._logger.debug(`Created job:\n\n${stringify(this._obj)}`);
         } catch (e) {
