@@ -74,7 +74,7 @@ class K8sCronJob extends Command {
         if (!this._obj) return;
 
         try {
-            await this._whenOneMicroserviceInstance(async () => {
+            await this._onRenewalOfAllMicroserviceReplicas(async () => {
                 this._logger.info(`Deleting cron job.\n\n${stringify(this._obj)}`);
                 await this._k8sClient.delete(this._obj);
             });
@@ -83,11 +83,11 @@ class K8sCronJob extends Command {
         }
     }
 
-    async _whenOneMicroserviceInstance(callback) {
+    async _onRenewalOfAllMicroserviceReplicas(callback) {
         const deploymentName = process.env.DEPLOYMENT_NAME;
         const namespace = process.env.NAMESPACE;
         const readyReplicas = await this._numMicroserviceReplicasReady(deploymentName, namespace);
-        if (readyReplicas === 1) {
+        if (readyReplicas === 0) {
 
             this._logger.debug(`Only one microservice instance running. Callback triggered.`);
             await callback();
@@ -100,13 +100,7 @@ class K8sCronJob extends Command {
 
         this._logger.debug(`Microservice deployment value:\n\n${stringify(microserviceDeployment)}`);
 
-        const numReplicas = microserviceDeployment.status.readyReplicas;
-
-        if (numReplicas === undefined || numReplicas === null) {
-            throw new Error(`The number of ready replicas for deployment ${deploymentName} wasn't valid.`);
-        }
-
-        return numReplicas;
+        return microserviceDeployment.status.readyReplicas || 0;
     }
 }
 
