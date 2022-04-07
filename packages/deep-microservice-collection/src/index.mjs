@@ -29,7 +29,7 @@ const startApolloServer = async () => {
   });
   const admin = kafka.admin();
   const producer = kafka.producer();
-  const scaleSyncConsumer = kafka.consumer();
+  const scaleSyncConsumer = kafka.consumer({groupId: `deep-microservice-collection-${Date.now()}`});
   const applicationConsumer = kafka.consumer({ groupId: 'deep-microservice-collection-consumer' });
 
   const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRING);
