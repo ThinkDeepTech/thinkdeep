@@ -26,11 +26,8 @@ class K8sCronJob extends Command {
     async execute() {
         try {
 
-            const deploymentName = process.env.DEPLOYMENT_NAME;
-            const namespace = process.env.NAMESPACE;
-            const readyReplicas = await this._numMicroserviceReplicasReady(deploymentName, namespace);
-            if (readyReplicas === 0) {
-
+            const alreadyExists = await this._k8sClient.exists('cronjob', this._options.name, this._options.namespace);
+            if (!alreadyExists) {
                 this._obj = await this._k8sClient.create(`
                     apiVersion: "batch/v1"
                     kind: "CronJob"
@@ -77,16 +74,23 @@ class K8sCronJob extends Command {
         if (!this._obj) return;
 
         try {
-            const deploymentName = process.env.DEPLOYMENT_NAME;
-            const namespace = process.env.NAMESPACE;
-            const readyReplicas = await this._numMicroserviceReplicasReady(deploymentName, namespace);
-            if (readyReplicas === 1) {
-
+            await this._whenOneMicroserviceInstance(async () => {
                 this._logger.info(`Deleting cron job.\n\n${stringify(this._obj)}`);
                 await this._k8sClient.delete(this._obj);
-            }
+            });
         } catch (e) {
             this._logger.error(`An error occurred while deleting cron job: ${e.message.toString()}\n\n${JSON.stringify(e)}\n\n${e.stack}`);
+        }
+    }
+
+    async _whenOneMicroserviceInstance(callback) {
+        const deploymentName = process.env.DEPLOYMENT_NAME;
+        const namespace = process.env.NAMESPACE;
+        const readyReplicas = await this._numMicroserviceReplicasReady(deploymentName, namespace);
+        if (readyReplicas === 1) {
+
+            this._logger.debug(`Only one microservice instance running. Callback triggered.`);
+            await callback();
         }
     }
 

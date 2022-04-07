@@ -29,7 +29,8 @@ const startApolloServer = async () => {
   });
   const admin = kafka.admin();
   const producer = kafka.producer();
-  const consumer = kafka.consumer({ groupId: 'deep-microservice-collection-consumer' });
+  const scaleSyncConsumer = kafka.consumer();
+  const applicationConsumer = kafka.consumer({ groupId: 'deep-microservice-collection-consumer' });
 
   const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRING);
 
@@ -39,7 +40,8 @@ const startApolloServer = async () => {
 
     logger.info('Closing Kafka connections.');
     await producer.disconnect();
-    await consumer.disconnect();
+    await scaleSyncConsumer.disconnect();
+    await applicationConsumer.disconnect();
     await admin.disconnect();
 
     logger.info('Closing MongoDB connection');
@@ -52,8 +54,11 @@ const startApolloServer = async () => {
   logger.info('Connecting with kafka producer.');
   await producer.connect();
 
-  logger.info('Connecting with kafka consumer.');
-  await consumer.connect();
+  logger.info('Connecting with kafka scale synchronization consumer.');
+  await scaleSyncConsumer.connect();
+
+  logger.info('Connecting with kafka application consumer.');
+  await applicationConsumer.connect();
 
   logger.info('Connecting with MongoDB.');
   await mongoClient.connect();
@@ -63,7 +68,7 @@ const startApolloServer = async () => {
   const k8sClient = await new K8sClient().init();
   const tweetStore = new TweetStore(mongoClient.db('admin').collection('tweets'));
   const economicEntityMemo = new EconomicEntityMemo(mongoClient.db('admin').collection('memo'), logger);
-  const collectionService = new CollectionService(tweetStore, economicEntityMemo, commander, admin, producer, consumer, k8sClient, logger);
+  const collectionService = new CollectionService(tweetStore, economicEntityMemo, commander, admin, producer, applicationConsumer, scaleSyncConsumer, k8sClient, logger);
 
   const server = new ApolloServer({
     schema: buildSubgraphSchema([{typeDefs, resolvers}]),

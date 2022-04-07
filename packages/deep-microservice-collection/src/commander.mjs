@@ -29,6 +29,15 @@ class Commander {
     }
 
     /**
+     * Check if a key has already been registered with the commander.
+     * @param {String} key
+     * @returns True if the key has already been registered. False otherwise.
+     */
+    registered(key) {
+        return key in this._commandMap;
+    }
+
+    /**
      * Stop all the running commands.
      */
     async stopAllCommands() {
