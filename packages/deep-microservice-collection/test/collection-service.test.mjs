@@ -54,8 +54,11 @@ describe('collection-service', () => {
 
         commander = {
             execute: sinon.stub(),
-            stopAllCommands: sinon.stub()
+            stopAllCommands: sinon.stub(),
+            registered: sinon.stub(),
         };
+
+        commander.registered.returns(false);
 
         admin = {
             createTopics: sinon.stub().returns(Promise.resolve())
