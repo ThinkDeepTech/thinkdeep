@@ -24,6 +24,7 @@ describe('collection-service', () => {
     let admin;
     let producer;
     let applicationConsumer;
+    let microserviceSyncConsumer;
     let k8sClient;
     let logger;
     let subject;
