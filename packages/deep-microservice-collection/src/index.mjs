@@ -34,9 +34,29 @@ const startApolloServer = async () => {
 
   const mongoClient = new MongoClient(process.env.PREDECOS_MONGODB_CONNECTION_STRING);
 
+  const k8sClient = await new K8sClient().init();
+
+  const onRecycleOfAllMicroserviceReplicas = async (callback) => {
+    const deploymentName = process.env.DEPLOYMENT_NAME;
+    const namespace = process.env.NAMESPACE;
+    const readyReplicas = await numMicroserviceReplicasReady(deploymentName, namespace);
+    if (readyReplicas === 0) {
+        await callback();
+    }
+  };
+
+  const numMicroserviceReplicasReady = async (deploymentName, namespace) => {
+
+    const microserviceDeployment = await k8sClient.get('deployment', deploymentName, namespace);
+
+    return microserviceDeployment.status.readyReplicas || 0;
+  };
+
   await attachExitHandler( async () => {
 
-    await commander.stopAllCommands();
+    await onRecycleOfAllMicroserviceReplicas(async () => {
+      await commander.stopAllCommands();
+    });
 
     logger.info('Closing Kafka connections.');
     await producer.disconnect();
@@ -65,7 +85,6 @@ const startApolloServer = async () => {
 
   logger.info("Connected successfully.");
 
-  const k8sClient = await new K8sClient().init();
   const tweetStore = new TweetStore(mongoClient.db('admin').collection('tweets'));
   const economicEntityMemo = new EconomicEntityMemo(mongoClient.db('admin').collection('memo'), logger);
   const collectionService = new CollectionService(tweetStore, economicEntityMemo, commander, admin, producer, applicationConsumer, scaleSyncConsumer, k8sClient, logger);

@@ -63,12 +63,6 @@ class K8sCronJob extends Command {
                 this._obj = await this._k8sClient.get('cronjob', this._options.name, this._options.namespace);
 
                 this._logger.debug(`Fetched cron job:\n\n${stringify(this._obj)}`);
-
-                const items = await this._k8sClient.getAll('deployment', 'development');
-
-                for (const item of items) {
-                    this._logger.warn(`Deployment found:\n\n${stringify(item)}`);
-                }
             }
         } catch (e) {
             this._logger.error(`An error occurred while creating cron job: ${e.message.toString()}\n\n${JSON.stringify(e)}\n\n${e.stack}`);
@@ -80,29 +74,13 @@ class K8sCronJob extends Command {
         if (!this._obj) return;
 
         try {
-            await this._onRecycleOfAllMicroserviceReplicas(async () => {
-                this._logger.info(`Deleting cron job.\n\n${stringify(this._obj)}`);
-                await this._k8sClient.delete(this._obj);
-            });
+
+            this._logger.info(`Deleting cron job.\n\n${stringify(this._obj)}`);
+            await this._k8sClient.delete(this._obj);
         } catch (e) {
+
             this._logger.error(`An error occurred while deleting cron job: ${e.message.toString()}\n\n${JSON.stringify(e)}\n\n${e.stack}`);
         }
-    }
-
-    async _onRecycleOfAllMicroserviceReplicas(callback) {
-        const deploymentName = process.env.DEPLOYMENT_NAME;
-        const namespace = process.env.NAMESPACE;
-        const readyReplicas = await this._numMicroserviceReplicasReady(deploymentName, namespace);
-        if (readyReplicas === 0) {
-            await callback();
-        }
-    }
-
-    async _numMicroserviceReplicasReady(deploymentName, namespace) {
-
-        const microserviceDeployment = await this._k8sClient.get('deployment', deploymentName, namespace);
-
-        return microserviceDeployment.status.readyReplicas || 0;
     }
 }
 
