@@ -28,7 +28,7 @@ class K8sCronJob extends Command {
 
             const alreadyExists = await this._k8sClient.exists('cronjob', this._options.name, this._options.namespace);
             if (!alreadyExists) {
-                this._obj = await this._k8sClient.applyAll([`
+                this._obj = await this._k8sClient.create(`
                     apiVersion: "batch/v1"
                     kind: "CronJob"
                     metadata:
@@ -56,13 +56,19 @@ class K8sCronJob extends Command {
                                         restartPolicy: "Never"
                                         imagePullSecrets:
                                             - name: "docker-secret"
-                `]);
+                `);
 
                 this._logger.debug(`Created cron job:\n\n${stringify(this._obj)}`);
             } else {
                 this._obj = await this._k8sClient.get('cronjob', this._options.name, this._options.namespace);
 
                 this._logger.debug(`Fetched cron job:\n\n${stringify(this._obj)}`);
+
+                const items = await this._k8sClient.getAll('deployment', 'development');
+
+                for (const item of items) {
+                    this._logger.warn(`Deployment found:\n\n${stringify(item)}`);
+                }
             }
         } catch (e) {
             this._logger.error(`An error occurred while creating cron job: ${e.message.toString()}\n\n${JSON.stringify(e)}\n\n${e.stack}`);
@@ -74,7 +80,7 @@ class K8sCronJob extends Command {
         if (!this._obj) return;
 
         try {
-            await this._onRenewalOfAllMicroserviceReplicas(async () => {
+            await this._onRecycleOfAllMicroserviceReplicas(async () => {
                 this._logger.info(`Deleting cron job.\n\n${stringify(this._obj)}`);
                 await this._k8sClient.delete(this._obj);
             });
@@ -83,13 +89,11 @@ class K8sCronJob extends Command {
         }
     }
 
-    async _onRenewalOfAllMicroserviceReplicas(callback) {
+    async _onRecycleOfAllMicroserviceReplicas(callback) {
         const deploymentName = process.env.DEPLOYMENT_NAME;
         const namespace = process.env.NAMESPACE;
         const readyReplicas = await this._numMicroserviceReplicasReady(deploymentName, namespace);
         if (readyReplicas === 0) {
-
-            this._logger.debug(`Only one microservice instance running. Callback triggered.`);
             await callback();
         }
     }
@@ -97,8 +101,6 @@ class K8sCronJob extends Command {
     async _numMicroserviceReplicasReady(deploymentName, namespace) {
 
         const microserviceDeployment = await this._k8sClient.get('deployment', deploymentName, namespace);
-
-        this._logger.debug(`Microservice deployment value:\n\n${stringify(microserviceDeployment)}`);
 
         return microserviceDeployment.status.readyReplicas || 0;
     }
