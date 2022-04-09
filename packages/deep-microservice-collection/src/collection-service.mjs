@@ -3,7 +3,6 @@ import { K8sJob } from './command/k8s-job.mjs';
 import { validString } from './helpers.mjs';
 import moment from 'moment';
 import { hasReadAllAccess } from './permissions.mjs';
-import { K8sClient } from '@thinkdeep/k8s';
 
 class CollectionService {
 

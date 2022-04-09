@@ -1,6 +1,6 @@
 import {Command} from './command.mjs';
 import {validString} from '../helpers.mjs';
-import {K8sClient, stringify} from '@thinkdeep/k8s';
+import {stringify} from '@thinkdeep/k8s';
 
 class K8sCronJob extends Command {
     /**
@@ -15,7 +15,7 @@ class K8sCronJob extends Command {
 
         if (!validString(options.name) || !validString(options.schedule) || !validString(options.image) || !validString(options.command)) {
             throw new Error(`A cron job requires a name, schedule, image and command`);
-        };
+        }
 
         this._options = options;
         this._logger = logger;

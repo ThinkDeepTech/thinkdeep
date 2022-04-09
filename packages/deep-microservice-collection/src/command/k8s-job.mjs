@@ -1,6 +1,6 @@
 import {Command} from './command.mjs';
 import {validString} from '../helpers.mjs';
-import {K8sClient, stringify} from '@thinkdeep/k8s';
+import {stringify} from '@thinkdeep/k8s';
 
 class K8sJob extends Command {
     /**

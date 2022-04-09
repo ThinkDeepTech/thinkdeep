@@ -1,6 +1,6 @@
 import {buildSubgraphSchema} from '@apollo/subgraph';
-import k8s from '@kubernetes/client-node'
 import {attachExitHandler} from '@thinkdeep/attach-exit-handler';
+import { K8sClient } from '@thinkdeep/k8s';
 import {getPublicIP} from '@thinkdeep/get-public-ip';
 import {ApolloServer} from 'apollo-server-express';
 import {CollectionService} from './collection-service.mjs';
@@ -15,7 +15,6 @@ import {MongoClient} from 'mongodb';
 import process from 'process';
 import {resolvers} from './resolvers.mjs';
 import {typeDefs} from './schema.mjs';
-import { K8sClient } from '@thinkdeep/k8s';
 
 const logger = getLogger();
 
