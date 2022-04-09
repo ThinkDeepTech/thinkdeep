@@ -1,5 +1,3 @@
-import k8s from '@kubernetes/client-node';
-
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
@@ -25,8 +23,9 @@ describe('collection-service', () => {
     let commander;
     let admin;
     let producer;
-    let consumer;
-    let mockK8s;
+    let applicationConsumer;
+    let microserviceSyncConsumer;
+    let k8sClient;
     let logger;
     let subject;
     beforeEach(() => {
@@ -55,8 +54,11 @@ describe('collection-service', () => {
 
         commander = {
             execute: sinon.stub(),
-            stopAllCommands: sinon.stub()
+            stopAllCommands: sinon.stub(),
+            registered: sinon.stub(),
         };
+
+        commander.registered.returns(false);
 
         admin = {
             createTopics: sinon.stub().returns(Promise.resolve())
@@ -66,74 +68,23 @@ describe('collection-service', () => {
             send: sinon.stub()
         };
 
-        consumer = {
+        applicationConsumer = {
             subscribe: sinon.stub(),
             run: sinon.stub()
         }
 
-        consumer.subscribe.returns( Promise.resolve() );
-        consumer.run.returns( Promise.resolve() );
+        applicationConsumer.subscribe.returns( Promise.resolve() );
+        applicationConsumer.run.returns( Promise.resolve() );
 
-        mockK8s = {
-            V1CronJob: sinon.stub(),
-            V1ObjectMeta: sinon.stub(),
-            V1CronJobSpec: sinon.stub(),
-            V1Job: sinon.stub(),
-            V1JobTemplateSpec: sinon.stub(),
-            V1JobSpec: sinon.stub(),
-            V1PodTemplateSpec: sinon.stub(),
-            V1PodSpec: sinon.stub(),
-            V1LocalObjectReference: sinon.stub(),
-            V1Container: sinon.stub(),
-            V1EnvFromSource: sinon.stub(),
-            V1SecretEnvSource: sinon.stub(),
-            KubeConfig: sinon.stub()
-        };
-
-        mockK8s.V1CronJob.returns( sinon.createStubInstance(k8s.V1CronJob.constructor) );
-        mockK8s.V1CronJobSpec.returns( sinon.createStubInstance(k8s.V1CronJobSpec.constructor) );
-        mockK8s.V1JobSpec.returns( sinon.createStubInstance(k8s.V1Job.constructor) );
-        mockK8s.V1JobSpec.returns( sinon.createStubInstance(k8s.V1JobSpec.constructor) );
-        mockK8s.V1JobTemplateSpec.returns( sinon.createStubInstance(k8s.V1JobTemplateSpec.constructor) );
-        mockK8s.V1JobSpec.returns( sinon.createStubInstance(k8s.V1JobSpec.constructor) );
-        mockK8s.V1PodTemplateSpec.returns( sinon.createStubInstance(k8s.V1PodTemplateSpec.constructor) );
-        mockK8s.V1PodSpec.returns( sinon.createStubInstance(k8s.V1PodSpec.constructor) );
-        mockK8s.V1EnvFromSource.returns( sinon.createStubInstance(k8s.V1EnvFromSource.constructor) );
-
-        /**
-         * NOTE: Oddly, createStubInstance seems to be creating an object with a readonly name
-         * property. Therefore, I have to overwrite that for the tests to run properly. The system
-         * works properly when deployed.
-         */
-        const metadata = sinon.createStubInstance(k8s.V1ObjectMeta.constructor);
-        Object.defineProperty(metadata, "name", { writable: true });
-        mockK8s.V1ObjectMeta.returns( metadata );
-
-        const container = sinon.createStubInstance(k8s.V1Container.constructor);
-        Object.defineProperty(container, "name", { writable: true });
-        mockK8s.V1Container.returns( container );
-
-        const secretRef = sinon.createStubInstance(k8s.V1SecretEnvSource.constructor);
-        Object.defineProperty(secretRef, "name", { writable: true });
-        mockK8s.V1SecretEnvSource.returns( secretRef );
-
-        const dockerSecret = sinon.createStubInstance(k8s.V1LocalObjectReference.constructor);
-        Object.defineProperty(dockerSecret, "name", { writable: true });
-        mockK8s.V1LocalObjectReference.returns( dockerSecret );
-
-
-        const k8sApiClient = {
-            createNamespacedCronJob: sinon.stub(),
-            deleteNamespacedCronJob: sinon.stub(),
-            createNamespacedJob: sinon.stub(),
-            deleteNamespacedJob: sinon.stub()
+        microserviceSyncConsumer = {
+            subscribe: sinon.stub(),
+            run: sinon.stub()
         }
-        const kubeConfig = sinon.createStubInstance(k8s.KubeConfig.constructor);
-        kubeConfig.loadFromCluster = sinon.stub();
-        kubeConfig.makeApiClient = sinon.stub().returns(k8sApiClient)
-        mockK8s.KubeConfig.returns( kubeConfig );
 
-        subject = new CollectionService(tweetStore, economicEntityMemo, commander, admin, producer, consumer, mockK8s, logger);
+        microserviceSyncConsumer.subscribe.returns( Promise.resolve() );
+        microserviceSyncConsumer.run.returns( Promise.resolve() );
+
+        subject = new CollectionService(tweetStore, economicEntityMemo, commander, admin, producer, applicationConsumer, microserviceSyncConsumer, k8sClient, logger);
     });
 
     describe('constructor', () => {
@@ -146,7 +97,7 @@ describe('collection-service', () => {
         })
 
         it('should subscribe to the tweets fetched event', () => {
-            const args = consumer.subscribe.getCall(0).args;
+            const args = applicationConsumer.subscribe.getCall(0).args;
             expect(args[0].topic).to.equal('TWEETS_FETCHED');
         })
 
@@ -160,7 +111,7 @@ describe('collection-service', () => {
                     text: "tweet2"
                 }]
             });
-            const args = consumer.run.getCall(0).args;
+            const args = applicationConsumer.run.getCall(0).args;
 
             console.log(JSON.stringify(args));
             const perMessageCallback = args[0].eachMessage;

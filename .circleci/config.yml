@@ -332,9 +332,8 @@ jobs:
             chart: "."
             helm-version: "v3.7.2"
             namespace: "default"
-            recreate-pods: true
             release-name: "v1"
-            values-to-override: "gateway.service.certificateId=2b25c4eb-828e-4e9c-8c55-9f3deb85e331,subscription.service.certificateId=5fba8346-80ac-44a4-8521-3f7ab7dd3153,auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,replicas=1,global.docker.secretName=docker-secret,global.nodeEnv=$NODE_ENV"
+            values-to-override: "gateway.service.certificateId=2b25c4eb-828e-4e9c-8c55-9f3deb85e331,subscription.service.certificateId=5fba8346-80ac-44a4-8521-3f7ab7dd3153,auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,collection.replicas=3,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,replicas=1,global.docker.secretName=docker-secret,global.nodeEnv=$NODE_ENV"
             update-repositories: true
             timeout: "600s"
             wait: true
@@ -383,9 +382,8 @@ jobs:
             chart: "."
             helm-version: "v3.7.2"
             namespace: "development"
-            recreate-pods: true
             release-name: "v1"
-            values-to-override: "auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,replicas=1,global.docker.secretName=docker-secret,analysis.container.image=thinkdeeptech/deep-microservice-analysis-dev:latest,collection.container.image=thinkdeeptech/deep-microservice-collection-dev:latest,configuration.container.image=thinkdeeptech/deep-microservice-configuration-dev:latest,gateway.container.image=thinkdeeptech/deep-microservice-gateway-dev:latest,subscription.container.image=thinkdeeptech/deep-microservice-subscription-dev:latest,global.nodeEnv=$NODE_ENV"
+            values-to-override: "auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,replicas=1,global.docker.secretName=docker-secret,analysis.container.image=thinkdeeptech/deep-microservice-analysis-dev:latest,collection.replicas=3,collection.container.image=thinkdeeptech/deep-microservice-collection-dev:latest,configuration.container.image=thinkdeeptech/deep-microservice-configuration-dev:latest,gateway.container.image=thinkdeeptech/deep-microservice-gateway-dev:latest,subscription.container.image=thinkdeeptech/deep-microservice-subscription-dev:latest,global.nodeEnv=$NODE_ENV"
             update-repositories: true
             timeout: "600s"
             wait: true
@@ -432,9 +430,7 @@ workflows:
             - build_microservice_gateway_dev
             - build_microservice_subscription_dev
 
-      - build_ui_and_test_system:
-          requires:
-            - deploy_microservices_dev
+      - build_ui_and_test_system
 
       - build_microservice_collection:
           filters:

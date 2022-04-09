@@ -13,6 +13,7 @@ spec:
   template:
     metadata:
       labels:
+        date: {{ now | unixEpoch | quote }}
         app: {{ printf "%s-deep-microservice-collection-deployment" .Release.Name | quote }}
     spec:
       serviceAccountName: {{ printf "%s-collection-manager-service-account" .Release.Name | quote }}

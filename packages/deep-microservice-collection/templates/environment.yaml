@@ -4,6 +4,7 @@ metadata:
     name: {{ printf "%s-deep-microservice-collection-config-map" .Release.Name | quote }}
     namespace: {{ .Release.Namespace | quote }}
 data:
+    DEPLOYMENT_NAME: {{ printf "%s-deep-microservice-collection-deployment" .Release.Name | quote }}
     GRAPHQL_PORT: {{ required "A valid port at which the application can be accessed is required" .Values.graphql.port | quote }}
     GRAPHQL_PATH: {{ required "A valid path at which the application can be accessed is required (i.e, /graphql)" .Values.graphql.path | quote}}
     NAMESPACE: {{ .Release.Namespace | quote }}

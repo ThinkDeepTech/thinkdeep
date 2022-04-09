@@ -14,21 +14,40 @@ class CollectionService {
      * @param {Object} commander - Commander object to be used.
      * @param {Object} admin - KafkaJS admin.
      * @param {Object} producer - KafkaJS producer to use.
-     * @param {Object} consumer - KafkaJS consumer to use.
-     * @param {Object} k8s - Kubernetes Javascript Client import.
+     * @param {Object} applicationConsumer - KafkaJS consumer to use for application-related consuming tasks.
+     * @param {Object} microserviceSyncConsumer - KafkaJS consumer to use for syncing microservice replicas.
+     * @param {K8sClient} k8sClient - K8s client to use.
      * @param {Object} logger - Logger to use.
      */
-    constructor(tweetStore, economicEntityMemo, commander, admin, producer, consumer, k8s, logger) {
+    constructor(tweetStore, economicEntityMemo, commander, admin, producer, applicationConsumer, microserviceSyncConsumer, k8sClient, logger) {
         this._tweetStore = tweetStore;
         this._economicEntityMemo = economicEntityMemo;
         this._commander = commander;
         this._admin = admin;
         this._producer = producer;
-        this._consumer = consumer;
-        this._k8s = k8s;
+        this._applicationConsumer = applicationConsumer;
+        this._microserviceSyncConsumer = microserviceSyncConsumer;
+        this._k8sClient = k8sClient;
         this._logger = logger;
 
-        this._topicCreation([{topic: 'TWEETS_COLLECTED', replicationFactor: 1}, { topic: 'TWEETS_FETCHED', replicationFactor: 1}]).then(async() => {
+        this._topicCreation([
+            {
+                topic: 'TWEETS_COLLECTED', replicationFactor: 1
+            }, {
+                topic: 'TWEETS_FETCHED', replicationFactor: 1
+            }, {
+                topic: 'DATA_COLLECTION_STARTED', replicationFactor: 1
+            }]).then(async() => {
+
+            await this._microserviceSyncConsumer.subscribe({ topic: 'DATA_COLLECTION_STARTED', fromBeginning: true });
+
+            await this._microserviceSyncConsumer.run({
+                eachMessage: async ({message}) => {
+                    const {economicEntityName, economicEntityType } = JSON.parse(message.value.toString());
+                    this._logger.info(`Kafka message received. Starting data collection for ${economicEntityName}, ${economicEntityType}`);
+                    this._startDataCollection(economicEntityName, economicEntityType);
+                }
+            });
 
             const economicEntities = await this._economicEntityMemo.readEconomicEntities();
             for (const economicEntity of economicEntities) {
@@ -36,10 +55,9 @@ class CollectionService {
                 this._startDataCollection(economicEntity.name, economicEntity.type);
             }
 
-            this._logger.info(`Subscribing to topics.`);
-            await this._consumer.subscribe({ topic: 'TWEETS_FETCHED', fromBeginning: true });
+            await this._applicationConsumer.subscribe({ topic: 'TWEETS_FETCHED', fromBeginning: true });
 
-            await this._consumer.run({
+            await this._applicationConsumer.run({
                 eachMessage: async ({message}) => {
 
                     this._logger.debug(`Received kafka message: ${message.value.toString()}`);
@@ -78,6 +96,11 @@ class CollectionService {
             this._startDataCollection(entityName, entityType);
 
             await this._economicEntityMemo.memoizeDataCollection(entityName, entityType);
+
+            await this._emit('DATA_COLLECTION_STARTED', {
+                economicEntityName: entityName,
+                economicEntityType: entityType
+            });
         }
 
         return { success: true };
@@ -116,11 +139,14 @@ class CollectionService {
 
         if (!validString(entityType)) return;
 
+        const key = `${entityName}:${entityType}`;
+        if (this._commander.registered(key)) return;
+
         this._logger.info(`Executing commands for ${entityName}, ${entityType}`);
 
         const commands = this._commands(entityName, entityType);
 
-        this._commander.execute(`${entityName}:${entityType}`, commands);
+        this._commander.execute(key, commands);
     }
 
     /**
@@ -155,7 +181,7 @@ class CollectionService {
                 image: 'thinkdeeptech/collect-data:latest',
                 command: 'node',
                 args: ['src/collect-data.mjs', `--entity-name=${entityName}`, `--entity-type=${entityType}`, '--operation-type=fetch-tweets']
-            }, this._logger);
+            }, this._k8sClient, this._logger);
 
             const fetchTweetsImmediately = new K8sJob({
                 name,
@@ -163,7 +189,7 @@ class CollectionService {
                 image: 'thinkdeeptech/collect-data:latest',
                 command: 'node',
                 args: ['src/collect-data.mjs', `--entity-name=${entityName}`, `--entity-type=${entityType}`, '--operation-type=fetch-tweets']
-            }, this._logger);
+            }, this._k8sClient, this._logger);
 
             return [fetchTweetsOnSchedule, fetchTweetsImmediately];
         } else {
@@ -201,12 +227,7 @@ class CollectionService {
 
         this._logger.info(`Adding collection event with value: ${JSON.stringify(event)}`);
 
-        await this._producer.send({
-            topic: 'TWEETS_COLLECTED',
-            messages: [
-                { value: JSON.stringify(event) }
-            ]
-        });
+        await this._emit('TWEETS_COLLECTED', event);
 
         return tweetsCreated;
     }
@@ -230,6 +251,15 @@ class CollectionService {
             /** An error is thrown when the topic has already been created */
             this._logger.warn(`Creation of topics ${JSON.stringify(topics)} exited with error: ${JSON.stringify(error)}, message: message: ${error.message.toString()}`);
         }
+    }
+
+    async _emit(eventName, event) {
+        await this._producer.send({
+            topic: eventName,
+            messages: [
+                { value: JSON.stringify(event) }
+            ]
+        });
     }
 }
 

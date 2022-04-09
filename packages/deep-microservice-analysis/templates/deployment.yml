@@ -14,6 +14,7 @@ spec:
   template:
     metadata:
       labels:
+        date: {{ now | unixEpoch | quote }}
         app: {{ printf "%s-deep-microservice-analysis-deployment" .Release.Name | quote }}
     spec:
       containers:
