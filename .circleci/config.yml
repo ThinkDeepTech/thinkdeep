@@ -410,19 +410,41 @@ workflows:
 
     jobs:
 
-      - build_microservice_analysis_dev
+      - build_microservice_analysis_dev:
+          filters:
+            branches:
+              ignore: master
 
-      - build_microservice_collection_dev
 
-      - build_collect_data_dev
+      - build_microservice_collection_dev:
+          filters:
+            branches:
+              ignore: master
 
-      - build_microservice_configuration_dev
+      - build_collect_data_dev:
+          filters:
+            branches:
+              ignore: master
 
-      - build_microservice_gateway_dev
+      - build_microservice_configuration_dev:
+          filters:
+            branches:
+              ignore: master
 
-      - build_microservice_subscription_dev
+      - build_microservice_gateway_dev:
+          filters:
+            branches:
+              ignore: master
+
+      - build_microservice_subscription_dev:
+          filters:
+            branches:
+              ignore: master
 
       - deploy_microservices_dev:
+          filters:
+            branches:
+              ignore: master
           requires:
             - build_microservice_analysis_dev
             - build_microservice_collection_dev
