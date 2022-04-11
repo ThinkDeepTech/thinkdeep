@@ -17,6 +17,8 @@ RUN apt-get install -y build-essential
 
 RUN apt-get install -y nodejs
 
+RUN node --version
+
 COPY src/ ./src
 
 COPY package.json ./
