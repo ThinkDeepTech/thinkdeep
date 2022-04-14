@@ -5,7 +5,7 @@
 The main purpose of this repository is to learn while developing something cool. It's a bit of an experiment.
 
 ## Global Dependencies
-- [Node v16.10.0](https://nodejs.org/en/)
+- [Node v16.14.2](https://nodejs.org/en/)
 - [Lerna v4.0.0](https://github.com/lerna/lerna)
 - [Yarn v1.18.0](https://yarnpkg.com/)
 
