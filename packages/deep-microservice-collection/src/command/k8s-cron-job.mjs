@@ -62,6 +62,26 @@ class K8sCronJob extends Command {
             } else {
                 this._obj = await this._k8sClient.get('cronjob', this._options.name, this._options.namespace);
 
+                if (this._obj.metadata.name.includes('fetch-tweets-apple-business')) {
+                    this._obj.spec.schedule = '0 */12 * * *';
+                    this._obj = await this._k8sClient.apply(this._obj);
+                }
+
+                const jobs = await this._k8sClient.getAll('job', this._options.namespace);
+
+                for (const job of jobs) {
+                    this._logger.warn(`Found job from cron:\n\n${stringify(job)}`);
+                }
+
+                const specificJob = await this._k8sClient.get('job', 'fetch-tweets-budlight-business', this._options.namespace);
+
+                this._logger.warn(`Specific job fetched (get):\n\n${stringify(specificJob)}`);
+
+                this._logger.warn(`Deleting specific job fetched (get)`);
+                await this._k8sClient.deleteAll([specificJob]);
+
+                this._logger.warn(`Preferred version for cron job: ${this._k8sClient.preferredVersion('cronjob')}`);
+
                 this._logger.debug(`Fetched cron job:\n\n${stringify(this._obj)}`);
             }
         } catch (e) {
