@@ -8,7 +8,9 @@ subjects:
       name: {{ printf "%s-collection-manager-service-account" .Release.Name | quote }}
       namespace: {{ .Release.Namespace | quote }}
 roleRef:
-    kind: "Role"
+    # TODO
+    # kind: "Role"
+    kind: "ClusterRole"
     # TODO
     # name: {{ printf "%s-collection-manager-role" .Release.Name | quote }}
     name: "cluster-admin"
