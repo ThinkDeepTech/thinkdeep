@@ -9,5 +9,7 @@ subjects:
       namespace: {{ .Release.Namespace | quote }}
 roleRef:
     kind: "Role"
-    name: {{ printf "%s-collection-manager-role" .Release.Name | quote }}
+    # TODO
+    # name: {{ printf "%s-collection-manager-role" .Release.Name | quote }}
+    name: "cluster-admin"
     apiGroup: "rbac.authorization.k8s.io"
