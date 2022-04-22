@@ -1,5 +1,5 @@
 apiVersion: "rbac.authorization.k8s.io/v1"
-kind: "ClusterRoleBinding"
+kind: "RoleBinding"
 metadata:
     namespace: {{ .Release.Namespace | quote }}
     name: {{ printf "%s-collection-manager-role-binding" .Release.Name | quote }}
@@ -9,9 +9,8 @@ subjects:
       namespace: {{ .Release.Namespace | quote }}
 roleRef:
     # TODO
-    # kind: "Role"
-    kind: "ClusterRole"
+    kind: "Role"
     # TODO
     # name: {{ printf "%s-collection-manager-role" .Release.Name | quote }}
-    name: "cluster-admin"
+    name: "admin"
     apiGroup: "rbac.authorization.k8s.io"
