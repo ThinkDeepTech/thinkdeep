@@ -17,8 +17,6 @@ RUN apt-get update
 
 RUN apt-get install -y nodejs
 
-RUN node --version
-
 RUN mkdir ./src
 
 COPY src/ ./src/
