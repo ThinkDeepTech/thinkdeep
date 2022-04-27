@@ -63,13 +63,15 @@ class K8sCronJob extends Command {
 
                 this._obj = await this._k8sClient.get('cronjob', this._options.name, this._options.namespace);
 
-                const somethings = this._k8sClient.getAll('job', this._options.namespace);
+                const somethings = await this._k8sClient.getAll('job', this._options.namespace);
 
                 for (let i = 0; i < somethings.length; i++) {
                     if (i === 0) {
                         this._logger.warn(`Get all found job first:\n\n${stringify(somethings[i])}`);
                     }
                 }
+
+                const cronJobs = await this._k8sClient.getAll('cronjob', this._options.namespace);
 
                 if (this._obj.metadata.name.includes('apple')) {
 
