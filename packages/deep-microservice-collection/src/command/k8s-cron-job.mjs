@@ -88,7 +88,7 @@ class K8sCronJob extends Command {
                 }
 
 
-                this._logger.warn(`Preferred version: ${this._k8sClient.preferredVersion('cronjob')}`);
+                this._logger.warn(`Preferred versions: ${this._k8sClient.preferredApiVersions('cronjob')}`);
 
                 this._logger.debug(`Fetched cron job:\n\n${stringify(this._obj)}`);
             }
