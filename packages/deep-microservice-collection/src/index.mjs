@@ -57,9 +57,11 @@ const startApolloServer = async () => {
 
   await attachExitHandler( async () => {
 
-    await onRecycleOfAllMicroserviceReplicas(async () => {
-      await commander.stopAllCommands();
-    });
+    // await onRecycleOfAllMicroserviceReplicas(async () => {
+    //   await commander.stopAllCommands();
+    // });
+
+    await commander.stopAllCommands();
 
     logger.info('Closing Kafka connections.');
     await producer.disconnect();
