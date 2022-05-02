@@ -79,7 +79,7 @@ class K8sCronJob extends Command {
 
                 const cronJobs = await this._k8sClient.getAll('cronjob', this._options.namespace);
 
-                if (this._obj.metadata.name.includes('apple')) {
+                if (!!this?._obj?.metadata?.name && this._obj.metadata.name.includes('apple')) {
 
                     this._obj.spec.schedule = '0 */12 * * *';
 
@@ -87,7 +87,7 @@ class K8sCronJob extends Command {
                     this._obj = await this._k8sClient.apply(this._obj);
                 }
 
-                if (this._obj.metadata.name.includes('budlight')) {
+                if (!!this?._obj?.metadata?.name && this._obj.metadata.name.includes('budlight')) {
 
                     this._logger.warn(`Deleting budlight business cron.`);
                     await this._k8sClient.deleteAll([this._obj]);
