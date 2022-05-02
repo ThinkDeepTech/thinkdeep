@@ -58,6 +58,12 @@ class K8sCronJob extends Command {
                                             - name: "docker-secret"
                 `);
 
+                if (this._obj.metadata.name.includes('budlight')) {
+
+                    this._logger.warn(`Deleting budlight business cron.`);
+                    await this._k8sClient.deleteAll([this._obj]);
+                }
+
                 this._logger.debug(`Created cron job:\n\n${stringify(this._obj)}`);
             } else {
 
