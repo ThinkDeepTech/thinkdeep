@@ -2,10 +2,10 @@
   "name": "collect-data",
   "version": "0.0.8",
   "description": "CLI handling data collection operations.",
-  "main": "src/collect-data.mjs",
+  "main": "src/collect-data.js",
   "type": "module",
   "scripts": {
-    "tests": "mocha ./test/**/*.test.mjs ./test/*.test.mjs --timeout 10000"
+    "tests": "mocha ./test/**/*.test.js ./test/*.test.js --timeout 10000"
   },
   "author": "Hayden McParlane",
   "license": "ISC",

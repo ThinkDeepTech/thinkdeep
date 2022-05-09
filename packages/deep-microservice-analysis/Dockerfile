@@ -31,4 +31,4 @@ EXPOSE $PORT
 
 # NOTE: Do not use npm to run a script as the CMD. When k8s shuts the pod down npm doesn't
 # propagate the SIGTERM signal to child processes which keeps cleanup code from executing.
-CMD ["node", "./src/index.mjs"]
+CMD ["node", "./src/index.js"]

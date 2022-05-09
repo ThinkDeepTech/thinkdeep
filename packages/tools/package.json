@@ -4,6 +4,7 @@
   "description": "Shared tools and configurations.",
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin.com/in/haydenmcp)",
   "license": "MIT",
+  "type": "module",
   "keywords": [
     "LitElement",
     "polymer"

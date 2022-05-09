@@ -15,8 +15,8 @@
     "url": "git+https://github.com/ThinkDeepTech/thinkdeep.git"
   },
   "scripts": {
-    "start": "node ./src/index.mjs",
-    "tests": "mocha ./test/**/*.test.mjs ./test/*.test.mjs --exit"
+    "start": "node ./src/index.js",
+    "tests": "mocha ./test/**/*.test.js ./test/*.test.js --exit"
   },
   "devDependencies": {
     "chai": "^4.3.4",

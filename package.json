@@ -3,29 +3,15 @@
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin/in/haydenmcp)",
   "scripts": {
     "setup": "yarn install && lerna run setup",
+    "lint": "eslint --fix 'packages/**/*.js'",
     "clean": "lerna clean",
-    "microservices": "concurrently -k npm:microservice:*",
-    "microservice:analysis": "nodemon ./packages/deep-microservice-analysis/src/index.mjs",
-    "microservice:collection": "nodemon ./packages/deep-microservice-collection/src/index.mjs",
-    "microservice:configuration": "nodemon ./packages/deep-microservice-configuration/src/index.mjs",
-    "microservice:gateway": "wait-on tcp:4002 && wait-on tcp:4001 && wait-on tcp:4003  && nodemon ./packages/deep-microservice-gateway/src/index.mjs",
-    "microservice:subscription": "wait-on tcp:4002 && wait-on tcp:4001 && wait-on tcp:4003  && wait-on tcp:4000 && nodemon ./packages/deep-microservice-subscription/src/index.mjs",
-    "nodemon": "nodemon -h",
     "build": "lerna run build",
     "tests": "lerna run tests"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
       "pre-push": "yarn run tests"
     }
-  },
-  "lint-staged": {
-    "*.js": [
-      "./node_modules/.bin/eslint --fix",
-      "prettier --write",
-      "git add"
-    ]
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",
@@ -41,23 +27,24 @@
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
     "chai": "^4.3.4",
-    "concurrently": "^6.4.0",
-    "es-dev-server": "^2.1.0",
-    "eslint": "^5.7.0",
-    "eslint-config-prettier": "^3.1.0",
-    "eslint-config-vaadin": "^0.2.7",
+    "eslint": "^8.14.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.2.0",
+    "eslint-plugin-promise": "^6.0.0",
     "husky": "^1.1.2",
     "lerna": "^3.3.0",
-    "lint-staged": "^7.3.0",
+    "lint-staged": "^12.4.1",
     "mocha": "^9.0.2",
     "nodemon": "^2.0.15",
-    "prettier": "^2.2.1",
+    "prettier": "^2.6.2",
     "rollup": "^1.1.0",
     "rollup-plugin-babel": "^4.3.0",
     "rollup-plugin-node-resolve": "^4.0.0",
     "rollup-plugin-serve": "^1.1.0",
-    "serve": "^10.1.1",
-    "wait-on": "^6.0.0"
+    "serve": "^10.1.1"
   },
   "workspaces": [
     "packages/*"

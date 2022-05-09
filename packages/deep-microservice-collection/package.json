@@ -1,6 +1,7 @@
 {
   "name": "@thinkdeep/deep-microservice-collection",
   "version": "0.0.8",
+  "type": "module",
   "description": "Data collection microservice.",
   "keywords": [
     "Python",
@@ -14,8 +15,8 @@
     "url": "git+https://github.com/ThinkDeepTech/thinkdeep.git"
   },
   "scripts": {
-    "start": "node ./src/index.mjs",
-    "tests": "mocha ./test/**/*.test.mjs ./test/*.test.mjs --exit && cd ./collect-data && yarn run tests;"
+    "start": "node ./src/index.js",
+    "tests": "mocha ./test/**/*.test.js ./test/*.test.js --exit && cd ./collect-data && yarn run tests;"
   },
   "devDependencies": {
     "chai": "^4.3.4",

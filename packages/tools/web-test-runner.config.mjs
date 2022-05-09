@@ -21,7 +21,7 @@ const browsers = {
 const port = await getPort();
 
 export default {
-  files: ['test/**/*.test.js', 'test/**/*.test.mjs'],
+  files: ['test/**/*.test.js', 'test/**/*.test.js'],
   nodeResolve: true,
   browsers: Object.values(browsers),
   coverage: true,
