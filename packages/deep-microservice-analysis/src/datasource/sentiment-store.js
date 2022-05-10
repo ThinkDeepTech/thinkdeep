@@ -1,5 +1,8 @@
 import {MongoDataSource} from 'apollo-datasource-mongodb';
 
+/**
+ * Storage for sentiment-related data.
+ */
 class SentimentStore extends MongoDataSource {
 
     /**

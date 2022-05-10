@@ -4,6 +4,9 @@ import { validString } from './helpers.js';
 import moment from 'moment';
 import { hasReadAllAccess } from './permissions.js';
 
+/**
+ * Service handling data collection activity.
+ */
 class CollectionService {
 
     /**
@@ -131,7 +134,6 @@ class CollectionService {
      * Start data collection for the specified entity name and type.
      * @param {String} entityName - Name of the economic entity (i.e, 'Google')
      * @param {String} entityType - Type of the economic entity (i.e, 'BUSINESS')
-     * @returns
      */
     _startDataCollection(entityName, entityType) {
 
@@ -253,6 +255,11 @@ class CollectionService {
         }
     }
 
+    /**
+     * Emit an event.
+     * @param {String} eventName Name of the event to emit.
+     * @param {Object} event Event data.
+     */
     async _emit(eventName, event) {
         await this._producer.send({
             topic: eventName,

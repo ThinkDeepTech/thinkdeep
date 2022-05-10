@@ -18,7 +18,14 @@ import GetSentiment from './graphql/GetSentiment.query.graphql';
 import UpdateSentiments from './graphql/UpdateSentiments.subscription.graphql';
 import {translate} from 'lit-element-i18n';
 
+/**
+ * Lit summary page component.
+ */
 export default class DeepAnalyzerPageSummary extends LitElement {
+
+  /**
+   * Lit component property definitions.
+   */
   static get properties() {
     return {
       subscriptionClient: {type: Object},
@@ -38,6 +45,9 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     };
   }
 
+  /**
+   * Lit component constructor.
+   */
   constructor() {
     super();
 
@@ -105,12 +115,19 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     this.selectedSentiments = [];
   }
 
+  /**
+   * Lit callback executed on first update of the component.
+   */
   firstUpdated() {
     super.firstUpdated();
 
     this._setChartOptions();
   }
 
+  /**
+   * Lit component style definitions.
+   * @return {TemplateResult}
+   */
   static get styles() {
     return css`
       :host {
@@ -187,6 +204,10 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     `;
   }
 
+  /**
+   * Lit component render function.
+   * @return {TemplateResult}
+   */
   render() {
     return html`
       <deep-site-configuration
@@ -281,7 +302,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    * Determine if the sentiment matches the data at the selected point in the google chart.
    * @param {Object} sentiment - Sentiment response from the API.
    * @param {Array} selectedPoint - Point selected on the google chart.
-   * @returns
+   * @return {Boolean} True if data matches. False otherwise.
    */
   _hasMatchingData(sentiment, selectedPoint) {
     return (

@@ -4,8 +4,14 @@ import { UpdateConfiguration } from './graphql/UpdateConfiguration.mutation.grap
 import { LitElement } from "lit";
 import { getUser } from './user.js'
 
+/**
+ * Lit component providing interaction with user site configurations.
+ */
 class DeepSiteConfiguration extends LitElement {
 
+    /**
+     * Lit property declarations.
+     */
     static get properties() {
         return {
             user: {type: Object},
@@ -33,6 +39,9 @@ class DeepSiteConfiguration extends LitElement {
         }
     }
 
+    /**
+     * Lit component constructor.
+     */
     constructor() {
         super();
 
@@ -67,6 +76,10 @@ class DeepSiteConfiguration extends LitElement {
         });
     }
 
+    /**
+     * Callback triggered on update of component properties.
+     * @param {Set} changedProperties
+     */
     updated(changedProperties) {
         if (changedProperties.has('configuration')) {
             const event = new CustomEvent('site-configuration', {
@@ -79,7 +92,6 @@ class DeepSiteConfiguration extends LitElement {
     /**
      * Add the specified economic entity to those observed by the user.
      * @param {Object} economicEntity - Economic entity, i.e { name: 'somename', type: 'BUSINESS'}.
-     * @returns
      */
     observeEconomicEntity(economicEntity) {
         if (this.alreadyExists(economicEntity, this.configuration.observedEconomicEntities)) return;

@@ -18,4 +18,4 @@ console.log('\n\nBabel Configuration:\n');
 console.log(JSON.stringify(config));
 console.log('\n');
 
-export default config;
+module.exports = config;

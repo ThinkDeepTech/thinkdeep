@@ -10,11 +10,20 @@ import { createClient } from 'graphql-ws';
  */
  class WebSocketLink extends ApolloLink {
 
+  /**
+   * @param {Object} clientOptions
+   * @param {Object} request
+   */
     constructor(clientOptions, request) {
       super(request);
       this.client = createClient(clientOptions);
     }
 
+    /**
+     * Function to call on request.
+     * @param {Object} operation
+     * @return {Observable}
+     */
     request(operation) {
       return new Observable((sink) => {
         return this.client.subscribe(

@@ -44,7 +44,7 @@ describe('microservice', () => {
         it('should start the apollo server instance', async () => {
             apolloServer.start.returns(Promise.resolve());
             await subject.listen();
-            expect(apolloServer.start).to.have.been.called;
+            expect(apolloServer.start.callCount).to.be.greaterThan(0);
         })
 
         it('should disable x-powered-by for security reasons', async () => {

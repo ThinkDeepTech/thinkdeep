@@ -2,6 +2,9 @@ import {attachExitHandler} from '@thinkdeep/attach-exit-handler';
 import moment from 'moment';
 import { hasReadAllAccess } from './permissions.js';
 
+/**
+ * Service that applies business logic to data analysis operations for the application.
+ */
 class AnalysisService {
 
     /**
@@ -96,7 +99,6 @@ class AnalysisService {
      * @param {String} economicEntityName - Name of the economic entity (i.e, Google)
      * @param {String} economicEntityType - Type of economic entity (i.e, BUSINESS)
      * @param {Array} timeseriesTweets - Consists of objects of the form { timestamp: <Number>, tweets: [{ text: 'tweet text' }]}
-     * @returns
      */
     async _computeSentiment(economicEntityName, economicEntityType, timeseriesTweets) {
         if (!economicEntityName || (typeof economicEntityName !== 'string')) return;

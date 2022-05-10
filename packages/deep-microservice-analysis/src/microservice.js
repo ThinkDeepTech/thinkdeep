@@ -1,5 +1,8 @@
 import {getPublicIP} from '@thinkdeep/get-public-ip';
 
+/**
+ * Object representing the microservice itself.
+ */
 class Microservice {
 
     /**

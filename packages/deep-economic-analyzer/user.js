@@ -75,6 +75,7 @@ const getUser = async (options = {
 
 /**
  * Show the login window and prompt for user login.
+ * @param {String} redirectUri Uri to which the user will be redirected after login.
  */
 const login = async (redirectUri = globalThis.location.origin) => {
     return globalThis.auth0.loginWithRedirect({

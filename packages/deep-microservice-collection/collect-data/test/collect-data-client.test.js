@@ -58,13 +58,13 @@ describe('collect-data-client', () => {
         it('should connect to the kafka admin', async () => {
             await subject.connect();
 
-            expect(admin.connect).to.have.been.called;
+            expect(producer.connect.callCount).to.be.greaterThan(0);
         })
 
         it('should connect to the kafka producer', async () => {
             await subject.connect();
 
-            expect(producer.connect).to.have.been.called;
+            expect(producer.connect.callCount).to.be.greaterThan(0);
         })
     })
 
@@ -120,7 +120,7 @@ describe('collect-data-client', () => {
 
             const createTopicsArgs = admin.createTopics.getCall(0).args;
 
-            expect(admin.createTopics).to.have.been.calledOnce;
+            expect(admin.createTopics.callCount).to.equal(1);
             expect(createTopicsArgs[0].topics[0].topic).to.equal(eventName);
         })
 
@@ -133,7 +133,7 @@ describe('collect-data-client', () => {
             await subject.emitEvent(eventName, data);
 
             const eventArgs = producer.send.getCall(0).args;
-            expect(producer.send).to.have.been.calledOnce;
+            expect(producer.send.callCount).to.equal(1);
             expect(eventArgs[0].topic).to.equal(eventName);
             expect(eventArgs[0].messages[0].value).to.equal(JSON.stringify(data));
         })

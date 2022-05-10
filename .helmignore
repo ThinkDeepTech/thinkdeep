@@ -11,7 +11,7 @@ img/*
 .gitignore
 .prettierrc
 .yarnrc
-babel.config.mjs
+babel.config.js
 firebase.json
 lerna.json
 package.json

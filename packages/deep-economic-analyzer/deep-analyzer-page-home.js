@@ -1,7 +1,15 @@
 import {html, css, LitElement} from 'lit';
 import {i18nMixin, translate} from 'lit-element-i18n';
 
+/**
+ * Lit home page component.
+ */
 export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
+
+  /**
+   * Lit component style definitions.
+   * @return {TemplateResult}
+   */
   static get styles() {
     return css`
       :host {
@@ -21,6 +29,10 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
     `;
   }
 
+  /**
+   * Lit component render function.
+   * @return {TemplateResult}
+   */
   render() {
     return html`
       <h1 class="headline">${translate('translations:headline')}</h1>

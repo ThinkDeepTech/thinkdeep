@@ -29,7 +29,7 @@ describe('user', () => {
     it('should fetch the access token if the user is logged in', async () => {
       authClient.isAuthenticated.returns(Promise.resolve(true));
       await getUser();
-      expect(authClient.getTokenSilently).to.have.been.called;
+      expect(authClient.getTokenSilently.callCount).to.be.greaterThan(0);
     });
 
     it('should return the access token in the user object', async () => {
@@ -42,19 +42,19 @@ describe('user', () => {
 
     it('should fetch the user profile', async () => {
       await getUser();
-      expect(authClient.getUser).to.have.been.called;
+      expect(authClient.getUser.callCount).to.be.greaterThan(0);
     });
 
     it('should allow the user to log in', async () => {
       const user = await getUser();
       await user.login();
-      expect(authClient.loginWithRedirect).to.have.been.called;
+      expect(authClient.loginWithRedirect.callCount).to.be.greaterThan(0);
     });
 
     it('should allow the user to log out', async () => {
       const user = await getUser();
       await user.logout();
-      expect(authClient.logout).to.have.been.called;
+      expect(authClient.logout.callCount).to.be.greaterThan(0);
     });
 
     it('should throw an error if the audience is not provided', (done) => {

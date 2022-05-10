@@ -54,7 +54,7 @@ describe('sentiment-store', () => {
 
             await subject.readMostRecentSentiments(economicEntityName, economicEntityType);
 
-            expect(mongoCollection.find).not.to.have.been.called;
+            expect(mongoCollection.find.callCount).to.equal(0);
         })
 
         it('should return immediately if economic entity name is empty', async () => {
@@ -63,7 +63,7 @@ describe('sentiment-store', () => {
 
             await subject.readMostRecentSentiments(economicEntityName, economicEntityType);
 
-            expect(mongoCollection.find).not.to.have.been.called;
+            expect(mongoCollection.find.callCount).to.equal(0);
         })
 
         it('should return immediately if economic entity type is not a string', async() => {
@@ -72,7 +72,7 @@ describe('sentiment-store', () => {
 
             await subject.readMostRecentSentiments(economicEntityName, economicEntityType);
 
-            expect(mongoCollection.find).not.to.have.been.called;
+            expect(mongoCollection.find.callCount).to.equal(0);
         })
 
         it('should return immediately if economic entity type is empty', async() => {
@@ -81,7 +81,7 @@ describe('sentiment-store', () => {
 
             await subject.readMostRecentSentiments(economicEntityName, economicEntityType);
 
-            expect(mongoCollection.find).not.to.have.been.called;
+            expect(mongoCollection.find.callCount).to.equal(0);
         })
 
         it('should return the most recent sentiments', async () => {
@@ -139,7 +139,7 @@ describe('sentiment-store', () => {
 
             await subject.createSentiments(timestamp, economicEntityName, economicEntityType, sentiments);
 
-            expect(mongoCollection.insertOne).not.to.have.been.called;
+            expect(mongoCollection.insertOne.callCount).to.equal(0);
         })
 
         it('should return immediately if economic entity name is empty', async () => {
@@ -155,7 +155,7 @@ describe('sentiment-store', () => {
 
             await subject.createSentiments(timestamp, economicEntityName, economicEntityType, sentiments);
 
-            expect(mongoCollection.insertOne).not.to.have.been.called;
+            expect(mongoCollection.insertOne.callCount).to.equal(0);
         })
 
         it('should return immediately if economic entity type is not a string', async() => {
@@ -171,7 +171,7 @@ describe('sentiment-store', () => {
 
             await subject.createSentiments(timestamp, economicEntityName, economicEntityType, sentiments);
 
-            expect(mongoCollection.insertOne).not.to.have.been.called;
+            expect(mongoCollection.insertOne.callCount).to.equal(0);
         })
 
         it('should return immediately if economic entity type is empty', async() => {
@@ -187,7 +187,7 @@ describe('sentiment-store', () => {
 
             await subject.createSentiments(timestamp, economicEntityName, economicEntityType, sentiments);
 
-            expect(mongoCollection.insertOne).not.to.have.been.called;
+            expect(mongoCollection.insertOne.callCount).to.equal(0);
         })
 
         it('should return immediately if timestamp is zero', async () => {
@@ -203,7 +203,7 @@ describe('sentiment-store', () => {
 
             await subject.createSentiments(timestamp, economicEntityName, economicEntityType, sentiments);
 
-            expect(mongoCollection.insertOne).not.to.have.been.called;
+            expect(mongoCollection.insertOne.callCount).to.equal(0);
         })
 
         it('should insert the sentiments', async () => {
@@ -219,7 +219,7 @@ describe('sentiment-store', () => {
 
             const success = await subject.createSentiments(timestamp, economicEntityName, economicEntityType, sentiments);
 
-            expect(mongoCollection.insertOne).to.have.been.called;
+            expect(mongoCollection.insertOne.callCount).to.be.greaterThan(0);
             expect(success).to.equal(true);
         })
 
@@ -238,7 +238,7 @@ describe('sentiment-store', () => {
 
             const success = await subject.createSentiments(timestamp, economicEntityName, economicEntityType, sentiments);
 
-            expect(mongoCollection.insertOne).to.have.been.called;
+            expect(mongoCollection.insertOne.callCount).to.be.greaterThan(0);
             expect(success).to.equal(false);
         })
 

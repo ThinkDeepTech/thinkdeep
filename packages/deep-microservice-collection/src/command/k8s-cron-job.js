@@ -2,6 +2,9 @@ import {Command} from './command.js';
 import {validString} from '../helpers.js';
 import {stringify} from '@thinkdeep/k8s';
 
+/**
+ * Represents a kubernetes cron job.
+ */
 class K8sCronJob extends Command {
     /**
      * Constructs a kubernetes cron job with the specified configuration.
@@ -23,6 +26,9 @@ class K8sCronJob extends Command {
         this._obj = null;
     }
 
+    /**
+     * Execute the command.
+     */
     async execute() {
         try {
 
@@ -69,6 +75,9 @@ class K8sCronJob extends Command {
         }
     }
 
+    /**
+     * Stop the command.
+     */
     async stop() {
 
         if (!this._obj) return;

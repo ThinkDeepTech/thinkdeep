@@ -111,7 +111,7 @@ describe('deep-economic-analyzer', () => {
 
         navItems[1].click();
         await delayForPageRender();
-        expect(authClient.loginWithRedirect).to.have.been.called;
+        expect(authClient.loginWithRedirect.callCount).to.be.greaterThan(0);
 
         navItems[0].click();
     });

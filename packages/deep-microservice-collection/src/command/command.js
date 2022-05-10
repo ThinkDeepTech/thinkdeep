@@ -1,4 +1,7 @@
 
+/**
+ * Base class for commands executed by the commander.
+ */
 class Command {
 
     /**

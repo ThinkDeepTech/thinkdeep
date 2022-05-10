@@ -57,15 +57,15 @@ describe('analysis-service', () => {
     describe('constructor', () => {
 
         it('should create a kafka admin', () => {
-            expect(kafkaClient.admin).to.have.been.called;
+            expect(kafkaClient.admin.callCount).to.be.greaterThan(0);
         })
 
         it('should create a kafka producer', () => {
-            expect(kafkaClient.producer).to.have.been.called;
+            expect(kafkaClient.producer.callCount).to.be.greaterThan(0);
         })
 
         it('should create a kafka consumer', () => {
-            expect(kafkaClient.consumer).to.have.been.called;
+            expect(kafkaClient.consumer.callCount).to.be.greaterThan(0);
         })
 
         it('should assign the consumer to a consumer group', () => {
@@ -138,7 +138,7 @@ describe('analysis-service', () => {
             await messageProcessor({message: message1});
             await messageProcessor({message: message2});
 
-            expect(sentimentLib.analyze).to.have.been.calledThrice;
+            expect(sentimentLib.analyze.callCount).to.equal(3);
         })
 
         it('should wait for topic creation', async () => {
@@ -146,7 +146,7 @@ describe('analysis-service', () => {
             await subject.connect();
 
             const adminArg = admin.createTopics.getCall(0).args[0];
-            expect(admin.createTopics).to.have.been.calledOnce;
+            expect(admin.createTopics.callCount).to.equal(1);
             expect(adminArg.waitForLeaders).to.equal(true);
         })
     })
@@ -209,7 +209,7 @@ describe('analysis-service', () => {
 
             await subject.sentiments(economicEntityName, economicEntityType, user);
 
-            expect(analysisDataStore.readMostRecentSentiments).to.be.calledOnce;
+            expect(analysisDataStore.readMostRecentSentiments.callCount).to.equal(1);
         })
 
         it('should fetch data from the database', async () => {
@@ -228,7 +228,7 @@ describe('analysis-service', () => {
 
             await subject.sentiments(economicEntityName, economicEntityType, user);
 
-            expect(analysisDataStore.readMostRecentSentiments).to.be.calledOnce;
+            expect(analysisDataStore.readMostRecentSentiments.callCount).to.equal(1);
         })
 
     });
@@ -248,7 +248,7 @@ describe('analysis-service', () => {
             }];
 
             await subject._computeSentiment(economicEntityName, economicEntityType, timeSeriesData);
-            expect(logger.info).not.to.be.called;
+            expect(logger.info.callCount).to.equal(0);
         })
 
         it('should return an empty object if economic entity name is not a string', async () => {
@@ -264,7 +264,7 @@ describe('analysis-service', () => {
             }];
 
             await subject._computeSentiment(economicEntityName, economicEntityType, timeSeriesData);
-            expect(logger.info).not.to.be.called;
+            expect(logger.info.callCount).to.equal(0);
         })
 
         it('should return an empty object if economic entity type is empty', async () => {
@@ -280,7 +280,7 @@ describe('analysis-service', () => {
             }];
 
             await subject._computeSentiment(economicEntityName, economicEntityType, timeSeriesData);
-            expect(logger.info).not.to.be.called;
+            expect(logger.info.callCount).to.equal(0);
         })
 
         it('should return an empty object if economic entity type is not a string', async () => {
@@ -296,7 +296,7 @@ describe('analysis-service', () => {
             }];
 
             await subject._computeSentiment(economicEntityName, economicEntityType, timeSeriesData);
-            expect(logger.info).not.to.be.called;
+            expect(logger.info.callCount).to.equal(0);
         })
 
         it('should return if there are no time series entries', async () => {
@@ -305,7 +305,7 @@ describe('analysis-service', () => {
             const timeSeriesData = [];
 
             await subject._computeSentiment(economicEntityName, economicEntityType, timeSeriesData);
-            expect(logger.info).not.to.be.called;
+            expect(logger.info.callCount).to.equal(0);
         })
 
         it('should compute the sentiment for each tweet entry', async () => {
@@ -330,7 +330,7 @@ describe('analysis-service', () => {
 
             await subject._computeSentiment(economicEntityName, economicEntityType, timeSeriesData);
 
-            expect(sentimentLib.analyze).to.have.been.called;
+            expect(sentimentLib.analyze.callCount).to.be.greaterThan(0);
         })
 
         it('should skip over entries that include a null value for tweets ', async () => {
@@ -351,7 +351,7 @@ describe('analysis-service', () => {
 
             await subject._computeSentiment(economicEntityName, economicEntityType, timeSeriesData);
 
-            expect(sentimentLib.analyze).not.to.have.been.called;
+            expect(sentimentLib.analyze.callCount).to.equal(0);
         })
 
         it('should skip over entries that include an empty tweets array ', async () => {
@@ -372,7 +372,7 @@ describe('analysis-service', () => {
 
             await subject._computeSentiment(economicEntityName, economicEntityType, timeSeriesData);
 
-            expect(sentimentLib.analyze).not.to.have.been.called;
+            expect(sentimentLib.analyze.callCount).to.equal(0);
         })
 
         it('should add a message to the queue indicating the sentiments computed', async () => {
@@ -454,7 +454,7 @@ describe('analysis-service', () => {
             };
             sentimentLib.analyze.returns({ score: 1 });
 
-            const result = subject._averageSentiment(data);
+            subject._averageSentiment(data);
 
             const firstPassArgument = sentimentLib.analyze.getCall(0).args[0];
             const secondPassArgument = sentimentLib.analyze.getCall(1).args[0];
@@ -482,7 +482,7 @@ describe('analysis-service', () => {
 
             await subject._topicCreation(topics);
 
-            expect(logger.warn).to.have.been.called;
+            expect(logger.warn.callCount).to.be.greaterThan(0);
         })
     })
 })

@@ -3,10 +3,10 @@ import rollupGraphQL from '@rollup/plugin-graphql';
 import rollupInjectEnv from 'rollup-plugin-inject-process-env';
 import { fromRollup } from '@web/dev-server-rollup';
 
+import getPort from 'get-port';
+
 const graphql = fromRollup(rollupGraphQL);
 const injectEnv = fromRollup(rollupInjectEnv);
-
-import getPort from 'get-port';
 
 const browsers = {
   chromium: playwrightLauncher({product: 'chromium', launchOptions: {

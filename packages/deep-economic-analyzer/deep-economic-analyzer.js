@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import '@material/mwc-icon-button';
 import '@material/mwc-top-app-bar-fixed';
 import '@thinkdeep/deep-footer';
@@ -8,8 +10,14 @@ import {i18nMixin, translate} from 'lit-element-i18n';
 import {getUser} from '@thinkdeep/deep-economic-analyzer/user.js';
 import {initApolloClient} from './graphql/client.js';
 
-/* eslint-disable no-unused-vars */
+/**
+ * Lit component providing access to the economic analysis web application.
+ */
 export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
+
+  /**
+   * Lit component property definitions.
+   */
   static get properties() {
     return {
       companyName: {type: String},
@@ -18,6 +26,9 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
     };
   }
 
+  /**
+   * Lit component constructor.
+   */
   constructor() {
     super();
     this.companyName = '';
@@ -25,6 +36,9 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
     this.user = {};
   }
 
+  /**
+   * Lit callback executing when the page is first updated.
+   */
   async firstUpdated() {
     super.firstUpdated();
 
@@ -108,6 +122,10 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
     router.setRoutes(routes);
   }
 
+  /**
+   * Lit component styles definition.
+   * @return {Array<TemplateResult>}
+   */
   static get styles() {
     return [
       css`
@@ -145,6 +163,10 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
     ];
   }
 
+  /**
+   * Lit component render function.
+   * @return {TemplateResult}
+   */
   render() {
     return html`
       ${this.styles}

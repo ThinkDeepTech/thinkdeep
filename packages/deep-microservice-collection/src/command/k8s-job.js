@@ -2,6 +2,9 @@ import {Command} from './command.js';
 import {validString} from '../helpers.js';
 import {stringify} from '@thinkdeep/k8s';
 
+/**
+ * Command executing a kubernetes job.
+ */
 class K8sJob extends Command {
     /**
      * Constructs a kubernetes job with the specified configuration.
@@ -23,6 +26,9 @@ class K8sJob extends Command {
         this._obj = null;
     }
 
+    /**
+     * Execute the command.
+     */
     async execute() {
         try {
                 this._obj = await this._k8sClient.create(`
@@ -58,6 +64,9 @@ class K8sJob extends Command {
         }
     }
 
+    /**
+     * Stop the command.
+     */
     async stop() {
 
         if (!this._obj) return;
