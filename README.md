@@ -117,7 +117,12 @@ one developer that's good at security and that fix will benefit everyone using t
 with security-related development I opted to use one that was already available. Auth0.
 
 ## Developer Setup
-- Follow the instructions for setup in each of the microservices and the analysis template app.
+- Run
+```console
 
-## Environment Variables
-- DIGITALOCEAN_ACCESS_TOKEN : Access token for digital ocean
+    yarn install
+
+```
+- Install Kubectl
+- Install Helm v3.8.2.
+- Run helm install in project root.
