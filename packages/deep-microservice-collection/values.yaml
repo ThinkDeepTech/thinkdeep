@@ -9,8 +9,12 @@
 
   replicas: 1
 
+  data:
+    collector:
+      image: "thinkdeeptech/collect-data:latest"
+
   container:
-      image: "thinkdeeptech/deep-microservice-collection:latest"
+    image: "thinkdeeptech/deep-microservice-collection:latest"
 
   graphql:
     port: "4002"

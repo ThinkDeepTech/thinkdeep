@@ -231,7 +231,7 @@ class CollectionService {
            */
           /** min | hour | day | month | weekday */
           schedule: `0 */6 * * *`,
-          image: 'thinkdeeptech/collect-data:latest',
+          image: process.env.DATA_COLLECTOR_IMAGE_NAME || '',
           command: 'node',
           args: [
             'src/collect-data.js',
@@ -248,7 +248,7 @@ class CollectionService {
         {
           name,
           namespace,
-          image: 'thinkdeeptech/collect-data:latest',
+          image: process.env.DATA_COLLECTOR_IMAGE_NAME || '',
           command: 'node',
           args: [
             'src/collect-data.js',
