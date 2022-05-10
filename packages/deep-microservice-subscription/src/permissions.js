@@ -1,12 +1,13 @@
-
 /**
  * Check whether the permissions object is valid.
  * @param {Object} permissions - Permissions subject.
  * @return {Boolean} - True if the user object is valid. False otherwise.
  */
 const isValidPerm = (permissions) => {
-    return !!permissions && !!Object.keys(permissions).length && !!permissions?.scope;
-}
+  return (
+    !!permissions && !!Object.keys(permissions).length && !!permissions?.scope
+  );
+};
 
 /**
  * Check whether the me object is valid.
@@ -14,8 +15,8 @@ const isValidPerm = (permissions) => {
  * @return {Boolean} - True if the me object is valid. False otherwise.
  */
 const isValidMe = (me) => {
-    return !!me && !!me?.email;
-}
+  return !!me && !!me?.email;
+};
 
 /**
  * Determine if the user has read all access.
@@ -23,7 +24,10 @@ const isValidMe = (me) => {
  * @return {Boolean} - True if the user has read:all scope. False otherwise.
  */
 const hasReadAllAccess = (permissions) => {
-    return isValidPerm(permissions) && !!permissions?.scope?.split(' ').includes('read:all');
+  return (
+    isValidPerm(permissions) &&
+    !!permissions?.scope?.split(' ').includes('read:all')
+  );
 };
 
 /**
@@ -33,8 +37,8 @@ const hasReadAllAccess = (permissions) => {
  * @return {Boolean} - True if the userEmail and me.email match. False otherwise.
  */
 const isCurrentUser = (userEmail, me) => {
-    if (!isValidMe(me)) return false;
-    return userEmail.toLowerCase() === me.email.toLowerCase();
+  if (!isValidMe(me)) return false;
+  return userEmail.toLowerCase() === me.email.toLowerCase();
 };
 
-export { hasReadAllAccess, isCurrentUser};
+export {hasReadAllAccess, isCurrentUser};

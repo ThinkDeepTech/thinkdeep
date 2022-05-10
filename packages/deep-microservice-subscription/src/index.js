@@ -6,9 +6,17 @@ import cors from 'cors';
 import express from 'express';
 import jwt from 'express-jwt';
 import {getLogger} from './get-logger.js';
-import {execute, subscribe, printSchema, parse, getOperationAST, GraphQLError, validate} from 'graphql';
-import { useServer } from 'graphql-ws/lib/use/ws';
-import { createServer } from 'http';
+import {
+  execute,
+  subscribe,
+  printSchema,
+  parse,
+  getOperationAST,
+  GraphQLError,
+  validate,
+} from 'graphql';
+import {useServer} from 'graphql-ws/lib/use/ws';
+import {createServer} from 'http';
 import jwks from 'jwks-rsa';
 // import {loggingPlugin} from './logging-plugin.js';
 import process from 'process';
@@ -19,7 +27,6 @@ import ws from 'ws';
 const logger = getLogger();
 
 const startApolloServer = async () => {
-
   const validateAndAppendPermissions = jwt({
     secret: jwks.expressJwtSecret({
       cache: true,
@@ -49,16 +56,15 @@ const startApolloServer = async () => {
         return req.headers.me;
       }
       return '';
-    }
+    },
   });
 
   const validateAndFetchPermissionsAndMe = async (connectionParams, extra) => {
-
     if (!extra?.request) {
       throw new Error('The request object was not valid.');
     }
 
-    const incomingRequest = extra.request || { };
+    const incomingRequest = extra.request || {};
 
     if (!Object.keys(incomingRequest).length) {
       throw new Error('There were no keys in the request');
@@ -69,14 +75,13 @@ const startApolloServer = async () => {
       headers: {
         authorization: connectionParams?.authorization || '',
         me: connectionParams?.me || '',
-      }
+      },
     };
 
     // NOTE: This is a bit hacky but I want to reuse express-jwt's solution for completeness and consistency
     // with the gateway along with the safety of secret handling. It's kept consistent with the gateway microservice.
     // If an error is thrown, the connection will be closed thereby correctly performing the needed validation.
     await new Promise((resolve) => {
-
       const dummyNext = (error) => {
         if (error) {
           throw error;
@@ -85,12 +90,10 @@ const startApolloServer = async () => {
       };
 
       validateAndAppendPermissions(dummyRequest, undefined, dummyNext);
-
     });
 
     // TODO: Split this and the above logic into shared function + callback
     await new Promise((resolve) => {
-
       const dummyNext = (error) => {
         if (error) {
           throw error;
@@ -103,22 +106,30 @@ const startApolloServer = async () => {
 
     return {
       permissions: dummyRequest?.permissions || {},
-      me: dummyRequest?.me || {}
-    }
+      me: dummyRequest?.me || {},
+    };
   };
 
   const app = express();
 
   // NOTE: Placing a forward slash at the end of any allowed origin causes a preflight error.
-  let allowedOrigins = ['https://predecos.com', 'https://www.predecos.com', 'https://thinkdeep-d4624.web.app', 'https://www.thinkdeep-d4624.web.app']
+  let allowedOrigins = [
+    'https://predecos.com',
+    'https://www.predecos.com',
+    'https://thinkdeep-d4624.web.app',
+    'https://www.thinkdeep-d4624.web.app',
+  ];
   const isProduction = process.env.NODE_ENV.toLowerCase() === 'production';
   if (!isProduction) {
-    allowedOrigins = allowedOrigins.concat([/^https?:\/\/localhost:[0-9]{1,5}/, 'https://studio.apollographql.com']);
+    allowedOrigins = allowedOrigins.concat([
+      /^https?:\/\/localhost:[0-9]{1,5}/,
+      'https://studio.apollographql.com',
+    ]);
   }
   const corsOptions = {
     origin: allowedOrigins,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE',
-    credentials: true
+    credentials: true,
   };
 
   app.use(cors(corsOptions));
@@ -131,25 +142,32 @@ const startApolloServer = async () => {
 
   const path = process.env.GRAPHQL_PATH;
   if (!path) {
-      throw new Error(`A path at which the application can be accessed is required (i.e, /graphql). Received: ${path}`);
+    throw new Error(
+      `A path at which the application can be accessed is required (i.e, /graphql). Received: ${path}`
+    );
   }
 
-  const webSocketServer = new ws.Server({ server: httpServer, path });
+  const webSocketServer = new ws.Server({server: httpServer, path});
 
   let schema = null;
   const gatewayProxy = new ApolloGateway({
     serviceList: [
       // NOTE: This is a direct copy of what's done in the gateway service. Keep the two synced.
       {name: 'analysis', url: process.env.PREDECOS_MICROSERVICE_ANALYSIS_URL},
-      {name: 'collection', url: process.env.PREDECOS_MICROSERVICE_COLLECTION_URL},
-      {name: 'configuration', url: process.env.PREDECOS_MICROSERVICE_CONFIGURATION_URL},
+      {
+        name: 'collection',
+        url: process.env.PREDECOS_MICROSERVICE_COLLECTION_URL,
+      },
+      {
+        name: 'configuration',
+        url: process.env.PREDECOS_MICROSERVICE_CONFIGURATION_URL,
+      },
     ],
   });
   gatewayProxy.onSchemaChange((gatewaySchema) => {
-
     if (!typeDefs || !resolvers) {
       throw new Error(
-        "Both `typeDefs` and `resolvers` are required to make the executable subscriptions schema."
+        'Both `typeDefs` and `resolvers` are required to make the executable subscriptions schema.'
       );
     }
 
@@ -159,73 +177,88 @@ const startApolloServer = async () => {
 
     schema = makeExecutableSchema({
       typeDefs: [...(gatewayTypeDefs && [gatewayTypeDefs]), typeDefs],
-      resolvers
+      resolvers,
     });
-  })
+  });
 
   await gatewayProxy.load();
 
-  useServer({
-    execute,
-    subscribe,
-    context: async ({connectionParams, extra}) => {
+  useServer(
+    {
+      execute,
+      subscribe,
+      context: async ({connectionParams, extra}) => {
+        const {permissions, me} = await validateAndFetchPermissionsAndMe(
+          connectionParams,
+          extra
+        );
 
-      const { permissions, me } = await validateAndFetchPermissionsAndMe(connectionParams, extra);
+        return {permissions, me};
+      },
+      onConnect: async ({connectionParams, extra}) => {
+        await validateAndFetchPermissionsAndMe(connectionParams, extra);
+      },
+      onSubscribe: (_ctx, msg) => {
+        // Construct the execution arguments
+        const args = {
+          schema, // <-- Use the previously defined `schema` here
+          operationName: msg.payload.operationName,
+          document: parse(msg.payload.query),
+          variableValues: msg.payload.variables,
+        };
 
-      return { permissions, me };
+        const operationAST = getOperationAST(args.document, args.operationName);
+
+        // Stops the subscription and sends an error message
+        if (!operationAST) {
+          return [new GraphQLError('Unable to identify operation')];
+        }
+
+        // Handle mutation and query requests
+        if (operationAST.operation !== 'subscription') {
+          return [
+            new GraphQLError('Only subscription operations are supported'),
+          ];
+        }
+
+        // Validate the operation document
+        const errors = validate(args.schema, args.document);
+
+        if (errors.length > 0) {
+          return errors;
+        }
+
+        // Ready execution arguments
+        return args;
+      },
     },
-    onConnect: async ({connectionParams, extra}) => {
-      await validateAndFetchPermissionsAndMe(connectionParams, extra);
-    },
-    onSubscribe: (_ctx, msg) => {
-
-      // Construct the execution arguments
-      const args = {
-        schema, // <-- Use the previously defined `schema` here
-        operationName: msg.payload.operationName,
-        document: parse(msg.payload.query),
-        variableValues: msg.payload.variables
-      };
-
-      const operationAST = getOperationAST(
-        args.document,
-        args.operationName
-      );
-
-      // Stops the subscription and sends an error message
-      if (!operationAST) {
-        return [new GraphQLError("Unable to identify operation")];
-      }
-
-      // Handle mutation and query requests
-      if (operationAST.operation !== "subscription") {
-        return [
-          new GraphQLError("Only subscription operations are supported")
-        ];
-      }
-
-      // Validate the operation document
-      const errors = validate(args.schema, args.document);
-
-      if (errors.length > 0) {
-        return errors;
-      }
-
-      // Ready execution arguments
-      return args;
-    },
-  }, webSocketServer);
+    webSocketServer
+  );
 
   const port = Number(process.env.GRAPHQL_PORT);
   if (!port) {
-      throw new Error(`A port at which the application can be accessed is required. Received: ${port}`);
+    throw new Error(
+      `A port at which the application can be accessed is required. Received: ${port}`
+    );
   }
 
-  httpServer.listen({ port }, () => {
-    logger.info(`🚀 Subscriptions ready at ws://${getPublicIP()}:${port}${webSocketServer.options.path}`);
-  })
+  httpServer.listen({port}, () => {
+    logger.info(
+      `🚀 Subscriptions ready at ws://${getPublicIP()}:${port}${
+        webSocketServer.options.path
+      }`
+    );
+  });
 };
 
-startApolloServer().then(() => { /* Do nothing */ }).catch((error) => {
-  logger.error(`An Error Occurred: ${JSON.stringify(error)}, message: ${error.message.toString()}`);
-});
+startApolloServer()
+  .then(() => {
+    /* Do nothing */
+  })
+  .catch((error) => {
+    logger.error(
+      `An Error Occurred: ${JSON.stringify(
+        error
+      )}, message: ${error.message.toString()}`
+    );
+  });

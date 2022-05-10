@@ -1,10 +1,12 @@
-import { gql } from 'apollo-server';
+import {gql} from 'apollo-server';
 
 const typeDefs = gql`
-
-    type Subscription {
-        updateSentiments(economicEntityName: String!, economicEntityType: EconomicEntityType!): [Sentiment!]!
-    }
+  type Subscription {
+    updateSentiments(
+      economicEntityName: String!
+      economicEntityType: EconomicEntityType!
+    ): [Sentiment!]!
+  }
 `;
 
-export { typeDefs };
+export {typeDefs};

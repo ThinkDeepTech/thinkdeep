@@ -4,7 +4,7 @@
  * @return {Promise<void>} Resolves after time passes.
  */
 function sleep(milliseconds) {
-    return new Promise((resolve) => setTimeout(resolve, milliseconds));
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
 /**
@@ -12,7 +12,7 @@ function sleep(milliseconds) {
  * @param {Number} milliseconds
  */
 const wait = async (milliseconds) => {
-    await sleep(milliseconds);
+  await sleep(milliseconds);
 };
 
 /**
@@ -24,11 +24,7 @@ const wait = async (milliseconds) => {
  * Therefore, a value << 2000 ms is ideal.
  */
 const delayForPageRender = async () => {
-    await wait(1500);
+  await wait(1500);
 };
 
-export {
-    delayForPageRender,
-    wait,
-    sleep
-};
+export {delayForPageRender, wait, sleep};

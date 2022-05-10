@@ -6,7 +6,6 @@ import {html, LitElement, css} from 'lit';
  * Component providing footer for web page.
  */
 export class DeepFooter extends LitElement {
-
   /**
    * Property definitions for lit component.
    */

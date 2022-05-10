@@ -2,140 +2,141 @@ import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
-import { CollectDataClient } from '../src/collect-data-client.js';
+import {CollectDataClient} from '../src/collect-data-client.js';
 
 const expect = chai.expect;
 chai.use(sinonChai);
 
 describe('collect-data-client', () => {
+  let twitterClient;
+  let kafkaClient;
+  let admin;
+  let producer;
+  let logger;
+  let subject;
+  beforeEach(() => {
+    twitterClient = {
+      v2: {
+        get: sinon.stub(),
+      },
+    };
 
-    let twitterClient;
-    let kafkaClient;
-    let admin;
-    let producer;
-    let logger;
-    let subject;
-    beforeEach(() => {
+    admin = {
+      connect: sinon.stub(),
+      createTopics: sinon.stub(),
+      disconnect: sinon.stub(),
+    };
 
-        twitterClient = {
-            v2: {
-                get: sinon.stub()
-            }
-        };
+    admin.disconnect.returns(Promise.resolve());
 
-        admin = {
-            connect: sinon.stub(),
-            createTopics: sinon.stub(),
-            disconnect: sinon.stub()
-        };
+    producer = {
+      connect: sinon.stub(),
+      send: sinon.stub(),
+      disconnect: sinon.stub(),
+    };
 
-        admin.disconnect.returns( Promise.resolve() );
+    producer.disconnect.returns(Promise.resolve());
 
-        producer = {
-            connect: sinon.stub(),
-            send: sinon.stub(),
-            disconnect: sinon.stub()
-        };
+    kafkaClient = {
+      admin: sinon.stub().returns(admin),
+      producer: sinon.stub().returns(producer),
+    };
 
-        producer.disconnect.returns( Promise.resolve() );
+    logger = {
+      debug: sinon.stub(),
+      info: sinon.stub(),
+      warn: sinon.stub(),
+    };
 
-        kafkaClient = {
-            admin: sinon.stub().returns(admin),
-            producer: sinon.stub().returns(producer)
-        };
+    subject = new CollectDataClient(twitterClient, kafkaClient, logger);
+  });
 
-        logger = {
-            debug: sinon.stub(),
-            info: sinon.stub(),
-            warn: sinon.stub()
-        }
+  describe('connect', () => {
+    it('should connect to the kafka admin', async () => {
+      await subject.connect();
 
-        subject = new CollectDataClient(twitterClient, kafkaClient, logger);
+      expect(producer.connect.callCount).to.be.greaterThan(0);
     });
 
-    describe('connect', () => {
+    it('should connect to the kafka producer', async () => {
+      await subject.connect();
 
-        it('should connect to the kafka admin', async () => {
-            await subject.connect();
+      expect(producer.connect.callCount).to.be.greaterThan(0);
+    });
+  });
 
-            expect(producer.connect.callCount).to.be.greaterThan(0);
-        })
+  describe('fetchRecentTweets', () => {
+    it('should query the twitter api for recent tweets', async () => {
+      const getResponse = {
+        data: [
+          {
+            text: 'some text here',
+          },
+          {
+            text: 'some more text',
+          },
+        ],
+      };
+      twitterClient.v2.get.returns(getResponse);
 
-        it('should connect to the kafka producer', async () => {
-            await subject.connect();
+      await subject.fetchRecentTweets({
+        query: 'Google en:us',
+      });
 
-            expect(producer.connect.callCount).to.be.greaterThan(0);
-        })
-    })
+      const getArgs = twitterClient.v2.get.getCall(0).args;
+      expect(getArgs[0]).to.equal('tweets/search/recent');
+    });
 
-    describe('fetchRecentTweets', () => {
+    it('should apply the desired query parameters', async () => {
+      const getResponse = {
+        data: [
+          {
+            text: 'some text here',
+          },
+          {
+            text: 'some more text',
+          },
+        ],
+      };
+      twitterClient.v2.get.returns(getResponse);
+      const queryParams = {
+        query: 'Google en:us',
+      };
 
-        it('should query the twitter api for recent tweets', async () => {
-            const getResponse = {
-                data: [{
-                    text: 'some text here'
-                }, {
-                    text: 'some more text'
-                }]
-            }
-            twitterClient.v2.get.returns(getResponse);
+      await subject.fetchRecentTweets(queryParams);
 
-            await subject.fetchRecentTweets({
-                query: 'Google en:us'
-            });
+      const getArgs = twitterClient.v2.get.getCall(0).args;
+      expect(getArgs[1]).to.equal(queryParams);
+    });
+  });
 
-            const getArgs = twitterClient.v2.get.getCall(0).args;
-            expect(getArgs[0]).to.equal('tweets/search/recent');
-        })
+  describe('emitEvent', () => {
+    it('should create the event as a kafka topic', async () => {
+      const eventName = 'TEST_EVENT';
+      const data = {
+        eventInfo: 'information',
+      };
 
-        it('should apply the desired query parameters', async () => {
-            const getResponse = {
-                data: [{
-                    text: 'some text here'
-                }, {
-                    text: 'some more text'
-                }]
-            }
-            twitterClient.v2.get.returns(getResponse);
-            const queryParams = {
-                query: 'Google en:us'
-            };
+      await subject.emitEvent(eventName, data);
 
-            await subject.fetchRecentTweets(queryParams);
+      const createTopicsArgs = admin.createTopics.getCall(0).args;
 
-            const getArgs = twitterClient.v2.get.getCall(0).args;
-            expect(getArgs[1]).to.equal(queryParams);
-        })
-    })
+      expect(admin.createTopics.callCount).to.equal(1);
+      expect(createTopicsArgs[0].topics[0].topic).to.equal(eventName);
+    });
 
-    describe('emitEvent', () => {
+    it('should trigger the event', async () => {
+      const eventName = 'TEST_EVENT';
+      const data = {
+        eventInfo: 'information',
+      };
 
-        it('should create the event as a kafka topic', async () => {
-            const eventName = 'TEST_EVENT';
-            const data = {
-                eventInfo: 'information'
-            };
+      await subject.emitEvent(eventName, data);
 
-            await subject.emitEvent(eventName, data);
-
-            const createTopicsArgs = admin.createTopics.getCall(0).args;
-
-            expect(admin.createTopics.callCount).to.equal(1);
-            expect(createTopicsArgs[0].topics[0].topic).to.equal(eventName);
-        })
-
-        it('should trigger the event', async () => {
-            const eventName = 'TEST_EVENT';
-            const data = {
-                eventInfo: 'information'
-            };
-
-            await subject.emitEvent(eventName, data);
-
-            const eventArgs = producer.send.getCall(0).args;
-            expect(producer.send.callCount).to.equal(1);
-            expect(eventArgs[0].topic).to.equal(eventName);
-            expect(eventArgs[0].messages[0].value).to.equal(JSON.stringify(data));
-        })
-    })
+      const eventArgs = producer.send.getCall(0).args;
+      expect(producer.send.callCount).to.equal(1);
+      expect(eventArgs[0].topic).to.equal(eventName);
+      expect(eventArgs[0].messages[0].value).to.equal(JSON.stringify(data));
+    });
+  });
 });

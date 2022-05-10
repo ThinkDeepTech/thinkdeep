@@ -5,7 +5,6 @@ import {i18nMixin, translate} from 'lit-element-i18n';
  * Lit home page component.
  */
 export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
-
   /**
    * Lit component style definitions.
    * @return {TemplateResult}

@@ -14,7 +14,6 @@ import {initApolloClient} from './graphql/client.js';
  * Lit component providing access to the economic analysis web application.
  */
 export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
-
   /**
    * Lit component property definitions.
    */

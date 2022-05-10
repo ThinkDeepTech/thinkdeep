@@ -1,17 +1,15 @@
 const debounce = (fcn, wait) => {
+  let timeout;
 
-    let timeout;
-
-    return function execute (...args) {
-
-        const later = () => {
-            clearTimeout(timeout);
-            fcn(...args)
-        };
-
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
+  return function execute(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      fcn(...args);
     };
+
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
 };
 
-export { debounce };
+export {debounce};

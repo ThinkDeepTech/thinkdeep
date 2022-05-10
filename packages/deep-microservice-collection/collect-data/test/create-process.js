@@ -1,4 +1,4 @@
-import { spawn } from 'child_process';
+import {spawn} from 'child_process';
 
 /**
  * Create a process.
@@ -9,17 +9,17 @@ import { spawn } from 'child_process';
  * @return {ChildProcessWithoutNullStreams} Child process.
  */
 function createProcess(processPath, args = [], env = null) {
-    args = [processPath].concat(args);
+  args = [processPath].concat(args);
 
-    console.log(`Executing: ${processPath}, Arguments: ${JSON.stringify(args)}`);
-    return spawn('node', args, {
-      env: Object.assign(
-        {
-          NODE_ENV: 'test'
-        },
-        env
-      )
-    });
-  }
+  console.log(`Executing: ${processPath}, Arguments: ${JSON.stringify(args)}`);
+  return spawn('node', args, {
+    env: Object.assign(
+      {
+        NODE_ENV: 'test',
+      },
+      env
+    ),
+  });
+}
 
-  export { createProcess };
+export {createProcess};

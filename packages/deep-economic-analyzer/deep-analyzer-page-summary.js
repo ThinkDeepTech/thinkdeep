@@ -22,7 +22,6 @@ import {translate} from 'lit-element-i18n';
  * Lit summary page component.
  */
 export default class DeepAnalyzerPageSummary extends LitElement {
-
   /**
    * Lit component property definitions.
    */
