@@ -8,6 +8,7 @@ chai.use(sinonChai);
 
 describe('collection-service', () => {
   process.env.NAMESPACE = 'default';
+  process.env.DATA_COLLECTOR_IMAGE_NAME = 'thinkdeeptech/collect-data:latest';
 
   const memoizedEconomicEntities = [
     {
