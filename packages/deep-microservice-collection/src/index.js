@@ -1,6 +1,6 @@
 import {buildSubgraphSchema} from '@apollo/subgraph';
 import {attachExitHandler} from '@thinkdeep/attach-exit-handler';
-import {K8sClient} from '@thinkdeep/k8s';
+import {K8sClient, KubeConfig} from '@thinkdeep/k8s';
 import {getPublicIP} from '@thinkdeep/get-public-ip';
 import {ApolloServer} from 'apollo-server-express';
 import {CollectionService} from './collection-service.js';
@@ -40,7 +40,11 @@ const startApolloServer = async () => {
     process.env.PREDECOS_MONGODB_CONNECTION_STRING
   );
 
-  const k8sClient = await new K8sClient().init();
+  const kubeConfig = new KubeConfig();
+
+  kubeConfig.loadFromCluster();
+
+  const k8sClient = await new K8sClient(kubeConfig).init();
 
   const onRecycleOfAllMicroserviceReplicas = async (callback) => {
     const deploymentName = process.env.DEPLOYMENT_NAME;
