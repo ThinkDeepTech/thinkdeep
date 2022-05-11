@@ -228,9 +228,8 @@ class CollectionService {
            * NOTE: Due to twitter developer account limitations only 500,000 tweets can be consumed per month.
            * As a result, ~400 businesses can be watched when fetched every 6 hours.
            */
-          // TODO: Revert back to every 6 hours.
           /** min | hour | day | month | weekday */
-          schedule: `* * * * *`,
+          schedule: `0 */6 * * *`,
           image: process.env.DATA_COLLECTOR_IMAGE_NAME || '',
           command: 'node',
           args: [
