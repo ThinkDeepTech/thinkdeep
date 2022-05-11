@@ -22,7 +22,7 @@ describe('k8s-job', () => {
 
   describe('constructor', () => {
     const requiredOptionsErrorMessage =
-      'A job requires a name, image and command';
+      'A job requires a name and a valid operation to perform.';
 
     it('should throw an error if the name is empty', () => {
       try {
