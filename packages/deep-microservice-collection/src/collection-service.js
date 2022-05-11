@@ -234,7 +234,7 @@ class CollectionService {
            */
           /** min | hour | day | month | weekday */
           schedule: `0 */6 * * *`,
-          fetchTweets,
+          operation: fetchTweets,
         },
         this._k8sClient,
         this._logger
@@ -244,7 +244,7 @@ class CollectionService {
         {
           name,
           namespace,
-          fetchTweets,
+          operation: fetchTweets,
         },
         this._k8sClient,
         this._logger

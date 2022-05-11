@@ -16,7 +16,7 @@
   },
   "scripts": {
     "start": "node ./src/index.js",
-    "tests": "mocha ./test/**/*.test.js ./test/*.test.js --exit && cd ./collect-data && yarn run tests;"
+    "tests": "mocha ./test/**/*.test.js ./test/*.test.js --exit"
   },
   "devDependencies": {
     "chai": "^4.3.4",
