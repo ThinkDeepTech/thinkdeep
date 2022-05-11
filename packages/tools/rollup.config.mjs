@@ -1,9 +1,9 @@
 import graphql from '@rollup/plugin-graphql';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import babel from '@rollup/plugin-babel';
+import {babel} from '@rollup/plugin-babel';
 import eslint from '@rollup/plugin-eslint';
 import injectEnv from 'rollup-plugin-inject-process-env';
-import html from '@web/rollup-plugin-html';
+import {rollupPluginHTML as html} from '@web/rollup-plugin-html';
 import copy from 'rollup-plugin-copy'
 import merge from 'deepmerge';
 import { createSpaConfig } from '@open-wc/building-rollup';
@@ -26,7 +26,8 @@ const baseConfig = createSpaConfig({
 export default merge(createSpaConfig, {
   input: 'index.html',
   output: {
-    dir: 'build'
+    dir: 'build',
+    format: 'es'
   },
   plugins: [
     nodeResolve(),

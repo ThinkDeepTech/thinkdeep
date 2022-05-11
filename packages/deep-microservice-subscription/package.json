@@ -7,6 +7,7 @@
     "Apollo",
     "NodeJS"
   ],
+  "type": "module",
   "author": "haydenmcp <hayden.mcparlane@gmail.com>",
   "homepage": "https://github.com/ThinkDeepTech/thinkdeep#readme",
   "repository": {
@@ -14,8 +15,8 @@
     "url": "git+https://github.com/ThinkDeepTech/thinkdeep.git"
   },
   "scripts": {
-    "start": "node ./src/index.mjs",
-    "tests": "mocha ./test/**/*.test.mjs ./test/*.test.mjs"
+    "start": "node ./src/index.js",
+    "tests": "mocha ./test/**/*.test.js ./test/*.test.js"
   },
   "devDependencies": {
     "chai": "^4.3.4",

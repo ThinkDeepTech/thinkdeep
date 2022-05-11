@@ -1,7 +1,14 @@
+/* eslint-disable no-unused-vars */
+
 import {html, LitElement, css} from 'lit';
 
-/* eslint-disable no-unused-vars */
+/**
+ * Component providing footer for web page.
+ */
 export class DeepFooter extends LitElement {
+  /**
+   * Property definitions for lit component.
+   */
   static get properties() {
     return {
       companyName: {type: String},
@@ -10,6 +17,9 @@ export class DeepFooter extends LitElement {
     };
   }
 
+  /**
+   * Initialization for lit component.
+   */
   constructor() {
     super();
 
@@ -18,6 +28,9 @@ export class DeepFooter extends LitElement {
     this.routes = [];
   }
 
+  /**
+   * Styles for lit component.
+   */
   static get styles() {
     return [
       css`
@@ -76,6 +89,10 @@ export class DeepFooter extends LitElement {
     ];
   }
 
+  /**
+   * Lit render function.
+   * @return {TemplateResult}
+   */
   render() {
     return html`
       <div class="helpful-links">

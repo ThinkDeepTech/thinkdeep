@@ -8,5 +8,6 @@ data:
     GRAPHQL_PORT: {{ required "A valid port at which the application can be accessed is required" .Values.graphql.port | quote }}
     GRAPHQL_PATH: {{ required "A valid path at which the application can be accessed is required (i.e, /graphql)" .Values.graphql.path | quote}}
     NAMESPACE: {{ .Release.Namespace | quote }}
+    DATA_COLLECTOR_IMAGE_NAME: {{ required "A valid data collection image is required (i.e, thinkdeeptech/collect-data:latest)." .Values.data.collector.image | quote }}
     HELM_RELEASE_NAME: {{ .Release.Name | quote }}
     NODE_ENV: {{ required "A valid node environment is required" .Values.global.nodeEnv | quote}}
