@@ -3,12 +3,12 @@ import {execute} from './execute.js';
 
 const expect = chai.expect;
 
-describe('index', () => {
+describe('data-collector', () => {
   /**
    * NOTE: This path is relative to the current working directory which, when tests are executed,
    * is the root of the project.
    */
-  const modulePath = './src/index.js';
+  const modulePath = './src/data-collector.js';
 
   it('should require the entity name', async () => {
     const entityType = 'BUSINESS';
