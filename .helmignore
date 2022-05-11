@@ -5,17 +5,18 @@ img/*
 .github/*
 .circleci/*
 .git/*
-.eslintignore
-.eslintrc.js
-.firebaserc
+.eslint*
+.firebase*
 .gitignore
-.prettierrc
+.prettier*
 .yarnrc
-babel.config.js
+.npm*
+babel.config.*
 firebase.json
 lerna.json
 package.json
 packages/*
+
 
 # General files for the project
 pkg/*
