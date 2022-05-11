@@ -1,13 +1,23 @@
+# Thinkdeep
 [![CircleCI](https://circleci.com/gh/ThinkDeepTech/thinkdeep.svg?style=shield)](https://circleci.com/gh/ThinkDeepTech/thinkdeep)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ThinkDeepTech_thinkdeep&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ThinkDeepTech_thinkdeep)
-
-# Thinkdeep
 The main purpose of this repository is to learn while developing something cool. It's a bit of an experiment.
 
 ## Global Dependencies
 - [Node v16.14.2](https://nodejs.org/en/)
 - [Lerna v4.0.0](https://github.com/lerna/lerna)
 - [Yarn v1.18.0](https://yarnpkg.com/)
+
+## Developer Setup
+- Run
+```console
+
+    yarn install
+
+```
+- Install [Kubectl](https://kubernetes.io/docs/tasks/tools/)
+- Install [Helm v3.8.2](https://helm.sh/)
+- Run helm install in project root and set required values.
 
 ## Goals
 The goal started out as creation of a LitElement component collection usable in multiple web application templates. Those
@@ -115,14 +125,3 @@ trusted by many others and that's open-source. Popular open-source security libr
 thereby increasing the likelihood that vulnerabilities will be found. Additionally, when they're found they can be fixed by
 one developer that's good at security and that fix will benefit everyone using the library. Due to my lack of experience
 with security-related development I opted to use one that was already available. Auth0.
-
-## Developer Setup
-- Run
-```console
-
-    yarn install
-
-```
-- Install [Kubectl](https://kubernetes.io/docs/tasks/tools/)
-- Install [Helm v3.8.2](https://helm.sh/)
-- Run helm install in project root and set required values.

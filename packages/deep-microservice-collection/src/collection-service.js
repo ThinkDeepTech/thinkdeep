@@ -2,6 +2,7 @@ import {K8sCronJob} from './command/k8s-cron-job.js';
 import {K8sJob} from './command/k8s-job.js';
 import {validString} from './helpers.js';
 import moment from 'moment';
+import {Operations} from './operation/operations.js';
 import {hasReadAllAccess} from './permissions.js';
 
 /**
@@ -218,6 +219,9 @@ class CollectionService {
       const kababCaseName = entityName.toLowerCase().split(' ').join('-');
       const kababCaseType = entityType.toLowerCase().split(' ').join('-');
       const name = `fetch-tweets-${kababCaseName}-${kababCaseType}`;
+
+      const fetchTweets = Operations.FetchTweets(entityName, entityType);
+
       const fetchTweetsOnSchedule = new K8sCronJob(
         {
           name,
@@ -230,14 +234,7 @@ class CollectionService {
            */
           /** min | hour | day | month | weekday */
           schedule: `0 */6 * * *`,
-          image: process.env.DATA_COLLECTOR_IMAGE_NAME || '',
-          command: 'node',
-          args: [
-            'src/collect-data.js',
-            `--entity-name=${entityName}`,
-            `--entity-type=${entityType}`,
-            '--operation-type=fetch-tweets',
-          ],
+          fetchTweets,
         },
         this._k8sClient,
         this._logger
@@ -247,14 +244,7 @@ class CollectionService {
         {
           name,
           namespace,
-          image: process.env.DATA_COLLECTOR_IMAGE_NAME || '',
-          command: 'node',
-          args: [
-            'src/collect-data.js',
-            `--entity-name=${entityName}`,
-            `--entity-type=${entityType}`,
-            '--operation-type=fetch-tweets',
-          ],
+          fetchTweets,
         },
         this._k8sClient,
         this._logger
