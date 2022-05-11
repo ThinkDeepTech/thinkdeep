@@ -64,7 +64,7 @@ describe('user', () => {
         () => {
           done('getUser did not throw error');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -77,7 +77,7 @@ describe('user', () => {
         () => {
           done('getUser did not throw error');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -90,7 +90,7 @@ describe('user', () => {
         () => {
           done('getUser did not throw error');
         },
-        (reason) => {
+        () => {
           done();
         }
       );

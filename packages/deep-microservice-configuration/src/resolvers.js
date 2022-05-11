@@ -1,7 +1,7 @@
 const resolvers = {
   Mutation: {
     configuration: async (_, {userEmail}, {dataSources, permissions, me}) =>
-      await dataSources.configurationService.getOrCreateConfiguration(
+      dataSources.configurationService.getOrCreateConfiguration(
         userEmail,
         permissions,
         me
@@ -12,7 +12,7 @@ const resolvers = {
       {userEmail, observedEconomicEntities},
       {dataSources, permissions, me}
     ) =>
-      await dataSources.configurationService.updateConfiguration(
+      dataSources.configurationService.updateConfiguration(
         userEmail,
         observedEconomicEntities,
         permissions,

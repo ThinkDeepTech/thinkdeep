@@ -172,7 +172,6 @@ class CollectionService {
       `Fetching tweets for economic entity name ${economicEntityName}, type ${economicEntityType}`
     );
 
-    // TODO: Return more than 10
     return this._tweetStore.readRecentTweets(
       economicEntityName,
       economicEntityType,

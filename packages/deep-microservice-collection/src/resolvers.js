@@ -5,7 +5,7 @@ const resolvers = {
       {economicEntityName, economicEntityType},
       {dataSources, permissions}
     ) =>
-      await dataSources.collectionService.tweets(
+      dataSources.collectionService.tweets(
         economicEntityName,
         economicEntityType,
         permissions
@@ -17,7 +17,7 @@ const resolvers = {
       {economicEntityName, economicEntityType},
       {dataSources, permissions}
     ) =>
-      await dataSources.collectionService.collectEconomicData(
+      dataSources.collectionService.collectEconomicData(
         economicEntityName,
         economicEntityType,
         permissions

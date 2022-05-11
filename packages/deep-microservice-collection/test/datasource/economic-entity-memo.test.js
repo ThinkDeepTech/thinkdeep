@@ -62,7 +62,7 @@ describe('economic-entity-memo', () => {
         () => {
           done('An error was not thrown when it should have been.');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -73,7 +73,7 @@ describe('economic-entity-memo', () => {
         () => {
           done('An error was not thrown when it should have been.');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -84,7 +84,7 @@ describe('economic-entity-memo', () => {
         () => {
           done('An error was not thrown when it should have been.');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -95,7 +95,7 @@ describe('economic-entity-memo', () => {
         () => {
           done('An error was not thrown when it should have been.');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -108,7 +108,7 @@ describe('economic-entity-memo', () => {
         () => {
           done('An error was not thrown when it should have been.');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -119,7 +119,7 @@ describe('economic-entity-memo', () => {
         () => {
           done('An error was not thrown when it should have been.');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -130,7 +130,7 @@ describe('economic-entity-memo', () => {
         () => {
           done('An error was not thrown when it should have been.');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -141,7 +141,7 @@ describe('economic-entity-memo', () => {
         () => {
           done('An error was not thrown when it should have been.');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -177,7 +177,7 @@ describe('economic-entity-memo', () => {
         () => {
           done('An error was not thrown when it should have been.');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -188,7 +188,7 @@ describe('economic-entity-memo', () => {
         () => {
           done('An error was not thrown when it should have been.');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -199,7 +199,7 @@ describe('economic-entity-memo', () => {
         () => {
           done('An error was not thrown when it should have been.');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -210,7 +210,7 @@ describe('economic-entity-memo', () => {
         () => {
           done('An error was not thrown when it should have been.');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -229,7 +229,7 @@ describe('economic-entity-memo', () => {
         () => {
           done('An error was not thrown when it should have been.');
         },
-        (reason) => {
+        () => {
           done();
         }
       );

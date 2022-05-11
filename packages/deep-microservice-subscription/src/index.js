@@ -18,7 +18,6 @@ import {
 import {useServer} from 'graphql-ws/lib/use/ws';
 import {createServer} from 'http';
 import jwks from 'jwks-rsa';
-// import {loggingPlugin} from './logging-plugin.js';
 import process from 'process';
 import {resolvers} from './resolvers.js';
 import {typeDefs} from './schema.js';
@@ -92,7 +91,6 @@ const startApolloServer = async () => {
       validateAndAppendPermissions(dummyRequest, undefined, dummyNext);
     });
 
-    // TODO: Split this and the above logic into shared function + callback
     await new Promise((resolve) => {
       const dummyNext = (error) => {
         if (error) {
@@ -122,7 +120,7 @@ const startApolloServer = async () => {
   const isProduction = process.env.NODE_ENV.toLowerCase() === 'production';
   if (!isProduction) {
     allowedOrigins = allowedOrigins.concat([
-      /^https?:\/\/localhost:[0-9]{1,5}/,
+      /^https?:\/\/localhost:\d{1,5}/,
       'https://studio.apollographql.com',
     ]);
   }

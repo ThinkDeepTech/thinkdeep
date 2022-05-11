@@ -106,7 +106,7 @@ const startGatewayService = async () => {
   const isProduction = process.env.NODE_ENV.toLowerCase() === 'production';
   if (!isProduction) {
     allowedOrigins = allowedOrigins.concat([
-      /^https?:\/\/localhost:[0-9]{1,5}/,
+      /^https?:\/\/localhost:\d{1,5}/,
       'https://studio.apollographql.com',
     ]);
   }

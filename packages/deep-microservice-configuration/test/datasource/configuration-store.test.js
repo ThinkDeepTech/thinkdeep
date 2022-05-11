@@ -41,7 +41,7 @@ describe('configuration-store', () => {
         () => {
           done('An error was not thrown');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -53,7 +53,7 @@ describe('configuration-store', () => {
         () => {
           done('An error was not thrown');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -90,7 +90,7 @@ describe('configuration-store', () => {
         () => {
           done('An error was not thrown');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -102,7 +102,7 @@ describe('configuration-store', () => {
         () => {
           done('An error was not thrown');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -116,7 +116,7 @@ describe('configuration-store', () => {
           () => {
             done('An error was not thrown');
           },
-          (reason) => {
+          () => {
             done();
           }
         );
@@ -130,7 +130,7 @@ describe('configuration-store', () => {
         () => {
           done('An error was not thrown');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -151,7 +151,7 @@ describe('configuration-store', () => {
         () => {
           done('An error was not thrown');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -163,7 +163,7 @@ describe('configuration-store', () => {
         () => {
           done('An error was not thrown');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -177,7 +177,7 @@ describe('configuration-store', () => {
         () => {
           done('An error was not thrown');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -199,7 +199,7 @@ describe('configuration-store', () => {
         () => {
           done('An error was not thrown');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -211,7 +211,7 @@ describe('configuration-store', () => {
         () => {
           done('An error was not thrown');
         },
-        (reason) => {
+        () => {
           done();
         }
       );
@@ -225,7 +225,7 @@ describe('configuration-store', () => {
           () => {
             done('An error was not thrown');
           },
-          (reason) => {
+          () => {
             done();
           }
         );
@@ -240,7 +240,7 @@ describe('configuration-store', () => {
         () => {
           done('An error was not thrown');
         },
-        (reason) => {
+        () => {
           done();
         }
       );

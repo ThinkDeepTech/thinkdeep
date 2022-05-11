@@ -34,7 +34,7 @@ class Microservice {
     const production = process.env.NODE_ENV.toLowerCase() === 'production';
     if (!production) {
       allowedOrigins = allowedOrigins.concat([
-        /^https?:\/\/localhost:[0-9]{1,5}/,
+        /^https?:\/\/localhost:\d{1,5}/,
         'https://studio.apollographql.com',
       ]);
     }

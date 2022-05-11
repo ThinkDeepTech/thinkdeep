@@ -22,7 +22,7 @@ describe('microservice', () => {
 
     expressApp = {
       disable: sinon.stub(),
-      listen: (port, resolve) => {
+      listen: (_, resolve) => {
         resolve();
       },
     };

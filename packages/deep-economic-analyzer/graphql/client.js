@@ -16,10 +16,10 @@ let client = globalThis.__APOLLO_CLIENT__ || null;
  */
 const initApolloClient = async () => {
   if (!client) {
-    const authHeaders = (user) => {
+    const authHeaders = (_user) => {
       return {
-        authorization: user?.accessToken ? `Bearer ${user.accessToken}` : '',
-        me: user?.idToken ? user.idToken : '',
+        authorization: _user?.accessToken ? `Bearer ${_user.accessToken}` : '',
+        me: _user?.idToken ? _user.idToken : '',
       };
     };
 

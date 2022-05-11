@@ -1,5 +1,3 @@
-// TODO: Migrate to json file
-
 export default {
   companyName: 'Predecos',
   companyStreetNumber: '349',
