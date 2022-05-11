@@ -123,6 +123,6 @@ with security-related development I opted to use one that was already available.
     yarn install
 
 ```
-- Install Kubectl
-- Install Helm v3.8.2.
-- Run helm install in project root.
+- Install [Kubectl](https://kubernetes.io/docs/tasks/tools/)
+- Install [Helm v3.8.2](https://helm.sh/)
+- Run helm install in project root and set required values.
