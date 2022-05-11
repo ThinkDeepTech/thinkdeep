@@ -421,7 +421,7 @@ workflows:
             branches:
               ignore: master
 
-      - build_collect_data_dev:
+      - build_data_collector_dev:
           filters:
             branches:
               ignore: master
@@ -459,7 +459,7 @@ workflows:
             branches:
               only: master
 
-      - build_collect_data:
+      - build_data_collector:
           filters:
             branches:
               only: master
