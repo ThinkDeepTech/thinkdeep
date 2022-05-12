@@ -1,3 +1,11 @@
+const path = require('path');
+
+const parentDirectory = (pathname) => {
+  return path.basename(path.dirname(pathname));
+}
+
+const monorepoRoot = parentDirectory(parentDirectory(process.cwd()));
+
 module.exports = {
   env: {
     browser: true,
@@ -9,6 +17,11 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2020,
     sourceType: 'module',
+    requireConfigFile: false,
+    babelOptions: {
+      babelrcRoots: [process.cwd(), `${monorepoRoot}/packages/*`, `${monorepoRoot}`],
+      rootMode: 'upward'
+    },
   },
   globals: {
     describe: true,
