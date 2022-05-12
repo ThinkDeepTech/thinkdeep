@@ -1,0 +1,21 @@
+dependencies:
+- name: deep-microservice-analysis
+  repository: file://./packages/deep-microservice-analysis
+  version: 0.0.8
+- name: deep-microservice-collection
+  repository: file://./packages/deep-microservice-collection
+  version: 0.0.8
+- name: deep-microservice-configuration
+  repository: file://./packages/deep-microservice-configuration
+  version: 0.0.8
+- name: deep-microservice-gateway
+  repository: file://./packages/deep-microservice-gateway
+  version: 0.0.8
+- name: deep-microservice-subscription
+  repository: file://./packages/deep-microservice-subscription
+  version: 0.0.8
+- name: kafka
+  repository: https://charts.bitnami.com/bitnami
+  version: 16.2.11
+digest: sha256:2cae432ad9f9a6c2eaf777c59a51c58df5e34798ae7ef3c5c96ecaa33c0bfe24
+generated: "2022-05-12T19:21:22.269049353-04:00"
