@@ -8,6 +8,7 @@ log.txt
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
+Chart.lock
 
 # General files for the project
 pkg/*

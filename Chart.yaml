@@ -23,6 +23,6 @@ dependencies:
     version: "0.0.8"
   - name: "kafka"
     repository: "https://charts.bitnami.com/bitnami"
-    version: "15.3.4"
+    version: "16.2.11"
 name: "thinkdeep"
 version: "0.0.8"
