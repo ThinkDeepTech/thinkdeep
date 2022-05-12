@@ -326,9 +326,6 @@ jobs:
             command: helm dependency update
             working_directory: ./packages/deep-microservice-subscription
         - run:
-            name: Creating subcharts directory (helm v3 doesn't like it when charts is used)
-            command: mkdir ./subcharts
-        - run:
             name: Download project dependencies
             command: helm dependency update
         - helm/upgrade-helm-chart:
@@ -378,9 +375,6 @@ jobs:
             name: Download subscription microservice project dependencies
             command: helm dependency update
             working_directory: ./packages/deep-microservice-subscription
-        - run:
-            name: Creating subcharts directory (helm v3 doesn't like it when charts is used)
-            command: mkdir ./subcharts
         - run:
             name: Download project dependencies
             command: helm dependency update
