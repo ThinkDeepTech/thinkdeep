@@ -22,9 +22,8 @@
   },
   "devDependencies": {
     "@esm-bundle/chai": "^4.3.4",
-    "@open-wc/building-rollup": "^1.10.0",
-    "@open-wc/testing": "^2.5.33",
-    "@open-wc/testing-helpers": "^1.8.12",
+    "@open-wc/testing": "^3.1.4",
+    "@open-wc/testing-helpers": "^2.1.2",
     "@thinkdeep/tools": "^0.0.8",
     "@web/dev-server-esbuild": "^0.2.12",
     "@web/dev-server-rollup": "^0.3.5",
@@ -32,13 +31,9 @@
     "@web/test-runner-playwright": "^0.8.6",
     "@web/test-runner-puppeteer": "^0.10.0",
     "chai": "^4.3.4",
-    "deepmerge": "^4.2.2",
-    "es-dev-server": "^2.1.0",
     "mocha": "^9.0.2",
     "rimraf": "^3.0.2",
-    "rollup": "^2.72.1",
-    "serve": "^10.1.1",
-    "watchify": "^4.0.0"
+    "rollup": "^2.72.1"
   },
   "dependencies": {
     "@webcomponents/webcomponentsjs": "^2.5.0",

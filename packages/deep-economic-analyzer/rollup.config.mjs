@@ -1,6 +1,5 @@
 import merge from 'deepmerge';
 
-// NOTE: The relative path below is required otherwise the build errors out.
 import baseConfig from "@thinkdeep/tools/rollup.config.mjs";
 
 export default merge(baseConfig, {

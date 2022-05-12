@@ -26,14 +26,11 @@
     "sinon-chai": "^3.7.0"
   },
   "dependencies": {
-    "@apollo/federation": "^0.29.1",
-    "@apollo/gateway": "^0.38.2",
     "@apollo/subgraph": "^0.1.5",
     "@kubernetes/client-node": "0.15",
     "@thinkdeep/attach-exit-handler": "^1.0.0",
     "@thinkdeep/get-public-ip": "^1.0.0",
     "@thinkdeep/k8s": "^5.0.7",
-    "apollo-datasource": "^3.1.0",
     "apollo-datasource-mongodb": "^0.5.2",
     "apollo-server": "^3.2.0",
     "apollo-server-express": "^3.5.0",

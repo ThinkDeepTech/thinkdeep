@@ -16,6 +16,13 @@ firebase.json
 lerna.json
 package.json
 packages/*
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
 
 
 # General files for the project
