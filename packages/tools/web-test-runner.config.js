@@ -2,6 +2,7 @@ import {playwrightLauncher} from '@web/test-runner-playwright';
 import rollupGraphQL from '@rollup/plugin-graphql';
 import rollupInjectEnv from 'rollup-plugin-inject-process-env';
 import {fromRollup} from '@web/dev-server-rollup';
+import {urlRedirect} from './url-redirect.js';
 
 import getPort from 'get-port';
 
@@ -55,4 +56,5 @@ export default {
         process.env.PREDECOS_MICROSERVICE_SUBSCRIPTION_URL,
     }),
   ],
+  middleware: [urlRedirect],
 };
