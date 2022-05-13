@@ -9,9 +9,6 @@ commands:
     install_monorepo:
       steps:
         - run: yarn install
-        - run:
-            name: Patch install dependencies that aren't found in CI.
-            command: yarn add -W apollo-datasource-mongodb && yarn add -W mongodb && yarn add -W @rollup/plugin-graphql && yarn add -W twitter-api-v2
 
     login_docker:
       steps:
