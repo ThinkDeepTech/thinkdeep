@@ -5,8 +5,7 @@
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin.com/in/haydenmcp)",
   "type": "module",
   "keywords": [
-    "LitElement",
-    "polymer"
+    "LitElement"
   ],
   "homepage": "https://github.com/ThinkDeepTech/thinkdeep#readme",
   "repository": {
