@@ -13,7 +13,6 @@
     "url": "git+https://github.com/ThinkDeepTech/thinkdeep.git"
   },
   "devDependencies": {
-    "@open-wc/building-rollup": "^2.0.1",
     "@rollup/plugin-babel": "^5.3.1",
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-eslint": "^8.0.2",
@@ -23,7 +22,6 @@
     "@web/rollup-plugin-html": "^1.10.1",
     "@webcomponents/webcomponentsjs": "^2.5.0",
     "deep-freeze": "^0.0.1",
-    "deepmerge": "^4.2.2",
     "get-port": "^6.0.0",
     "graphql": "^15.8.0",
     "lit-element": "^2.4.0",

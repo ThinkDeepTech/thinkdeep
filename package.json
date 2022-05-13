@@ -44,17 +44,6 @@
     "lint-staged": "^12.4.1",
     "prettier": "^2.6.2"
   },
-  "overrides": {
-    "@thinkdeep/tools": {
-      "@open-wc/building-rollup": {
-        "rollup-plugin-workbox": {
-          "workbox-build": {
-            "@rollup/plugin-node-resolve": "^13.0.6"
-          }
-        }
-      }
-    }
-  },
   "workspaces": [
     "packages/*"
   ],
