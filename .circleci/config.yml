@@ -8,6 +8,7 @@ orbs:
 commands:
     install_monorepo:
       steps:
+        - run: yarn --version
         - run: yarn install
 
     login_docker:
