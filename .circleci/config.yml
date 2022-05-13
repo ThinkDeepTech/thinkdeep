@@ -272,7 +272,7 @@ jobs:
 
     build_ui_and_test_system:
       docker:
-          - image: 'cimg/node:stable'
+          - image: 'cimg/node:16.14.2'
 
       working_directory: ~/project
 
@@ -391,7 +391,7 @@ jobs:
 
     deploy_ui:
       docker:
-          - image: 'cimg/node:stable'
+          - image: 'cimg/node:16.14.2'
 
       working_directory: ~/project
 
