@@ -6,6 +6,7 @@ orbs:
     helm: circleci/helm@1.2.0
 
 commands:
+
     install_monorepo:
       steps:
         - run: yarn install
@@ -34,7 +35,7 @@ jobs:
 
     build_microservice_analysis:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/base:16.14.2'
 
       working_directory: ~/project
 
@@ -54,7 +55,7 @@ jobs:
 
     build_microservice_analysis_dev:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/base:16.14.2'
 
       working_directory: ~/project
 
@@ -74,7 +75,7 @@ jobs:
 
     build_microservice_collection:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/base:16.14.2'
 
       working_directory: ~/project
 
@@ -95,7 +96,7 @@ jobs:
 
     build_microservice_collection_dev:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/base:16.14.2'
 
       working_directory: ~/project
 
@@ -115,7 +116,7 @@ jobs:
 
     build_microservice_configuration:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/base:16.14.2'
 
       working_directory: ~/project
 
@@ -135,7 +136,7 @@ jobs:
 
     build_microservice_configuration_dev:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/base:16.14.2'
 
       working_directory: ~/project
 
@@ -156,7 +157,7 @@ jobs:
 
     build_microservice_gateway:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/base:16.14.2'
 
       working_directory: ~/project
 
@@ -176,7 +177,7 @@ jobs:
 
     build_microservice_gateway_dev:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/base:16.14.2'
 
       working_directory: ~/project
 
@@ -197,7 +198,7 @@ jobs:
 
     build_microservice_subscription:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/base:16.14.2'
 
       working_directory: ~/project
 
@@ -217,7 +218,7 @@ jobs:
 
     build_microservice_subscription_dev:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/base:16.14.2'
 
       working_directory: ~/project
 
@@ -238,7 +239,7 @@ jobs:
 
     build_data_collector:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/base:16.14.2'
 
       working_directory: ~/project
 
@@ -255,7 +256,7 @@ jobs:
 
     build_data_collector_dev:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/base:16.14.2'
 
       working_directory: ~/project
 
@@ -272,7 +273,7 @@ jobs:
 
     build_ui_and_test_system:
       docker:
-          - image: 'cimg/node:14.17.6'
+          - image: 'cimg/node:16.14.2'
 
       working_directory: ~/project
 
@@ -291,7 +292,7 @@ jobs:
 
     deploy_microservices:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/base:16.14.2'
 
       working_directory: ~/project
 
@@ -341,7 +342,7 @@ jobs:
 
     deploy_microservices_dev:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/base:16.14.2'
 
       working_directory: ~/project
 
@@ -391,7 +392,7 @@ jobs:
 
     deploy_ui:
       docker:
-          - image: 'cimg/node:14.17.6'
+          - image: 'cimg/node:16.14.2'
 
       working_directory: ~/project
 
