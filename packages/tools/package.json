@@ -3,11 +3,9 @@
   "version": "0.0.8",
   "description": "Shared tools and configurations.",
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin.com/in/haydenmcp)",
-  "license": "MIT",
   "type": "module",
   "keywords": [
-    "LitElement",
-    "polymer"
+    "LitElement"
   ],
   "homepage": "https://github.com/ThinkDeepTech/thinkdeep#readme",
   "repository": {
@@ -15,21 +13,24 @@
     "url": "git+https://github.com/ThinkDeepTech/thinkdeep.git"
   },
   "devDependencies": {
-    "@open-wc/building-rollup": "^1.10.0",
+    "@open-wc/building-rollup": "^2.0.1",
     "@rollup/plugin-babel": "^5.3.1",
     "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-eslint": "^8.0.2",
     "@rollup/plugin-graphql": "^1.1.0",
-    "@rollup/plugin-node-resolve": "^13.3.0",
+    "@rollup/plugin-node-resolve": "^13.0.6",
     "@rollup/plugin-replace": "^4.0.0",
     "@web/rollup-plugin-html": "^1.10.1",
     "@webcomponents/webcomponentsjs": "^2.5.0",
+    "deep-freeze": "^0.0.1",
     "deepmerge": "^4.2.2",
     "get-port": "^6.0.0",
+    "graphql": "^15.8.0",
     "lit-element": "^2.4.0",
     "rollup": "^2.72.1",
     "rollup-plugin-copy": "^3.3.0",
     "rollup-plugin-inject-process-env": "^1.3.1",
-    "serve": "^10.1.1"
+    "workbox-build": "^6.4.2"
   },
   "private": true
 }

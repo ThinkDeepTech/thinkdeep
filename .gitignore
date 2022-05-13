@@ -1,6 +1,15 @@
 # Custom entries
 log.txt
 **/log.txt
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+./**/Chart.lock
+*charts/
 
 # General files for the project
 pkg/*
@@ -147,7 +156,7 @@ venv.bak/
 
 
 # Project
-yarn.lock
+# yarn.lock
 package-lock.json
 
 # Logs

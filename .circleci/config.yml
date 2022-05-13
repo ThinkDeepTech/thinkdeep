@@ -9,9 +9,6 @@ commands:
     install_monorepo:
       steps:
         - run: yarn install
-        - run:
-            name: Patch install dependencies that aren't found in CI.
-            command: yarn add -W apollo-datasource-mongodb && yarn add -W mongodb && yarn add -W @rollup/plugin-graphql && yarn add -W twitter-api-v2
 
     login_docker:
       steps:
@@ -236,7 +233,7 @@ jobs:
         - run: docker push thinkdeeptech/deep-microservice-subscription-dev:latest
 
 
-    build_collect_data:
+    build_data_collector:
       docker:
         - image: 'cimg/base:stable'
 
@@ -248,12 +245,12 @@ jobs:
             version: 20.10.7
         - login_docker
         - run:
-            command: docker build -t thinkdeeptech/collect-data:${CIRCLE_BUILD_NUM} -t thinkdeeptech/collect-data:latest .
-            working_directory: ./packages/deep-microservice-collection/collect-data
-        - run: docker push thinkdeeptech/collect-data:${CIRCLE_BUILD_NUM}
-        - run: docker push thinkdeeptech/collect-data:latest
+            command: docker build -t thinkdeeptech/data-collector:${CIRCLE_BUILD_NUM} -t thinkdeeptech/data-collector:latest .
+            working_directory: ./packages/data-collector
+        - run: docker push thinkdeeptech/data-collector:${CIRCLE_BUILD_NUM}
+        - run: docker push thinkdeeptech/data-collector:latest
 
-    build_collect_data_dev:
+    build_data_collector_dev:
       docker:
         - image: 'cimg/base:stable'
 
@@ -265,14 +262,14 @@ jobs:
             version: 20.10.7
         - login_docker
         - run:
-            command: docker build -t thinkdeeptech/collect-data-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/collect-data-dev:latest .
-            working_directory: ./packages/deep-microservice-collection/collect-data
-        - run: docker push thinkdeeptech/collect-data-dev:${CIRCLE_BUILD_NUM}
-        - run: docker push thinkdeeptech/collect-data-dev:latest
+            command: docker build -t thinkdeeptech/data-collector-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/data-collector-dev:latest .
+            working_directory: ./packages/data-collector
+        - run: docker push thinkdeeptech/data-collector-dev:${CIRCLE_BUILD_NUM}
+        - run: docker push thinkdeeptech/data-collector-dev:latest
 
     build_ui_and_test_system:
       docker:
-          - image: 'cimg/node:14.17.6'
+          - image: 'cimg/node:16.14.2'
 
       working_directory: ~/project
 
@@ -333,7 +330,7 @@ jobs:
             helm-version: "v3.7.2"
             namespace: "default"
             release-name: "v1"
-            values-to-override: "gateway.service.certificateId=2b25c4eb-828e-4e9c-8c55-9f3deb85e331,subscription.service.certificateId=5fba8346-80ac-44a4-8521-3f7ab7dd3153,auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,collection.replicas=3,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,collection.data.collector.image=thinkdeeptech/collect-data:latest,replicas=1,global.docker.secretName=docker-secret,global.nodeEnv=$NODE_ENV"
+            values-to-override: "gateway.service.certificateId=2b25c4eb-828e-4e9c-8c55-9f3deb85e331,subscription.service.certificateId=5fba8346-80ac-44a4-8521-3f7ab7dd3153,auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,collection.replicas=3,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,collection.data.collector.image=thinkdeeptech/data-collector:latest,replicas=1,global.docker.secretName=docker-secret,global.nodeEnv=$NODE_ENV"
             update-repositories: true
             timeout: "600s"
             wait: true
@@ -383,7 +380,7 @@ jobs:
             helm-version: "v3.7.2"
             namespace: "development"
             release-name: "v1"
-            values-to-override: "auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,replicas=1,global.docker.secretName=docker-secret,analysis.container.image=thinkdeeptech/deep-microservice-analysis-dev:latest,collection.replicas=3,collection.container.image=thinkdeeptech/deep-microservice-collection-dev:latest,collection.data.collector.image=thinkdeeptech/collect-data-dev:latest,configuration.container.image=thinkdeeptech/deep-microservice-configuration-dev:latest,gateway.container.image=thinkdeeptech/deep-microservice-gateway-dev:latest,subscription.container.image=thinkdeeptech/deep-microservice-subscription-dev:latest,global.nodeEnv=$NODE_ENV"
+            values-to-override: "auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,replicas=1,global.docker.secretName=docker-secret,analysis.container.image=thinkdeeptech/deep-microservice-analysis-dev:latest,collection.replicas=3,collection.container.image=thinkdeeptech/deep-microservice-collection-dev:latest,collection.data.collector.image=thinkdeeptech/data-collector-dev:latest,configuration.container.image=thinkdeeptech/deep-microservice-configuration-dev:latest,gateway.container.image=thinkdeeptech/deep-microservice-gateway-dev:latest,subscription.container.image=thinkdeeptech/deep-microservice-subscription-dev:latest,global.nodeEnv=$NODE_ENV"
             update-repositories: true
             timeout: "600s"
             wait: true
@@ -391,7 +388,7 @@ jobs:
 
     deploy_ui:
       docker:
-          - image: 'cimg/node:14.17.6'
+          - image: 'cimg/node:16.14.2'
 
       working_directory: ~/project
 
@@ -421,7 +418,7 @@ workflows:
             branches:
               ignore: master
 
-      - build_collect_data_dev:
+      - build_data_collector_dev:
           filters:
             branches:
               ignore: master
@@ -459,7 +456,7 @@ workflows:
             branches:
               only: master
 
-      - build_collect_data:
+      - build_data_collector:
           filters:
             branches:
               only: master

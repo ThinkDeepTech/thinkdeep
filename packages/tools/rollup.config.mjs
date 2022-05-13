@@ -1,5 +1,5 @@
 import graphql from '@rollup/plugin-graphql';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
+import nodeResolve from '@rollup/plugin-node-resolve';
 import {babel} from '@rollup/plugin-babel';
 import eslint from '@rollup/plugin-eslint';
 import injectEnv from 'rollup-plugin-inject-process-env';
@@ -23,14 +23,16 @@ const baseConfig = createSpaConfig({
   injectServiceWorker: false,
 });
 
-export default merge(createSpaConfig, {
+console.log(process.cwd());
+
+export default merge(baseConfig, {
   input: 'index.html',
   output: {
     dir: 'build',
     format: 'es'
   },
   plugins: [
-    nodeResolve(),
+    nodeResolve({ browser: true }),
     eslint(),
     babel({ babelHelpers: 'bundled', rootMode: "upward" }),
     html(),

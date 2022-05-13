@@ -9,7 +9,7 @@ class K8sCronJob extends Command {
   /**
    * Constructs a kubernetes cron job with the specified configuration.
    *
-   * @param {Object} options - Options desired for cron job of the form: { name: 'cron-job-name', schedule: '* * * * *', image: 'busybox', command: 'ls', args: ['-l']}
+   * @param {Object} options - Options desired for cron job of the form: { name: 'cron-job-name', schedule: '* * * * *', operation: <Concrete operation impl>}
    * @param {K8sClient} k8sClient - K8sClient to use.
    * @param {Object} logger - Logger object.
    */
@@ -19,11 +19,10 @@ class K8sCronJob extends Command {
     if (
       !validString(options.name) ||
       !validString(options.schedule) ||
-      !validString(options.image) ||
-      !validString(options.command)
+      !options?.operation?.valid
     ) {
       throw new Error(
-        `A cron job requires a name, schedule, image and command`
+        `A cron job requires a name, schedule and a valid operation to perform.`
       );
     }
 
@@ -60,12 +59,14 @@ class K8sCronJob extends Command {
                                             - name: "${
                                               process.env.HELM_RELEASE_NAME
                                             }-data-collector"
-                                              image: "${this._options.image}"
-                                              command: ["${
-                                                this._options.command
-                                              }"]
+                                              image: "${
+                                                this._options.operation.image
+                                              }"
+                                              command: ${JSON.stringify(
+                                                this._options.operation.commands
+                                              )}
                                               args: ${JSON.stringify(
-                                                this._options.args
+                                                this._options.operation.args
                                               )}
                                               envFrom:
                                               - secretRef:

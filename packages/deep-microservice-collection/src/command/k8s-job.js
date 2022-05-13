@@ -9,19 +9,17 @@ class K8sJob extends Command {
   /**
    * Constructs a kubernetes job with the specified configuration.
    *
-   * @param {Object} options - Options desired for job of the form: { name: 'job-name', image: 'busybox', command: 'ls', args: ['-l']}
+   * @param {Object} options - Options desired for job of the form: { name: 'job-name', operation: <Concrete operation impl>}
    * @param {K8sClient} k8sClient - K8sClient to use.
    * @param {Object} logger - Logger object.
    */
   constructor(options, k8sClient, logger) {
     super();
 
-    if (
-      !validString(options.name) ||
-      !validString(options.image) ||
-      !validString(options.command)
-    ) {
-      throw new Error(`A job requires a name, image and command`);
+    if (!validString(options.name) || !options?.operation?.valid) {
+      throw new Error(
+        `A job requires a name and a valid operation to perform.`
+      );
     }
 
     this._options = options;
@@ -48,10 +46,12 @@ class K8sJob extends Command {
                                     - name: "${
                                       process.env.HELM_RELEASE_NAME
                                     }-data-collector"
-                                      image: "${this._options.image}"
-                                      command: ["${this._options.command}"]
+                                      image: "${this._options.operation.image}"
+                                      command: ${JSON.stringify(
+                                        this._options.operation.commands
+                                      )}
                                       args: ${JSON.stringify(
-                                        this._options.args
+                                        this._options.operation.args
                                       )}
                                       envFrom:
                                       - secretRef:

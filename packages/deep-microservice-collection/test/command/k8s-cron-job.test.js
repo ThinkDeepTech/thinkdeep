@@ -22,7 +22,7 @@ describe('k8s-cron-job', () => {
 
   describe('constructor', () => {
     const requiredOptionsErrorMessage =
-      'A cron job requires a name, schedule, image and command';
+      'A cron job requires a name, schedule and a valid operation to perform.';
 
     it('should throw an error if the name is empty', () => {
       try {

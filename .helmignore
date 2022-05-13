@@ -1,7 +1,6 @@
 # Custom entries
 log.txt
 img/*
-.yarn/*
 .github/*
 .circleci/*
 .git/*
@@ -9,13 +8,14 @@ img/*
 .firebase*
 .gitignore
 .prettier*
-.yarnrc
+.yarnrc*
 .npm*
 babel.config.*
-firebase.json
 lerna.json
 package.json
 packages/*
+.yarn/*
+.pnp.*
 
 
 # General files for the project
