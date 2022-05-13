@@ -271,7 +271,7 @@ jobs:
 
     build_ui_and_test_system:
       docker:
-          - image: 'cimg/base:18.1.0'
+          - image: 'cimg/node:18.1.0'
 
       working_directory: ~/project
 
