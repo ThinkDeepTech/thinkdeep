@@ -2,7 +2,6 @@ import {playwrightLauncher} from '@web/test-runner-playwright';
 import rollupGraphQL from '@rollup/plugin-graphql';
 import rollupInjectEnv from 'rollup-plugin-inject-process-env';
 import {fromRollup} from '@web/dev-server-rollup';
-import {urlRedirect} from './url-redirect.js';
 
 import getPort from 'get-port';
 
@@ -54,7 +53,14 @@ export default {
         process.env.PREDECOS_MICROSERVICE_GATEWAY_URL,
       PREDECOS_MICROSERVICE_SUBSCRIPTION_URL:
         process.env.PREDECOS_MICROSERVICE_SUBSCRIPTION_URL,
+
+      // Testing-specific values
+      PREDECOS_TEST_AUTH0_USERNAME: process.env.PREDECOS_TEST_AUTH0_USERNAME,
+      PREDECOS_TEST_AUTH0_PASSWORD: process.env.PREDECOS_TEST_AUTH0_PASSWORD,
+      PREDECOS_TEST_AUTH0_SCOPE: process.env.PREDECOS_TEST_AUTH0_SCOPE,
+      PREDECOS_TEST_AUTH0_CLIENT_SECRET:
+        process.env.PREDECOS_TEST_AUTH0_CLIENT_SECRET,
+      PREDECOS_TEST_AUTH0_LOGIN_URL: process.env.PREDECOS_TEST_AUTH0_LOGIN_URL,
     }),
   ],
-  middleware: [urlRedirect],
 };
