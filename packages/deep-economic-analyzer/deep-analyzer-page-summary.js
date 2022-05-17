@@ -11,7 +11,6 @@ import '@material/mwc-list/mwc-list';
 import '@material/mwc-list/mwc-list-item';
 import '@material/mwc-select';
 import '@material/mwc-textfield';
-import {debounce} from './debounce.js';
 import './deep-site-configuration.js';
 import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
 import GetSentiment from './graphql/GetSentiment.query.graphql';
@@ -119,7 +118,6 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    */
   firstUpdated() {
     super.firstUpdated();
-
     this._setChartOptions();
   }
 
@@ -217,7 +215,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       <div class="input">
         <mwc-textfield
           label="Enter a Business Name"
-          @input="${debounce(this._onInput.bind(this), 350)}"
+          @input="${this._onInput.bind(this)}"
         ></mwc-textfield>
         <mwc-button
           raised

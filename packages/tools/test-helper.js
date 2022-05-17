@@ -24,7 +24,7 @@ const wait = async (milliseconds) => {
  * Therefore, a value << 2000 ms is ideal.
  */
 const delayForPageRender = async () => {
-  await wait(1500);
+  await wait(4000);
 };
 
 export {delayForPageRender, wait, sleep};
