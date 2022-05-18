@@ -15,11 +15,11 @@ let _initialized = false;
  */
 const initialize = async (username, password) => {
   if (!_initialized) {
-    const url = process.env.PREDECOS_TEST_AUTH0_LOGIN_URL;
+    const url = process.env.PREDECOS_TEST_AUTH_LOGIN_URL;
     const audience = process.env.PREDECOS_AUTH_AUDIENCE;
-    const scope = process.env.PREDECOS_TEST_AUTH0_SCOPE;
+    const scope = process.env.PREDECOS_TEST_AUTH_SCOPE;
     const clientId = process.env.PREDECOS_AUTH_CLIENT_ID;
-    const clientSecret = process.env.PREDECOS_TEST_AUTH0_CLIENT_SECRET;
+    const clientSecret = process.env.PREDECOS_TEST_AUTH_CLIENT_SECRET;
 
     const response = await fetch(url, {
       method: 'POST',
@@ -58,20 +58,20 @@ const initialize = async (username, password) => {
  *
  * NOTE: THIS IS FOR E2E TESTING ONLY.
  *
- * @param {String} username Username with which to login.
+ * @param {String} email Email with which to login.
  * @param {String} password User password.
  */
 const testAuthClient = async (
-  username = process.env.PREDECOS_TEST_AUTH0_USERNAME,
-  password = process.env.PREDECOS_TEST_AUTH0_PASSWORD
+  email = process.env.PREDECOS_TEST_AUTH_USERNAME,
+  password = process.env.PREDECOS_TEST_AUTH_PASSWORD
 ) => {
-  await initialize(username, password);
+  await initialize(email, password);
 
   const authClient = sinon.createStubInstance(Auth0Client);
 
   authClient.getUser.returns(
     Promise.resolve({
-      email: 'predecos.testuser1@gmail.com',
+      email,
     })
   );
   authClient.isAuthenticated.returns(true);
