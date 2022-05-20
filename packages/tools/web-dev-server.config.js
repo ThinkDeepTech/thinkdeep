@@ -8,9 +8,6 @@ const replace = fromRollup(rollupReplace);
 export default {
   nodeResolve: true,
 
-  http2: true,
-  sslKey: '/home/hayden/ssl/localhost.key.pem',
-  sslCert: '/home/hayden/ssl/localhost.cert.pem',
   open: true,
   mimeTypes: {
     '**/*.graphql': 'js',

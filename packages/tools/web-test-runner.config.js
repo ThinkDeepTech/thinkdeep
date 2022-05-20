@@ -25,9 +25,6 @@ const port = await getPort();
 
 export default {
   files: ['test/**/*.test.js', 'test/**/*.test.js'],
-  http2: true,
-  sslKey: '/home/hayden/ssl/localhost.key.pem',
-  sslCert: '/home/hayden/ssl/localhost.cert.pem',
   nodeResolve: true,
   browsers: Object.values(browsers),
   coverage: true,
