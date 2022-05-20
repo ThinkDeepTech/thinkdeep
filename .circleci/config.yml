@@ -495,6 +495,14 @@ workflows:
       - build_ui_and_test_system:
           requires:
             - deploy_microservices_dev
+          filters:
+            branches:
+              ignore: master
+
+      - build_ui_and_test_system:
+          filters:
+            branches:
+              only: master
 
       - deploy_ui:
           requires:
