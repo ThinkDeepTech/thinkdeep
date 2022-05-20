@@ -15,7 +15,7 @@
   "scripts": {
     "start": "web-dev-server --config ./web-dev-server.config.js --esbuild-target auto",
     "start:watch": "web-dev-server --config ./web-dev-server.config.js --watch --esbuild-target auto",
-    "tests": "TODO",
+    "tests": "echo TODO",
     "tests:watch": "web-test-runner --config ./web-test-runner.config.js --watch",
     "build": "rimraf build && rollup -c rollup.config.mjs"
   },
