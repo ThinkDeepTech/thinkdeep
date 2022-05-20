@@ -36,7 +36,6 @@ export default {
   files: ['test/**/*.test.js', 'test/**/*.test.js'],
   nodeResolve: true,
   browsers: Object.values(browsers),
-  coverage: true,
   preserveSymlinks: true,
   concurrency: 1,
   browserStartTimeout: 60000,
