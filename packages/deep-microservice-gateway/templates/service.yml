@@ -8,7 +8,7 @@ metadata:
     # service.beta.kubernetes.io/do-loadbalancer-certificate-id: "12cba529-a0a4-4c85-a928-0d9154040f91"
     {{ if .Values.service.certificateId }}
     service.beta.kubernetes.io/do-loadbalancer-certificate-id: {{ .Values.service.certificateId | quote }}
-    service.beta.kubernetes.io/do-loadbalancer-protocol: "http"
+    service.beta.kubernetes.io/do-loadbalancer-protocol: "http2"
     service.beta.kubernetes.io/do-loadbalancer-algorithm: "round_robin"
     service.beta.kubernetes.io/do-loadbalancer-tls-ports: "443"
     {{ end }}

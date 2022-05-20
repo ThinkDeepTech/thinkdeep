@@ -1,3 +1,5 @@
+import {litFixtureSync} from '@open-wc/testing';
+
 /**
  * Sleep for the specified number of milliseconds.
  * @param {Number} milliseconds
@@ -17,14 +19,56 @@ const wait = async (milliseconds) => {
 
 /**
  * Delay the specified number of milliseconds to ensure page renders.
- *
- * NOTE: Mocha configurations aren't currently being recognized by web test runner in circleci.
- * This results in a timeout after 2000 ms despite the timeout being set to a larger value. As a
- * result, this delay is used to better ensure render but it must account for multiple renders.
- * Therefore, a value << 2000 ms is ideal.
  */
 const delayForPageRender = async () => {
-  await wait(1500);
+  await wait(3000);
 };
 
-export {delayForPageRender, wait, sleep};
+/**
+ * Input a value into an element.
+ * @param {HTMLElement} target Target html element.
+ * @param {any} value Value to assign to target.
+ */
+const input = async (target, value) => {
+  target.value = value;
+  target.dispatchEvent(new Event('input'));
+  await delayForPageRender();
+};
+
+/**
+ * Click the element.
+ * @param {Element} target Element to click.
+ */
+const click = async (target) => {
+  target.click();
+
+  await delayForPageRender();
+};
+
+/**
+ * Select the specified element.
+ *
+ * NOTE: This adds the selected attribute to the element simulating selection.
+ *
+ * @param {Element} target Target element to select.
+ */
+const select = async (target) => {
+  target.setAttribute('selected', '');
+
+  await delayForPageRender();
+};
+
+/**
+ * Create an element fixture for testing.
+ * @param {TemplateResult} template Lit template result from markup.
+ * @return {Element} Element stamped into the dom.
+ */
+const fixtureSync = async (template) => {
+  const element = await litFixtureSync(template);
+
+  await delayForPageRender();
+
+  return element;
+};
+
+export {delayForPageRender, wait, sleep, input, click, select, fixtureSync};

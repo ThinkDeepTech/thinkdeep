@@ -11,13 +11,22 @@ const injectEnv = fromRollup(rollupInjectEnv);
 const browsers = {
   chromium: playwrightLauncher({
     product: 'chromium',
+    createBrowserContext: ({browser}) =>
+      browser.newContext({ignoreHTTPSErrors: true}),
     launchOptions: {
       headless: true,
       devtools: true,
       args: ['--incognito'],
     },
   }),
-  firefox: playwrightLauncher({product: 'firefox'}),
+  firefox: playwrightLauncher({
+    product: 'firefox',
+    createBrowserContext: ({browser}) =>
+      browser.newContext({ignoreHTTPSErrors: true}),
+    launchOptions: {
+      headless: true,
+    },
+  }),
 };
 
 // Get a random port number.
@@ -36,7 +45,7 @@ export default {
   testFramework: {
     config: {
       ui: 'bdd',
-      timeout: 10000,
+      timeout: 20000,
     },
   },
   port,
@@ -46,13 +55,21 @@ export default {
   plugins: [
     graphql(),
     injectEnv({
-      PREDECOS_AUTH_DOMAIN: process.env.PREDECOS_AUTH_DOMAIN,
-      PREDECOS_AUTH_CLIENT_ID: process.env.PREDECOS_AUTH_CLIENT_ID,
-      PREDECOS_AUTH_AUDIENCE: process.env.PREDECOS_AUTH_AUDIENCE,
+      PREDECOS_AUTH_DOMAIN: process.env.PREDECOS_TEST_AUTH_DOMAIN,
+      PREDECOS_AUTH_CLIENT_ID: process.env.PREDECOS_TEST_AUTH_CLIENT_ID,
+      PREDECOS_AUTH_AUDIENCE: process.env.PREDECOS_TEST_AUTH_AUDIENCE,
       PREDECOS_MICROSERVICE_GATEWAY_URL:
-        process.env.PREDECOS_MICROSERVICE_GATEWAY_URL,
+        process.env.PREDECOS_TEST_MICROSERVICE_GATEWAY_URL,
       PREDECOS_MICROSERVICE_SUBSCRIPTION_URL:
-        process.env.PREDECOS_MICROSERVICE_SUBSCRIPTION_URL,
+        process.env.PREDECOS_TEST_MICROSERVICE_SUBSCRIPTION_URL,
+
+      // Testing-specific values
+      PREDECOS_TEST_AUTH_USERNAME: process.env.PREDECOS_TEST_AUTH_USERNAME,
+      PREDECOS_TEST_AUTH_PASSWORD: process.env.PREDECOS_TEST_AUTH_PASSWORD,
+      PREDECOS_TEST_AUTH_SCOPE: process.env.PREDECOS_TEST_AUTH_SCOPE,
+      PREDECOS_TEST_AUTH_CLIENT_SECRET:
+        process.env.PREDECOS_TEST_AUTH_CLIENT_SECRET,
+      PREDECOS_TEST_AUTH_LOGIN_URL: `https://${process.env.PREDECOS_TEST_AUTH_DOMAIN}/oauth/token`,
     }),
   ],
 };

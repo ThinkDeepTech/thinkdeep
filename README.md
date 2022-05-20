@@ -1,22 +1,28 @@
 # Thinkdeep
 [![CircleCI](https://circleci.com/gh/ThinkDeepTech/thinkdeep.svg?style=shield)](https://circleci.com/gh/ThinkDeepTech/thinkdeep)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ThinkDeepTech_thinkdeep&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ThinkDeepTech_thinkdeep)
+[![Known Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/badge.svg)]
+
 The main purpose of this repository is to learn while developing something cool. It's a bit of an experiment.
 
 ## Global Dependencies
 - [Node v16.14.2](https://nodejs.org/en/)
 - [Lerna v4.0.0](https://github.com/lerna/lerna)
-- [Yarn v3.2.0](https://yarnpkg.com/)
+- [Yarn v1.22.0](https://yarnpkg.com/)
+- [Kubectl v1.22.0](https://kubernetes.io/docs/tasks/tools/)
+- [Helm v3.8.2](https://helm.sh/)
 
 ## Developer Setup
+
+NOTE: DigitalOcean certificates are required to apply TLS to the loadbalancers. Therefore, securely deploying this
+application requires deployment to a DigitalOcean kubernetes cluster at this time.
+
 - Run
 ```console
 
     yarn install
 
 ```
-- Install [Kubectl](https://kubernetes.io/docs/tasks/tools/)
-- Install [Helm v3.8.2](https://helm.sh/)
 - Run helm install in project root and set required values.
 
 ## Goals
@@ -53,7 +59,7 @@ Mocha and chai are used for front-end testing along with [open-wc testing helper
 [web test runner](https://modern-web.dev/docs/test-runner/overview/).
 
 
-### The Back-end
+### The Back-end / Infrastructure
 
 #### Microservices Architecture
 The microservices architecture provides for scalability of the system as well as clean separation of concerns. The goal of this
@@ -89,6 +95,11 @@ compared to RESTful APIs. It's backed by facebook and is used by numerous compan
 #### Kubernetes
 [Kubernetes](https://kubernetes.io/) is a container orchestration system with many powerful characteristics. It's used in this
 project to take advantage of self-healing, monitoring, replication and load-balancing.
+
+#### Helm
+[Helm](https://helm.sh/) goes quite well with kubernetes. Management of kubernetes manifests becomes difficult as multiple deployments become necessary because a new set of manifests needs to be created for each environment. I.e, development vs. production. Helm solves this issue by allowing kubernetes
+manifest templates to be created so that concrete manifests can be generated based on desired configurations. In my case, this has allowed one-click
+manual deployment of the entire project and its dependencies regardless of the environment. It also allows simple configuration of certificates if TLS is desired. Based on kubernetes service hostname defaults you can also wire up each deployment to the necessary services used making the manual deployment process extremely easy. Uninstall is equally easy. Helm provides this as well as easy version management and many other features.
 
 #### Docker
 Docker provides containerization and is used for a couple of reasons. It allows developers to reproduce bugs that are seen in different

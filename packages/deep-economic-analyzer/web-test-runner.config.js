@@ -4,4 +4,7 @@ import config from '@thinkdeep/tools/web-test-runner.config.js';
 // be able to log in.
 config.port = 9000;
 
+config.protocol = 'https:';
+config.http2 = true;
+
 export default config;
