@@ -16,11 +16,12 @@
   },
   "scripts": {
     "start": "node ./src/index.js",
-    "tests": "mocha ./test/**/*.test.js ./test/*.test.js --exit"
+    "tests": "nyc mocha ./test/**/*.test.js ./test/*.test.js --exit"
   },
   "devDependencies": {
     "chai": "^4.3.4",
     "mocha": "^9.1.3",
+    "nyc": "^15.1.0",
     "sinon": "^12.0.1",
     "sinon-chai": "^3.7.0"
   },
