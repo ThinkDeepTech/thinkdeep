@@ -1,7 +1,7 @@
 import config from '@thinkdeep/tools/web-dev-server.config.js';
 
 config.http2 = true;
-config.sslKey = '/home/hayden/ssl/localhost.key.pem';
-config.sslCert = '/home/hayden/ssl/localhost.cert.pem';
+config.sslKey = process.env.PREDECOS_DEVELOPMENT_SSL_KEY;
+config.sslCert = process.env.PREDECOS_DEVELOPMENT_SSL_CERT;
 
 export default config;

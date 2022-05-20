@@ -11,13 +11,22 @@ const injectEnv = fromRollup(rollupInjectEnv);
 const browsers = {
   chromium: playwrightLauncher({
     product: 'chromium',
+    createBrowserContext: ({browser}) =>
+      browser.newContext({ignoreHTTPSErrors: true}),
     launchOptions: {
       headless: true,
       devtools: true,
       args: ['--incognito'],
     },
   }),
-  firefox: playwrightLauncher({product: 'firefox'}),
+  firefox: playwrightLauncher({
+    product: 'firefox',
+    createBrowserContext: ({browser}) =>
+      browser.newContext({ignoreHTTPSErrors: true}),
+    launchOptions: {
+      headless: true,
+    },
+  }),
 };
 
 // Get a random port number.
