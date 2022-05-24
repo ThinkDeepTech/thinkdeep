@@ -35,6 +35,13 @@ const port = await getPort();
 export default {
   files: ['test/**/*.test.js', 'test/**/*.test.js'],
   nodeResolve: true,
+  coverage: true,
+  coverageConfig: {
+    report: true,
+    reportDir: 'coverage',
+    reporters: ['lcov', 'text', 'json', 'text-summary'],
+    exclude: ['**/node_modules/**', '**/charts/**'],
+  },
   browsers: Object.values(browsers),
   preserveSymlinks: true,
   concurrency: 1,

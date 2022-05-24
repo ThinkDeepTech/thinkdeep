@@ -1,7 +1,8 @@
 # Thinkdeep
 [![CircleCI](https://circleci.com/gh/ThinkDeepTech/thinkdeep.svg?style=shield)](https://circleci.com/gh/ThinkDeepTech/thinkdeep)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ThinkDeepTech_thinkdeep&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ThinkDeepTech_thinkdeep)
-[![Known Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep)
+[![Coverage Status](https://coveralls.io/repos/github/ThinkDeepTech/thinkdeep/badge.svg?branch=master)](https://coveralls.io/github/ThinkDeepTech/thinkdeep?branch=master)
+[![Known Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master)
 
 The main purpose of this repository is to learn while developing something cool. It's a bit of an experiment.
 

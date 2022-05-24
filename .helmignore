@@ -16,6 +16,7 @@ package.json
 packages/*
 .yarn/*
 .pnp.*
+.nycrc.json
 
 
 # General files for the project
