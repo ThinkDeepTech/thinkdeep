@@ -4,6 +4,7 @@ orbs:
     browser-tools: circleci/browser-tools@1.2.4
     k8s: digitalocean/k8s@0.1.1
     helm: circleci/helm@1.2.0
+    coveralls: coveralls/coveralls@1.0.6
 
 commands:
     install_monorepo:
@@ -288,6 +289,31 @@ jobs:
           - test_monorepo
           - build_ui_command
 
+    test_system_publish_coverage:
+      docker:
+          - image: 'cimg/node:16.14.2'
+
+      working_directory: ~/project
+
+      steps:
+          - run:
+              name: Update repositories
+              command: sudo apt-get update
+          - run:
+              name: Install firefox dependency (take this out when browser-tools orb is fixed)
+              command: sudo apt-get install -y libasound-dev
+          - browser-tools/install-browser-tools
+          - checkout
+          - install_monorepo
+          - test_monorepo
+          - run:
+              name: Combine test coverage results
+              command: yarn run tests:coverage:merge
+          - run:
+              name: Publishing test coverage results
+              command: yarn run tests:coverage:publish
+
+
     deploy_microservices:
       docker:
         - image: 'cimg/base:stable'
@@ -495,6 +521,11 @@ workflows:
       - build_ui_and_test_system:
           requires:
             - deploy_microservices_dev
+
+      - test_system_publish_coverage:
+          filters:
+            branches:
+              only: master
 
       - deploy_ui:
           requires:

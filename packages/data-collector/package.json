@@ -5,10 +5,11 @@
   "main": "src/data-collector.js",
   "type": "module",
   "scripts": {
-    "tests": "mocha ./test/**/*.test.js ./test/*.test.js --timeout 10000"
+    "tests": "c8 --clean mocha ./test/**/*.test.js ./test/*.test.js --timeout 10000 --exit"
   },
   "author": "Hayden McParlane",
   "devDependencies": {
+    "c8": "^7.11.3",
     "chai": "^4.3.4",
     "concat-stream": "^2.0.0",
     "mocha": "^9.1.3"

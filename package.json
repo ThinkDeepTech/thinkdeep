@@ -7,7 +7,9 @@
     "prettier": "prettier --write 'packages/**/*.js'",
     "clean": "lerna clean",
     "build": "lerna run build",
-    "tests": "lerna run tests"
+    "tests": "lerna run tests",
+    "tests:coverage:merge": "istanbul report --dir coverage --include ./packages/**/coverage/**/coverage-final.json lcovonly",
+    "tests:coverage:publish": "cat ./coverage/lcov.info | coveralls"
   },
   "husky": {
     "hooks": {
@@ -32,6 +34,7 @@
     "@babel/plugin-transform-runtime": "^7.1.0",
     "@babel/preset-env": "^7.16.0",
     "@babel/runtime": "^7.0.0",
+    "coveralls": "^3.1.1",
     "eslint": "^8.15.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^8.5.0",
@@ -40,6 +43,7 @@
     "eslint-plugin-n": "^15.2.0",
     "eslint-plugin-promise": "^6.0.0",
     "husky": "^4.3.8",
+    "istanbul": "^0.4.5",
     "lerna": "^4.0.0",
     "lint-staged": "^12.4.1",
     "prettier": "^2.6.2"
