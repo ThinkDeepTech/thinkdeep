@@ -15,7 +15,7 @@ The main purpose of this repository is to learn while developing something cool.
 
 ## Global Dependencies
 - [Node v16.14.2](https://nodejs.org/en/)
-- [Lerna v4.0.0](https://github.com/lerna/lerna)
+- [Lerna v5.0.0](https://github.com/lerna/lerna)
 - [Snyk CLI v1.936.0](https://github.com/snyk/cli)
 - [Yarn v1.22.0](https://yarnpkg.com/)
 - [Kubectl v1.22.0](https://kubernetes.io/docs/tasks/tools/)
