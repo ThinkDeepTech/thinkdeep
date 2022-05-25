@@ -1,4 +1,7 @@
 # Purpose
+
+[![Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=packages/deep-microservice-gateway/package.json)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=packages/deep-microservice-gateway/package.json)
+
 The gateway microservice provides a public access point into the application back-end. It "stiches" together
 the subgraph microservices in a way that allows the front-end to send queries that involve multiple back-end
 microservices. Only one end-point is required for the queries (or mutations).

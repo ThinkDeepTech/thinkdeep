@@ -1,4 +1,7 @@
-# Purpose
+# Economic Analyzer Front-end
+[![Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=packages/deep-economic-analyzer/package.json)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=packages/deep-economic-analyzer/package.json)
+
+## Purpose
 Despite its name, this template has evolved into a concrete analysis platform implementation. It's simple at the moment.
 
 ## Setup

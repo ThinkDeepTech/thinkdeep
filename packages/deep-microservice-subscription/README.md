@@ -1,4 +1,7 @@
 # Purpose
+
+[![Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=packages/deep-microservice-subscription/package.json)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=packages/deep-microservice-subscription/package.json)
+
 The subscription microservice is responsible for maintaining a connection with the
 front-end so that the UI can respond to back-end events immediately. This allows for real-time data
 monitoring which is not currently heavily used but will be soon.
