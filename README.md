@@ -2,7 +2,8 @@
 [![CircleCI](https://circleci.com/gh/ThinkDeepTech/thinkdeep.svg?style=shield)](https://circleci.com/gh/ThinkDeepTech/thinkdeep)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ThinkDeepTech_thinkdeep&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ThinkDeepTech_thinkdeep)
 [![Coverage Status](https://coveralls.io/repos/github/ThinkDeepTech/thinkdeep/badge.svg?branch=master)](https://coveralls.io/github/ThinkDeepTech/thinkdeep?branch=master)
-[![Known Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=package.json&targetFile=packages/deep-economic-analyzer/package.json)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=package.json&targetFile=packages/deep-economic-analyzer/package.json)
+[![Known Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=/yarn.lock)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=/yarn.lock)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ThinkDeepTech_thinkdeep&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ThinkDeepTech_thinkdeep)
 
 The main purpose of this repository is to learn while developing something cool. It's a bit of an experiment.
 
