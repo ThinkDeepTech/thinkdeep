@@ -1,4 +1,7 @@
 # Purpose
+
+[![Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=packages/deep-microservice-analysis/package.json)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=packages/deep-microservice-analysis/package.json)
+
 The analysis microservice is responsible for all data analysis operations. After data collection occurs, it's routed to analysis
 where various algorithms will process that data and store the results to display for the user. Currently, there are no analytics
 but that's soon to come.

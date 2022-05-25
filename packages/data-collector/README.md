@@ -1,11 +1,5 @@
-# `@thinkdeep/data-collector`
+# Purpose
 
-> TODO: description
+[![Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=packages/data-collector/package.json)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=packages/data-collector/package.json)
 
-## Usage
-
-```
-const dataCollector = require('@thinkdeep/data-collector');
-
-// TODO: DEMONSTRATE API
-```
+CLI performing data collection tasks.

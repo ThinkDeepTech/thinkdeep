@@ -29,7 +29,7 @@
     "@thinkdeep/attach-exit-handler": "^1.0.0",
     "@thinkdeep/get-public-ip": "^1.0.0",
     "apollo-datasource-mongodb": "^0.5.2",
-    "apollo-server": "^3.2.0",
+    "apollo-server": "3.8.0",
     "apollo-server-express": "^3.5.0",
     "express": "^4.17.1",
     "graphql": "^15.5.1",

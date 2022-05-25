@@ -1,4 +1,7 @@
 # Purpose
+
+[![Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=packages/deep-microservice-collection/package.json)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=packages/deep-microservice-collection/package.json)
+
 Data collection drives this microservice. It's responsible for spinning up processes that do data collection,
 trigger kafka events at which point it stores the data in MongoDB.
 
