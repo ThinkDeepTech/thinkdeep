@@ -306,10 +306,6 @@ jobs:
           - browser-tools/install-browser-tools
           - checkout
           - install_monorepo
-          - test_monorepo
-          - run:
-              name: Combine test coverage results
-              command: yarn run tests:coverage:merge
           - run:
               name: Publishing test coverage results
               command: yarn run tests:coverage:publish
