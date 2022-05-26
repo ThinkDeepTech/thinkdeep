@@ -8,8 +8,11 @@
     "clean": "lerna clean",
     "build": "lerna run build",
     "tests": "lerna run tests",
-    "tests:coverage:merge": "istanbul report --dir coverage --include ./packages/**/coverage/**/coverage-final.json lcovonly",
-    "tests:coverage:publish": "cat ./coverage/lcov.info | coveralls"
+    "tests:coverage": "yarn run tests && yarn run tests:coverage:centralize && yarn run tests:coverage:merge && nyc report --reporter=lcov --temp-dir=coverage",
+    "tests:coverage:merge": "nyc merge ./coverage ./coverage/coverage-final.json",
+    "tests:coverage:centralize": "yarn run tests:coverage:rename:all && mkdir -p ./coverage && lerna exec --parallel --ignore @thinkdeep/tools -- 'export WORKING_DIR=$(basename $LERNA_PACKAGE_NAME) && cp ./coverage/coverage-final-$(echo $WORKING_DIR).json ../../coverage/coverage-final-$(echo $WORKING_DIR).json'",
+    "tests:coverage:rename:all": "lerna exec --parallel --ignore @thinkdeep/tools -- 'export WORKING_DIR=$(basename $LERNA_PACKAGE_NAME) && cp ./coverage/coverage-final.json ./coverage/coverage-final-$(echo $WORKING_DIR).json'",
+    "tests:coverage:publish": "yarn run tests:coverage && cat ./coverage/lcov.info | coveralls"
   },
   "husky": {
     "hooks": {
@@ -43,9 +46,9 @@
     "eslint-plugin-n": "^15.2.0",
     "eslint-plugin-promise": "^6.0.0",
     "husky": "^4.3.8",
-    "istanbul": "^0.4.5",
     "lerna": "^5.0.0",
     "lint-staged": "^12.4.1",
+    "nyc": "^15.1.0",
     "prettier": "^2.6.2"
   },
   "workspaces": [
