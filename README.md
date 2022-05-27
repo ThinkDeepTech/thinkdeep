@@ -4,14 +4,14 @@
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ThinkDeepTech_thinkdeep&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ThinkDeepTech_thinkdeep)
 [![Coverage Status](https://coveralls.io/repos/github/ThinkDeepTech/thinkdeep/badge.svg?branch=master)](https://coveralls.io/github/ThinkDeepTech/thinkdeep?branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/a9eb1d6f95a73bfda23d/maintainability)](https://codeclimate.com/github/ThinkDeepTech/thinkdeep/maintainability)
-[![Contact](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/haydenmcp/)
+[<img src="https://i.stack.imgur.com/gVE0j.png" height="20" width="20">](https://www.linkedin.com/in/haydenmcp/)
+[<img src="https://i.stack.imgur.com/tskMh.png" height="20" width="20">](https://github.com/haydenmcp)
 
 
 [![Economic Analyzer Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=packages/deep-economic-analyzer/package.json)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=packages/deep-economic-analyzer/package.json)
 [![Collection Microservice Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=packages/deep-microservice-collection/package.json)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=packages/deep-microservice-collection/package.json)
 [![Subscription Microservice Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=packages/deep-microservice-subscription/package.json)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=packages/deep-microservice-subscription/package.json)
 [![Data Collector Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=packages/data-collector/package.json)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=packages/data-collector/package.json)
-
 
 
 The main purpose of this repository is to learn while developing something cool. It's a bit of an experiment.
