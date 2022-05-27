@@ -6,7 +6,6 @@
         ".js", ".cjs", ".mjs"
     ],
     "reporter": [
-        "lcov",
         "json"
     ],
     "include": [
