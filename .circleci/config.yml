@@ -36,6 +36,15 @@ commands:
         - run: curl -sL https://firebase.tools | bash
         - run: firebase --token $FIREBASE_TOKEN deploy
 
+    patch_firefox:
+      steps:
+        - run:
+              name: Update repositories
+              command: sudo apt-get update
+        - run:
+            name: Install firefox dependency (take this out when browser-tools orb is fixed)
+            command: sudo apt-get install -y libasound-dev
+
 jobs:
 
     build_microservice_analysis:
@@ -267,12 +276,7 @@ jobs:
       working_directory: ~/project
 
       steps:
-          - run:
-              name: Update repositories
-              command: sudo apt-get update
-          - run:
-              name: Install firefox dependency (take this out when browser-tools orb is fixed)
-              command: sudo apt-get install -y libasound-dev
+          - patch_firefox
           - browser-tools/install-browser-tools
           - checkout
           - install_monorepo
@@ -380,6 +384,8 @@ jobs:
       working_directory: ~/project
 
       steps:
+          - patch_firefox
+          - browser-tools/install-browser-tools
           - checkout
           - install_monorepo
           - build_ui_command
