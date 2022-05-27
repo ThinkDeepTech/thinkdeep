@@ -5,7 +5,7 @@
   "main": "src/data-collector.js",
   "type": "module",
   "scripts": {
-    "tests": "c8 --clean mocha --parallel --timeout 10000 --exit"
+    "tests": "c8 --clean mocha --timeout 10000 --exit"
   },
   "author": "Hayden McParlane",
   "devDependencies": {
