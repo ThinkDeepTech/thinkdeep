@@ -190,6 +190,7 @@ jobs:
         - image: 'cimg/base:stable'
 
       working_directory: ~/project
+      resource_class: large
 
       steps:
         - checkout
@@ -265,12 +266,6 @@ jobs:
       working_directory: ~/project
 
       steps:
-          - run:
-              name: Update repositories
-              command: sudo apt-get update
-          - run:
-              name: Install firefox dependency (take this out when browser-tools orb is fixed)
-              command: sudo apt-get install -y libasound-dev
           - browser-tools/install-browser-tools
           - checkout
           - install_monorepo
