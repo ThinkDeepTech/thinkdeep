@@ -12,7 +12,7 @@ COPY src/ ./src/
 
 COPY package.json $BASE_DIRECTORY/
 
-RUN npm install
+RUN yarn install
 
 EXPOSE $PORT
 
