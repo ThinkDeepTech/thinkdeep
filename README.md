@@ -14,7 +14,6 @@
 [![Data Collector Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=packages/data-collector/package.json)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=packages/data-collector/package.json)
 
 
-
 The main purpose of this repository is to learn while developing something cool. It's a bit of an experiment.
 
 ## Global Dependencies
