@@ -39,7 +39,7 @@ export default {
   coverageConfig: {
     report: true,
     reportDir: 'coverage',
-    reporters: ['lcov', 'text', 'json', 'text-summary'],
+    reporters: ['json'],
     exclude: ['**/node_modules/**', '**/charts/**'],
   },
   browsers: Object.values(browsers),

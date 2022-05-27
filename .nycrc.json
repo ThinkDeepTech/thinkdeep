@@ -6,10 +6,7 @@
         ".js", ".cjs", ".mjs"
     ],
     "reporter": [
-        "lcov",
-        "json",
-        "text",
-        "text-summary"
+        "json"
     ],
     "include": [
         "**/src/**/*.js"

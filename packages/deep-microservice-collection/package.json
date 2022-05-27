@@ -16,7 +16,7 @@
   },
   "scripts": {
     "start": "node ./src/index.js",
-    "tests": "c8 --clean mocha ./test/**/*.test.js ./test/*.test.js --exit"
+    "tests": "c8 --clean mocha --exit"
   },
   "devDependencies": {
     "c8": "^7.11.3",

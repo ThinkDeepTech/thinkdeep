@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM nikolaik/python-nodejs:python3.9-nodejs16
 
 ARG PORT;
 
@@ -6,26 +6,13 @@ ENV BASE_DIRECTORY=/usr/src/app
 
 WORKDIR $BASE_DIRECTORY
 
-RUN apt-get update
-
-RUN apt-get install -y curl
-
-# Add nodejs 16.x
-RUN /bin/bash -c "curl -sL https://deb.nodesource.com/setup_16.x | bash -"
-
-RUN apt-get update
-
-RUN apt-get install -y nodejs
-
-RUN node --version
-
 RUN mkdir ./src
 
 COPY src/ ./src/
 
 COPY package.json $BASE_DIRECTORY/
 
-RUN npm install
+RUN yarn install
 
 EXPOSE $PORT
 
