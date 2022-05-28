@@ -36,6 +36,11 @@ application requires deployment to a DigitalOcean kubernetes cluster at this tim
 
 ```
 - Run helm install in project root and set required values.
+- Open terminal and navigate to <project root>/packages/deep-economic-analyzer
+- Run
+```console
+    yarn run start
+```
 
 ## Goals
 The goal started out as creation of a LitElement component collection usable in multiple web application templates. Those
