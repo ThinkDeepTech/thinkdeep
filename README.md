@@ -55,7 +55,7 @@ implementation of that template idea.
 ### The Front-end
 
 #### Lit
-Lit has multiple benefits. First, it's familiar which is significant. However, it's also incredibly fast and light-weight.
+[Lit](https://lit.dev) has multiple benefits. First, it's familiar which is significant. However, it's also incredibly fast and light-weight.
 When benchmarked against React it renders 30% faster for a large number of DOM nodes. Lit came about as a result of the
 Polymer project at Google which had the goal of reducing use of javascript frameworks focused on creating custom elements. Those frameworks
 are essentially needed because the browser doesn't perform it's job well enough. It's ideal to move the custom component concept into the browser itself instead
