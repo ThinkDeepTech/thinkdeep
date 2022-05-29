@@ -55,17 +55,7 @@ implementation of that template idea.
 ### The Front-end
 
 #### Lit
-[Lit](https://lit.dev) has multiple benefits. First, it's familiar which is significant. However, it's also incredibly fast and light-weight.
-When benchmarked against React it renders 30% faster for a large number of DOM nodes. Lit came about as a result of the
-Polymer project at Google which had the goal of reducing use of javascript frameworks focused on creating custom elements. Those frameworks
-are essentially needed because the browser doesn't perform it's job well enough. It's ideal to move the custom component concept into the browser itself instead
-of relying on frameworks. Frameworks introduce additional layers which increase execution time. They prevent
-reuse of custom components from one framework to the next making it difficult to migrate to a different framework as well as
-requiring recreation of components that may already be available publicly (i.e, on GitHub). With adoption of custom elements support
-in numerous popular browsers those frameworks are no longer needed though they're still extremely popular. It's notable
-that wide-spread use of frameworks means many developers are familiar with them and, therefore, it may be difficult to find developers
-who know, i.e, Lit because it's newer. However, that may change. All of this is to say, Lit was also chosen because it
-continues that goal of using the platform resulting in performance gains and increasing compatibility with the current javascript ecosystem.
+[Lit](https://lit.dev) has multiple benefits. First, it's familiar to me which is significant. However, it's also incredibly fast and light-weight. When benchmarked against React it renders 30% faster for a large number of DOM nodes. Lit came about as a result of the Polymer project at Google which had the goal of reducing use of javascript frameworks focused on creating custom elements. Those frameworks are essentially needed because the browser doesn't perform its job well enough. It's ideal to move the custom component concept into the browser itself instead of relying on frameworks. Frameworks introduce additional layers which increase execution time and likelihood of dependency conflict. They prevent reuse of custom components from one framework to the next making it difficult to migrate to a different framework as well as requiring recreation of components that may already be available publicly (i.e, on GitHub). With increasing custom elements support in numerous popular browsers those frameworks are no longer needed though they're still extremely popular. It's notable that wide-spread use of frameworks means many developers are familiar with them and, therefore, it may be difficult to find developers who know, i.e, Lit because it's newer. However, that may change. All of this is to say, Lit was also chosen because it continues that goal of using the platform resulting in performance gains and increasing compatibility with the current javascript ecosystem.
 
 #### Rollup
 Building the application is done using rollup because it has a clean, concise syntax. WebPack is extremely customizable but it's more
