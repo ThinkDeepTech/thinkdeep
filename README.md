@@ -76,7 +76,7 @@ Mocha and chai are used for front-end testing along with [open-wc testing helper
 [web test runner](https://modern-web.dev/docs/test-runner/overview/).
 
 
-### The Back-end / Infrastructure
+### The Back-end / Operations
 
 #### Microservices Architecture
 The microservices architecture provides for scalability of the system as well as clean separation of concerns. The goal of this
