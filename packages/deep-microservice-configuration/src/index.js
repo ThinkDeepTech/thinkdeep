@@ -46,6 +46,7 @@ const startApolloServer = async () => {
       return {permissions, me};
     },
     plugins: [loggingPlugin],
+    csrfPrevention: true,
   });
   await server.start();
 

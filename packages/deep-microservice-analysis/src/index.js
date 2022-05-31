@@ -58,6 +58,7 @@ const logger = getLogger();
       return {permissions};
     },
     plugins: [loggingPlugin],
+    csrfPrevention: true,
   });
 
   const microservice = new Microservice(apolloServer, express(), logger);

@@ -129,6 +129,7 @@ const startApolloServer = async () => {
       return {permissions};
     },
     plugins: [loggingPlugin],
+    csrfPrevention: true,
   });
   await server.start();
 

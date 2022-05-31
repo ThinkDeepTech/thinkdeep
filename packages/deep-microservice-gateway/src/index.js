@@ -48,6 +48,7 @@ const startGatewayService = async () => {
     gateway,
     subscriptions: false,
     context: ({req, res}) => ({req, res}),
+    csrfPrevention: true,
   });
   await server.start();
 
