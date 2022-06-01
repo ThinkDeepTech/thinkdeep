@@ -36,6 +36,25 @@ application requires deployment to a DigitalOcean kubernetes cluster at this tim
 
 ```
 - Run helm install in project root and set required values.
+- Set the following environment variables:
+    - PREDECOS_AUTH_DOMAIN
+    - PREDECOS_AUTH_CLIENT_ID
+    - PREDECOS_AUTH_AUDIENCE
+    - PREDECOS_AUTH_JWKS_URI
+    - PREDECOS_AUTH_ISSUER
+    - PREDECOS_TEST_AUTH_DOMAIN
+    - PREDECOS_TEST_AUTH_CLIENT_ID
+    - PREDECOS_TEST_AUTH_AUDIENCE
+    - PREDECOS_TEST_AUTH_JWKS_URI
+    - PREDECOS_TEST_AUTH_ISSUER
+    - PREDECOS_TEST_AUTH_USERNAME
+    - PREDECOS_TEST_AUTH_PASSWORD
+    - PREDECOS_TEST_AUTH_SCOPE
+    - PREDECOS_TEST_AUTH_CLIENT_SECRET
+    - PREDECOS_TEST_MICROSERVICE_GATEWAY_URL
+    - PREDECOS_TEST_MICROSERVICE_SUBSCRIPTION_URL
+    - PREDECOS_MICROSERVICE_GATEWAY_URL
+    - PREDECOS_MICROSERVICE_SUBSCRIPTION_URL
 - Open terminal and navigate to <project root>/packages/deep-economic-analyzer
 - Run
 ```console
