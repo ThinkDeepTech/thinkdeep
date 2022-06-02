@@ -74,11 +74,10 @@ implementation of that template idea.
 ### The Front-end
 
 #### Lit
-[Lit](https://lit.dev) has multiple benefits. First, it's familiar to me which is significant. However, it's also incredibly fast and light-weight. When benchmarked against React it renders 30% faster for a large number of DOM nodes. Lit came about as a result of the Polymer project at Google which had the goal of reducing use of javascript frameworks focused on creating custom elements. Those frameworks are essentially needed because the browser doesn't perform its job well enough. It's ideal to move the custom component concept into the browser itself instead of relying on frameworks. Frameworks introduce additional layers which increase execution time and likelihood of dependency conflict. They prevent reuse of custom components from one framework to the next making it difficult to migrate to a different framework as well as requiring recreation of components that may already be available publicly (i.e, on GitHub). With increasing custom elements support in numerous popular browsers those frameworks are no longer needed though they're still extremely popular. It's notable that wide-spread use of frameworks means many developers are familiar with them and, therefore, it may be difficult to find developers who know, i.e, Lit because it's newer. However, that may change. All of this is to say, Lit was also chosen because it continues that goal of using the platform resulting in performance gains and increasing compatibility with the current javascript ecosystem.
+[Lit](https://lit.dev) has multiple benefits. First, it's familiar to me, which is significant. However, It's also incredibly fast and light-weight. When benchmarked against React, it [performs quite a bit better](https://javascript.plainenglish.io/javascript-frameworks-performance-comparison-2020-cd881ac21fce). Lit came about as a result of the desire to use the browsers support for the web components standard to create framework agnostic components. Frameworks such as React and Angular are essentially needed because the browser doesn't perform its job well enough. It's ideal to move the custom component concept into the browser itself instead of relying on a framework for that functionality because frameworks introduce additional layers which increase execution time and likelihood of dependency conflict. They prevent reuse of custom components from one framework to the next making it difficult to migrate to a different framework as well as requiring recreation of components that may already be available to another framework. With [increasing web components support](https://developer.mozilla.org/en-US/docs/Web/Web_Components) in numerous popular browsers such as Chrome, Firefox and Safari those frameworks are soon to be obsolete despite the fact that they are still extremely popular. 
 
 #### Rollup
-Building the application is done using rollup because it has a clean, concise syntax. WebPack is extremely customizable but it's more
-confusing to maintain. Right now, builds aren't doing anything complex so this fits my use case.
+Building the application is done using rollup because it has a clean, concise syntax. WebPack is extremely customizable, but more confusing to maintain.
 
 #### Testing
 Mocha and chai are used for front-end testing along with [open-wc testing helpers](https://open-wc.org/docs/testing/helpers/) and
@@ -98,40 +97,20 @@ An event occurs and microservices that subscribe to that event process it.
 This in combination with graphql subscriptions allows for the user-interface to be updated every time an event occurs.
 
 #### Kafka
-[Bitnami Kafka](https://github.com/bitnami/bitnami-docker-kafka) is used for the kafka instance.
-Kafka is a messaging system that's heavily used for events. It's been around for a while and is battle-tested. It's not
-the fastest option out there. But events persist (it's not in-memory) and the interface is simple in combination with [KafkaJS](https://kafka.js.org/). Production-readiness is obvious given its use by many large companies. Kafka use enables powerful real-time capabilities
-for the application.
+[Bitnami Kafka](https://github.com/bitnami/bitnami-docker-kafka) is used which is a helm chart carrying [Apache Kafka](https://kafka.apache.org/). Kafka is a messaging system that's heavily used for event handling.It's been around for a while and is battle-tested. It's not the fastest option out there, but events persist and the interface is simple when used with [KafkaJS](https://kafka.js.org/). Production-readiness is obvious given its use by many large companies. Using Kafka enables powerful real-time capabilities for the application such as subscriptions, and fast, easy microservice communication.
 
 #### Apollo GraphQL
-[Apollo GraphQL](https://www.apollographql.com/) provides a production-ready GraphQL implementation with some powerful features.
-For a microservices architecture, our goal is to create isolated units that have a single responsibility and that can scale
-independently. I've used Apollo federation because it's viewed
-as a better way of isolating microservice responsibilities. Specifically, a microservice defines its own types
-but it also defines how its interface is used by other microservices. This, in theory, encapsulates all of the code relating to a given
-service in one codebase. One benefit of that would be full-stack development can be done without making changes that collide
-with another teams changes provided that the interface isn't changed. Federation provides mechanisms for connecting a subgraph
-to a full application supergraph in a seamless way. It uses a single gateway that provides access to the remaining
-services. This gateway is the publicly accessible end-point for the microservices and routes requests to the necessary
-microservices needed to gather the response. This concept is used because it's intended to introduce additional
-microservices that will perform tasks such as data fetching/collection, data cleaning and data analysis. Additional benefits
-include reducing the number of requests that need to go over the wire to gather data when
-compared to RESTful APIs. It's backed by facebook and is used by numerous companies and is therefore battle-tested. It's also fun. :-)
+[Apollo GraphQL](https://www.apollographql.com/) provides a production-ready GraphQL implementation. For a microservices architecture, the goal is to create isolated units that have a single responsibility and that can scale independently. I've used Apollo federation because it's viewed as a better way of isolating microservice responsibilities. Specifically, a microservice defines its own types but it also defines how its interface is used by other microservices. This, in theory, encapsulates all of the code relating to a given service in one codebase. One resulting benefit is development can be done without making changes that collide with other teams' changes provided that the interface is agreed upon. Federation provides mechanisms for connecting a subgraph to a full application supergraph in a seamless way. It uses a single gateway that provides access to the remaining services. This gateway is the publicly accessible end-point for the microservices and routes requests to the necessary microservices needed to gather the response. This concept is used because it's intended to introduce additional microservices that will perform tasks such as data fetching/collection, data cleaning and data analysis. Additional benefits include reducing the number of requests that need to go over the wire to gather data when compared to RESTful APIs. It's backed by facebook and is used by numerous companies and is therefore battle-tested.
 
 #### Kubernetes
 [Kubernetes](https://kubernetes.io/) is a container orchestration system with many powerful characteristics. It's used in this
 project to take advantage of self-healing, monitoring, replication and load-balancing.
 
 #### Helm
-[Helm](https://helm.sh/) goes quite well with kubernetes. Management of kubernetes manifests becomes difficult as multiple deployments become necessary because a new set of manifests needs to be created for each environment. I.e, development vs. production. Helm solves this issue by allowing kubernetes
-manifest templates to be created so that concrete manifests can be generated based on desired configurations. In my case, this has allowed one-click
-manual deployment of the entire project and its dependencies regardless of the environment. It also allows simple configuration of certificates if TLS is desired. Based on kubernetes service hostname defaults you can also wire up each deployment to the necessary services used making the manual deployment process extremely easy. Uninstall is equally easy. Helm provides this as well as easy version management and many other features.
+[Helm](https://helm.sh/) integrates quite well with Kubernetes. Management of Kubernetes manifests becomes difficult as multiple deployments become necessary because a new set of manifests need to be created for each environment (i.e., development, production). Helm solves this issue by allowing Kubernetes manifest templates to be created so that concrete manifests can be generated based on desired configurations. In my case, this has allowed one-click manual deployment of all the microservices regardless of the environment. It also allows simple configuration of certificates if TLS is desired. Based on Kubernetes service hostname defaults each deployment can be wired up to the necessary services used, making the manual deployment process extremely easy. Uninstalling is equally straightforward. Helm also provides easy version management.
 
 #### Docker
-Docker provides containerization and is used for a couple of reasons. It allows developers to reproduce bugs that are seen in different
-environments such as production. It encapsulates application dependencies and configuration such that each application will run
-without worry about conflicts. It allows for easy backup and it takes up a much smaller
-footprint than virtual machines. It's also moving toward greater adoption on multiple platforms such as windows.
+Docker provides image creation and is used for a couple of reasons. It allows developers to reproduce bugs that are seen in different environments, such as production. It encapsulates application dependencies and configuration such that each application will run without concern about conflicts. It allows for easy backup and it takes up a much smaller footprint than virtual machines. It's also moving toward greater adoption on multiple platforms such as windows.
 
 #### MongoDB
 While data structure is unknown MongoDB is a good fit because it allows for creation of data in a flexible manner. While data structure
