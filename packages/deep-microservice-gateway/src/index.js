@@ -1,5 +1,6 @@
 import {ApolloGateway, RemoteGraphQLDataSource} from '@apollo/gateway';
 import {getPublicIP} from '@thinkdeep/get-public-ip';
+import depthLimit from 'graphql-depth-limit';
 import {ApolloServer} from 'apollo-server-express';
 import express from 'express';
 import jwt from 'express-jwt';
@@ -14,7 +15,10 @@ const logger = getLogger();
 const startGatewayService = async () => {
   const gateway = new ApolloGateway({
     serviceList: [
-      {name: 'analysis', url: process.env.PREDECOS_MICROSERVICE_ANALYSIS_URL},
+      {
+        name: 'analysis',
+        url: process.env.PREDECOS_MICROSERVICE_ANALYSIS_URL,
+      },
       {
         name: 'collection',
         url: process.env.PREDECOS_MICROSERVICE_COLLECTION_URL,
@@ -49,6 +53,7 @@ const startGatewayService = async () => {
     subscriptions: false,
     context: ({req, res}) => ({req, res}),
     csrfPrevention: true,
+    validationRules: [depthLimit(10)],
   });
   await server.start();
 

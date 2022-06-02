@@ -15,6 +15,7 @@ import {
   GraphQLError,
   validate,
 } from 'graphql';
+import depthLimit from 'graphql-depth-limit';
 import {useServer} from 'graphql-ws/lib/use/ws';
 import {createServer} from 'http';
 import jwks from 'jwks-rsa';
@@ -151,7 +152,10 @@ const startApolloServer = async () => {
   const gatewayProxy = new ApolloGateway({
     serviceList: [
       // NOTE: This is a direct copy of what's done in the gateway service. Keep the two synced.
-      {name: 'analysis', url: process.env.PREDECOS_MICROSERVICE_ANALYSIS_URL},
+      {
+        name: 'analysis',
+        url: process.env.PREDECOS_MICROSERVICE_ANALYSIS_URL,
+      },
       {
         name: 'collection',
         url: process.env.PREDECOS_MICROSERVICE_COLLECTION_URL,
@@ -220,7 +224,7 @@ const startApolloServer = async () => {
         }
 
         // Validate the operation document
-        const errors = validate(args.schema, args.document);
+        const errors = validate(args.schema, args.document, [depthLimit(10)]);
 
         if (errors.length > 0) {
           return errors;
