@@ -14,7 +14,7 @@
 [![Data Collector Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=packages/data-collector/package.json)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=packages/data-collector/package.json)
 
 
-The main purpose of this repository is to learn while developing something cool. It's a bit of an experiment.
+The purpose of this repository is to build a full-stack analytics platform for economic data. It's also to develop something cool and to learn.
 
 ## Global Dependencies
 - [Node v16.14.2](https://nodejs.org/en/)
