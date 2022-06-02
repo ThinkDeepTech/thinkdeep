@@ -18,6 +18,7 @@ const initApolloClient = async () => {
   if (!client) {
     const authHeaders = (_user) => {
       return {
+        'Apollo-Require-Preflight': 'true',
         authorization: _user?.accessToken ? `Bearer ${_user.accessToken}` : '',
         me: _user?.idToken ? _user.idToken : '',
       };
@@ -30,8 +31,7 @@ const initApolloClient = async () => {
     const wsLink = new WebSocketLink({
       url: process.env.PREDECOS_MICROSERVICE_SUBSCRIPTION_URL,
       connectionParams: () => {
-        const {authorization, me} = authHeaders(user);
-        return {authorization, me};
+        return authHeaders(user);
       },
     });
 
@@ -53,9 +53,8 @@ const initApolloClient = async () => {
     );
 
     const authLink = setContext((_, {headers}) => {
-      const {authorization, me} = authHeaders(user);
       return {
-        headers: {...headers, authorization, me},
+        headers: {...headers, ...authHeaders(user)},
       };
     });
 
