@@ -2,6 +2,7 @@ import {buildSubgraphSchema} from '@apollo/subgraph';
 import {attachExitHandler} from '@thinkdeep/attach-exit-handler';
 import {K8sClient, KubeConfig} from '@thinkdeep/k8s';
 import {getPublicIP} from '@thinkdeep/get-public-ip';
+import depthLimit from 'graphql-depth-limit';
 import {ApolloServer} from 'apollo-server-express';
 import {CollectionService} from './collection-service.js';
 import {Commander} from './commander.js';
@@ -129,6 +130,8 @@ const startApolloServer = async () => {
       return {permissions};
     },
     plugins: [loggingPlugin],
+    csrfPrevention: true,
+    validationRules: [depthLimit(10)],
   });
   await server.start();
 

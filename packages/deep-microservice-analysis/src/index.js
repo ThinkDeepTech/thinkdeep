@@ -6,6 +6,7 @@ import {ApolloServer} from 'apollo-server-express';
 import {SentimentStore} from './datasource/sentiment-store.js';
 import express from 'express';
 import {getLogger} from './get-logger.js';
+import depthLimit from 'graphql-depth-limit';
 import {Kafka} from 'kafkajs';
 import {loggingPlugin} from './logging-plugin.js';
 import {MongoClient} from 'mongodb';
@@ -58,6 +59,8 @@ const logger = getLogger();
       return {permissions};
     },
     plugins: [loggingPlugin],
+    csrfPrevention: true,
+    validationRules: [depthLimit(10)],
   });
 
   const microservice = new Microservice(apolloServer, express(), logger);

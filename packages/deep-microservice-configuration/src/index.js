@@ -1,6 +1,7 @@
 import {buildSubgraphSchema} from '@apollo/subgraph';
 import {attachExitHandler} from '@thinkdeep/attach-exit-handler';
 import {getPublicIP} from '@thinkdeep/get-public-ip';
+import depthLimit from 'graphql-depth-limit';
 import {ApolloServer} from 'apollo-server-express';
 import {ConfigurationService} from './configuration-service.js';
 import {ConfigurationStore} from './datasource/configuration-store.js';
@@ -46,6 +47,8 @@ const startApolloServer = async () => {
       return {permissions, me};
     },
     plugins: [loggingPlugin],
+    csrfPrevention: true,
+    validationRules: [depthLimit(10)],
   });
   await server.start();
 
