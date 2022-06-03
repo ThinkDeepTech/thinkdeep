@@ -5,3 +5,4 @@
 .pnp.*
 ./**/Chart.*
 *charts/
+.dccache

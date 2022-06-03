@@ -2547,6 +2547,21 @@
   resolved "https://registry.yarnpkg.com/@thinkdeep/get-public-ip/-/get-public-ip-1.0.0.tgz#4add3466825f5d2c21bfb071f6a4932bc05a5490"
   integrity sha512-EhzJkxcEjjtOL96ooJ0djtlo1beNwULdHcaHVvvUl3JzIxOIxbbp4v1jxLLVWAKQWigmVPEfN+HNyzy0A9ZxWg==
 
+"@thinkdeep/graphql-kafka-subscriptions@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@thinkdeep/graphql-kafka-subscriptions/-/graphql-kafka-subscriptions-0.4.1.tgz#aa87e945c87f20263bed9a9170af2a762cd1d817"
+  integrity sha512-T6Ai6yKfk7unW5/7gp3MzhH+cDB1lIWVS886ceZxckJVEBMUmdoze9SkZUyAe+C/FAsRxfbMsFLxwf8eO5691Q==
+  dependencies:
+    "@types/bunyan" "^1.8.6"
+    "@types/node" "^13.13.2"
+    bunyan "^1.8.12"
+    dotenv "^8.2.0"
+    graphql "^14.0.0"
+    graphql-subscriptions "^1.1.0"
+    iterall "^1.2.2"
+    node-rdkafka "^2.8.1"
+    uuid "^7.0.3"
+
 "@thinkdeep/k8s-manifest@^2.0.1":
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/@thinkdeep/k8s-manifest/-/k8s-manifest-2.0.6.tgz#8015909c999eb2a1e6af05fab52909640abd345e"
@@ -4355,9 +4370,9 @@ colorette@^1.1.0:
   integrity sha512-Y2oEozpomLn7Q3HFP7dpww7AtMJplbM9lGZP6RDfHqmbeRjiwRg4n6VM6j4KLmRke85uWEI7JqF17f3pqdRA0g==
 
 colorette@^2.0.16:
-  version "2.0.16"
-  resolved "https://registry.yarnpkg.com/colorette/-/colorette-2.0.16.tgz#713b9af84fdb000139f04546bd4a93f62a5085da"
-  integrity sha512-hUewv7oMjCp+wkBv5Rm0v87eJhq4woh5rSR+42YSQJKecCqgIqNkZ6lAlQms/BwHPJA5NKMRlpxPRv0n8HQW6g==
+  version "2.0.17"
+  resolved "https://registry.yarnpkg.com/colorette/-/colorette-2.0.17.tgz#5dd4c0d15e2984b7433cb4a9f2ead45063b80c47"
+  integrity sha512-hJo+3Bkn0NCHybn9Tu35fIeoOKGOk5OCC32y4Hz2It+qlCO2Q3DeQ1hRn/tDDMQKRYUEzqsl7jbF6dYKjlE60g==
 
 columnify@^1.6.0:
   version "1.6.0"
@@ -6164,20 +6179,6 @@ graphql-depth-limit@^1.1.0:
   integrity sha512-+3B2BaG8qQ8E18kzk9yiSdAa75i/hnnOwgSeAxVJctGQPvmeiLtqKOYF6HETCyRjiF7Xfsyal0HbLlxCQkgkrw==
   dependencies:
     arrify "^1.0.1"
-
-graphql-kafka-subscriptions@ThinkDeepTech/graphql-kafka-subscriptions#0.4.1:
-  version "0.4.1"
-  resolved "https://codeload.github.com/ThinkDeepTech/graphql-kafka-subscriptions/tar.gz/cc05f64bc841525cdd06efae9e37cb1a2ca7f159"
-  dependencies:
-    "@types/bunyan" "^1.8.6"
-    "@types/node" "^13.13.2"
-    bunyan "^1.8.12"
-    dotenv "^8.2.0"
-    graphql "^14.0.0"
-    graphql-subscriptions "^1.1.0"
-    iterall "^1.2.2"
-    node-rdkafka "^2.8.1"
-    uuid "^7.0.3"
 
 graphql-subscriptions@^1.1.0:
   version "1.2.1"
