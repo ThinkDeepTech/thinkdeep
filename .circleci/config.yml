@@ -9,9 +9,15 @@ orbs:
 commands:
     install_monorepo:
       steps:
+        - restore_cache:
+            key: deps-{{ .Branch }}-{{ checksum "yarn.lock" }}
         - run:
             name: Installing monorepo
             command: yarn install
+        - save_cache:
+            key: deps-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            paths:
+              - "node_modules"
 
     login_docker:
       steps:
