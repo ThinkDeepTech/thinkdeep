@@ -335,6 +335,10 @@ jobs:
             update-repositories: true
             timeout: "600s"
             wait: true
+        - run:
+            name: Rolling deployment back.
+            command: helm rollback v1
+            when: on_fail
 
 
     deploy_microservices_dev:
@@ -383,6 +387,10 @@ jobs:
             update-repositories: true
             timeout: "600s"
             wait: true
+        - run:
+            name: Rolling deployment back.
+            command: helm rollback v1
+            when: on_fail
 
 
     deploy_ui_and_publish_coverage:

@@ -74,6 +74,9 @@ const startApolloServer = async () => {
       await commander.stopAllCommands();
     });
 
+    // TODO: Better way
+    await commander.stopAllCommands();
+
     logger.info('Closing Kafka connections.');
     await producer.disconnect();
     await scaleSyncConsumer.disconnect();
