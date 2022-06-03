@@ -54,7 +54,7 @@ const startApolloServer = async () => {
       deploymentName,
       namespace
     );
-    if (readyReplicas === 0) {
+    if (!readyReplicas) {
       await callback();
     }
   };
