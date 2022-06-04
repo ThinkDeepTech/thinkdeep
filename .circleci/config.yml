@@ -29,7 +29,7 @@ commands:
       steps:
         - run:
             name: Testing monorepo
-            command: yarn run tests && yarn run tests:e2e
+            command: yarn run tests
 
     build_ui_command:
       steps:
@@ -332,7 +332,7 @@ jobs:
             release-name: "v1"
             values-to-override: "gateway.service.certificateId=2b25c4eb-828e-4e9c-8c55-9f3deb85e331,subscription.service.certificateId=5fba8346-80ac-44a4-8521-3f7ab7dd3153,auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,collection.replicas=3,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,collection.data.collector.image=thinkdeeptech/data-collector:latest,replicas=1,global.docker.secretName=docker-secret,global.nodeEnv=$NODE_ENV"
             update-repositories: true
-            timeout: "600s"
+            timeout: "420s"
             wait: true
         - run:
             name: Rolling deployment back.
@@ -383,7 +383,7 @@ jobs:
             release-name: "v1"
             values-to-override: "gateway.service.certificateId=c0d2677a-34f7-4f2b-b464-055f7015a3b0,subscription.service.certificateId=ecccde8a-2599-4103-a34f-52e8385b5053,auth.audience=$PREDECOS_TEST_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_TEST_AUTH_JWKS_URI,auth.issuer=$PREDECOS_TEST_AUTH_ISSUER,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,replicas=1,global.docker.secretName=docker-secret,analysis.container.image=thinkdeeptech/deep-microservice-analysis-dev:latest,collection.replicas=3,collection.container.image=thinkdeeptech/deep-microservice-collection-dev:latest,collection.data.collector.image=thinkdeeptech/data-collector-dev:latest,configuration.container.image=thinkdeeptech/deep-microservice-configuration-dev:latest,gateway.container.image=thinkdeeptech/deep-microservice-gateway-dev:latest,subscription.container.image=thinkdeeptech/deep-microservice-subscription-dev:latest,global.nodeEnv=$NODE_ENV"
             update-repositories: true
-            timeout: "600s"
+            timeout: "420s"
             wait: true
         - run:
             name: Rolling deployment back.
@@ -405,7 +405,7 @@ jobs:
           - build_ui_command
           - run:
               name: Publishing test coverage results
-              command: yarn run tests:e2e && yarn run tests:coverage:publish
+              command: yarn run tests:coverage:publish
           - deploy_ui_command
 
 
