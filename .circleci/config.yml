@@ -29,7 +29,7 @@ commands:
       steps:
         - run:
             name: Testing monorepo
-            command: yarn run tests
+            command: yarn run tests && yarn run tests:e2e
 
     build_ui_command:
       steps:
@@ -407,7 +407,7 @@ jobs:
           - build_ui_command
           - run:
               name: Publishing test coverage results
-              command: yarn run tests:coverage:publish
+              command: yarn run tests:e2e && yarn run tests:coverage:publish
           - deploy_ui_command
 
 

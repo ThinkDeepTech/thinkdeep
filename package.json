@@ -8,6 +8,7 @@
     "clean": "lerna exec --parallel -- rm -rf ./node_modules && rm -rf ./node_modules",
     "build": "lerna run build --parallel",
     "tests": "lerna run tests",
+    "tests:e2e": "lerna run tests:e2e",
     "tests:coverage": "yarn run tests && yarn run tests:coverage:centralize && yarn run tests:coverage:merge && nyc report --reporter=lcov --reporter=text-summary --temp-dir=coverage",
     "tests:coverage:merge": "nyc merge ./coverage ./coverage/coverage-final.json",
     "tests:coverage:centralize": "yarn run tests:coverage:rename:all && mkdir -p ./coverage && lerna exec --parallel --ignore @thinkdeep/tools -- 'export WORKING_DIR=$(basename $LERNA_PACKAGE_NAME) && cp ./coverage/coverage-final-$(echo $WORKING_DIR).json ../../coverage/coverage-final-$(echo $WORKING_DIR).json'",
