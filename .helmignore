@@ -17,6 +17,7 @@ packages/*
 .yarn/*
 .pnp.*
 .nycrc.json
+.dccache
 
 
 # General files for the project

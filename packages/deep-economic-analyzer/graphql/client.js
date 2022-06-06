@@ -18,7 +18,6 @@ const initApolloClient = async () => {
   if (!client) {
     const authHeaders = (_user) => {
       return {
-        'Apollo-Require-Preflight': 'true',
         authorization: _user?.accessToken ? `Bearer ${_user.accessToken}` : '',
         me: _user?.idToken ? _user.idToken : '',
       };

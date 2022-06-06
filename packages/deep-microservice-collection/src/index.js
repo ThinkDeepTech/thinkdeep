@@ -1,6 +1,6 @@
 import {buildSubgraphSchema} from '@apollo/subgraph';
 import {attachExitHandler} from '@thinkdeep/attach-exit-handler';
-import {K8sClient, KubeConfig} from '@thinkdeep/k8s';
+import {K8sClient, KubeConfig, stringify} from '@thinkdeep/k8s';
 import {getPublicIP} from '@thinkdeep/get-public-ip';
 import depthLimit from 'graphql-depth-limit';
 import {ApolloServer} from 'apollo-server-express';
@@ -54,7 +54,8 @@ const startApolloServer = async () => {
       deploymentName,
       namespace
     );
-    if (readyReplicas === 0) {
+
+    if (!readyReplicas) {
       await callback();
     }
   };
@@ -64,6 +65,12 @@ const startApolloServer = async () => {
       'deployment',
       deploymentName,
       namespace
+    );
+
+    logger.info(
+      `\n\nMicroservice Deployment JSON:\n\n${stringify(
+        microserviceDeployment
+      )}`
     );
 
     return microserviceDeployment.status.readyReplicas || 0;

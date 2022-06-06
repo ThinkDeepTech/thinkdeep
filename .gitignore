@@ -10,6 +10,7 @@ log.txt
 .pnp.*
 ./**/Chart.lock
 *charts/
+.dccache
 
 # General files for the project
 pkg/*
