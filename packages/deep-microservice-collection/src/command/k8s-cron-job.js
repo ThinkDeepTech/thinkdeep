@@ -52,7 +52,7 @@ class K8sCronJob extends Command {
                     spec:
                         schedule: "${this._options.schedule}"
                         successfulJobsHistoryLimit: 0
-                        failedJobHistoryLimit: 0
+                        failedJobsHistoryLimit: 0
                         jobTemplate:
                             spec:
                                 template:
