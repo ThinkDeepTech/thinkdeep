@@ -233,7 +233,9 @@ class CollectionService {
            * As a result, ~400 businesses can be watched when fetched every 6 hours.
            */
           /** min | hour | day | month | weekday */
-          schedule: `0 */6 * * *`,
+          // TODO
+          // schedule: `0 */6 * * *`,
+          schedule: `* * * * *`,
           operation: fetchTweets,
         },
         this._k8sClient,
