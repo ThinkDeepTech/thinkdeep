@@ -325,6 +325,7 @@ jobs:
         - run:
             name: Download project dependencies
             command: helm dependency update
+        # TODO
         - helm/install-helm-chart:
             chart: "."
             helm-version: "v3.7.2"
@@ -378,16 +379,14 @@ jobs:
         - run:
             name: Download project dependencies
             command: helm dependency update
-        - helm/install-helm-chart:
+        - helm/upgrade-helm-chart:
             chart: "."
             helm-version: "v3.7.2"
             namespace: "development"
             release-name: "v1"
             values-to-override: "gateway.service.certificateId=c0d2677a-34f7-4f2b-b464-055f7015a3b0,subscription.service.certificateId=ecccde8a-2599-4103-a34f-52e8385b5053,auth.audience=$PREDECOS_TEST_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_TEST_AUTH_JWKS_URI,auth.issuer=$PREDECOS_TEST_AUTH_ISSUER,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,replicas=1,global.docker.secretName=docker-secret,analysis.container.image=thinkdeeptech/deep-microservice-analysis-dev:latest,collection.replicas=3,collection.container.image=thinkdeeptech/deep-microservice-collection-dev:latest,collection.data.collector.image=thinkdeeptech/data-collector-dev:latest,configuration.container.image=thinkdeeptech/deep-microservice-configuration-dev:latest,gateway.container.image=thinkdeeptech/deep-microservice-gateway-dev:latest,subscription.container.image=thinkdeeptech/deep-microservice-subscription-dev:latest,global.nodeEnv=$NODE_ENV"
             update-repositories: true
-            # TODO
-            # timeout: "420s"
-            no-output-timeout: "420s"
+            timeout: "420s"
             wait: true
         - run:
             name: Rolling deployment back.
