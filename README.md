@@ -8,13 +8,13 @@
 [<img src="https://i.stack.imgur.com/tskMh.png" height="20" width="20">](https://github.com/haydenmcp)
 
 
-Economic Analyzer [![Economic Analyzer Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=packages/deep-economic-analyzer/package.json)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=packages/deep-economic-analyzer/package.json)
+**Economic Analyzer** [![Economic Analyzer Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=packages/deep-economic-analyzer/package.json)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=packages/deep-economic-analyzer/package.json)
 
-Collection Microservice [![Collection Microservice Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=packages/deep-microservice-collection/package.json)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=packages/deep-microservice-collection/package.json)
+**Collection Microservice** [![Collection Microservice Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=packages/deep-microservice-collection/package.json)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=packages/deep-microservice-collection/package.json)
 
-Subscription Microservice [![Subscription Microservice Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=packages/deep-microservice-subscription/package.json)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=packages/deep-microservice-subscription/package.json)
+**Subscription Microservice** [![Subscription Microservice Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=packages/deep-microservice-subscription/package.json)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=packages/deep-microservice-subscription/package.json)
 
-Data Collector [![Data Collector Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=packages/data-collector/package.json)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=packages/data-collector/package.json)
+**Data Collector** [![Data Collector Vulnerabilities](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master/badge.svg?targetFile=packages/data-collector/package.json)](https://snyk.io/test/github/ThinkDeepTech/thinkdeep/master?targetFile=packages/data-collector/package.json)
 
 
 The purpose of this repository is to build a full-stack analytics platform for economic data. It's also to develop something cool and to learn.
