@@ -339,7 +339,7 @@ jobs:
             wait: true
         - run:
             name: Rolling deployment back.
-            command: helm rollback v1
+            command: helm rollback v1 -n production
             when: on_fail
 
 
@@ -390,7 +390,7 @@ jobs:
             wait: true
         - run:
             name: Rolling deployment back.
-            command: helm rollback v1
+            command: helm rollback v1 -n development
             when: on_fail
 
 
