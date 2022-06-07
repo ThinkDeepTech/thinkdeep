@@ -30,6 +30,7 @@
     "@web/test-runner-playwright": "^0.8.6",
     "@web/test-runner-puppeteer": "^0.10.0",
     "chai": "^4.3.4",
+    "jwt-decode": "^3.1.2",
     "mocha": "^9.0.2",
     "rimraf": "^3.0.2",
     "rollup": "^2.72.1",

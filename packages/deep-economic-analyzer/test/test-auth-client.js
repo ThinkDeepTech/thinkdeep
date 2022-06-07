@@ -1,20 +1,19 @@
 import {Auth0Client} from '@auth0/auth0-spa-js';
+import jwtDecode from 'jwt-decode';
 import sinon from 'sinon';
 
-let _accessToken = '';
-let _idToken = '';
-let _initialized = false;
+const usersLoggedIn = {};
 
 /**
- * Initialize the module.
+ * Log the user in.
  *
  * NOTE: This fetches data from the API needed to communicate with the back-end.
  *
  * @param {String} username Username with which to login.
  * @param {String} password User password.
  */
-const initialize = async (username, password) => {
-  if (!_initialized) {
+const logIn = async (username, password) => {
+  if (!alreadyHandledUserLogin(username)) {
     const url = process.env.PREDECOS_TEST_AUTH_LOGIN_URL;
     const audience = process.env.PREDECOS_AUTH_AUDIENCE;
     const scope = process.env.PREDECOS_TEST_AUTH_SCOPE;
@@ -42,15 +41,29 @@ const initialize = async (username, password) => {
     if (!body.access_token) {
       throw new Error(`The ID Token needs to be defined.`);
     }
-    _accessToken = body.access_token;
 
     if (!body.id_token) {
       throw new Error(`The ID Token needs to be defined.`);
     }
-    _idToken = body.id_token;
 
-    _initialized = true;
+    const accessToken = body.access_token;
+    const idToken = body.id_token;
+    const profile = jwtDecode(idToken);
+
+    usersLoggedIn[username] = {
+      accessToken,
+      idToken,
+      profile,
+    };
   }
+};
+
+const alreadyHandledUserLogin = (username) => {
+  return username in usersLoggedIn;
+};
+
+const userData = (username) => {
+  return usersLoggedIn[username] || {accessToken: '', idToken: '', profile: {}};
 };
 
 /**
@@ -58,25 +71,22 @@ const initialize = async (username, password) => {
  *
  * NOTE: THIS IS FOR E2E TESTING ONLY.
  *
- * @param {String} email Email with which to login.
+ * @param {String} username Username or email with which to login.
  * @param {String} password User password.
  */
-const testAuthClient = async (
-  email = process.env.PREDECOS_TEST_AUTH_USERNAME,
-  password = process.env.PREDECOS_TEST_AUTH_PASSWORD
-) => {
-  await initialize(email, password);
+const testAuthClient = async (username, password) => {
+  if (!alreadyHandledUserLogin(username)) {
+    await logIn(username, password);
+  }
+
+  const {accessToken, idToken, profile} = userData(username);
 
   const authClient = sinon.createStubInstance(Auth0Client);
 
-  authClient.getUser.returns(
-    Promise.resolve({
-      email,
-    })
-  );
+  authClient.getUser.returns(Promise.resolve(profile));
   authClient.isAuthenticated.returns(true);
-  authClient.getTokenSilently.returns(Promise.resolve(_accessToken));
-  authClient.getIdTokenClaims.returns(Promise.resolve({__raw: _idToken}));
+  authClient.getTokenSilently.returns(Promise.resolve(accessToken));
+  authClient.getIdTokenClaims.returns(Promise.resolve({__raw: idToken}));
 
   return authClient;
 };

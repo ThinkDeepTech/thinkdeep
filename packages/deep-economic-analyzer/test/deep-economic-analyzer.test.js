@@ -15,7 +15,10 @@ describe('deep-economic-analyzer', () => {
   describe('when the user has not logged in', () => {
     let authClient;
     beforeEach(async () => {
-      authClient = await initializeE2e();
+      authClient = await initializeE2e(
+        process.env.PREDECOS_TEST_AUTH_STANDARD_USERNAME,
+        process.env.PREDECOS_TEST_AUTH_STANDARD_PASSWORD
+      );
       authClient.isAuthenticated.returns(Promise.resolve(false));
     });
 
@@ -92,12 +95,59 @@ describe('deep-economic-analyzer', () => {
     });
   });
 
-  describe('when the user logs in', () => {
+  describe('when a standard user logs in', () => {
     beforeEach(async () => {
-      await initializeE2e();
+      await initializeE2e(
+        process.env.PREDECOS_TEST_AUTH_STANDARD_USERNAME,
+        process.env.PREDECOS_TEST_AUTH_STANDARD_PASSWORD
+      );
     });
 
-    it('should show protected routes when the user is logged in', async () => {
+    it('should not show protected routes', async () => {
+      const element = await fixtureSync(html`
+        <deep-economic-analyzer></deep-economic-analyzer>
+      `);
+
+      const navItems = navigationItems(element);
+      expect(navItems.length).to.equal(2);
+      expect(navItems[0].ariaLabel).to.equal('Home');
+      expect(navItems[1].ariaLabel).to.equal(
+        translate('translations:logoutPageLabel')
+      );
+    });
+
+    it('should not allow navigation to the summary', async () => {
+      const element = await fixtureSync(html`
+        <deep-economic-analyzer></deep-economic-analyzer>
+      `);
+
+      const unknownPageAnchor = document.createElement('a');
+      unknownPageAnchor.href = translate('translations:summaryPageLabel');
+      element.appendChild(unknownPageAnchor);
+
+      const navItems = navigationItems(element);
+
+      await click(unknownPageAnchor);
+
+      const pageNotFound = element.shadowRoot.querySelector(
+        'deep-analyzer-page-not-found'
+      );
+      expect(pageNotFound).not.to.equal(undefined);
+      expect(pageNotFound).not.to.equal(null);
+
+      await click(navItems[0]);
+    });
+  });
+
+  describe('when a premium member logs in', () => {
+    beforeEach(async () => {
+      await initializeE2e(
+        process.env.PREDECOS_TEST_AUTH_PREMIUM_USERNAME,
+        process.env.PREDECOS_TEST_AUTH_PREMIUM_PASSWORD
+      );
+    });
+
+    it('should show protected routes', async () => {
       const element = await fixtureSync(html`
         <deep-economic-analyzer></deep-economic-analyzer>
       `);

@@ -109,7 +109,10 @@ const tweetList = (element) => {
 
 describe('deep-analyzer-page-summary', () => {
   beforeEach(async () => {
-    await initializeE2e();
+    await initializeE2e(
+      process.env.PREDECOS_TEST_AUTH_PREMIUM_USERNAME,
+      process.env.PREDECOS_TEST_AUTH_PREMIUM_PASSWORD
+    );
   });
 
   it('should allow users to collect data for a desired business', async () => {
@@ -153,7 +156,7 @@ describe('deep-analyzer-page-summary', () => {
     expect(chart.rows.length).to.be.greaterThan(0);
   });
 
-  it('should allow users to select a business to alanyze', async () => {
+  it('should allow users to select a business to analyze', async () => {
     const businessName = 'Moosehead';
 
     const element = await fixtureSync(
