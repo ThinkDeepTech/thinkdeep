@@ -1,20 +1,21 @@
 import {testAuthClient} from './test-auth-client.js';
-import {getUser, setAuthClientForTesting} from '../user.js';
+import {user, setAuthClientForTesting} from '../user.js';
 import {initApolloClient} from '../graphql/client.js';
 
 /**
  * Initialize the system for e2e testing.
+ *
+ * @param {String} username Username with which to sign in.
+ * @param {String} password Password with which to sign in.
+ *
  * @return {Promise<Object>} Promise that resolves to a sinon stubbed auth0 client.
  */
-const initializeE2e = async () => {
-  const authClient = await testAuthClient();
+const initializeE2e = async (username, password) => {
+  const authClient = await testAuthClient(username, password);
 
   setAuthClientForTesting(authClient);
 
-  const user = await getUser();
-
-  // TODO Pass user into apollo client
-  await initApolloClient(user);
+  await initApolloClient(await user());
 
   return authClient;
 };

@@ -6,7 +6,7 @@ globalThis.auth0 = null;
  * @param {Object} options
  * @return {Object} User object.
  */
-const getUser = async (
+const user = async (
   options = {
     domain: process.env.PREDECOS_AUTH_DOMAIN,
     clientId: process.env.PREDECOS_AUTH_CLIENT_ID,
@@ -23,8 +23,10 @@ const getUser = async (
   let idToken = '';
   if (loggedIn) {
     accessToken = await auth0.getTokenSilently();
+
     idToken = (await auth0.getIdTokenClaims()).__raw;
   }
+
   return {profile, login, logout, loggedIn, accessToken, idToken};
 };
 
@@ -104,4 +106,28 @@ const setAuthClientForTesting = (authClient) => {
   globalThis.auth0 = authClient;
 };
 
-export {getUser, setAuthClientForTesting};
+/**
+ * Get the user role.
+ *
+ * @param {Object} usr User object returned from Auth API.
+ *
+ * @return {Array<String>} The user roles.
+ */
+const roles = (usr) => {
+  return usr?.profile && usr?.profile['https://predecos.com/roles']
+    ? usr.profile['https://predecos.com/roles']
+    : [];
+};
+
+/**
+ * Determine if the specified user is premium or not.
+ *
+ * @param {Object} usr User object returned from Auth API.
+ *
+ * @return {Boolean} True if the user is a premium user. False otherwise.
+ */
+const premium = (usr) => {
+  return !!usr && roles(usr).includes('premium-user');
+};
+
+export {user, premium, setAuthClientForTesting};

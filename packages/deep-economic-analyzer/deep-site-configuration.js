@@ -2,7 +2,7 @@ import {ApolloMutationController} from '@apollo-elements/core';
 import {GetOrCreateSiteConfiguration} from './graphql/GetOrCreateSiteConfiguration.mutation.graphql';
 import {UpdateConfiguration} from './graphql/UpdateConfiguration.mutation.graphql';
 import {LitElement} from 'lit';
-import {getUser} from './user.js';
+import {user} from './user.js';
 
 /**
  * Lit component providing interaction with user site configurations.
@@ -47,7 +47,7 @@ class DeepSiteConfiguration extends LitElement {
 
     this.configuration = {observedEconomicEntities: []};
 
-    getUser().then(
+    user().then(
       (user) => {
         this.user = user;
 
