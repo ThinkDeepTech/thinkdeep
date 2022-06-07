@@ -48,8 +48,8 @@ class DeepSiteConfiguration extends LitElement {
     this.configuration = {observedEconomicEntities: []};
 
     user().then(
-      (user) => {
-        this.user = user;
+      (usr) => {
+        this.user = usr;
 
         this.updateConfigMutation = new ApolloMutationController(
           this,

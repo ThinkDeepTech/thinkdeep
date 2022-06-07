@@ -196,12 +196,12 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
   /**
    * Return the markup needed to render the menu items.
    *
-   * @param {Object} user Current user.
+   * @param {Object} usr Current user.
    * @param {Boolean} premiumAccount Whether the current user is a premium user.
    *
    * @return {TemplateResult} Template definining the menu items.
    */
-  menuItems(user, premiumAccount) {
+  menuItems(usr, premiumAccount) {
     return html` <mwc-icon-button
         @click=${() => Router.go('/')}
         icon="home"
@@ -209,7 +209,7 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
       >
       </mwc-icon-button>
 
-      ${user && user.loggedIn
+      ${usr && usr.loggedIn
         ? this.protectedMenuItems(premiumAccount)
         : this.standardMenuItems()}`;
   }
