@@ -3,7 +3,7 @@ version: 2.1
 orbs:
     browser-tools: circleci/browser-tools@1.2.4
     k8s: digitalocean/k8s@0.1.1
-    helm: circleci/helm@2.0.1
+    helm: circleci/helm@1.2.0
     coveralls: coveralls/coveralls@1.0.6
 
 commands:
@@ -326,13 +326,11 @@ jobs:
             name: Download project dependencies
             command: helm dependency update
         - helm/upgrade-helm-chart:
-            # NOTE: This is a hack to get past the orb required add repo. The chart is local, not located in the bitnami chart repo.
-            add-repo: "https://charts.bitnami.com/bitnami"
             chart: "."
             helm-version: "v3.7.2"
             namespace: "production"
             release-name: "v1"
-            values-to-override: "gateway.service.certificateId=2b25c4eb-828e-4e9c-8c55-9f3deb85e331,subscription.service.certificateId=5fba8346-80ac-44a4-8521-3f7ab7dd3153,auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,collection.replicas=3,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,collection.data.collector.image=thinkdeeptech/data-collector:latest,replicas=1,global.docker.secretName=docker-secret,global.nodeEnv=$NODE_ENV"
+            values-to-override: "global.docker.secretName=docker-secret,gateway.service.certificateId=2b25c4eb-828e-4e9c-8c55-9f3deb85e331,subscription.service.certificateId=5fba8346-80ac-44a4-8521-3f7ab7dd3153,auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,collection.replicas=3,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,collection.data.collector.image=thinkdeeptech/data-collector:latest,replicas=1,global.nodeEnv=$NODE_ENV"
             update-repositories: true
             timeout: "480s"
             wait: true
@@ -379,8 +377,6 @@ jobs:
             name: Download project dependencies
             command: helm dependency update
         - helm/upgrade-helm-chart:
-            # NOTE: This is a hack to get past the orb required add repo. The chart is local, not located in the bitnami chart repo.
-            add-repo: "https://charts.bitnami.com/bitnami"
             chart: "."
             helm-version: "v3.7.2"
             namespace: "development"
