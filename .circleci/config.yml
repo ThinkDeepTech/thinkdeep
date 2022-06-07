@@ -326,7 +326,8 @@ jobs:
             name: Download project dependencies
             command: helm dependency update
         - helm/upgrade-helm-chart:
-            add-repo: "."
+            # NOTE: This is a hack to get past the orb required add repo. The chart is local, not located in the bitnami chart repo.
+            add-repo: "https://charts.bitnami.com/bitnami"
             chart: "."
             helm-version: "v3.7.2"
             namespace: "production"
@@ -378,7 +379,8 @@ jobs:
             name: Download project dependencies
             command: helm dependency update
         - helm/upgrade-helm-chart:
-            add-repo: "."
+            # NOTE: This is a hack to get past the orb required add repo. The chart is local, not located in the bitnami chart repo.
+            add-repo: "https://charts.bitnami.com/bitnami"
             chart: "."
             helm-version: "v3.7.2"
             namespace: "development"
