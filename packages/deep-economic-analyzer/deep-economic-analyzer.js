@@ -2,7 +2,6 @@
 
 import '@material/mwc-icon-button';
 import '@material/mwc-top-app-bar-fixed';
-import '@thinkdeep/deep-footer';
 import {Router} from '@vaadin/router';
 import {css, html, LitElement} from 'lit';
 import {i18nMixin, translate} from 'lit-element-i18n';
@@ -156,6 +155,7 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
 
         #content {
           grid-area: content;
+          height: auto;
           color: var(--primary-color);
         }
 
@@ -172,7 +172,7 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
    */
   render() {
     return html`
-      ${DeepEconomicAnalyzer.styles}
+      ${this.styles}
 
       <mwc-top-app-bar-fixed>
         <div slot="title">${this.companyName}</div>

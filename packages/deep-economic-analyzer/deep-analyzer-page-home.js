@@ -1,4 +1,3 @@
-import '@spectrum-web-components/card/sp-card.js';
 import {html, css, LitElement} from 'lit';
 import {i18nMixin, translate} from 'lit-element-i18n';
 
@@ -38,9 +37,10 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
         width: 100%;
       }
 
-      sp-card {
-        background-color: var(--primary-color-dark);
-        width: 10vw;
+      .feature {
+        color: var(--primary-color-dark);
+        background-color: var(--secondary-color);
+        width: 12vw;
         height: 150px;
         border-radius: 5px;
         opacity: 0.5;
@@ -50,7 +50,7 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
 
       .headline {
         position: absolute;
-        opacity: 0.8;
+        opacity: 0.85;
         color: var(--primary-color-dark);
         top: 0;
         left: 0;
@@ -72,34 +72,34 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
       <h1 class="headline">${translate('translations:headline')}</h1>
       <div class="parallax">
         <div class="features">
-          <sp-card
-            heading="Sentiment Analysis"
-            subheading="Implemented"
-          ></sp-card>
-          <sp-card
-            heading="Structural Analysis"
-            subheading="Coming Soon"
-          ></sp-card>
-          <sp-card
-            heading="Competition Analysis"
-            subheading="Coming Soon"
-          ></sp-card>
-          <sp-card
-            heading="Leadership Analysis"
-            subheading="Coming Soon"
-          ></sp-card>
-          <sp-card
-            heading="Historical Analysis"
-            subheading="Coming Soon"
-          ></sp-card>
-          <sp-card
-            heading="Assets and Dependents"
-            subheading="Coming Soon"
-          ></sp-card>
-          <sp-card
-            heading="Industry Analysis"
-            subheading="Coming Soon"
-          ></sp-card>
+          <div class="feature">
+            <h2>Sentiment</h2>
+            <h4>Progressing</h4>
+          </div>
+          <div class="feature">
+            <h2>Structural</h2>
+            <h4>Coming Soon</h4>
+          </div>
+          <div class="feature">
+            <h2>Competition</h2>
+            <h4>Coming Soon</h4>
+          </div>
+          <div class="feature">
+            <h2>Leadership</h2>
+            <h4>Coming Soon</h4>
+          </div>
+          <div class="feature">
+            <h2>Historical</h2>
+            <h4>Coming Soon</h4>
+          </div>
+          <div class="feature">
+            <h2>Assets</h2>
+            <h4>Coming Soon</h4>
+          </div>
+          <div class="feature">
+            <h2>Industry</h2>
+            <h4>Coming Soon</h4>
+          </div>
         </div>
       </div>
     `;
