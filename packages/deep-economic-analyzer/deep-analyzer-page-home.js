@@ -17,7 +17,11 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
 
       .parallax {
         height: 60vh;
-        background-image: url('img/businesses.jpg');
+        background-image: linear-gradient(
+            rgba(4, 9, 30, 0.7),
+            rgba(4, 9, 30, 0.7)
+          ),
+          url('img/businesses.jpg');
         background-position: center;
         background-size: cover;
         background-repeat: no-repeat;
@@ -26,6 +30,7 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
 
       .headline {
         position: absolute;
+        color: var(--primary-color-dark);
         top: 0;
         left: 0;
         transform: translate(50%, 275%);
