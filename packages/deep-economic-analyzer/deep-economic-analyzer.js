@@ -141,33 +141,26 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
       css`
         :host {
           display: grid;
-          grid-template-rows: 10vh 1fr auto;
+          grid-template-rows: auto auto;
           grid-template-areas:
             'header'
-            'content'
-            'footer';
+            'content';
         }
 
         mwc-top-app-bar-fixed {
           grid-area: header;
           --mdc-theme-primary: var(--primary-color);
           --mdc-theme-on-primary: var(--primary-color-dark);
+          background-color: var(--primary-color);
         }
 
         #content {
           grid-area: content;
-          min-height: 80vh;
           color: var(--primary-color);
         }
 
         a {
-          color: white;
-        }
-
-        deep-footer {
-          grid-area: footer;
-          background-color: var(--primary-color);
-          color: white;
+          color: var(--primary-color-dark);
         }
       `,
     ];
@@ -188,8 +181,6 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
       </mwc-top-app-bar-fixed>
 
       <main id="content"></main>
-
-      <deep-footer .companyName="${this.companyName}"></deep-footer>
     `;
   }
 
