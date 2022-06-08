@@ -146,12 +146,14 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
             'header'
             'content'
             'footer';
+          background-image: url('img/businesses.jpg');
+          background-size: cover;
         }
 
         mwc-top-app-bar-fixed {
           grid-area: header;
           --mdc-theme-primary: var(--primary-color);
-          --mdc-theme-on-primary: white;
+          --mdc-theme-on-primary: var(--primary-color-dark);
         }
 
         #content {

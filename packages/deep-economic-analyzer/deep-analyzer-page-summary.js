@@ -132,6 +132,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
         grid-template-rows: 18vh 18vh 40vh;
         min-height: 80vh;
+        background-color: var(--primary-color-dark);
       }
 
       google-chart {
