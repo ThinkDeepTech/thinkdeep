@@ -146,8 +146,6 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
             'header'
             'content'
             'footer';
-          background-image: url('img/businesses.jpg');
-          background-size: cover;
         }
 
         mwc-top-app-bar-fixed {
@@ -208,6 +206,7 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
         @click=${() => Router.go('/')}
         icon="home"
         aria-label="${translate('translations:homePageLabel')}"
+        slot="actionItems"
       >
       </mwc-icon-button>
 
@@ -230,6 +229,7 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
           Router.go('/' + translate('translations:logoutPageLabel'))}"
         icon="logout"
         aria-label="${translate('translations:logoutPageLabel')}"
+        slot="actionItems"
       >
       </mwc-icon-button>
     `;
@@ -246,6 +246,7 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
           Router.go('/' + translate('translations:summaryPageLabel'))}
         icon="space_dashboard"
         aria-label="${translate('translations:summaryPageLabel')}"
+        slot="actionItems"
       >
       </mwc-icon-button>
     `;
@@ -262,6 +263,7 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
           Router.go('/' + translate('translations:loginPageLabel'))}"
         icon="login"
         aria-label="${translate('translations:loginPageLabel')}"
+        slot="actionItems"
       >
       </mwc-icon-button>
     `;
