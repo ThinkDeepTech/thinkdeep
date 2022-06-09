@@ -42,15 +42,15 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
         background-color: var(--secondary-color);
         width: 12vw;
         height: 150px;
-        border-radius: 5px;
-        opacity: 0.5;
+        border-radius: 7px;
+        opacity: 0.65;
         text-align: center;
         margin-bottom: 15vh;
       }
 
       .headline {
         position: absolute;
-        opacity: 0.85;
+        opacity: 0.95;
         color: var(--primary-color-dark);
         top: 0;
         left: 0;
@@ -59,6 +59,24 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
         height: 10vh;
         text-align: center;
         z-index: 1;
+      }
+
+      @media (max-width: 810px) {
+        :host {
+          flex-direction: column;
+        }
+
+        .features {
+          visibility: hidden;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .feature {
+          width: 90vw;
+          margin-bottom: 1vh;
+          width: 90vw;
+        }
       }
     `;
   }
@@ -73,31 +91,27 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
       <div class="parallax">
         <div class="features">
           <div class="feature">
-            <h2>Sentiment</h2>
-            <h4>Progressing</h4>
-          </div>
-          <div class="feature">
-            <h2>Structural</h2>
+            <h2>Sentiment Analysis</h2>
             <h4>Coming Soon</h4>
           </div>
           <div class="feature">
-            <h2>Competition</h2>
+            <h2>Structural Analysis</h2>
             <h4>Coming Soon</h4>
           </div>
           <div class="feature">
-            <h2>Leadership</h2>
+            <h2>Competition Analysis</h2>
             <h4>Coming Soon</h4>
           </div>
           <div class="feature">
-            <h2>Historical</h2>
+            <h2>Leadership Analysis</h2>
             <h4>Coming Soon</h4>
           </div>
           <div class="feature">
-            <h2>Assets</h2>
+            <h2>Historical Analysis</h2>
             <h4>Coming Soon</h4>
           </div>
           <div class="feature">
-            <h2>Industry</h2>
+            <h2>Industry Analysis</h2>
             <h4>Coming Soon</h4>
           </div>
         </div>
