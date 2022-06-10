@@ -18,11 +18,16 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
 
       .grid {
         display: grid;
-        grid-template-rows: repeat(7, 1fr);
+        grid-template-rows: repeat(12, 1fr);
         grid-template-areas:
           '.'
           '.'
+          '.'
+          '.'
           'slogan'
+          '.'
+          '.'
+          '.'
           '.'
           '.'
           'features'
@@ -37,13 +42,14 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
         background-size: cover;
         background-repeat: no-repeat;
         background-attachment: fixed;
+        overflow: scroll;
       }
 
       .slogan {
         grid-area: slogan;
         text-align: center;
         opacity: 0.9;
-        color: var(--primary-color-dark);
+        color: var(--secondary-color);
       }
 
       .features {
@@ -57,10 +63,11 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
 
       .feature {
         transition: box-shadow 0.3s;
-        color: var(--primary-color-dark);
-        background-color: var(--secondary-color);
+        color: var(--secondary-color);
+        background-color: var(--primary-color-dark);
         width: 12vw;
-        height: 150px;
+        height: auto;
+        padding: 5px;
         border-radius: 7px;
         opacity: 0.65;
         text-align: center;
@@ -68,7 +75,7 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
       }
 
       .feature:hover {
-        box-shadow: 0 0 8px var(--primary-color-dark);
+        box-shadow: 0 0 7px var(--secondary-color);
       }
 
       @media (max-width: 810px) {

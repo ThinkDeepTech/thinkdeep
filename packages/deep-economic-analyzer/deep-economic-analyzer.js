@@ -140,8 +140,8 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
       css`
         :host {
           display: block;
-          max-height: 100vh;
-          max-width: 100vw;
+          height: 100vh;
+          width: 100vw;
         }
 
         .grid-container {
@@ -155,15 +155,13 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
         mwc-top-app-bar-fixed {
           grid-area: header;
           --mdc-theme-primary: var(--primary-color);
-          --mdc-theme-on-primary: var(--primary-color-dark);
+          --mdc-theme-on-primary: var(--secondary-color);
           background-color: var(--primary-color);
         }
 
         #content {
           grid-area: content;
-          height: auto;
           color: var(--primary-color);
-          overflow: scroll;
         }
 
         a {
