@@ -12,12 +12,22 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
   static get styles() {
     return css`
       :host {
+        display: block;
         position: relative;
       }
 
-      .parallax {
-        display: flex;
-        height: 100vh;
+      .grid {
+        display: grid;
+        grid-template-rows: repeat(7, 1fr);
+        grid-template-areas:
+          '.'
+          '.'
+          'slogan'
+          '.'
+          '.'
+          'features'
+          '.';
+        height: 95vh;
         background-image: linear-gradient(
             rgba(4, 9, 30, 0.6),
             rgba(4, 9, 30, 0.6)
@@ -29,7 +39,15 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
         background-attachment: fixed;
       }
 
+      .slogan {
+        grid-area: slogan;
+        text-align: center;
+        opacity: 0.9;
+        color: var(--primary-color-dark);
+      }
+
       .features {
+        grid-area: features;
         display: flex;
         align-self: flex-end;
         justify-content: space-evenly;
@@ -38,6 +56,7 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
       }
 
       .feature {
+        transition: box-shadow 0.3s;
         color: var(--primary-color-dark);
         background-color: var(--secondary-color);
         width: 12vw;
@@ -45,37 +64,28 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
         border-radius: 7px;
         opacity: 0.65;
         text-align: center;
-        margin-bottom: 15vh;
+        margin-bottom: 8vh;
       }
 
-      .headline {
-        position: absolute;
-        opacity: 0.95;
-        color: var(--primary-color-dark);
-        top: 0;
-        left: 0;
-        transform: translate(50%, 275%);
-        width: 50vw;
-        height: 10vh;
-        text-align: center;
-        z-index: 1;
+      .feature:hover {
+        box-shadow: 0 0 8px var(--primary-color-dark);
       }
 
       @media (max-width: 810px) {
-        :host {
-          flex-direction: column;
+        .slogan {
+          padding-top: 80px;
+          padding-bottom: 60px;
         }
 
         .features {
-          visibility: hidden;
           flex-direction: column;
           align-items: center;
         }
 
         .feature {
           width: 90vw;
-          margin-bottom: 1vh;
-          width: 90vw;
+          height: 13vh;
+          margin-bottom: 5px;
         }
       }
     `;
@@ -87,8 +97,8 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
    */
   render() {
     return html`
-      <h1 class="headline">${translate('translations:headline')}</h1>
-      <div class="parallax">
+      <div class="grid">
+        <h1 class="slogan">${translate('translations:headline')}</h1>
         <div class="features">
           <div class="feature">
             <h2>Sentiment Analysis</h2>

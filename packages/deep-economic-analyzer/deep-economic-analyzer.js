@@ -139,8 +139,14 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
     return [
       css`
         :host {
+          display: block;
+          max-height: 100vh;
+          max-width: 100vw;
+        }
+
+        .grid-container {
           display: grid;
-          grid-template-rows: auto auto;
+          grid-template-rows: 100px 11fr;
           grid-template-areas:
             'header'
             'content';
@@ -174,13 +180,17 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
     return html`
       ${this.styles}
 
-      <mwc-top-app-bar-fixed>
-        <div slot="title">${this.companyName}</div>
+      <div class="grid-container">
+        <mwc-top-app-bar-fixed centerTitle>
+          <mwc-icon-button icon="menu" slot="navigationIcon"></mwc-icon-button>
 
-        ${this.menuItems(this.user, this.premiumAccount)}
-      </mwc-top-app-bar-fixed>
+          <div slot="title">${this.companyName}</div>
 
-      <main id="content"></main>
+          ${this.menuItems(this.user, this.premiumAccount)}
+        </mwc-top-app-bar-fixed>
+
+        <main id="content"></main>
+      </div>
     `;
   }
 
