@@ -146,7 +146,7 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
 
         .grid-container {
           display: grid;
-          grid-template-rows: 100px 11fr;
+          grid-template-rows: auto 11fr;
           grid-template-areas:
             'header'
             'content';
@@ -163,6 +163,7 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
           grid-area: content;
           height: auto;
           color: var(--primary-color);
+          overflow: scroll;
         }
 
         a {
@@ -181,9 +182,7 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
       ${this.styles}
 
       <div class="grid-container">
-        <mwc-top-app-bar-fixed centerTitle>
-          <mwc-icon-button icon="menu" slot="navigationIcon"></mwc-icon-button>
-
+        <mwc-top-app-bar-fixed>
           <div slot="title">${this.companyName}</div>
 
           ${this.menuItems(this.user, this.premiumAccount)}

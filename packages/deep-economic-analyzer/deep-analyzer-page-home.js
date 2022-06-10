@@ -37,6 +37,7 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
         background-size: cover;
         background-repeat: no-repeat;
         background-attachment: fixed;
+        overflow: scroll;
       }
 
       .slogan {
