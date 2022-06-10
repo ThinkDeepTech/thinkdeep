@@ -11,7 +11,7 @@ export default {
   logoutPageLabel: 'Logout',
   summaryPageLabel: 'Summary',
   notFoundPageLabel: 'PageNotFound',
-  headline: 'This site is experimental.',
+  headline: 'Lead the Economy. Lead Your Investments.',
   buttonText: 'Log In',
   notFoundPageContent: 'Page not found',
   startButtonLabel: 'Collect Data',

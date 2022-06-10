@@ -33,17 +33,6 @@ describe('deep-economic-analyzer', () => {
       expect(homePage).not.to.equal(null);
     });
 
-    it('should let visitors know the website is experimental', async () => {
-      const element = await fixtureSync(html`
-        <deep-economic-analyzer></deep-economic-analyzer>
-      `);
-      const homePage = element.shadowRoot.querySelector(
-        'deep-analyzer-page-home'
-      );
-      const welcomeText = homePage.shadowRoot.querySelector('h1').textContent;
-      expect(welcomeText).to.equal('This site is experimental.');
-    });
-
     it('should only show unprotected menu items', async () => {
       const element = await fixtureSync(html`
         <deep-economic-analyzer></deep-economic-analyzer>

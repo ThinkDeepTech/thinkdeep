@@ -2,7 +2,6 @@
 
 import '@material/mwc-icon-button';
 import '@material/mwc-top-app-bar-fixed';
-import '@thinkdeep/deep-footer';
 import {Router} from '@vaadin/router';
 import {css, html, LitElement} from 'lit';
 import {i18nMixin, translate} from 'lit-element-i18n';
@@ -140,34 +139,33 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
     return [
       css`
         :host {
+          display: block;
+          height: 100vh;
+          width: 100vw;
+        }
+
+        .grid-container {
           display: grid;
-          grid-template-rows: 10vh 1fr auto;
+          grid-template-rows: auto 11fr;
           grid-template-areas:
             'header'
-            'content'
-            'footer';
+            'content';
         }
 
         mwc-top-app-bar-fixed {
           grid-area: header;
           --mdc-theme-primary: var(--primary-color);
-          --mdc-theme-on-primary: white;
+          --mdc-theme-on-primary: var(--secondary-color);
+          background-color: var(--primary-color);
         }
 
         #content {
           grid-area: content;
-          min-height: 80vh;
           color: var(--primary-color);
         }
 
         a {
-          color: white;
-        }
-
-        deep-footer {
-          grid-area: footer;
-          background-color: var(--primary-color);
-          color: white;
+          color: var(--primary-color-dark);
         }
       `,
     ];
@@ -179,17 +177,17 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
    */
   render() {
     return html`
-      ${DeepEconomicAnalyzer.styles}
+      ${this.styles}
 
-      <mwc-top-app-bar-fixed>
-        <div slot="title">${this.companyName}</div>
+      <div class="grid-container">
+        <mwc-top-app-bar-fixed>
+          <div slot="title">${this.companyName}</div>
 
-        ${this.menuItems(this.user, this.premiumAccount)}
-      </mwc-top-app-bar-fixed>
+          ${this.menuItems(this.user, this.premiumAccount)}
+        </mwc-top-app-bar-fixed>
 
-      <main id="content"></main>
-
-      <deep-footer .companyName="${this.companyName}"></deep-footer>
+        <main id="content"></main>
+      </div>
     `;
   }
 
@@ -206,6 +204,7 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
         @click=${() => Router.go('/')}
         icon="home"
         aria-label="${translate('translations:homePageLabel')}"
+        slot="actionItems"
       >
       </mwc-icon-button>
 
@@ -228,6 +227,7 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
           Router.go('/' + translate('translations:logoutPageLabel'))}"
         icon="logout"
         aria-label="${translate('translations:logoutPageLabel')}"
+        slot="actionItems"
       >
       </mwc-icon-button>
     `;
@@ -244,6 +244,7 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
           Router.go('/' + translate('translations:summaryPageLabel'))}
         icon="space_dashboard"
         aria-label="${translate('translations:summaryPageLabel')}"
+        slot="actionItems"
       >
       </mwc-icon-button>
     `;
@@ -260,6 +261,7 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
           Router.go('/' + translate('translations:loginPageLabel'))}"
         icon="login"
         aria-label="${translate('translations:loginPageLabel')}"
+        slot="actionItems"
       >
       </mwc-icon-button>
     `;

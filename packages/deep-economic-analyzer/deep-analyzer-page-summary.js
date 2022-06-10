@@ -128,71 +128,32 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   static get styles() {
     return css`
       :host {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-        grid-template-rows: 18vh 18vh 40vh;
-        min-height: 80vh;
+        height: auto;
+        width: 100vw;
       }
 
-      google-chart {
-        grid-column-start: 1;
-        grid-row-start: 3;
-        grid-row-end: 5;
+      .grid-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        min-height: 80vh;
+        background-color: var(--secondary-color);
+        justify-items: center;
+      }
+
+      .input,
+      google-chart,
+      mwc-list {
+        width: 90vw;
+        max-width: 90vw;
+      }
+
+      mwc-button {
+        --mdc-theme-primary: var(--primary-color-light);
+        --mdc-theme-on-primary: var(--secondary-color);
       }
 
       mwc-list {
-        grid-column-start: 3;
-        grid-column-end: 6;
-        grid-row-start: 1;
-        grid-row-end: 4;
-        overflow: scroll;
-      }
-
-      .tweet {
-        height: 16vh;
-        width: 90%;
-        color: var(--primary-color);
-      }
-
-      mwc-button,
-      mwc-textfield,
-      mwc-select {
-        --mdc-theme-primary: var(--primary-color);
-        width: 100%;
-      }
-
-      .input {
-        grid-column-start: 1;
-        grid-column-end: 3;
-        margin-top: 5vh;
-        margin-bottom: 5vh;
-        margin-left: 2vw;
-        margin-right: 2vw;
-      }
-
-      @media (max-width: 768px) {
-        :host {
-          display: grid;
-          grid-template-columns: 1fr;
-          min-height: 80vh;
-        }
-
-        google-chart {
-          grid-column-start: 1;
-          grid-row-start: 3;
-        }
-
-        mwc-list {
-          grid-column-start: 1;
-          grid-column-end: 6;
-          grid-row-start: 4;
-        }
-
-        mwc-button,
-        mwc-textfield,
-        mwc-select {
-          width: 92vw;
-        }
+        overflow: hidden;
       }
 
       [hidden] {
@@ -211,9 +172,9 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         @site-configuration="${this._handleSiteConfig}"
         hidden
       ></deep-site-configuration>
-
-      <div class="input">
+      <div class="grid-container">
         <mwc-textfield
+          class="input"
           label="Enter a Business Name"
           @input="${this._onInput.bind(this)}"
         ></mwc-textfield>
@@ -223,10 +184,12 @@ export default class DeepAnalyzerPageSummary extends LitElement {
           @click="${this._collectEconomicData.bind(this)}"
           icon="input"
         ></mwc-button>
-      </div>
 
-      <div class="input">
-        <mwc-select label="Analyze a business" @selected="${this._onSelect}">
+        <mwc-select
+          class="input"
+          label="Analyze a business"
+          @selected="${this._onSelect}"
+        >
           ${this.configuration.observedEconomicEntities.map(
             (economicEntity, index) =>
               html`<mwc-list-item
@@ -236,31 +199,31 @@ export default class DeepAnalyzerPageSummary extends LitElement {
               >`
           )}
         </mwc-select>
+
+        <google-chart
+          @google-chart-select="${this._handleChartSelection}"
+          type="line"
+          options='{"title": "Sentiment as a function of time" }'
+          cols='[{"label": "Timestamp", "type": "number"}, {"label": "Sentiment", "type": "number"}]'
+          rows="[${this.sentiments?.map((sentiment) =>
+            JSON.stringify([sentiment.timestamp, sentiment.score])
+          )}]"
+        ></google-chart>
+
+        <mwc-list>
+          ${this.selectedSentiments.map((sentiment) =>
+            sentiment?.tweets?.map(
+              (tweet, index) => html`
+                <mwc-list-item class="tweet">
+                  <h3>Tweet ${index}</h3>
+                  <p>${tweet?.text}</p>
+                </mwc-list-item>
+                <li divider padded role="separator"></li>
+              `
+            )
+          )}
+        </mwc-list>
       </div>
-
-      <google-chart
-        @google-chart-select="${this._handleChartSelection}"
-        type="line"
-        options='{"title": "Sentiment as a function of time" }'
-        cols='[{"label": "Timestamp", "type": "number"}, {"label": "Sentiment", "type": "number"}]'
-        rows="[${this.sentiments?.map((sentiment) =>
-          JSON.stringify([sentiment.timestamp, sentiment.score])
-        )}]"
-      ></google-chart>
-
-      <mwc-list>
-        ${this.selectedSentiments.map((sentiment) =>
-          sentiment?.tweets?.map(
-            (tweet, index) => html`
-              <mwc-list-item class="tweet">
-                <h3>Tweet ${index}</h3>
-                <p>${tweet?.text}</p>
-              </mwc-list-item>
-              <li divider padded role="separator"></li>
-            `
-          )
-        )}
-      </mwc-list>
     `;
   }
 
