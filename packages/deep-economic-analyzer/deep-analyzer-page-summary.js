@@ -146,9 +146,11 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
       .input,
       google-chart,
-      mwc-list {
+      mwc-list,
+      deep-card {
         width: 90vw;
         max-width: 90vw;
+        margin: 8px;
       }
 
       mwc-button {
@@ -212,13 +214,18 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         <deep-card>
           <h4 slot="header">Public Sentiment</h4>
           <div class="summary" slot="body">
-            <div class="current">
-              Current
-              <div>4.3</div>
+            <div>
+              Last
+              <div>${this.sentiments[0]?.score}</div>
             </div>
-            <div class="average">
+            <div>
               Average
-              <div>3.5</div>
+              <div>
+                ${this.sentiments
+                  .map((value) => value.score || 0)
+                  .reduce((previous, current) => previous + current, 0) /
+                this.sentiments.length}
+              </div>
             </div>
           </div>
           <div slot="footer">Public sentiment decreased 24%.</div>

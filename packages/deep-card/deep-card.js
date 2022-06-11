@@ -15,16 +15,16 @@ export class DeepCard extends LitElement {
         :host {
           transition: box-shadow 0.3s;
           min-width: 60vw;
+          max-width: 90vw;
+          min-height: 22vh;
           width: var(--width, 90vw);
           height: var(--height, 22vh);
-          max-width: 90vw;
           border-radius: 5px;
           background-color: var(--background-color, white);
-          min-height: 22vh;
         }
 
-        :host:hover {
-          box-shadow: 0 0 20px var(--shadow-color, black);
+        :host(:hover) {
+          box-shadow: 0 0 8px var(--shadow-color, gray);
         }
 
         .header ::slotted(*) {
