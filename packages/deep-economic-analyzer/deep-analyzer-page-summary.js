@@ -160,6 +160,12 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         overflow: hidden;
       }
 
+      .summary {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+      }
+
       [hidden] {
         display: none;
       }
@@ -205,7 +211,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         </mwc-select>
         <deep-card>
           <h4 slot="header">Public Sentiment</h4>
-          <div slot="body">
+          <div class="summary" slot="body">
             <div class="current">
               Current
               <div>4.3</div>
@@ -215,13 +221,10 @@ export default class DeepAnalyzerPageSummary extends LitElement {
               <div>3.5</div>
             </div>
           </div>
-          <div slot="footer">
-            Public sentiment decreased by 24% over this period.
-          </div>
+          <div slot="footer">Public sentiment decreased 24%.</div>
         </deep-card>
 
         <google-chart
-          slot="cover-photo"
           @google-chart-select="${this._handleChartSelection}"
           type="line"
           options='{"title": "Sentiment as a function of time" }'
