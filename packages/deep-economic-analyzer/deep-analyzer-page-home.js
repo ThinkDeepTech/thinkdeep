@@ -69,7 +69,7 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
         height: auto;
         padding: 5px;
         border-radius: 7px;
-        opacity: 0.65;
+        opacity: 0.55;
         text-align: center;
         margin-bottom: 8vh;
       }

@@ -11,6 +11,7 @@ import '@material/mwc-list/mwc-list';
 import '@material/mwc-list/mwc-list-item';
 import '@material/mwc-select';
 import '@material/mwc-textfield';
+import '@thinkdeep/deep-card';
 import './deep-site-configuration.js';
 import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
 import GetSentiment from './graphql/GetSentiment.query.graphql';
@@ -128,16 +129,19 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   static get styles() {
     return css`
       :host {
-        height: auto;
-        width: 100vw;
+        display: block;
+        height: 100%;
+        width: 100%;
       }
 
       .grid-container {
         display: grid;
         grid-template-columns: 1fr;
-        min-height: 80vh;
         background-color: var(--secondary-color);
         justify-items: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
       }
 
       .input,
@@ -199,8 +203,25 @@ export default class DeepAnalyzerPageSummary extends LitElement {
               >`
           )}
         </mwc-select>
+        <deep-card>
+          <h4 slot="header">Public Sentiment</h4>
+          <div slot="body">
+            <div class="current">
+              Current
+              <div>4.3</div>
+            </div>
+            <div class="average">
+              Average
+              <div>3.5</div>
+            </div>
+          </div>
+          <div slot="footer">
+            Public sentiment decreased by 24% over this period.
+          </div>
+        </deep-card>
 
         <google-chart
+          slot="cover-photo"
           @google-chart-select="${this._handleChartSelection}"
           type="line"
           options='{"title": "Sentiment as a function of time" }'
