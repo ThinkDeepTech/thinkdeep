@@ -34,6 +34,5 @@
     "graphql-depth-limit": "^1.1.0",
     "jwks-rsa": "^2.0.5",
     "log4js": "^6.3.0"
-  },
-  "private": true
+  }
 }

@@ -36,6 +36,5 @@
     "graphql-depth-limit": "^1.1.0",
     "log4js": "^6.3.0",
     "mongodb": "^4.2.1"
-  },
-  "private": true
+  }
 }

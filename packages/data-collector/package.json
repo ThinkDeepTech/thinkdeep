@@ -21,5 +21,6 @@
     "log4js": "^6.3.0",
     "sinon": "^12.0.1",
     "twitter-api-v2": "^1.11.0"
-  }
+  },
+  "gitHead": "5c55d9eca90fb5fe4b250e9ea0f69a19c6173dc0"
 }
