@@ -12,7 +12,8 @@
     "c8": "^7.11.3",
     "chai": "^4.3.4",
     "concat-stream": "^2.0.0",
-    "mocha": "^9.1.3"
+    "mocha": "^9.1.3",
+    "sinon-chai": "^3.7.0"
   },
   "dependencies": {
     "@thinkdeep/attach-exit-handler": "^1.0.0",
