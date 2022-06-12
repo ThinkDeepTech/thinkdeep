@@ -1,6 +1,6 @@
 {
   "name": "@thinkdeep/data-collector",
-  "version": "0.0.9-alpha.0",
+  "version": "0.0.9-alpha.1",
   "description": "CLI handling data collection operations.",
   "main": "src/data-collector.js",
   "type": "module",
