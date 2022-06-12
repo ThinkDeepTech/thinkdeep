@@ -43,6 +43,12 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
         background-repeat: no-repeat;
         background-attachment: fixed;
         overflow: scroll;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      .grid::-webkit-scrollbar {
+        display: none; /* Safari and Chrome */
       }
 
       .slogan {
