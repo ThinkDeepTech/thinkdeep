@@ -140,8 +140,8 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
       css`
         :host {
           display: block;
-          height: 100vh;
-          width: 100vw;
+          width: 100%;
+          height: 100%;
         }
 
         .grid-container {
@@ -150,6 +150,7 @@ export class DeepEconomicAnalyzer extends i18nMixin(LitElement) {
           grid-template-areas:
             'header'
             'content';
+          height: 100%;
         }
 
         mwc-top-app-bar-fixed {

@@ -11,6 +11,7 @@ import '@material/mwc-list/mwc-list';
 import '@material/mwc-list/mwc-list-item';
 import '@material/mwc-select';
 import '@material/mwc-textfield';
+import '@thinkdeep/deep-card';
 import './deep-site-configuration.js';
 import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
 import GetSentiment from './graphql/GetSentiment.query.graphql';
@@ -128,23 +129,28 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   static get styles() {
     return css`
       :host {
-        height: auto;
-        width: 100vw;
+        display: block;
+        height: 100%;
+        width: 100%;
       }
 
       .grid-container {
         display: grid;
         grid-template-columns: 1fr;
-        min-height: 80vh;
         background-color: var(--secondary-color);
         justify-items: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
       }
 
       .input,
       google-chart,
-      mwc-list {
+      mwc-list,
+      deep-card {
         width: 90vw;
         max-width: 90vw;
+        margin: 8px;
       }
 
       mwc-button {
@@ -154,6 +160,12 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
       mwc-list {
         overflow: hidden;
+      }
+
+      .summary {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
       }
 
       [hidden] {

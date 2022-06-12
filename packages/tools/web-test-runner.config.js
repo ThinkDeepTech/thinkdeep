@@ -83,6 +83,7 @@ export default {
       PREDECOS_TEST_AUTH_CLIENT_SECRET:
         process.env.PREDECOS_TEST_AUTH_CLIENT_SECRET,
       PREDECOS_TEST_AUTH_LOGIN_URL: `https://${process.env.PREDECOS_TEST_AUTH_DOMAIN}/oauth/token`,
+      NODE_ENV: process.env.NODE_ENV,
     }),
   ],
 };

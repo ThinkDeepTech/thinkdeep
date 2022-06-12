@@ -1,17 +1,20 @@
 {
-  "name": "@thinkdeep/deep-economic-analyzer",
+  "name": "@thinkdeep/deep-card",
   "version": "0.0.8",
-  "description": "Web application template for data analysis platform.",
+  "description": "Card component.",
   "keywords": [
+    "Lit",
+    "JavaScript",
     "WebComponents"
   ],
-  "type": "module",
-  "author": "haydenmcp <hayden.mcparlane@gmail.com>",
+  "author": "Hayden McParlane <hayden.mcparlane@gmail.com>",
   "homepage": "https://github.com/ThinkDeepTech/thinkdeep#readme",
+  "license": "GPL-3.0-or-later",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ThinkDeepTech/thinkdeep.git"
   },
+  "type": "module",
   "scripts": {
     "start": "web-dev-server --config ./web-dev-server.config.js --esbuild-target auto",
     "start:watch": "web-dev-server --config ./web-dev-server.config.js --watch --esbuild-target auto",
@@ -22,38 +25,21 @@
   "devDependencies": {
     "@esm-bundle/chai": "^4.3.4",
     "@open-wc/testing": "^3.1.4",
+    "@open-wc/testing-helpers": "^2.1.2",
     "@thinkdeep/tools": "^0.0.8",
-    "@web/dev-server": "^0.1.31",
     "@web/dev-server-esbuild": "^0.2.12",
     "@web/dev-server-rollup": "^0.3.5",
     "@web/test-runner": "^0.13.15",
     "@web/test-runner-playwright": "^0.8.6",
     "@web/test-runner-puppeteer": "^0.10.0",
     "chai": "^4.3.4",
-    "jwt-decode": "^3.1.2",
     "mocha": "^9.0.2",
     "rimraf": "^3.0.2",
-    "rollup": "^2.72.1",
-    "sinon": "^11.1.2"
+    "rollup": "^2.72.1"
   },
   "dependencies": {
-    "@apollo-elements/lit-apollo": "^4.1.0",
-    "@auth0/auth0-spa-js": "^1.19.0",
-    "@google-web-components/google-chart": "^5.0.0",
-    "@material/mwc-button": "^0.25.3",
-    "@material/mwc-icon-button": "^0.25.3",
-    "@material/mwc-list": "^0.25.3",
-    "@material/mwc-select": "^0.25.3",
-    "@material/mwc-textfield": "^0.25.3",
-    "@material/mwc-top-app-bar-fixed": "^0.25.3",
-    "@thinkdeep/deep-card": "0.0.8",
-    "@thinkdeep/deep-footer": "^0.0.8",
-    "@vaadin/router": "^1.7.4",
     "@webcomponents/webcomponentsjs": "^2.5.0",
-    "graphql": "^15.8.0",
-    "graphql-ws": "^5.5.5",
-    "lit": "^2.0.2",
-    "lit-element-i18n": "ThinkDeepTech/lit-element-i18n#v0.0.4"
+    "lit": "^2.0.2"
   },
   "private": true
 }

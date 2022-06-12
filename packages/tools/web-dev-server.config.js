@@ -30,6 +30,7 @@ export default {
       'process.env.PREDECOS_MICROSERVICE_SUBSCRIPTION_URL': JSON.stringify(
         process.env.PREDECOS_MICROSERVICE_SUBSCRIPTION_URL
       ),
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     }),
     graphql(),
   ],
