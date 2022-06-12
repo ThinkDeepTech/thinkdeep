@@ -55,11 +55,9 @@
     "nyc": "^15.1.0",
     "prettier": "^2.6.2"
   },
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ]
-  },
+  "workspaces": [
+    "packages/*"
+  ],
   "publishConfig": {
     "access": "public"
   },
