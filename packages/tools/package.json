@@ -29,5 +29,6 @@
     "rollup-plugin-copy": "^3.3.0",
     "rollup-plugin-inject-process-env": "^1.3.1",
     "workbox-build": "^6.4.2"
-  }
+  },
+  "gitHead": "3b2ef77fc17f1e24ee753113410e2cf1bcabb134"
 }

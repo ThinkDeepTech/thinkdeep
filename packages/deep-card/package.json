@@ -40,5 +40,6 @@
   "dependencies": {
     "@webcomponents/webcomponentsjs": "^2.5.0",
     "lit": "^2.0.2"
-  }
+  },
+  "gitHead": "3b2ef77fc17f1e24ee753113410e2cf1bcabb134"
 }

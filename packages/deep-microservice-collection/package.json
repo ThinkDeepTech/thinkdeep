@@ -41,5 +41,6 @@
     "log4js": "^6.3.0",
     "moment": "^2.29.1",
     "mongodb": "^4.2.1"
-  }
+  },
+  "gitHead": "3b2ef77fc17f1e24ee753113410e2cf1bcabb134"
 }

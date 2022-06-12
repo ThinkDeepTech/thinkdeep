@@ -39,5 +39,6 @@
     "moment": "^2.29.1",
     "mongodb": "^4.2.1",
     "sentiment": "^5.0.2"
-  }
+  },
+  "gitHead": "3b2ef77fc17f1e24ee753113410e2cf1bcabb134"
 }

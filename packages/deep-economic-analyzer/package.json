@@ -54,5 +54,6 @@
     "graphql-ws": "^5.5.5",
     "lit": "^2.0.2",
     "lit-element-i18n": "ThinkDeepTech/lit-element-i18n#v0.0.4"
-  }
+  },
+  "gitHead": "3b2ef77fc17f1e24ee753113410e2cf1bcabb134"
 }

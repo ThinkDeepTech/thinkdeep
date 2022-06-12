@@ -42,5 +42,6 @@
     "kafkajs": "^1.15.0",
     "log4js": "^6.3.0",
     "ws": "^7.4.4"
-  }
+  },
+  "gitHead": "3b2ef77fc17f1e24ee753113410e2cf1bcabb134"
 }

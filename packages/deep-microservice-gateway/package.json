@@ -34,5 +34,6 @@
     "graphql-depth-limit": "^1.1.0",
     "jwks-rsa": "^2.0.5",
     "log4js": "^6.3.0"
-  }
+  },
+  "gitHead": "3b2ef77fc17f1e24ee753113410e2cf1bcabb134"
 }

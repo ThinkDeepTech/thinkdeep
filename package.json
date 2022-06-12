@@ -56,13 +56,14 @@
     "nyc": "^15.1.0",
     "prettier": "^2.6.2"
   },
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
   "publishConfig": {
     "access": "public"
   },
-  "private": true,
   "version": "0.0.8",
   "repository": "git@github.com:ThinkDeepTech/thinkdeep.git",
   "license": "AGPL-3.0-only",
