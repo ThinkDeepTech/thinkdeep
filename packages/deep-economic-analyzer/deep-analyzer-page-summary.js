@@ -228,7 +228,6 @@ export default class DeepAnalyzerPageSummary extends LitElement {
               </div>
             </div>
           </div>
-          <div slot="footer">Public sentiment decreased 24%.</div>
         </deep-card>
 
         <google-chart
