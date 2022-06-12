@@ -23,7 +23,7 @@ The purpose of this repository is to build a full-stack analytics platform for e
 - [Node v16.14.2](https://nodejs.org/en/)
 - [Lerna v5.0.0](https://github.com/lerna/lerna)
 - [Snyk CLI v1.936.0](https://github.com/snyk/cli)
-- [Yarn v1.22.0](https://yarnpkg.com/)
+- [Yarn v1.22.19](https://yarnpkg.com/)
 - [Kubectl v1.22.0](https://kubernetes.io/docs/tasks/tools/)
 - [Helm v3.8.2](https://helm.sh/)
 
@@ -77,7 +77,7 @@ implementation of that template idea.
 ### The Front-end
 
 #### Lit
-[Lit](https://lit.dev) has multiple benefits. First, it's familiar to me, which is significant. However, It's also incredibly fast and light-weight. When benchmarked against React, it [performs quite a bit better](https://javascript.plainenglish.io/javascript-frameworks-performance-comparison-2020-cd881ac21fce). Lit came about as a result of the desire to use the browsers support for the web components standard to create framework agnostic components. Frameworks such as React and Angular are essentially needed because the browser doesn't perform its job well enough. It's ideal to move the custom component concept into the browser itself instead of relying on a framework for that functionality because frameworks introduce additional layers which increase execution time and likelihood of dependency conflict. They prevent reuse of custom components from one framework to the next making it difficult to migrate to a different framework as well as requiring recreation of components that may already be available to another framework. With [increasing web components support](https://developer.mozilla.org/en-US/docs/Web/Web_Components) in numerous popular browsers such as Chrome, Firefox and Safari those frameworks are soon to be obsolete despite the fact that they are still extremely popular. 
+[Lit](https://lit.dev) has multiple benefits. First, it's familiar to me, which is significant. However, It's also incredibly fast and light-weight. When benchmarked against React, it [performs quite a bit better](https://javascript.plainenglish.io/javascript-frameworks-performance-comparison-2020-cd881ac21fce). Lit came about as a result of the desire to use the browsers support for the web components standard to create framework agnostic components. Frameworks such as React and Angular are essentially needed because the browser doesn't perform its job well enough. It's ideal to move the custom component concept into the browser itself instead of relying on a framework for that functionality because frameworks introduce additional layers which increase execution time and likelihood of dependency conflict. They prevent reuse of custom components from one framework to the next making it difficult to migrate to a different framework as well as requiring recreation of components that may already be available to another framework. With [increasing web components support](https://developer.mozilla.org/en-US/docs/Web/Web_Components) in numerous popular browsers such as Chrome, Firefox and Safari those frameworks are soon to be obsolete despite the fact that they are still extremely popular.
 
 #### Rollup
 Building the application is done using rollup because it has a clean, concise syntax. WebPack is extremely customizable, but more confusing to maintain.

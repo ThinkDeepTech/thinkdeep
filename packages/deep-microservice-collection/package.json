@@ -1,6 +1,6 @@
 {
   "name": "@thinkdeep/deep-microservice-collection",
-  "version": "0.0.8",
+  "version": "0.0.9-alpha.1",
   "type": "module",
   "description": "Data collection microservice.",
   "keywords": [
@@ -42,5 +42,5 @@
     "moment": "^2.29.1",
     "mongodb": "^4.2.1"
   },
-  "private": true
+  "gitHead": "3b2ef77fc17f1e24ee753113410e2cf1bcabb134"
 }

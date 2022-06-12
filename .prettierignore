@@ -6,3 +6,4 @@
 ./**/Chart.*
 *charts/
 .dccache
+yarn.lock

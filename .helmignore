@@ -9,6 +9,7 @@ img/*
 .gitignore
 .prettier*
 .yarnrc*
+yarn.lock
 .npm*
 babel.config.*
 lerna.json

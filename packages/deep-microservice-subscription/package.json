@@ -1,6 +1,6 @@
 {
   "name": "@thinkdeep/deep-microservice-subscription",
-  "version": "0.0.8",
+  "version": "0.0.9-alpha.1",
   "description": "Microservice managing subscriptions.",
   "keywords": [
     "GraphQL",
@@ -43,5 +43,5 @@
     "log4js": "^6.3.0",
     "ws": "^7.4.4"
   },
-  "private": true
+  "gitHead": "3b2ef77fc17f1e24ee753113410e2cf1bcabb134"
 }

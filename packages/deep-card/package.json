@@ -1,6 +1,6 @@
 {
   "name": "@thinkdeep/deep-card",
-  "version": "0.0.8",
+  "version": "0.0.9-alpha.1",
   "description": "Card component.",
   "keywords": [
     "Lit",
@@ -19,14 +19,13 @@
     "start": "web-dev-server --config ./web-dev-server.config.js --esbuild-target auto",
     "start:watch": "web-dev-server --config ./web-dev-server.config.js --watch --esbuild-target auto",
     "tests:e2e": "web-test-runner --config ./web-test-runner.config.js",
-    "tests:e2e:watch": "web-test-runner --config ./web-test-runner.config.js --watch",
-    "build": "rimraf build && rollup -c rollup.config.mjs"
+    "tests:e2e:watch": "web-test-runner --config ./web-test-runner.config.js --watch"
   },
   "devDependencies": {
     "@esm-bundle/chai": "^4.3.4",
     "@open-wc/testing": "^3.1.4",
     "@open-wc/testing-helpers": "^2.1.2",
-    "@thinkdeep/tools": "^0.0.8",
+    "@thinkdeep/tools": "^0.0.9-alpha.1",
     "@web/dev-server-esbuild": "^0.2.12",
     "@web/dev-server-rollup": "^0.3.5",
     "@web/test-runner": "^0.13.15",
@@ -41,5 +40,5 @@
     "@webcomponents/webcomponentsjs": "^2.5.0",
     "lit": "^2.0.2"
   },
-  "private": true
+  "gitHead": "3b2ef77fc17f1e24ee753113410e2cf1bcabb134"
 }
