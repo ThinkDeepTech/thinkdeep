@@ -7,7 +7,6 @@ log.txt
 !.yarn/plugins
 !.yarn/sdks
 !.yarn/versions
-yarn.lock
 .pnp.*
 ./**/Chart.lock
 *charts/
