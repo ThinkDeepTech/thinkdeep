@@ -23,7 +23,7 @@ The purpose of this repository is to build a full-stack analytics platform for e
 - [Node v16.14.2](https://nodejs.org/en/)
 - [Lerna v5.0.0](https://github.com/lerna/lerna)
 - [Snyk CLI v1.936.0](https://github.com/snyk/cli)
-- [Yarn v2.4.3](https://yarnpkg.com/)
+- [Yarn v1.22.19](https://yarnpkg.com/)
 - [Kubectl v1.22.0](https://kubernetes.io/docs/tasks/tools/)
 - [Helm v3.8.2](https://helm.sh/)
 
