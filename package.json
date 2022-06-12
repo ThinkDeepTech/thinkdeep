@@ -2,10 +2,9 @@
   "name": "thinkdeep",
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin/in/haydenmcp)",
   "scripts": {
-    "setup": "yarn install && lerna run setup",
     "lint": "eslint --fix 'packages/**/*.js'",
     "prettier": "prettier --write 'packages/**/*.js'",
-    "clean": "lerna exec --parallel -- rm -rf ./node_modules && rm -rf ./node_modules",
+    "clean": "lerna exec --parallel -- rm -rf ./node_modules && rm -rf ./node_modules && rm yarn.lock",
     "build": "lerna run build --parallel",
     "tests": "yarn run tests:unit && yarn run tests:integration && yarn run tests:e2e",
     "tests:unit": "lerna run tests:unit",

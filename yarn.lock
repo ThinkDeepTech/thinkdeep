@@ -3361,7 +3361,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@thinkdeep/deep-card@^0.0.9-alpha.1, @thinkdeep/deep-card@workspace:packages/deep-card":
+"@thinkdeep/deep-card@workspace:^0.0.9-alpha.1, @thinkdeep/deep-card@workspace:packages/deep-card":
   version: 0.0.0-use.local
   resolution: "@thinkdeep/deep-card@workspace:packages/deep-card"
   dependencies:
@@ -3398,8 +3398,7 @@ __metadata:
     "@material/mwc-textfield": ^0.25.3
     "@material/mwc-top-app-bar-fixed": ^0.25.3
     "@open-wc/testing": ^3.1.4
-    "@thinkdeep/deep-card": ^0.0.9-alpha.1
-    "@thinkdeep/deep-footer": ^0.0.9-alpha.1
+    "@thinkdeep/deep-card": "workspace:^0.0.9-alpha.1"
     "@thinkdeep/tools": ^0.0.9-alpha.1
     "@vaadin/router": ^1.7.4
     "@web/dev-server": ^0.1.31
@@ -3422,7 +3421,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@thinkdeep/deep-footer@^0.0.9-alpha.1, @thinkdeep/deep-footer@workspace:packages/deep-footer":
+"@thinkdeep/deep-footer@workspace:packages/deep-footer":
   version: 0.0.0-use.local
   resolution: "@thinkdeep/deep-footer@workspace:packages/deep-footer"
   dependencies:
