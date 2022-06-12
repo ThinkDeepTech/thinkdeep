@@ -1,6 +1,6 @@
 {
   "name": "@thinkdeep/deep-microservice-collection",
-  "version": "0.0.8",
+  "version": "0.0.9-alpha.0",
   "type": "module",
   "description": "Data collection microservice.",
   "keywords": [

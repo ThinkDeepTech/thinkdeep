@@ -1,6 +1,6 @@
 {
   "name": "@thinkdeep/tools",
-  "version": "0.0.8",
+  "version": "0.0.9-alpha.0",
   "description": "Shared tools and configurations.",
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin.com/in/haydenmcp)",
   "type": "module",

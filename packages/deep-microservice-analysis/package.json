@@ -1,6 +1,6 @@
 {
   "name": "@thinkdeep/deep-microservice-analysis",
-  "version": "0.0.8",
+  "version": "0.0.9-alpha.0",
   "description": "Microservice intended to isolate data analysis operations.",
   "type": "module",
   "keywords": [

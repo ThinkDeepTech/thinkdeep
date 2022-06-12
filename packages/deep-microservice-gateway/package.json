@@ -1,6 +1,6 @@
 {
   "name": "@thinkdeep/deep-microservice-gateway",
-  "version": "0.0.8",
+  "version": "0.0.9-alpha.0",
   "description": "Apollo graphql gateway to microservices",
   "type": "module",
   "keywords": [
