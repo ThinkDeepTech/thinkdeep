@@ -45,10 +45,17 @@
     }
 
     html, body {
+      display: block;
       height: 100%;
       width: 100%;
-      display: block;
       background-color: var(--primary-color);
+      overflow: scroll;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    ::-webkit-scrollbar {
+      display: none; /* Safari and Chrome */
     }
     </style>
 
