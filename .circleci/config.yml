@@ -9,6 +9,9 @@ orbs:
 commands:
     install_monorepo:
       steps:
+        - run:
+            name: Installing yarn berry
+            command: yarn set version berry
         - restore_cache:
             key: deps1-{{ .Branch }}-{{ checksum "yarn.lock" }}
         - run:

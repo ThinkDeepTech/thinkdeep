@@ -3356,6 +3356,7 @@ __metadata:
     log4js: ^6.3.0
     mocha: ^9.1.3
     sinon: ^12.0.1
+    sinon-chai: ^3.7.0
     twitter-api-v2: ^1.11.0
   languageName: unknown
   linkType: soft
