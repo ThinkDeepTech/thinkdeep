@@ -212,6 +212,25 @@ export default class DeepAnalyzerPageSummary extends LitElement {
           )}
         </mwc-select>
 
+        <deep-card>
+          <h4 slot="header">Public Sentiment</h4>
+          <div class="summary" slot="body">
+            <div>
+              Last
+              <div>${this.sentiments[0]?.score}</div>
+            </div>
+            <div>
+              Average
+              <div>
+                ${this.sentiments
+                  .map((value) => value.score || 0)
+                  .reduce((previous, current) => previous + current, 0) /
+                this.sentiments.length}
+              </div>
+            </div>
+          </div>
+        </deep-card>
+
         <google-chart
           @google-chart-select="${this._handleChartSelection}"
           type="line"

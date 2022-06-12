@@ -81,7 +81,7 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
       }
 
       .feature:hover {
-        box-shadow: 0 0 9px lightgray;
+        box-shadow: 0 0 9px var(--primary-color-light, lightgray);
       }
 
       @media (max-width: 810px) {
