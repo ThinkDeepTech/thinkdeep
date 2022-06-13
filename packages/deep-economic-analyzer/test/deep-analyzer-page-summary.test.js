@@ -1,6 +1,5 @@
 import {html, expect} from '@open-wc/testing';
 import {
-  delayForPageRender,
   input,
   click,
   select,
@@ -65,47 +64,38 @@ const sentimentChart = (element) => {
   return element.shadowRoot.querySelector('google-chart');
 };
 
-/**
- * Select a point on the specified chart.
- *
- * @param {Element} targetChart Chart element on which selection will occur.
- * @param {Array<Number>} point Array of size two of the form [x, y].
- */
-const selectChartValue = async (targetChart, point) => {
-  const selections = [];
+// /**
+//  * Select a point on the specified chart.
+//  *
+//  * @param {Element} targetChart Chart element on which selection will occur.
+//  * @param {Array<Number>} point Array of size two of the form [x, y].
+//  */
+// const selectChartValue = async (targetChart, point) => {
+//   const selections = [];
 
-  for (let i = 0; i < targetChart.rows.length; i++) {
-    const prospectivePoint = targetChart.rows[i];
-    if (point[0] === prospectivePoint[0] && point[1] === prospectivePoint[1]) {
-      selections.push({row: i, column: 0});
-    }
-  }
+//   for (let i = 0; i < targetChart.rows.length; i++) {
+//     const prospectivePoint = targetChart.rows[i];
+//     if (point[0] === prospectivePoint[0] && point[1] === prospectivePoint[1]) {
+//       selections.push({row: i, column: 0});
+//     }
+//   }
 
-  targetChart.selection = selections;
+//   targetChart.selection = selections;
 
-  // NOTE: Keep this synced with google chart to ensure correctness.
-  targetChart.dispatchEvent(
-    new CustomEvent(`google-chart-select`, {
-      bubbles: true,
-      composed: true,
-      detail: {
-        // Events fire after `chartWrapper` is initialized.
-        chart: targetChart,
-      },
-    })
-  );
+//   // NOTE: Keep this synced with google chart to ensure correctness.
+//   targetChart.dispatchEvent(
+//     new CustomEvent(`google-chart-select`, {
+//       bubbles: true,
+//       composed: true,
+//       detail: {
+//         // Events fire after `chartWrapper` is initialized.
+//         chart: targetChart,
+//       },
+//     })
+//   );
 
-  await delayForPageRender();
-};
-
-/**
- * Get a list of tweets.
- * @param {Element} element Parent element with nested tweets.
- * @return {Array<Element>} The list of tweet elements.
- */
-const tweetList = (element) => {
-  return element.shadowRoot.querySelectorAll('.tweet');
-};
+//   await delayForPageRender();
+// };
 
 describe('deep-analyzer-page-summary', () => {
   beforeEach(async () => {
@@ -198,25 +188,5 @@ describe('deep-analyzer-page-summary', () => {
       expect(found).to.equal(true);
     }
     expect(founds.length).to.be.greaterThan(0);
-  });
-
-  it('should display tweets when the user clicks on a point on the sentiment graph', async () => {
-    const element = await fixtureSync(
-      html`<deep-analyzer-page-summary></deep-analyzer-page-summary>`
-    );
-
-    const chart = sentimentChart(element);
-
-    const pointOnGraph = chart.rows[0] || null;
-
-    if (!pointOnGraph) {
-      throw new Error(`There were no sentiment graph points available.`);
-    }
-
-    await selectChartValue(chart, pointOnGraph);
-
-    const tweetSection = tweetList(element);
-
-    expect(tweetSection.length).to.be.greaterThan(0);
   });
 });
