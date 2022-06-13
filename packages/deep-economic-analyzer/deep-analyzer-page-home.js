@@ -81,7 +81,7 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
       }
 
       .feature:hover {
-        box-shadow: 0 0 9px var(--primary-color-light, lightgray);
+        box-shadow: 0 0 9px var(--secondary-color-dark, lightgray);
       }
 
       @media (max-width: 810px) {
@@ -122,7 +122,7 @@ export class DeepAnalyzerPageHome extends i18nMixin(LitElement) {
             <h4>Coming Soon</h4>
           </div>
           <div class="feature">
-            <h2>Competition Analysis</h2>
+            <h2>Relationship Analysis</h2>
             <h4>Coming Soon</h4>
           </div>
           <div class="feature">

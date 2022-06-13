@@ -7,7 +7,6 @@ import {LitElement, css, html} from '@apollo-elements/lit-apollo';
 import '@google-web-components/google-chart';
 import '@material/mwc-button';
 import '@material/mwc-icon';
-import '@material/mwc-list/mwc-list';
 import '@material/mwc-list/mwc-list-item';
 import '@material/mwc-select';
 import '@material/mwc-textfield';
@@ -16,7 +15,6 @@ import './deep-site-configuration.js';
 import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
 import GetSentiment from './graphql/GetSentiment.query.graphql';
 import UpdateSentiments from './graphql/UpdateSentiments.subscription.graphql';
-import {translate} from 'lit-element-i18n';
 
 /**
  * Lit summary page component.
@@ -123,6 +121,26 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   }
 
   /**
+   * Lit callback on component connect.
+   */
+  connectedCallback() {
+    super.connectedCallback();
+
+    globalThis.addEventListener('resize', this._redrawChart);
+    globalThis.addEventListener('orientationchange', this._redrawChart);
+  }
+
+  /**
+   * Lit callback on component disconnect.
+   */
+  disconnectedCallback() {
+    globalThis.removeEventListener('resize', this._redrawChart);
+    globalThis.removeEventListener('orientationchange', this._redrawChart);
+
+    super.disconnectedCallback();
+  }
+
+  /**
    * Lit component style definitions.
    * @return {TemplateResult}
    */
@@ -134,10 +152,10 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         width: 100%;
       }
 
-      .grid-container {
+      .grid-container,
+      .card-deck {
         display: grid;
         grid-template-columns: 1fr;
-        background-color: var(--secondary-color);
         justify-items: center;
         align-items: center;
         height: 100%;
@@ -145,12 +163,28 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       }
 
       .input,
-      google-chart,
-      mwc-list,
-      deep-card {
-        width: 90vw;
+      .card-deck,
+      .card {
+        width: 90%;
         max-width: 90vw;
+        height: auto;
+        padding: 8px;
         margin: 8px;
+      }
+
+      .card-deck {
+        grid-gap: 0.65em;
+      }
+
+      google-chart {
+        width: 90%;
+        height: auto;
+        margin: 0px;
+        padding: 0px;
+      }
+
+      .card {
+        --shadow-color: var(--secondary-color-dark, lightgray);
       }
 
       mwc-button {
@@ -158,14 +192,28 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         --mdc-theme-on-primary: var(--secondary-color);
       }
 
-      mwc-list {
-        overflow: hidden;
-      }
-
       .summary {
         display: flex;
         flex-direction: row;
         justify-content: space-around;
+      }
+
+      @media (min-width: 992px) {
+        .card-deck {
+          grid-template-columns: repeat(5, 1fr);
+          grid-template-rows: auto;
+        }
+
+        .card {
+          height: 85%;
+          padding: 5%;
+        }
+
+        google-chart {
+          width: 90%;
+          height: 80%;
+          margin: 0;
+        }
       }
 
       [hidden] {
@@ -184,6 +232,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         @site-configuration="${this._handleSiteConfig}"
         hidden
       ></deep-site-configuration>
+
       <div class="grid-container">
         <mwc-textfield
           class="input"
@@ -192,9 +241,8 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         ></mwc-textfield>
         <mwc-button
           raised
-          label="${translate('translations:startButtonLabel')}"
           @click="${this._collectEconomicData.bind(this)}"
-          icon="input"
+          icon="add"
         ></mwc-button>
 
         <mwc-select
@@ -212,48 +260,40 @@ export default class DeepAnalyzerPageSummary extends LitElement {
           )}
         </mwc-select>
 
-        <deep-card>
-          <h4 slot="header">Public Sentiment</h4>
-          <div class="summary" slot="body">
-            <div>
-              Last
-              <div>${this.sentiments[0]?.score}</div>
-            </div>
-            <div>
-              Average
+        <div class="card-deck">
+          <deep-card class="card">
+            <h4 slot="header">Public Sentiment</h4>
+            <div class="summary" slot="body">
               <div>
-                ${this.sentiments
-                  .map((value) => value.score || 0)
-                  .reduce((previous, current) => previous + current, 0) /
-                this.sentiments.length}
+                Last
+                <div>${this.sentiments[0]?.score}</div>
+              </div>
+              <div>
+                Average
+                <div>
+                  ${this.sentiments
+                    .map((value) => value.score || 0)
+                    .reduce((previous, current) => previous + current, 0) /
+                  this.sentiments.length}
+                </div>
               </div>
             </div>
-          </div>
-        </deep-card>
+          </deep-card>
 
-        <google-chart
-          @google-chart-select="${this._handleChartSelection}"
-          type="line"
-          options='{"title": "Sentiment as a function of time" }'
-          cols='[{"label": "Timestamp", "type": "number"}, {"label": "Sentiment", "type": "number"}]'
-          rows="[${this.sentiments?.map((sentiment) =>
-            JSON.stringify([sentiment.timestamp, sentiment.score])
-          )}]"
-        ></google-chart>
-
-        <mwc-list>
-          ${this.selectedSentiments.map((sentiment) =>
-            sentiment?.tweets?.map(
-              (tweet, index) => html`
-                <mwc-list-item class="tweet">
-                  <h3>Tweet ${index}</h3>
-                  <p>${tweet?.text}</p>
-                </mwc-list-item>
-                <li divider padded role="separator"></li>
-              `
-            )
-          )}
-        </mwc-list>
+          <deep-card class="card">
+            <h4 slot="header">Public Sentiment</h4>
+            <google-chart
+              slot="body"
+              @google-chart-select="${this._handleChartSelection}"
+              options="{}"
+              type="line"
+              cols='[{"label": "Timestamp", "type": "number"}, {"label": "Sentiment", "type": "number"}]'
+              rows="[${this.sentiments?.map((sentiment) =>
+                JSON.stringify([sentiment.timestamp, sentiment.score])
+              )}]"
+            ></google-chart>
+          </deep-card>
+        </div>
       </div>
     `;
   }
@@ -288,6 +328,17 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       });
     }
   }
+
+  /**
+   * Redraw the chart.
+   *
+   * NOTE: The use of an arrow function is required here because it ensures that
+   * the 'this' context of the redraw function references the component when executed
+   * from addEventListener.
+   */
+  _redrawChart = () => {
+    this.shadowRoot.querySelector('google-chart').redraw();
+  };
 
   /**
    * Determine if the sentiment matches the data at the selected point in the google chart.

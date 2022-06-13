@@ -14,9 +14,7 @@ export class DeepCard extends LitElement {
       css`
         :host {
           transition: box-shadow 0.3s;
-          min-width: 60vw;
           max-width: 90vw;
-          min-height: 22vh;
           width: var(--width, 90vw);
           height: var(--height, 22vh);
           border-radius: 5px;
