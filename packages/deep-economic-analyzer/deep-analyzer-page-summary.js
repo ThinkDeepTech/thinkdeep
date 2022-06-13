@@ -157,6 +157,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         grid-template-columns: 1fr;
         grid-template-rows: auto 62px 62px;
         justify-items: center;
+        align-items: center;
         height: 100%;
         width: 100%;
       }
@@ -197,8 +198,10 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
       .watch {
         display: grid;
-        grid-template-columns: 80% 20%;
-        grid-gap: 3px;
+        grid-template-columns: 80% 19%;
+        grid-gap: 1%;
+        justify-content: center;
+        align-items: center;
       }
 
       google-chart {
