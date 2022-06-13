@@ -167,9 +167,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         grid-template-columns: 1fr;
         grid-gap: 4px;
         justify-items: center;
-        align-items: center;
-        height: auto;
-        max-height: 100%;
+        height: 100%;
         width: 90%;
         padding: 8px;
         margin: 8px;
