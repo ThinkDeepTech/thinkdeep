@@ -152,28 +152,53 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         width: 100%;
       }
 
-      .grid-container,
-      .card-deck {
+      .page-grid {
         display: grid;
         grid-template-columns: 1fr;
+        grid-template-rows: auto 62px 62px;
         justify-items: center;
-        align-items: center;
         height: 100%;
         width: 100%;
       }
 
-      .input,
-      .card-deck,
+      .card-deck {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-gap: 4px;
+        justify-items: center;
+        align-items: center;
+        height: auto;
+        max-height: 100%;
+        width: 90%;
+        padding: 8px;
+        margin: 8px;
+        overflow: scroll;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      .card-deck::-webkit-scrollbar {
+        display: none; /* Safari and Chrome */
+      }
+
       .card {
         width: 90%;
-        max-width: 90vw;
-        height: auto;
+        height: 275px;
+        max-height: 275px;
         padding: 8px;
         margin: 8px;
       }
 
-      .card-deck {
-        grid-gap: 0.65em;
+      .input {
+        width: 90%;
+        max-width: 90%;
+        margin: 2px;
+      }
+
+      .watch {
+        display: grid;
+        grid-template-columns: 80% 20%;
+        grid-gap: 3px;
       }
 
       google-chart {
@@ -233,33 +258,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         hidden
       ></deep-site-configuration>
 
-      <div class="grid-container">
-        <mwc-textfield
-          class="input"
-          label="Enter a Business Name"
-          @input="${this._onInput.bind(this)}"
-        ></mwc-textfield>
-        <mwc-button
-          raised
-          @click="${this._collectEconomicData.bind(this)}"
-          icon="add"
-        ></mwc-button>
-
-        <mwc-select
-          class="input"
-          label="Analyze a business"
-          @selected="${this._onSelect}"
-        >
-          ${this.configuration.observedEconomicEntities.map(
-            (economicEntity, index) =>
-              html`<mwc-list-item
-                ?selected="${index === 0}"
-                value="${economicEntity.name}"
-                >${economicEntity.name}</mwc-list-item
-              >`
-          )}
-        </mwc-select>
-
+      <div class="page-grid">
         <div class="card-deck">
           <deep-card class="card">
             <h4 slot="header">Public Sentiment</h4>
@@ -294,6 +293,33 @@ export default class DeepAnalyzerPageSummary extends LitElement {
             ></google-chart>
           </deep-card>
         </div>
+
+        <div class="input watch">
+          <mwc-textfield
+            label="i.e, Google"
+            @input="${this._onInput.bind(this)}"
+          ></mwc-textfield>
+          <mwc-button
+            raised
+            @click="${this._collectEconomicData.bind(this)}"
+            icon="add"
+          ></mwc-button>
+        </div>
+
+        <mwc-select
+          class="input"
+          label="Analyze a business"
+          @selected="${this._onSelect}"
+        >
+          ${this.configuration.observedEconomicEntities.map(
+            (economicEntity, index) =>
+              html`<mwc-list-item
+                ?selected="${index === 0}"
+                value="${economicEntity.name}"
+                >${economicEntity.name}</mwc-list-item
+              >`
+          )}
+        </mwc-select>
       </div>
     `;
   }
