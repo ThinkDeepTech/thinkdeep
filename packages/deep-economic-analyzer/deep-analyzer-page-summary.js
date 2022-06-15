@@ -115,9 +115,16 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   /**
    * Lit callback executed on first update of the component.
    */
-  firstUpdated() {
+  async firstUpdated() {
     super.firstUpdated();
     this._setChartOptions();
+
+    // NOTE: TODO: While a fix goes into place allowing mwc-button height/width to be set this
+    // hack will be used to make the button size equal to what's desired for the app.
+    await this.updateComplete;
+    const materialButton = this.shadowRoot.querySelector('mwc-button');
+    const button = materialButton.shadowRoot.querySelector('#button');
+    button.setAttribute('style', 'height: 100%; width: 100%;');
   }
 
   /**
@@ -196,8 +203,8 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
       .watch {
         display: grid;
-        grid-template-columns: 80% 19%;
-        grid-gap: 1%;
+        grid-template-columns: 80% 19.65%;
+        grid-gap: 0.35%;
         justify-content: center;
         align-items: center;
       }
@@ -214,6 +221,8 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       }
 
       mwc-button {
+        height: 100%;
+        width: 100%;
         --mdc-theme-primary: var(--primary-color-light);
         --mdc-theme-on-primary: var(--secondary-color);
       }
@@ -297,7 +306,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
         <div class="input watch">
           <mwc-textfield
-            label="i.e, Google"
+            label="Watch (i.e, Google)"
             @input="${this._onInput.bind(this)}"
           ></mwc-textfield>
           <mwc-button
@@ -309,7 +318,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
         <mwc-select
           class="input"
-          label="Analyze a business"
+          label="Analyze (i.e, Google)"
           @selected="${this._onSelect}"
         >
           ${this.configuration.observedEconomicEntities.map(

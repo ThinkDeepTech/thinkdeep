@@ -22,7 +22,7 @@ export class DeepCard extends LitElement {
         }
 
         :host(:hover) {
-          box-shadow: 0 0 8px var(--shadow-color, gray);
+          box-shadow: 0 0 var(--shadow-size, 12px) var(--shadow-color, gray);
         }
 
         .header ::slotted(*) {
