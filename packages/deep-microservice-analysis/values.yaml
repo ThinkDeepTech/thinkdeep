@@ -25,12 +25,14 @@
   neo4j:
     resources:
       cpu: "0.5"
-      memory: "20Gi"
+      memory: "8Gi"
 
     password: ""
     volumes:
+      metadata:
+        name: "analysis-neo4j-storage"
       data:
         mode: "defaultStorageClass"
         defaultStorageClass:
           requests:
-            storage: "20Gi"
+            storage: "8Gi"
