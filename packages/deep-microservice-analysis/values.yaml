@@ -28,13 +28,3 @@
       memory: "20Gi"
 
     password: ""
-
-  volumes:
-    data:
-      mode: "dynamic"
-      dynamic:
-        storageClassName: "neo4j"
-        accessModes:
-          - ReadWriteOnce
-        requests:
-          storage: "20Gi"
