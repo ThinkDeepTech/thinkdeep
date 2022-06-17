@@ -19,6 +19,8 @@
     replicas: 1
     container:
       image: "thinkdeeptech/deep-microservice-analysis:latest"
+    analysisneo4j:
+      password: ""
 
   collection:
     graphql:
