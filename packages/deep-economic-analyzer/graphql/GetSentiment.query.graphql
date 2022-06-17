@@ -7,3 +7,27 @@ query GetSentiment($economicEntityName: String!, $economicEntityType: EconomicEn
       }
   }
 }
+
+query GetSentiment($economicEntities: [EconomicEntity!]!, $startDate: DateTime, $endDate: DateTime) {
+  sentiments(economicEntities: $economicEntities, startDate: $startDate, endDate: $endDate) {
+      year {
+        numChildren
+        average
+      }
+      month {
+        numChildren
+        average
+      }
+      day {
+        numChildren
+        average
+      }
+      hour {
+        numChildren
+        average
+      }
+      minute {
+        numChildren
+      }
+  }
+}

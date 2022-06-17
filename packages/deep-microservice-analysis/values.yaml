@@ -21,3 +21,17 @@
       enabled: false
       rootUser: "root"
       rootPassword: ""
+
+  analysisneo4j:
+    resources:
+      cpu: "0.5"
+      memory: "20Gi"
+
+    password: ""
+
+  # volumes:
+  #   data:
+  #     mode: "defaultStorageClass"
+  #     defaultStorageClass:
+  #       requests:
+  #         storage: "20Gi"
