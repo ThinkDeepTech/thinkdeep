@@ -22,7 +22,7 @@
       rootUser: "root"
       rootPassword: ""
 
-  analysisneo4j:
+  neo4j:
     resources:
       cpu: "0.5"
       memory: "20Gi"
@@ -30,9 +30,8 @@
     password: ""
 
   volumes:
-    mode: "defaultStorageClass"
     data:
-      mode: "defaultStorageClass"
+      mode: defaultStorageClass
       defaultStorageClass:
         requests:
-          storage: "20Gi"
+          storage: 20Gi
