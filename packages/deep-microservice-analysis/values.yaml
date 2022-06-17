@@ -25,18 +25,19 @@
   neo4j:
     resources:
       cpu: "0.5"
-      memory: "8Gi"
+      memory: "20Gi"
 
     password: ""
     volumes:
       data:
-        mode: "volumeClaimTemplate"
-        volumeClaimTemplate:
-          metadata:
-            name: analysis-neo4j-pvc
-          accessModes:
-          - ReadWriteOnce
-          resources:
-            requests:
-              storage: 8Gi
-          storageClassName: do-block-storage
+        mode: "volumeClaimTemplates"
+        volumeClaimTemplates:
+        - metadata:
+            name: "analysis-neo4j-pvc"
+          spec:
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: "20Gi"
+            storageClassName: "do-block-storage"
