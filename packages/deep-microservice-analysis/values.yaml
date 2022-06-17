@@ -34,10 +34,9 @@
         volumeClaimTemplate:
           metadata:
             name: analysis-neo4j-pvc
-          spec:
-            accessModes:
-            - ReadWriteOnce
-            resources:
-              requests:
-                storage: 8Gi
-            storageClassName: do-block-storage
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: 8Gi
+          storageClassName: do-block-storage
