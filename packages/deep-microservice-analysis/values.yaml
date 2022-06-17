@@ -31,7 +31,7 @@
 
   volumes:
     data:
-      mode: defaultStorageClass
+      mode: "defaultStorageClass"
       defaultStorageClass:
         requests:
-          storage: 20Gi
+          storage: "20Gi"
