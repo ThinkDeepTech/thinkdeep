@@ -28,17 +28,9 @@
       memory: "20Gi"
 
     password: ""
-
-  volumes:
-    data:
-      mode: "volumeClaimTemplate"
-      volumeClaimTemplate:
-        metadata:
-          name: analysisneo4j-pvc
-        spec:
-          accessModes:
-          - "ReadWriteOnce"
-          resources:
-            requests:
-              storage: "20Gi"
-          storageClassName: "do-block-storage"
+    volumes:
+      data:
+        mode: "defaultStorageClass"
+        defaultStorageClass:
+          requests:
+            storage: "20Gi"
