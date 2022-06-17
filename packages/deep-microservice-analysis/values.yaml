@@ -28,3 +28,10 @@
       memory: "20Gi"
 
     password: ""
+
+  volumes:
+    data:
+      mode: "defaultStorageClass"
+      defaultStorageClass:
+        requests:
+          storage: "20Gi"
