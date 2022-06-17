@@ -31,7 +31,10 @@
 
   volumes:
     data:
-      mode: "defaultStorageClass"
-      defaultStorageClass:
+      mode: "dynamic"
+      dynamic:
+        storageClassName: "neo4j"
+        accessModes:
+          - ReadWriteOnce
         requests:
           storage: "20Gi"

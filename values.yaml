@@ -21,9 +21,6 @@
       image: "thinkdeeptech/deep-microservice-analysis:latest"
     neo4j:
       password: ""
-    volumes:
-      data:
-        mode: "defaultStorageClass"
 
   collection:
     graphql:
