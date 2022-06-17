@@ -8,7 +8,7 @@ dependencies:
     tags:
       - "bitnami-mongodb"
     version: "11.0.3"
-  - name: "neo4j/neo4j-standalone"
+  - name: "neo4j-standalone"
     alias: "analysisneo4j"
     repository: "https://helm.neo4j.com/neo4j"
     tags:
