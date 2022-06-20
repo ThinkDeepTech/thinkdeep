@@ -26,6 +26,11 @@ const typeDefs = gql`
     type: EconomicEntityType!
   }
 
+  input EconomicEntityInput {
+    name: String!
+    type: EconomicEntityType!
+  }
+
   type Sentiment {
     timestamp: Float!
     score: Float!
@@ -38,7 +43,7 @@ const typeDefs = gql`
 
   extend type Query {
     sentiments(
-      economicEntities: [EconomicEntity!]!
+      economicEntities: [EconomicEntityInput!]!
       startDate: Date!
       endDate: Date
     ): [AnalysisResult!]!
