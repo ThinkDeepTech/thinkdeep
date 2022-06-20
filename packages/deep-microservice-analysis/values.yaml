@@ -23,6 +23,7 @@
       rootPassword: ""
 
   neo4j:
+    name: "analysisneo4j"
     resources:
       cpu: "0.5"
       memory: "8Gi"
