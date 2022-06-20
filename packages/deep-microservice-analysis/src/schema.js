@@ -1,7 +1,6 @@
 import {gql} from 'apollo-server';
 
 const typeDefs = gql`
-
   scalar Date
 
   type AnalysisResult {
@@ -13,7 +12,7 @@ const typeDefs = gql`
   }
 
   type Node {
-    numChildren: !Int
+    numChildren: Int!
     value: Float
     firstChild: Int
   }
@@ -38,7 +37,11 @@ const typeDefs = gql`
   }
 
   extend type Query {
-    sentiments(economicEntities: [EconomicEntity!]!, startDate: Date!, endDate: Date) : [AnalysisResult!]!
+    sentiments(
+      economicEntities: [EconomicEntity!]!
+      startDate: Date!
+      endDate: Date
+    ): [AnalysisResult!]!
   }
 `;
 
