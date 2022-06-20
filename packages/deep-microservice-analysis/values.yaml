@@ -39,3 +39,7 @@
             requests:
               storage: "8Gi"
           storageClassName: "do-block-storage"
+
+    services:
+      neo4j:
+        enabled: false
