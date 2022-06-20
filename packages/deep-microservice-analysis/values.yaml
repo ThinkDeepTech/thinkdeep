@@ -32,18 +32,12 @@
       data:
         mode: "volumeClaimTemplate"
         volumeClaimTemplate:
-          {
-          "metadata":
-            {
-              "name": "analysis-neo4j-pvc"
-            },
-          "spec":
-            {
-              "accessModes": ["ReadWriteOnce"],
-              "resources":
-              {
-                  "requests": { "storage": "20Gi" }
-              },
-              "storageClassName": "do-block-storage"
-            }
-          }
+          metadata:
+            name: "analysis-neo4j-pvc"
+          spec:
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: "20Gi"
+            storageClassName: "do-block-storage"
