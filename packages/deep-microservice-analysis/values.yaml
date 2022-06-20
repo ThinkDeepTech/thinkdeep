@@ -30,14 +30,20 @@
     password: ""
     volumes:
       data:
-        mode: "volumeClaimTemplates"
-        volumeClaimTemplates:
-        - metadata:
-            name: "analysis-neo4j-pvc"
-          spec:
-            accessModes:
-            - ReadWriteOnce
-            resources:
-              requests:
-                storage: "20Gi"
-            storageClassName: "do-block-storage"
+        mode: "volumeClaimTemplate"
+        volumeClaimTemplate:
+          {
+          "metadata":
+            {
+              "name": "analysis-neo4j-pvc"
+            },
+          "spec":
+            {
+              "accessModes": ["ReadWriteOnce"],
+              "resources":
+              {
+                  "requests": { "storage": "20Gi" }
+              },
+              "storageClassName": "do-block-storage"
+            }
+          }
