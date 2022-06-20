@@ -2,7 +2,7 @@ import {gql} from 'apollo-server';
 
 const typeDefs = gql`
 
-  scalar Date;
+  scalar Date
 
   type AnalysisResult {
     year: [Node!]!
