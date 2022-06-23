@@ -270,6 +270,7 @@ describe('analysis-service', () => {
 
   describe('_computeSentiment', () => {
     it('should return an empty object if economic entity name is empty', async () => {
+      const timestamp = 1;
       const economicEntityName = '';
       const economicEntityType = 'BUSINESS';
       const timeSeriesData = [
@@ -286,6 +287,7 @@ describe('analysis-service', () => {
       ];
 
       await subject._computeSentiment(
+        timestamp,
         economicEntityName,
         economicEntityType,
         timeSeriesData
@@ -294,6 +296,7 @@ describe('analysis-service', () => {
     });
 
     it('should return an empty object if economic entity name is not a string', async () => {
+      const timestamp = 1;
       const economicEntityName = {};
       const economicEntityType = 'BUSINESS';
       const timeSeriesData = [
@@ -310,6 +313,7 @@ describe('analysis-service', () => {
       ];
 
       await subject._computeSentiment(
+        timestamp,
         economicEntityName,
         economicEntityType,
         timeSeriesData
@@ -318,6 +322,7 @@ describe('analysis-service', () => {
     });
 
     it('should return an empty object if economic entity type is empty', async () => {
+      const timestamp = 1;
       const economicEntityName = 'SomeBusinessName';
       const economicEntityType = '';
       const timeSeriesData = [
@@ -334,6 +339,7 @@ describe('analysis-service', () => {
       ];
 
       await subject._computeSentiment(
+        timestamp,
         economicEntityName,
         economicEntityType,
         timeSeriesData
@@ -342,6 +348,7 @@ describe('analysis-service', () => {
     });
 
     it('should return an empty object if economic entity type is not a string', async () => {
+      const timestamp = 1;
       const economicEntityName = 'SomeBusinessName';
       const economicEntityType = [];
       const timeSeriesData = [
@@ -358,6 +365,7 @@ describe('analysis-service', () => {
       ];
 
       await subject._computeSentiment(
+        timestamp,
         economicEntityName,
         economicEntityType,
         timeSeriesData
@@ -366,11 +374,13 @@ describe('analysis-service', () => {
     });
 
     it('should return if there are no time series entries', async () => {
+      const timestamp = 1;
       const economicEntityName = 'SomeBusinessName';
       const economicEntityType = 'BUSINESS';
       const timeSeriesData = [];
 
       await subject._computeSentiment(
+        timestamp,
         economicEntityName,
         economicEntityType,
         timeSeriesData
@@ -403,7 +413,9 @@ describe('analysis-service', () => {
       };
       sentimentLib.analyze.returns(sentimentResult);
 
+      const timestamp = 1;
       await subject._computeSentiment(
+        timestamp,
         economicEntityName,
         economicEntityType,
         timeSeriesData
@@ -430,7 +442,9 @@ describe('analysis-service', () => {
       };
       sentimentLib.analyze.returns(sentimentResult);
 
+      const timestamp = 1;
       await subject._computeSentiment(
+        timestamp,
         economicEntityName,
         economicEntityType,
         timeSeriesData
@@ -457,7 +471,9 @@ describe('analysis-service', () => {
       };
       sentimentLib.analyze.returns(sentimentResult);
 
+      const timestamp = 1;
       await subject._computeSentiment(
+        timestamp,
         economicEntityName,
         economicEntityType,
         timeSeriesData
@@ -467,6 +483,7 @@ describe('analysis-service', () => {
     });
 
     it('should add a message to the queue indicating the sentiments computed', async () => {
+      const timestamp = 1;
       const economicEntityName = 'SomeBusinessName';
       const economicEntityType = 'BUSINESS';
       const tweets = [
@@ -492,6 +509,7 @@ describe('analysis-service', () => {
       sentimentLib.analyze.returns(sentimentResult);
 
       await subject._computeSentiment(
+        timestamp,
         economicEntityName,
         economicEntityType,
         timeSeriesData
