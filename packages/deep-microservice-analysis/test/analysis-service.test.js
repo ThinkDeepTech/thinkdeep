@@ -7,16 +7,17 @@ const expect = chai.expect;
 chai.use(sinonChai);
 
 describe('analysis-service', () => {
-  let analysisDataStore;
+  let mongoDataStore;
   let sentimentLib;
   let logger;
   let kafkaClient;
+  let neo4jDataStore;
   let admin;
   let consumer;
   let producer;
   let subject;
   beforeEach(() => {
-    analysisDataStore = {
+    mongoDataStore = {
       readMostRecentSentiments: sinon.stub(),
       createSentiments: sinon.stub(),
     };
@@ -50,8 +51,10 @@ describe('analysis-service', () => {
       producer: sinon.stub().returns(producer),
       consumer: sinon.stub().returns(consumer),
     };
+    neo4jDataStore = {};
     subject = new AnalysisService(
-      analysisDataStore,
+      mongoDataStore,
+      neo4jDataStore,
       sentimentLib,
       kafkaClient,
       logger
@@ -236,11 +239,11 @@ describe('analysis-service', () => {
         score: 1,
         tweets,
       };
-      analysisDataStore.readMostRecentSentiments.returns(databaseData);
+      mongoDataStore.readMostRecentSentiments.returns(databaseData);
 
       await subject.sentiments(economicEntityName, economicEntityType, user);
 
-      expect(analysisDataStore.readMostRecentSentiments.callCount).to.equal(1);
+      expect(mongoDataStore.readMostRecentSentiments.callCount).to.equal(1);
     });
 
     it('should fetch data from the database', async () => {
@@ -257,11 +260,11 @@ describe('analysis-service', () => {
         score: 1,
         tweets,
       };
-      analysisDataStore.readMostRecentSentiments.returns(databaseData);
+      mongoDataStore.readMostRecentSentiments.returns(databaseData);
 
       await subject.sentiments(economicEntityName, economicEntityType, user);
 
-      expect(analysisDataStore.readMostRecentSentiments.callCount).to.equal(1);
+      expect(mongoDataStore.readMostRecentSentiments.callCount).to.equal(1);
     });
   });
 
