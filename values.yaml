@@ -21,6 +21,10 @@
       image: "thinkdeeptech/deep-microservice-analysis:latest"
     neo4j:
       password: ""
+      services:
+        neo4j:
+          enabled: false
+          annotations: { }
 
   collection:
     graphql:

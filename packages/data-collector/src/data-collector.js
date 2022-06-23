@@ -2,6 +2,7 @@ import {Client} from './client.js';
 import {Command, Option} from 'commander';
 import {Kafka} from 'kafkajs';
 import log4js from 'log4js';
+import moment from 'moment';
 import sinon from 'sinon';
 import {TwitterApi} from 'twitter-api-v2';
 
@@ -117,6 +118,7 @@ try {
         );
 
         const data = {
+          timestamp: moment().unix(),
           economicEntityName: options.entityName,
           economicEntityType: options.entityType,
           tweets: recentTweets,

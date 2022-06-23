@@ -43,3 +43,4 @@
     services:
       neo4j:
         enabled: false
+        annotations: { }

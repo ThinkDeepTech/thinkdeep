@@ -1,7 +1,6 @@
 import {K8sCronJob} from './command/k8s-cron-job.js';
 import {K8sJob} from './command/k8s-job.js';
 import {validString} from './helpers.js';
-import moment from 'moment';
 import {Operations} from './operation/operations.js';
 import {hasReadAllAccess} from './permissions.js';
 
@@ -95,10 +94,10 @@ class CollectionService {
               `Received kafka message: ${message.value.toString()}`
             );
 
-            const {economicEntityName, economicEntityType, tweets} = JSON.parse(
-              message.value.toString()
-            );
+            const {timestamp, economicEntityName, economicEntityType, tweets} =
+              JSON.parse(message.value.toString());
             await this._handleTweetsFetched(
+              timestamp,
               economicEntityName,
               economicEntityType,
               tweets
@@ -258,25 +257,25 @@ class CollectionService {
 
   /**
    * Handle the tweets fetched event.
+   * @param {Number} timestamp - Epoch timestamp.
    * @param {String} entityName - Economic entity name (i.e, 'Google').
    * @param {String} entityType - Economic entity type (i.e, 'BUSINESS').
    * @param {Array} tweets - Array of tweet objects of the form { text: '...' }.
    * @return {Boolean} - True if the function succeeds, false otherwise.
    */
-  async _handleTweetsFetched(entityName, entityType, tweets) {
+  async _handleTweetsFetched(timestamp, entityName, entityType, tweets) {
     if (!validString(entityName)) return false;
 
     if (!validString(entityType)) return false;
 
     if (!Array.isArray(tweets) || tweets.length === 0) return false;
 
-    const timestamp = moment().unix();
-
     this._logger.info(
       `Adding timeseries entry to tweet store with timestamp ${timestamp}, tweets ${JSON.stringify(
         tweets
       )}`
     );
+
     const tweetsCreated = await this._tweetStore.createTweets(
       timestamp,
       entityName,
@@ -291,6 +290,7 @@ class CollectionService {
     );
 
     const event = {
+      timestamp,
       economicEntityName: entityName,
       economicEntityType: entityType,
       timeSeriesItems,

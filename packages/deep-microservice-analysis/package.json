@@ -39,6 +39,7 @@
     "log4js": "^6.3.0",
     "moment": "^2.29.1",
     "mongodb": "^4.2.1",
+    "neo4j-driver": "^4.4.6",
     "sentiment": "^5.0.2"
   },
   "gitHead": "3b2ef77fc17f1e24ee753113410e2cf1bcabb134"

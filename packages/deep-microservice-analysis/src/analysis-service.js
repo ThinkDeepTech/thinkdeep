@@ -1,5 +1,6 @@
 import {attachExitHandler} from '@thinkdeep/attach-exit-handler';
-import moment from 'moment';
+// TODO
+// import moment from 'moment';
 import {hasReadAllAccess} from './permissions.js';
 
 /**
@@ -11,13 +12,21 @@ class AnalysisService {
    *
    * NOTE: The parameters below are injected because that improves testability of the codebase.
    *
-   * @param {Object} analysisDataStore - AnalysisDataStore to use when interacting with the database.
+   * @param {Object} mongoDataStore - MongoDB data store to use.
+   * @param {Object} neo4jDataStore - Neo4j data store to use.
    * @param {Object} sentimentLib - Library to use for sentiment analysis. This is an instance of Sentiment from 'sentiment' package.
    * @param {Object} kafkaClient - KafkaJS client to use.
    * @param {Object} logger - Logger to use.
    */
-  constructor(analysisDataStore, sentimentLib, kafkaClient, logger) {
-    this._analysisDataStore = analysisDataStore;
+  constructor(
+    mongoDataStore,
+    neo4jDataStore,
+    sentimentLib,
+    kafkaClient,
+    logger
+  ) {
+    this._mongoDataStore = mongoDataStore;
+    this._neo4jDataStore = neo4jDataStore;
     this._sentimentLib = sentimentLib;
     this._kafkaClient = kafkaClient;
 
@@ -66,9 +75,14 @@ class AnalysisService {
           `Received kafka message: ${message.value.toString()}`
         );
 
-        const {economicEntityName, economicEntityType, timeSeriesItems} =
-          JSON.parse(message.value.toString());
+        const {
+          timestamp,
+          economicEntityName,
+          economicEntityType,
+          timeSeriesItems,
+        } = JSON.parse(message.value.toString());
         await this._computeSentiment(
+          timestamp,
           economicEntityName,
           economicEntityType,
           timeSeriesItems
@@ -98,7 +112,7 @@ class AnalysisService {
       `Querying sentiments for economic entity name: ${economicEntityName}, type: ${economicEntityType}`
     );
 
-    const databaseData = await this._analysisDataStore.readMostRecentSentiments(
+    const databaseData = await this._mongoDataStore.readMostRecentSentiments(
       economicEntityName,
       economicEntityType
     );
@@ -113,11 +127,13 @@ class AnalysisService {
    *
    * NOTE: This sends a kafka event after sentiment computation.
    *
+   * @param {Number} timestamp - Epoch timestamp.
    * @param {String} economicEntityName - Name of the economic entity (i.e, Google)
    * @param {String} economicEntityType - Type of economic entity (i.e, BUSINESS)
    * @param {Array} timeseriesTweets - Consists of objects of the form { timestamp: <Number>, tweets: [{ text: 'tweet text' }]}
    */
   async _computeSentiment(
+    timestamp,
     economicEntityName,
     economicEntityType,
     timeseriesTweets
@@ -145,14 +161,15 @@ class AnalysisService {
       sentiments.push(this._averageSentiment(entry));
     }
 
-    await this._analysisDataStore.createSentiments(
-      moment().unix(),
+    await this._mongoDataStore.createSentiments(
+      timestamp,
       economicEntityName,
       economicEntityType,
       sentiments
     );
 
     const event = {
+      timestamp,
       economicEntityName,
       economicEntityType,
       sentiments,
@@ -165,6 +182,39 @@ class AnalysisService {
       messages: [{value: JSON.stringify(event)}],
     });
   }
+
+  // TODO
+  // async _computeSentiment(
+  //   timestamp,
+  //   economicEntityName,
+  //   economicEntityType,
+  //   tweets
+  // ) {
+
+  //   const economicEntity = {
+  //     name: economicEntityName,
+  //     type: economicEntityType
+  //   };
+  //   this._logger.info(`Adding sentiment to graph for ${economicEntityType} ${economicEntityName} on ${moment(timestamp).format('LLL')}`);
+  //   this._neo4jDataStore.addSentiment({
+  //     timestamp,
+  //     economicEntity,
+  //     tweets
+  //   });
+
+  //   const sentiments = this._neo4jDataStore.getSentiment({ economicEntity });
+
+  //   const data = {
+  //     timestamp,
+  //     economicEntityName,
+  //     economicEntityType,
+  //     sentiments,
+  //   };
+
+  //   // TODO: Rename TWEET_SENTIMENT_COMPUTED to SENTIMENT_UPDATED.
+  //   const eventName = 'TWEET_SENTIMENT_COMPUTED';
+  //   await this._emit(eventName, data);
+  // }
 
   /**
    * Get the average sentiment associated with the response from the collection service.
@@ -221,6 +271,19 @@ class AnalysisService {
         )}, message: ${error.message.toString()}`
       );
     }
+  }
+
+  /**
+   * Emit a particular kafka event.
+   * @param {String} eventName - Name of the event.
+   * @param {Object} data - Event data to transmit.
+   */
+  async _emit(eventName, data) {
+    this._logger.debug(`Emitting ${eventName}`);
+    await this._producer.send({
+      topic: eventName,
+      messages: [{value: JSON.stringify(data)}],
+    });
   }
 }
 
