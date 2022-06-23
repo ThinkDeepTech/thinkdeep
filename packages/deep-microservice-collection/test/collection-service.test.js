@@ -394,7 +394,8 @@ describe('collection-service', () => {
         },
       ];
 
-      await subject._handleTweetsFetched('', 'BUSINESS', tweets);
+      const timestamp = 1;
+      await subject._handleTweetsFetched(timestamp, '', 'BUSINESS', tweets);
 
       expect(tweetStore.createTweets.callCount).to.equal(0);
     });
@@ -409,7 +410,7 @@ describe('collection-service', () => {
         },
       ];
 
-      await subject._handleTweetsFetched({}, 'BUSINESS', tweets);
+      await subject._handleTweetsFetched(1, {}, 'BUSINESS', tweets);
 
       expect(tweetStore.createTweets.callCount).to.equal(0);
     });
@@ -424,7 +425,8 @@ describe('collection-service', () => {
         },
       ];
 
-      await subject._handleTweetsFetched('Google', '', tweets);
+      const timestamp = 1;
+      await subject._handleTweetsFetched(timestamp, 'Google', '', tweets);
 
       expect(tweetStore.createTweets.callCount).to.equal(0);
     });
@@ -439,19 +441,19 @@ describe('collection-service', () => {
         },
       ];
 
-      await subject._handleTweetsFetched('Google', 1, tweets);
+      await subject._handleTweetsFetched(1, 'Google', 1, tweets);
 
       expect(tweetStore.createTweets.callCount).to.equal(0);
     });
 
     it('should not store the tweets if tweets is not an array', async () => {
-      await subject._handleTweetsFetched('Google', 'BUSINESS', 'notarray');
+      await subject._handleTweetsFetched(1, 'Google', 'BUSINESS', 'notarray');
 
       expect(tweetStore.createTweets.callCount).to.equal(0);
     });
 
     it('should not store the tweets if the tweets array is empty', async () => {
-      await subject._handleTweetsFetched('Google', 'BUSINESS', []);
+      await subject._handleTweetsFetched(1, 'Google', 'BUSINESS', []);
 
       expect(tweetStore.createTweets.callCount).to.equal(0);
     });
@@ -467,7 +469,13 @@ describe('collection-service', () => {
       ];
       tweetStore.createTweets.returns(true);
 
-      await subject._handleTweetsFetched('someonebusiness', 'BUSINESS', tweets);
+      const timestamp = 1;
+      await subject._handleTweetsFetched(
+        timestamp,
+        'someonebusiness',
+        'BUSINESS',
+        tweets
+      );
 
       expect(tweetStore.createTweets.callCount).to.be.greaterThan(0);
     });
@@ -494,7 +502,9 @@ describe('collection-service', () => {
 
       tweetStore.readRecentTweets.returns(timeSeriesData);
 
+      const timestamp = 1;
       await subject._handleTweetsFetched(
+        timestamp,
         economicEntityName,
         economicEntityType,
         tweets
@@ -527,7 +537,9 @@ describe('collection-service', () => {
 
       tweetStore.readRecentTweets.returns(timeSeriesData);
 
+      const timestamp = 1;
       await subject._handleTweetsFetched(
+        timestamp,
         economicEntityName,
         economicEntityType,
         tweets
