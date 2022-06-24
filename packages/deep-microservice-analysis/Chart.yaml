@@ -13,6 +13,6 @@ dependencies:
     repository: "https://helm.neo4j.com/neo4j"
     tags:
       - "neo4j"
-    version: "4.4.6"
+    version: "4.4.8"
 name: "deep-microservice-analysis"
 version: "0.0.8"
