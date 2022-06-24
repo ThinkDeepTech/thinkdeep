@@ -23,12 +23,14 @@
       rootPassword: ""
 
   neo4j:
-    name: "analysisneo4j"
-    resources:
-      cpu: "0.5"
-      memory: "8Gi"
+    neo4j:
+      name: "analysisneo4j"
+      resources:
+        cpu: "0.5"
+        memory: "8Gi"
 
-    password: ""
+      password: ""
+
     volumes:
       data:
         mode: "volumeClaimTemplate"
@@ -43,4 +45,5 @@
     services:
       neo4j:
         enabled: false
-        annotations: {}
+        annotations:
+          "service.beta.kubernetes.io/do-loadbalancer-certificate-id": ""
