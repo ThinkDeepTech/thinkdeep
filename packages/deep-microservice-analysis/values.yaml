@@ -49,4 +49,4 @@
 
     config:
       dbms.security.auth_enabled: 'true'
-      dbms.connector.bolt.address: '0.0.0.0:7687'
+      dbms.connector.bolt.address: 0.0.0.0:7687
