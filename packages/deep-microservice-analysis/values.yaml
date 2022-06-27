@@ -48,4 +48,4 @@
         annotations: { }
 
     config:
-      dbms.security.auth_enabled: true
+      dbms.security.auth_enabled: "true"
