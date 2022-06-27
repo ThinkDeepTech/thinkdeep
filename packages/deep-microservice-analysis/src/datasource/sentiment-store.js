@@ -1,5 +1,6 @@
 import {MongoDataSource} from 'apollo-datasource-mongodb';
 
+// TODO: Rename to MongoStore
 /**
  * Storage for sentiment-related data.
  */

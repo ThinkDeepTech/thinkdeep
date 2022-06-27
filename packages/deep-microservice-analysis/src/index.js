@@ -42,6 +42,7 @@ const logger = getLogger();
   );
   const analysisService = new AnalysisService(
     sentimentStore,
+    {}, // TODO: Implement Neo4jDataSource
     new Sentiment(),
     kafkaClient,
     logger
