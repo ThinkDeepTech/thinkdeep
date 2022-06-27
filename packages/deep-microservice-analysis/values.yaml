@@ -45,5 +45,4 @@
     services:
       neo4j:
         enabled: false
-        # TODO
-        # annotations: { "service.beta.kubernetes.io/do-loadbalancer-certificate-id": "" }
+        annotations: { "service.beta.kubernetes.io/do-loadbalancer-certificate-id": "" }
