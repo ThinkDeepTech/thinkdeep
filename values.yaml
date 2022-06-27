@@ -21,8 +21,7 @@
       image: "thinkdeeptech/deep-microservice-analysis:latest"
       # TODO: Cleaner way to handle double neo4js?
     neo4j:
-      neo4j:
-        password: ""
+      password: ""
 
       services:
         neo4j:
