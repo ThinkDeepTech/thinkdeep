@@ -24,7 +24,7 @@
       services:
         neo4j:
           enabled: false
-          annotations: { }
+          annotations: { 'service.beta.kubernetes.io/do-loadbalancer-certificate-id': '8dc3441b-5f88-4db5-b6e9-c1c4236e458e' }
 
   collection:
     graphql:
