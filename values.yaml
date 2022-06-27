@@ -19,12 +19,16 @@
     replicas: 1
     container:
       image: "thinkdeeptech/deep-microservice-analysis:latest"
+      # TODO: Cleaner way to handle double neo4js?
     neo4j:
-      password: ""
+      neo4j:
+        password: ""
+
       services:
         neo4j:
           enabled: false
           annotations: {
+            # TODO: These values should be settable using helm set.
             'service.beta.kubernetes.io/do-loadbalancer-certificate-id': '8dc3441b-5f88-4db5-b6e9-c1c4236e458e',
             'service.beta.kubernetes.io/do-loadbalancer-protocol': 'http2',
             'service.beta.kubernetes.io/do-loadbalancer-algorithm': 'round_robin',
