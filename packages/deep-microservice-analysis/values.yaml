@@ -48,7 +48,7 @@
         annotations: { }
 
     config:
-      dbms.security.auth_enabled: 'true'
+      dbms.security.auth_enabled: 'false'
       dbms.default_listen_address: '0.0.0.0'
       dbms.default_advertised_address: 'test.api.neo4j.predecos.com'
       dbms.security.auth_max_failed_attempts: '4'
