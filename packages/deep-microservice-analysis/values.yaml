@@ -50,3 +50,4 @@
     config:
       dbms.security.auth_enabled: 'true'
       dbms.connector.bolt.listen_address: '0.0.0.0:7687'
+      dbms.security.auth_max_failed_attempts: 4
