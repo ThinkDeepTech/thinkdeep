@@ -51,3 +51,4 @@
       dbms.security.auth_enabled: 'true'
       dbms.connector.bolt.listen_address: '0.0.0.0:7687'
       dbms.security.auth_max_failed_attempts: '4'
+      dbms.security.auth_lock_time: '5s'
