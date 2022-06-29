@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@apollo/subgraph": "^0.1.5",
+    "@thinkdeep/apollo-datasource-neo4j": "^0.0.1-alpha.0",
     "@thinkdeep/attach-exit-handler": "^1.0.0",
     "@thinkdeep/get-public-ip": "^1.0.0",
     "apollo-datasource-mongodb": "^0.5.2",

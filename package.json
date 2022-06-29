@@ -2,6 +2,7 @@
   "name": "thinkdeep",
   "author": "Hayden McParlane <hayden.mcparlane@gmail.com> (https://www.linkedin/in/haydenmcp)",
   "scripts": {
+    "setup": "yarn run clean && yarn install",
     "lint": "eslint --fix 'packages/**/*.js'",
     "prettier": "prettier --write 'packages/**/*.js'",
     "clean": "lerna exec --parallel -- rm -rf ./node_modules && rm -rf ./node_modules && rm yarn.lock",

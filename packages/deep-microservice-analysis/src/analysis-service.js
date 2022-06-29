@@ -1,6 +1,5 @@
 import {attachExitHandler} from '@thinkdeep/attach-exit-handler';
-// TODO
-// import moment from 'moment';
+import moment from 'moment';
 import {hasReadAllAccess} from './permissions.js';
 
 /**
@@ -132,89 +131,104 @@ class AnalysisService {
    * @param {String} economicEntityType - Type of economic entity (i.e, BUSINESS)
    * @param {Array} timeseriesTweets - Consists of objects of the form { timestamp: <Number>, tweets: [{ text: 'tweet text' }]}
    */
-  async _computeSentiment(
-    timestamp,
-    economicEntityName,
-    economicEntityType,
-    timeseriesTweets
-  ) {
-    if (!economicEntityName || typeof economicEntityName !== 'string') return;
-
-    if (!economicEntityType || typeof economicEntityType !== 'string') return;
-
-    if (!Array.isArray(timeseriesTweets) || timeseriesTweets.length === 0)
-      return;
-
-    this._logger.info(
-      `Received timeseries entry: ${JSON.stringify(timeseriesTweets)}`
-    );
-
-    const sentiments = [];
-    for (const entry of timeseriesTweets) {
-      if (
-        !entry?.timestamp ||
-        !Array.isArray(entry?.tweets) ||
-        !entry?.tweets?.length
-      )
-        continue;
-
-      sentiments.push(this._averageSentiment(entry));
-    }
-
-    await this._mongoDataStore.createSentiments(
-      timestamp,
-      economicEntityName,
-      economicEntityType,
-      sentiments
-    );
-
-    const event = {
-      timestamp,
-      economicEntityName,
-      economicEntityType,
-      sentiments,
-    };
-
-    this._logger.info(`Adding event with value: ${JSON.stringify(event)}`);
-
-    await this._producer.send({
-      topic: `TWEET_SENTIMENT_COMPUTED`,
-      messages: [{value: JSON.stringify(event)}],
-    });
-  }
-
-  // TODO
   // async _computeSentiment(
   //   timestamp,
   //   economicEntityName,
   //   economicEntityType,
-  //   tweets
+  //   timeseriesTweets
   // ) {
+  //   if (!economicEntityName || typeof economicEntityName !== 'string') return;
 
-  //   const economicEntity = {
-  //     name: economicEntityName,
-  //     type: economicEntityType
-  //   };
-  //   this._logger.info(`Adding sentiment to graph for ${economicEntityType} ${economicEntityName} on ${moment(timestamp).format('LLL')}`);
-  //   this._neo4jDataStore.addSentiment({
+  //   if (!economicEntityType || typeof economicEntityType !== 'string') return;
+
+  //   if (!Array.isArray(timeseriesTweets) || timeseriesTweets.length === 0)
+  //     return;
+
+  //   this._logger.info(
+  //     `Received timeseries entry: ${JSON.stringify(timeseriesTweets)}`
+  //   );
+
+  //   const sentiments = [];
+  //   for (const entry of timeseriesTweets) {
+  //     if (
+  //       !entry?.timestamp ||
+  //       !Array.isArray(entry?.tweets) ||
+  //       !entry?.tweets?.length
+  //     )
+  //       continue;
+
+  //     sentiments.push(this._averageSentiment(entry));
+  //   }
+
+  //   await this._mongoDataStore.createSentiments(
   //     timestamp,
-  //     economicEntity,
-  //     tweets
-  //   });
+  //     economicEntityName,
+  //     economicEntityType,
+  //     sentiments
+  //   );
 
-  //   const sentiments = this._neo4jDataStore.getSentiment({ economicEntity });
-
-  //   const data = {
+  //   const event = {
   //     timestamp,
   //     economicEntityName,
   //     economicEntityType,
   //     sentiments,
   //   };
 
-  //   // TODO: Rename TWEET_SENTIMENT_COMPUTED to SENTIMENT_UPDATED.
-  //   const eventName = 'TWEET_SENTIMENT_COMPUTED';
-  //   await this._emit(eventName, data);
+  //   this._logger.info(`Adding event with value: ${JSON.stringify(event)}`);
+
+  //   await this._producer.send({
+  //     topic: `TWEET_SENTIMENT_COMPUTED`,
+  //     messages: [{value: JSON.stringify(event)}],
+  //   });
   // }
+
+  // TODO
+  /**
+   * Compute sentiments for the specified tweets.
+   *
+   * NOTE: This sends a kafka event after sentiment computation.
+   *
+   * @param {Number} timestamp - Epoch timestamp.
+   * @param {String} economicEntityName - Name of the economic entity (i.e, Google)
+   * @param {String} economicEntityType - Type of economic entity (i.e, BUSINESS)
+   * @param {Array} tweets - Consists of objects of the form { timestamp: <Number>, tweets: [{ text: 'tweet text' }]}
+   */
+  async _computeSentiment(
+    timestamp,
+    economicEntityName,
+    economicEntityType,
+    tweets
+  ) {
+    const economicEntity = {
+      name: economicEntityName,
+      type: economicEntityType,
+    };
+    this._logger.info(
+      `Adding sentiment to graph for ${economicEntityType} ${economicEntityName} received ${moment(
+        timestamp
+      ).format('LLL')}`
+    );
+    await this._neo4jDataStore.addTweets({
+      timestamp,
+      economicEntity,
+      tweets,
+    });
+
+    const sentiments = await this._neo4jDataStore.getSentiment({
+      economicEntity,
+    });
+
+    const data = {
+      timestamp,
+      economicEntityName,
+      economicEntityType,
+      sentiments,
+    };
+
+    // TODO: Rename TWEET_SENTIMENT_COMPUTED to SENTIMENT_UPDATED.
+    const eventName = 'TWEET_SENTIMENT_COMPUTED';
+    await this._emit(eventName, data);
+  }
 
   /**
    * Get the average sentiment associated with the response from the collection service.
