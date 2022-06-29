@@ -1,9 +1,6 @@
 import {buildSubgraphSchema} from '@apollo/subgraph';
 import {attachExitHandler} from '@thinkdeep/attach-exit-handler';
-// TODO
-// import {K8sClient, KubeConfig, stringify} from '@thinkdeep/k8s';
-import {K8sClient, KubeConfig} from '@thinkdeep/k8s';
-
+import {K8sClient, KubeConfig, stringify} from '@thinkdeep/k8s';
 import {getPublicIP} from '@thinkdeep/get-public-ip';
 import depthLimit from 'graphql-depth-limit';
 import {ApolloServer} from 'apollo-server-express';
@@ -50,41 +47,40 @@ const startApolloServer = async () => {
 
   const k8sClient = await new K8sClient(kubeConfig).init();
 
-  // const onRecycleOfAllMicroserviceReplicas = async (callback) => {
-  //   const deploymentName = process.env.DEPLOYMENT_NAME;
-  //   const namespace = process.env.NAMESPACE;
-  //   const readyReplicas = await numMicroserviceReplicasReady(
-  //     deploymentName,
-  //     namespace
-  //   );
+  const onRecycleOfAllMicroserviceReplicas = async (callback) => {
+    const deploymentName = process.env.DEPLOYMENT_NAME;
+    const namespace = process.env.NAMESPACE;
+    const readyReplicas = await numMicroserviceReplicasReady(
+      deploymentName,
+      namespace
+    );
 
-  //   if (!readyReplicas) {
-  //     await callback();
-  //   }
-  // };
+    // TODO: Need way to determine that system is restarting.
+    if (!readyReplicas) {
+      await callback();
+    }
+  };
 
-  // const numMicroserviceReplicasReady = async (deploymentName, namespace) => {
-  //   const microserviceDeployment = await k8sClient.get(
-  //     'deployment',
-  //     deploymentName,
-  //     namespace
-  //   );
+  const numMicroserviceReplicasReady = async (deploymentName, namespace) => {
+    const microserviceDeployment = await k8sClient.get(
+      'deployment',
+      deploymentName,
+      namespace
+    );
 
-  //   logger.info(
-  //     `\n\nMicroservice Deployment JSON:\n\n${stringify(
-  //       microserviceDeployment
-  //     )}`
-  //   );
+    logger.info(
+      `\n\nMicroservice Deployment JSON:\n\n${stringify(
+        microserviceDeployment
+      )}`
+    );
 
-  //   return microserviceDeployment.status.readyReplicas || 0;
-  // };
+    return microserviceDeployment.status.readyReplicas || 0;
+  };
 
   await attachExitHandler(async () => {
-    // await onRecycleOfAllMicroserviceReplicas(async () => {
-    //   // TODO
-    //   await commander.stopAllCommands();
-    // });
-    await commander.stopAllCommands();
+    await onRecycleOfAllMicroserviceReplicas(async () => {
+      await commander.stopAllCommands();
+    });
 
     logger.info('Closing Kafka connections.');
     await producer.disconnect();
