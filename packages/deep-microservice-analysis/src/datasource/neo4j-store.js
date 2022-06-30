@@ -77,11 +77,11 @@ class Neo4jStore extends Neo4jDataSource {
     await this.run(
       `
       MATCH (economicEntity:EconomicEntity { name: $entityName, type: $entityType})
-      MATCH (year:DateTime { type: "year", value: $year})
-      MATCH (month:DateTime { type: "month", value: $month })
-      MATCH (day:DateTime {type: "day", value: $day})
-      MATCH (hour:DateTime { type: "hour", value: $hour })
-      MATCH (minute:DateTime {type: "minute", value: $minute })
+      MATCH (economicEntity) -[:HAS_TIMELINE]-> (year:DateTime { type: "year", value: $year})
+      MATCH (economicEntity) -[:HAS_TIMELINE]-> (year) -[:HAS]-> (month:DateTime { type: "month", value: $month })
+      MATCH (economicEntity) -[:HAS_TIMELINE]-> (year) -[:HAS]-> (month) -[:HAS]-> (day:DateTime {type: "day", value: $day})
+      MATCH (economicEntity) -[:HAS_TIMELINE]-> (year) -[:HAS]-> (month) -[:HAS]-> (day) -[:HAS]-> (hour:DateTime { type: "hour", value: $hour })
+      MATCH (economicEntity) -[:HAS_TIMELINE]-> (year) -[:HAS]-> (month) -[:HAS]-> (day) -[:HAS]-> (hour) -[:HAS]-> (minute:DateTime {type: "minute", value: $minute })
       MERGE (economicEntity) -[:HAS_TIMELINE]-> (year) -[:HAS]-> (month) -[:HAS]-> (day) -[:HAS]-> (hour) -[:HAS]-> (minute) -[:HAS_DATA]-> (:Tweet { type: "user", value: $tweet })
     `,
       {
@@ -163,11 +163,11 @@ class Neo4jStore extends Neo4jDataSource {
     await this.run(
       `
       MATCH (economicEntity:EconomicEntity { name: $entityName, type: $entityType})
-      MERGE (year:DateTime { type: "year", value: $year})
-      MERGE (month:DateTime { type: "month", value: $month })
-      MERGE (day:DateTime {type: "day", value: $day})
-      MERGE (hour:DateTime { type: "hour", value: $hour })
-      MERGE (minute:DateTime {type: "minute", value: $minute })
+      MERGE (economicEntity) -[:HAS_TIMELINE]-> (year:DateTime { type: "year", value: $year})
+      MERGE (economicEntity) -[:HAS_TIMELINE]-> (year) -[:HAS]-> (month:DateTime { type: "month", value: $month })
+      MERGE (economicEntity) -[:HAS_TIMELINE]-> (year) -[:HAS]-> (month) -[:HAS]-> (day:DateTime {type: "day", value: $day})
+      MERGE (economicEntity) -[:HAS_TIMELINE]-> (year) -[:HAS]-> (month) -[:HAS]-> (day) -[:HAS]-> (hour:DateTime { type: "hour", value: $hour })
+      MERGE (economicEntity) -[:HAS_TIMELINE]-> (year) -[:HAS]-> (month) -[:HAS]-> (day) -[:HAS]-> (hour) -[:HAS]-> (minute:DateTime {type: "minute", value: $minute })
       MERGE (economicEntity) -[:HAS_TIMELINE]-> (year) -[:HAS]-> (month) -[:HAS]-> (day) -[:HAS]-> (hour) -[:HAS]-> (minute)
     `,
       {
