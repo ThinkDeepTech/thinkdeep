@@ -448,6 +448,7 @@ workflows:
           requires:
             - build_microservice_analysis_dev
             - build_microservice_collection_dev
+            - build_data_collector_dev
             - build_microservice_configuration_dev
             - build_microservice_gateway_dev
             - build_microservice_subscription_dev
@@ -490,6 +491,7 @@ workflows:
           requires:
             - build_microservice_analysis
             - build_microservice_collection
+            - build_data_collector
             - build_microservice_configuration
             - build_microservice_gateway
             - build_microservice_subscription
