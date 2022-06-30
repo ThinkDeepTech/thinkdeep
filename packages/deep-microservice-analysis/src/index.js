@@ -44,7 +44,7 @@ const logger = getLogger();
       process.env.MICROSERVICE_ANALYSIS_NEO4J_USERNAME,
       process.env.MICROSERVICE_ANALYSIS_NEO4J_PASSWORD
     ),
-    defaultDatabase: 'neo4j',
+    defaultDatabase: process.env.MICROSERVICE_ANALYSIS_NEO4J_DATABASE,
     defaultAccessMode: neo4j.session.READ,
   });
 

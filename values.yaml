@@ -19,9 +19,10 @@
     replicas: 1
     container:
       image: "thinkdeeptech/deep-microservice-analysis:latest"
-      # TODO: Cleaner way to handle double neo4js?
+
     neo4j:
       neo4j:
+        username: ""
         password: ""
 
       services:
@@ -34,6 +35,10 @@
             'service.beta.kubernetes.io/do-loadbalancer-algorithm': 'round_robin',
             'service.beta.kubernetes.io/do-loadbalancer-tls-ports': '443'
           }
+
+      config:
+        dbms.default_database: ''
+        dbms.default_advertised_address: ''
 
   collection:
     graphql:
