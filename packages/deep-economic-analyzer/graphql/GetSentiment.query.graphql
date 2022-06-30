@@ -8,7 +8,7 @@ query GetSentiment($economicEntityName: String!, $economicEntityType: EconomicEn
   }
 }
 
-query GetSentiment($economicEntities: [EconomicEntity!]!, $startDate: DateTime, $endDate: DateTime) {
+query GetSentimentTODO($economicEntities: [EconomicEntity!]!, $startDate: DateTime, $endDate: DateTime) {
   sentiments(economicEntities: $economicEntities, startDate: $startDate, endDate: $endDate) {
       year {
         numChildren
