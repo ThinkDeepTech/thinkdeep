@@ -37,8 +37,8 @@
           }
 
       config:
-        dbms.default_database: ""
-        dbms.default_advertised_address: ""
+        "dbms.default_database": ""
+        "dbms.default_advertised_address": ""
 
   collection:
     graphql:

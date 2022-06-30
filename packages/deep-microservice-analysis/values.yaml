@@ -49,9 +49,9 @@
         annotations: { }
 
     config:
-      dbms.default_database: ""
-      dbms.security.auth_enabled: "true"
-      dbms.default_listen_address: "0.0.0.0"
-      dbms.default_advertised_address: ""
-      dbms.security.auth_max_failed_attempts: "4"
-      dbms.security.auth_lock_time: "2h"
+      'dbms.default_database': ""
+      'dbms.security.auth_enabled': "true"
+      'dbms.default_listen_address': "0.0.0.0"
+      'dbms.default_advertised_address': ""
+      'dbms.security.auth_max_failed_attempts': "4"
+      'dbms.security.auth_lock_time': "2h"
