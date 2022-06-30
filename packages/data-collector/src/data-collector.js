@@ -118,7 +118,7 @@ try {
         );
 
         const data = {
-          timestamp: moment().unix(),
+          timestamp: moment().format('X'),
           economicEntityName: options.entityName,
           economicEntityType: options.entityType,
           tweets: recentTweets,

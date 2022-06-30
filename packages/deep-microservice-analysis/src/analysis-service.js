@@ -191,13 +191,13 @@ class AnalysisService {
    * @param {Number} timestamp - Epoch timestamp.
    * @param {String} economicEntityName - Name of the economic entity (i.e, Google)
    * @param {String} economicEntityType - Type of economic entity (i.e, BUSINESS)
-   * @param {Array} tweets - Consists of objects of the form { timestamp: <Number>, tweets: [{ text: 'tweet text' }]}
+   * @param {Array} data - Consists of objects of the form { timestamp: <Number>, tweets: [{ text: 'tweet text' }]}
    */
   async _computeSentiment(
     timestamp,
     economicEntityName,
     economicEntityType,
-    tweets
+    data
   ) {
     const economicEntity = {
       name: economicEntityName,
@@ -208,6 +208,12 @@ class AnalysisService {
         timestamp
       ).format('LLL')}`
     );
+
+    const tweets = data
+      .map((entry) => entry.tweets.map((tweet) => tweet.text || null))
+      .filter((val) => !!val)
+      .reduce((prev, curr) => [...prev, ...curr]);
+
     await this._neo4jDataStore.addTweets({
       timestamp,
       economicEntity,
@@ -218,7 +224,7 @@ class AnalysisService {
       economicEntity,
     });
 
-    const data = {
+    const event = {
       timestamp,
       economicEntityName,
       economicEntityType,
@@ -227,7 +233,7 @@ class AnalysisService {
 
     // TODO: Rename TWEET_SENTIMENT_COMPUTED to SENTIMENT_UPDATED.
     const eventName = 'TWEET_SENTIMENT_COMPUTED';
-    await this._emit(eventName, data);
+    await this._emit(eventName, event);
   }
 
   /**

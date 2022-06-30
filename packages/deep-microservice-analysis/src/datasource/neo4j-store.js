@@ -36,6 +36,12 @@ class Neo4jStore extends Neo4jDataSource {
     }
 
     const date = moment(timestamp);
+    this._logger.debug(
+      `Adding tweets to neo4j for date ${date.formal(
+        'LLL'
+      )} with value:\n\n${tweets}\n`
+    );
+
     const accessMode = this.neo4j.session.WRITE;
     for (const tweet of tweets) {
       await this.run(
