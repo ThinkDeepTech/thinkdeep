@@ -214,6 +214,8 @@ class AnalysisService {
       .filter((val) => !!val)
       .reduce((prev, curr) => [...prev, ...curr]);
 
+    this._logger.debug(`Adding tweets to neo4j with value:\n\n${tweets}\n`);
+
     await this._neo4jDataStore.addTweets({
       timestamp,
       economicEntity,
