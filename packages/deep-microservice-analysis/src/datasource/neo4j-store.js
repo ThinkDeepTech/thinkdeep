@@ -194,7 +194,8 @@ class Neo4jStore extends Neo4jDataSource {
    * @return {moment.Moment} Moment associated with the timestamp.
    */
   _date(timestamp) {
-    return moment.unix(timestamp);
+    // TODO: Add helper module that includes moment calc.
+    return moment(timestamp * 1000);
   }
 
   /**
