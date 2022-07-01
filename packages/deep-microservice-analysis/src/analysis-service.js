@@ -204,9 +204,9 @@ class AnalysisService {
       type: economicEntityType,
     };
     this._logger.info(
-      `Adding sentiment to graph for ${economicEntityType} ${economicEntityName} received ${moment(
-        timestamp
-      ).format('LLL')}`
+      `Adding sentiment to graph for ${economicEntityType} ${economicEntityName} received ${moment()
+        .unix(timestamp)
+        .format('LLL')}`
     );
 
     const tweets = data
