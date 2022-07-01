@@ -55,6 +55,8 @@
       dbms.default_advertised_address: ""
       dbms.security.auth_max_failed_attempts: "4"
       dbms.security.auth_lock_time: "2h"
+      dbms.memory.heap.initial_size: "2G"
+      dbms.memory.heap.max_size: "2G"
 
     jvm:
       additionalJvmArguments:
