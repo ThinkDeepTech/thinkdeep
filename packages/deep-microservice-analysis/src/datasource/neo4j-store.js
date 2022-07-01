@@ -76,13 +76,14 @@ class Neo4jStore extends Neo4jDataSource {
     const accessMode = this.neo4j.session.WRITE;
     await this.run(
       `
-      MATCH (economicEntity:EconomicEntity { name: $entityName, type: $entityType})
-      MATCH (economicEntity) -[:HAS_TIMELINE]-> (year:DateTime { type: "year", value: $year})
-      MATCH (economicEntity) -[:HAS_TIMELINE]-> (year) -[:HAS]-> (month:DateTime { type: "month", value: $month })
-      MATCH (economicEntity) -[:HAS_TIMELINE]-> (year) -[:HAS]-> (month) -[:HAS]-> (day:DateTime {type: "day", value: $day})
-      MATCH (economicEntity) -[:HAS_TIMELINE]-> (year) -[:HAS]-> (month) -[:HAS]-> (day) -[:HAS]-> (hour:DateTime { type: "hour", value: $hour })
-      MATCH (economicEntity) -[:HAS_TIMELINE]-> (year) -[:HAS]-> (month) -[:HAS]-> (day) -[:HAS]-> (hour) -[:HAS]-> (minute:DateTime {type: "minute", value: $minute })
-      MERGE (economicEntity) -[:HAS_TIMELINE]-> (year) -[:HAS]-> (month) -[:HAS]-> (day) -[:HAS]-> (hour) -[:HAS]-> (minute) -[:HAS_DATA]-> (:Tweet { type: "user", value: $tweet })
+      MATCH (economicEntity:EconomicEntity { name: $entityName, type: $entityType}) -[timeline:HAS_TIMELINE]-> ()
+      MATCH (economicEntity) -[timeline]-> (year:DateTime { type: "year", value: $year})
+      MATCH (economicEntity) -[timeline]-> (year) -[hasMonths:HAS]-> (month:DateTime { type: "month", value: $month })
+      MATCH (economicEntity) -[timeline]-> (year) -[hasMonths]-> (month) -[hasDay:HAS]-> (day:DateTime {type: "day", value: $day})
+      MATCH (economicEntity) -[timeline]-> (year) -[hasMonths]-> (month) -[hasDay]-> (day) -[hasHour:HAS]-> (hour:DateTime { type: "hour", value: $hour })
+      MATCH (economicEntity) -[timeline]-> (year) -[hasMonths]-> (month) -[hasDay]-> (day) -[hasHour]-> (hour) -[hasMinute:HAS]-> (minute:DateTime {type: "minute", value: $minute })
+      MATCH (economicEntity) -[timeline]-> (year) -[hasMonths]-> (month) -[hasDay]-> (day) -[hasHour]-> (hour) -[hasMinute]-> (minute)
+      MERGE (economicEntity) -[timeline]-> (year) -[hasMonths]-> (month) -[hasDay]-> (day) -[hasHour]-> (hour) -[hasMinute]-> (minute) -[:HAS_DATA]-> (:Tweet { type: "tweet", value: $tweet })
     `,
       {
         entityName: economicEntity.name,
@@ -162,13 +163,13 @@ class Neo4jStore extends Neo4jDataSource {
     const accessMode = this.neo4j.session.WRITE;
     await this.run(
       `
-      MATCH (economicEntity:EconomicEntity { name: $entityName, type: $entityType})
-      MERGE (economicEntity) -[:HAS_TIMELINE]-> (year:DateTime { type: "year", value: $year})
-      MERGE (economicEntity) -[:HAS_TIMELINE]-> (year) -[:HAS]-> (month:DateTime { type: "month", value: $month })
-      MERGE (economicEntity) -[:HAS_TIMELINE]-> (year) -[:HAS]-> (month) -[:HAS]-> (day:DateTime {type: "day", value: $day})
-      MERGE (economicEntity) -[:HAS_TIMELINE]-> (year) -[:HAS]-> (month) -[:HAS]-> (day) -[:HAS]-> (hour:DateTime { type: "hour", value: $hour })
-      MERGE (economicEntity) -[:HAS_TIMELINE]-> (year) -[:HAS]-> (month) -[:HAS]-> (day) -[:HAS]-> (hour) -[:HAS]-> (minute:DateTime {type: "minute", value: $minute })
-      MERGE (economicEntity) -[:HAS_TIMELINE]-> (year) -[:HAS]-> (month) -[:HAS]-> (day) -[:HAS]-> (hour) -[:HAS]-> (minute)
+      MATCH (economicEntity:EconomicEntity { name: $entityName, type: $entityType}) -[timeline:HAS_TIMELINE]-> ()
+      MERGE (economicEntity) -[timeline]-> (year:DateTime { type: "year", value: $year})
+      MERGE (economicEntity) -[timeline]-> (year) -[hasMonths:HAS]-> (month:DateTime { type: "month", value: $month })
+      MERGE (economicEntity) -[timeline]-> (year) -[hasMonths]-> (month) -[hasDay:HAS]-> (day:DateTime {type: "day", value: $day})
+      MERGE (economicEntity) -[timeline]-> (year) -[hasMonths]-> (month) -[hasDay]-> (day) -[hasHour:HAS]-> (hour:DateTime { type: "hour", value: $hour })
+      MERGE (economicEntity) -[timeline]-> (year) -[hasMonths]-> (month) -[hasDay]-> (day) -[hasHour]-> (hour) -[hasMinute:HAS]-> (minute:DateTime {type: "minute", value: $minute })
+      MERGE (economicEntity) -[timeline]-> (year) -[hasMonths]-> (month) -[hasDay]-> (day) -[hasHour]-> (hour) -[hasMinute]-> (minute)
     `,
       {
         entityName: economicEntity.name,
