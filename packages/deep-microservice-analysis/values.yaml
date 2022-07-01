@@ -27,7 +27,7 @@
       name: "analysisneo4j"
       resources:
         cpu: "2"
-        memory: "4Gi"
+        memory: "6Gi"
 
       username: ""
       password: ""
