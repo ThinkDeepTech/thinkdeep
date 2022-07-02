@@ -163,19 +163,18 @@ class Neo4jStore extends Neo4jDataSource {
     const accessMode = this.neo4j.session.WRITE;
     await this.run(
       `
-      MATCH (economicEntity:EconomicEntity { name: $entityName, type: $entityType}) -[timeline:HAS_TIMELINE]-> ()
-      MERGE (economicEntity) -[timeline]-> (year:DateTime { type: "year", value: $year})
-      MERGE (economicEntity) -[timeline]-> (year) -[hasMonths:HAS]-> (month:DateTime { type: "month", value: $month })
-      MERGE (economicEntity) -[timeline]-> (year) -[hasMonths]-> (month) -[hasDay:HAS]-> (day:DateTime {type: "day", value: $day})
-      MERGE (economicEntity) -[timeline]-> (year) -[hasMonths]-> (month) -[hasDay]-> (day) -[hasHour:HAS]-> (hour:DateTime { type: "hour", value: $hour })
-      MERGE (economicEntity) -[timeline]-> (year) -[hasMonths]-> (month) -[hasDay]-> (day) -[hasHour]-> (hour) -[hasMinute:HAS]-> (minute:DateTime {type: "minute", value: $minute })
-      MERGE (economicEntity) -[timeline]-> (year) -[hasMonths]-> (month) -[hasDay]-> (day) -[hasHour]-> (hour) -[hasMinute]-> (minute)
+      MERGE (economicEntity:EconomicEntity { name: $entityName, type: $entityType}) -[hasTimeline:HAS_TIMELINE]-> (year:DateTime { type: "year", value: $year})
+      MERGE (economicEntity) -[hasTimeline]-> (year) -[hasMonth:HAS]-> (month:DateTime { type: "month", value: $month })
+      MERGE (economicEntity) -[hasTimeline]-> (year) -[hasMonth]-> (month) -[hasDay:HAS]-> (day:DateTime {type: "day", value: $day})
+      MERGE (economicEntity) -[hasTimeline]-> (year) -[hasMonth]-> (month) -[hasDay]-> (day) -[hasHour:HAS]-> (hour:DateTime { type: "hour", value: $hour })
+      MERGE (economicEntity) -[hasTimeline]-> (year) -[hasMonth]-> (month) -[hasDay]-> (day) -[hasHour]-> (hour) -[hasMinute:HAS]-> (minute:DateTime {type: "minute", value: $minute })
+      MERGE (economicEntity) -[hasTimeline]-> (year) -[hasMonth]-> (month) -[hasDay]-> (day) -[hasHour]-> (hour) -[hasMinute]-> (minute)
     `,
       {
         entityName: economicEntity.name,
         entityType: economicEntity.type,
         year: date.year(),
-        month: date.month(),
+        month: date.month() + 1,
         day: date.day(),
         hour: date.hour(),
         minute: date.minute(),
