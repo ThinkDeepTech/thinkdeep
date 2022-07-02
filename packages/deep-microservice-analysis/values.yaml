@@ -27,7 +27,7 @@
       name: "analysisneo4j"
       resources:
         cpu: "2"
-        memory: "5Gi"
+        memory: "2Gi"
 
       username: ""
       password: ""
@@ -40,7 +40,7 @@
           - ReadWriteOnce
           resources:
             requests:
-              storage: "8Gi"
+              storage: "128Gi"
           storageClassName: "do-block-storage"
 
     services:
@@ -55,5 +55,3 @@
       dbms.default_advertised_address: ""
       dbms.security.auth_max_failed_attempts: "4"
       dbms.security.auth_lock_time: "2h"
-      dbms.memory.heap.initial_size: "3000"
-      dbms.memory.heap.max_size: "3000"
