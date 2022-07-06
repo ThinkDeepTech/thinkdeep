@@ -76,23 +76,22 @@ class Neo4jStore extends Neo4jDataSource {
     const accessMode = this.neo4j.session.WRITE;
     await this.run(
       `
-      MATCH (economicEntity:EconomicEntity { name: $entityName, type: $entityType}) -[timeline:HAS_TIMELINE]-> ()
-      MATCH (economicEntity) -[timeline]-> (year:DateTime { type: "year", value: $year})
-      MATCH (economicEntity) -[timeline]-> (year) -[hasMonths:HAS]-> (month:DateTime { type: "month", value: $month })
-      MATCH (economicEntity) -[timeline]-> (year) -[hasMonths]-> (month) -[hasDay:HAS]-> (day:DateTime {type: "day", value: $day})
-      MATCH (economicEntity) -[timeline]-> (year) -[hasMonths]-> (month) -[hasDay]-> (day) -[hasHour:HAS]-> (hour:DateTime { type: "hour", value: $hour })
-      MATCH (economicEntity) -[timeline]-> (year) -[hasMonths]-> (month) -[hasDay]-> (day) -[hasHour]-> (hour) -[hasMinute:HAS]-> (minute:DateTime {type: "minute", value: $minute })
-      MATCH (economicEntity) -[timeline]-> (year) -[hasMonths]-> (month) -[hasDay]-> (day) -[hasHour]-> (hour) -[hasMinute]-> (minute)
-      MERGE (economicEntity) -[timeline]-> (year) -[hasMonths]-> (month) -[hasDay]-> (day) -[hasHour]-> (hour) -[hasMinute]-> (minute) -[:HAS_DATA]-> (:Tweet { type: "tweet", value: $tweet })
+      MATCH (economicEntity:EconomicEntity { name: $entityName, type: $entityType})
+      MATCH (economicEntity) -[:HAS_TIMELINE]-> (year:DateTime { type: "year", value: $year})
+      MATCH (year) -[:HAS]-> (month:DateTime { type: "month", value: $month })
+      MATCH (month) -[:HAS]-> (day:DateTime {type: "day", value: $day})
+      MATCH (day) -[:HAS]-> (hour:DateTime { type: "hour", value: $hour })
+      MATCH (hour) -[:HAS]-> (minute:DateTime {type: "minute", value: $minute })
+      MERGE (minute) -[:HAS_DATA]-> (:Tweet { type: "tweet", value: $tweet })
     `,
       {
         entityName: economicEntity.name,
         entityType: economicEntity.type,
-        year: date.year(),
-        month: date.month(),
-        day: date.day(),
-        hour: date.hour(),
-        minute: date.minute(),
+        year: this._year(date),
+        month: this._month(date),
+        day: this._day(date),
+        hour: this._hour(date),
+        minute: this._minute(date),
         tweet,
       },
       {
@@ -163,21 +162,21 @@ class Neo4jStore extends Neo4jDataSource {
     const accessMode = this.neo4j.session.WRITE;
     await this.run(
       `
-      MERGE (economicEntity:EconomicEntity { name: $entityName, type: $entityType}) -[hasTimeline:HAS_TIMELINE]-> (year:DateTime { type: "year", value: $year})
-      MERGE (economicEntity) -[hasTimeline]-> (year) -[hasMonth:HAS]-> (month:DateTime { type: "month", value: $month })
-      MERGE (economicEntity) -[hasTimeline]-> (year) -[hasMonth]-> (month) -[hasDay:HAS]-> (day:DateTime {type: "day", value: $day})
-      MERGE (economicEntity) -[hasTimeline]-> (year) -[hasMonth]-> (month) -[hasDay]-> (day) -[hasHour:HAS]-> (hour:DateTime { type: "hour", value: $hour })
-      MERGE (economicEntity) -[hasTimeline]-> (year) -[hasMonth]-> (month) -[hasDay]-> (day) -[hasHour]-> (hour) -[hasMinute:HAS]-> (minute:DateTime {type: "minute", value: $minute })
-      MERGE (economicEntity) -[hasTimeline]-> (year) -[hasMonth]-> (month) -[hasDay]-> (day) -[hasHour]-> (hour) -[hasMinute]-> (minute)
+      MATCH (economicEntity:EconomicEntity { name: $entityName, type: $entityType})
+      MERGE (economicEntity) -[:HAS_TIMELINE]-> (year:DateTime { type: "year", value: $year})
+      MERGE (year) -[:HAS]-> (month:DateTime { type: "month", value: $month })
+      MERGE (month) -[:HAS]-> (day:DateTime {type: "day", value: $day})
+      MERGE (day) -[:HAS]-> (hour:DateTime { type: "hour", value: $hour })
+      MERGE (hour) -[:HAS]-> (minute:DateTime {type: "minute", value: $minute })
     `,
       {
         entityName: economicEntity.name,
         entityType: economicEntity.type,
-        year: date.year(),
-        month: date.month() + 1,
-        day: date.day(),
-        hour: date.hour(),
-        minute: date.minute(),
+        year: this._year(date),
+        month: this._month(date),
+        day: this._day(date),
+        hour: this._hour(date),
+        minute: this._minute(date),
       },
       {
         // TODO: Same as above
@@ -185,6 +184,15 @@ class Neo4jStore extends Neo4jDataSource {
         accessMode,
       }
     );
+  }
+
+  /**
+   * Get the sentiment.
+   * @return {Number} Sentiment value.
+   */
+  async getSentiment() {
+    // TODO
+    return 2.5;
   }
 
   /**
@@ -198,12 +206,48 @@ class Neo4jStore extends Neo4jDataSource {
   }
 
   /**
-   * Get the sentiment.
-   * @return {Number} Sentiment value.
+   * Get the year.
+   * @param {moment.Moment} mnt Moment for which to gather info.
+   * @return {Number}
    */
-  async getSentiment() {
-    // TODO
-    return 2.5;
+  _year(mnt) {
+    return mnt.year();
+  }
+
+  /**
+   * Get the month.
+   * @param {moment.Moment} mnt Moment for which to gather info.
+   * @return {Number}
+   */
+  _month(mnt) {
+    return mnt.month() + 1;
+  }
+
+  /**
+   * Get the day.
+   * @param {moment.Moment} mnt Moment for which to gather info.
+   * @return {Number}
+   */
+  _day(mnt) {
+    return mnt.day();
+  }
+
+  /**
+   * Get the hour.
+   * @param {moment.Moment} mnt Moment for which to gather info.
+   * @return {Number}
+   */
+  _hour(mnt) {
+    return mnt.hour();
+  }
+
+  /**
+   * Get the minute.
+   * @param {moment.Moment} mnt Moment for which to gather info.
+   * @return {Number}
+   */
+  _minute(mnt) {
+    return mnt.minute();
   }
 }
 
