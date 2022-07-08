@@ -88,10 +88,11 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
   /**
    * TODO
-   * 1. Modify sentiment fetch to use new data interface (i.e, { data: {year:..., month:..., etc}}).
-   * 2. Modify subscription to use new data interface.
-   * 3. If network fails, do not zero sentiment.
-   * 4. Evaluate user experience in various cases and create TODOs to handle a good user interface
+   * - Ensure multiple economic entities are supported (i.e, data should be restructured to include array).
+   * - Modify sentiment fetch to use new data interface (i.e, { data: {year:..., month:..., etc}}).
+   * - Modify subscription to use new data interface.
+   * - If network fails, do not zero sentiment.
+   * - Evaluate user experience in various cases and create TODOs to handle a good user interface
    * when a shotty network is used.
    */
 
@@ -588,8 +589,27 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   /**
    * Get the most recent sentiment value.
    * @param {Object} data Data which will be used to fetch most recent sentiment.
+   * @return {Number} Most recent sentiment value.
    */
-  _mostRecentSentiment(data) {}
+  _mostRecentSentiment(data) {
+    return this._findSentiment(data, moment(data.endDate));
+  }
+
+  // TODO
+  /**
+   * Find sentiment at the specified date.
+   * @param {Object} data Data containing sentiments.
+   * @param {moment.Moment} date Date for which sentiment data will be gathered.
+   * @return {Number} Sentiment at the specified date.
+   */
+  // _findSentiment(data, date) {
+  //   const year = date.year();
+  //   const month = date.month();
+  //   const day = date.day();
+  //   const hour = date.hour();
+  //   const minute = date.minute();
+
+  // }
 
   /**
    * Fetch data from cache.
