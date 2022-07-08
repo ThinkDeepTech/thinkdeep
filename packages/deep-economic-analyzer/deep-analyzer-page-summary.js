@@ -15,6 +15,50 @@ import './deep-site-configuration.js';
 import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
 import GetSentiment from './graphql/GetSentiment.query.graphql';
 import UpdateSentiments from './graphql/UpdateSentiments.subscription.graphql';
+import moment from 'moment';
+
+const DEFAULT_DATA = {
+  year: [
+    {
+      numChildren: 0,
+      firstChild: 0,
+      sentiment: 0,
+    },
+  ],
+  month: [
+    {
+      numChildren: 0,
+      firstChild: 0,
+      sentiment: 0,
+    },
+  ],
+  day: [
+    {
+      numChildren: 0,
+      firstChild: 0,
+      sentiment: 0,
+    },
+  ],
+  hour: [
+    {
+      numChildren: 0,
+      firstChild: 0,
+      sentiment: 0,
+    },
+  ],
+  minute: [
+    {
+      numChildren: 0,
+      firstChild: 0,
+      sentiment: 0,
+    },
+  ],
+  tweets: [
+    {
+      value: '',
+    },
+  ],
+};
 
 /**
  * Lit summary page component.
@@ -43,27 +87,53 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   }
 
   /**
+   * TODO
+   * 1. Modify sentiment fetch to use new data interface (i.e, { data: {year:..., month:..., etc}}).
+   * 2. Modify subscription to use new data interface.
+   * 3. If network fails, do not zero sentiment.
+   * 4. Evaluate user experience in various cases and create TODOs to handle a good user interface
+   * when a shotty network is used.
+   */
+
+  /**
    * Lit component constructor.
    */
   constructor() {
     super();
 
-    this.sentiments = [];
+    this.data = DEFAULT_DATA;
+    this.selectedEconomicEntity = {name: '', type: 'business'};
+    this.selectedSentiments = [];
+    this.configuration = {observedEconomicEntities: []};
+    // this.sentiments = [];
+
+    const defaultStartDate = moment().subtract('month', 1).unix(); // TODO: Verify
+    const defaultEndDate = moment().unix();
 
     this._getInitialSentimentQuery = new ApolloQueryController(
       this,
       GetSentiment,
       {
         variables: {
-          economicEntityName: '',
-          economicEntityType: 'BUSINESS',
+          economicEntities: [
+            {
+              name: '',
+              type: 'BUSINESS',
+            },
+          ],
+          startDate: defaultStartDate,
+          endDate: defaultEndDate,
         },
         noAutoSubscribe: true,
         onData: (data) => {
-          this.sentiments = data?.sentiments || [];
+          // TODO : Implement fetch from cache before default data.
+          this.data = data?.getSentiments || this._cachedData() || DEFAULT_DATA;
+
+          // TODO
+          this._cacheData(this.data);
         },
         onError: (error) => {
-          this.sentiments = [];
+          this.data = this._cachedData();
           console.error(
             `Fetch sentiments failed with error: ${JSON.stringify(error)}`
           );
@@ -76,14 +146,25 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       UpdateSentiments,
       {
         variables: {
-          economicEntityName: 'Google',
-          economicEntityType: 'BUSINESS',
+          economicEntities: [
+            {
+              name: '', // TODO: Use defaultBusiness.
+              type: 'BUSINESS',
+            },
+          ],
+          startDate: defaultStartDate,
+          endDate: defaultEndDate,
         },
         onData: ({subscriptionData}) => {
-          this.sentiments = subscriptionData?.data?.updateSentiments || [];
+          this.data =
+            subscriptionData?.data?.updateSentiments ||
+            this._cachedData() ||
+            DEFAULT_DATA;
+
+          this._cacheData(this.data);
         },
         onError: (error) => {
-          this.sentiments = [];
+          this.data = this._cachedData();
           console.error(
             `An error occurred while subscribing to sentiment updates: ${JSON.stringify(
               error
@@ -106,10 +187,6 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         },
       }
     );
-
-    this.configuration = {observedEconomicEntities: []};
-
-    this.selectedSentiments = [];
   }
 
   /**
@@ -209,6 +286,14 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         align-items: center;
       }
 
+      .selection {
+        display: grid;
+        grid-template-columns: auto;
+        grid-template-rows: auto auto;
+        justify-content: center;
+        align-items: center;
+      }
+
       google-chart {
         width: 90%;
         height: auto;
@@ -249,6 +334,12 @@ export default class DeepAnalyzerPageSummary extends LitElement {
           height: 80%;
           margin: 0;
         }
+
+        .selection {
+          grid-template-columns: auto auto;
+          grid-template-rows: auto;
+          justify-content: space-between;
+        }
       }
 
       [hidden] {
@@ -274,8 +365,10 @@ export default class DeepAnalyzerPageSummary extends LitElement {
             <h4 slot="header">Public Sentiment</h4>
             <div class="summary" slot="body">
               <div>
-                Last
-                <div>${this.sentiments[0]?.score}</div>
+                Recent
+                <!-- TODO Verify -->
+                <!-- <div>${this.sentiments[0]?.score}</div> -->
+                <div>${this._mostRecentSentiment(this.data)}</div>
               </div>
               <div>
                 Average
@@ -316,20 +409,23 @@ export default class DeepAnalyzerPageSummary extends LitElement {
           ></mwc-button>
         </div>
 
-        <mwc-select
-          class="input"
-          label="Analyze (i.e, Google)"
-          @selected="${this._onSelect}"
-        >
-          ${this.configuration.observedEconomicEntities.map(
-            (economicEntity, index) =>
-              html`<mwc-list-item
-                ?selected="${index === 0}"
-                value="${economicEntity.name}"
-                >${economicEntity.name}</mwc-list-item
-              >`
-          )}
-        </mwc-select>
+        <div class="input selection">
+          <mwc-select
+            id="business"
+            label="Analyze"
+            @selected="${this._onSelectBusiness}"
+          >
+            ${this.configuration.observedEconomicEntities.map(
+              (economicEntity, index) =>
+                html`<mwc-list-item
+                  ?selected="${index === 0}"
+                  value="${economicEntity.name}"
+                  >${economicEntity.name}</mwc-list-item
+                >`
+            )}
+          </mwc-select>
+          <!-- TODO: Incorporate start and end date pickers. -->
+        </div>
       </div>
     `;
   }
@@ -418,14 +514,19 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   /**
    * Find the selected business and add it to the query variables.
    */
-  _onSelect() {
+  _onSelectBusiness() {
     const businessName = this.shadowRoot.querySelector(
-      '[aria-selected="true"]'
+      '#business > [aria-selected="true"]'
     ).value;
 
     const variables = {
-      economicEntityName: businessName,
-      economicEntityType: 'BUSINESS',
+      ...this._getInitialSentimentQuery.variables,
+      economicEntities: [
+        {
+          name: businessName,
+          type: 'BUSINESS',
+        },
+      ],
     };
 
     // Subscribe to updates for the desired business.
@@ -436,6 +537,75 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     // Fetch the data right away
     this._getInitialSentimentQuery.variables = variables;
     this._getInitialSentimentQuery.executeQuery();
+  }
+
+  /**
+   * Handle user selection of new start date.
+   */
+  _onSelectStartDate() {
+    const selectedStartDate = this.shadowRoot.querySelector(
+      '#start-date > [aria-selected="true"]'
+    ).value;
+
+    const variables = {
+      ...this._getInitialSentimentQuery.variables,
+      startDate: selectedStartDate, // TODO: Incorporate date picker and verify/modify selection to work with that component.
+    };
+
+    // Subscribe to updates for the desired business.
+    // NOTE: This must occur before the data is fetched for the first time. Otherwise,
+    // updating from zero to one watched business won't update the sentiment graph.
+    this.subscriptionClient.variables = variables;
+
+    // Fetch the data right away
+    this._getInitialSentimentQuery.variables = variables;
+    this._getInitialSentimentQuery.executeQuery();
+  }
+
+  /**
+   * Handle user selection of new end date.
+   */
+  _onSelectEndDate() {
+    const selectedEndDate = this.shadowRoot.querySelector(
+      '#end-date > [aria-selected="true"]'
+    ).value;
+
+    const variables = {
+      ...this._getInitialSentimentQuery.variables,
+      endDate: selectedEndDate, // TODO: Incorporate date picker and verify/modify selection to work with that component.
+    };
+
+    // Subscribe to updates for the desired business.
+    // NOTE: This must occur before the data is fetched for the first time. Otherwise,
+    // updating from zero to one watched business won't update the sentiment graph.
+    this.subscriptionClient.variables = variables;
+
+    // Fetch the data right away
+    this._getInitialSentimentQuery.variables = variables;
+    this._getInitialSentimentQuery.executeQuery();
+  }
+
+  /**
+   * Get the most recent sentiment value.
+   * @param {Object} data Data which will be used to fetch most recent sentiment.
+   */
+  _mostRecentSentiment(data) {}
+
+  /**
+   * Fetch data from cache.
+   * @return {Object} Cached data.
+   */
+  _cachedData() {
+    // TODO
+    return DEFAULT_DATA;
+  }
+
+  /**
+   * Add data to cache.
+   * @param {Object} data Data to cache.
+   */
+  _cacheData(data) {
+    // TODO
   }
 
   /**

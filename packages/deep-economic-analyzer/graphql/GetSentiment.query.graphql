@@ -9,25 +9,34 @@ query GetSentiment($economicEntityName: String!, $economicEntityType: EconomicEn
 }
 
 query GetSentimentTODO($economicEntities: [EconomicEntity!]!, $startDate: DateTime, $endDate: DateTime) {
-  sentiments(economicEntities: $economicEntities, startDate: $startDate, endDate: $endDate) {
+  getSentiments(economicEntities: $economicEntities, startDate: $startDate, endDate: $endDate) {
       year {
         numChildren
-        average
+        firstChild
+        sentiment
       }
       month {
         numChildren
-        average
+        firstChild
+        sentiment
       }
       day {
         numChildren
-        average
+        firstChild
+        sentiment
       }
       hour {
         numChildren
-        average
+        firstChild
+        sentiment
       }
       minute {
         numChildren
+        firstChild
+        sentiment
+      }
+      tweets {
+        value
       }
   }
 }

@@ -7,3 +7,36 @@ subscription UpdateSentiments($economicEntityName: String!, $economicEntityType:
     }
   }
 }
+
+subscription UpdateSentimentsTODO($economicEntities: [EconomicEntity!]!, $startDate: DateTime, $endDate: DateTime) {
+  updateSentiments(economicEntities: $economicEntities, startDate: $startDate, endDate: $endDate) {
+      year {
+        numChildren
+        firstChild
+        sentiment
+      }
+      month {
+        numChildren
+        firstChild
+        sentiment
+      }
+      day {
+        numChildren
+        firstChild
+        sentiment
+      }
+      hour {
+        numChildren
+        firstChild
+        sentiment
+      }
+      minute {
+        numChildren
+        firstChild
+        sentiment
+      }
+      tweets {
+        value
+      }
+  }
+}
