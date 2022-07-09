@@ -220,7 +220,7 @@ class Neo4jStore extends Neo4jDataSource {
    * @return {Number}
    */
   _month(mnt) {
-    return mnt.month() + 1;
+    return mnt.month();
   }
 
   /**

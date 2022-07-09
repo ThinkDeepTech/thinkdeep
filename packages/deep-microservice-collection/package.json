@@ -39,7 +39,7 @@
     "graphql-depth-limit": "^1.1.0",
     "kafkajs": "^1.15.0",
     "log4js": "^6.3.0",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "mongodb": "^4.2.1"
   },
   "gitHead": "3b2ef77fc17f1e24ee753113410e2cf1bcabb134"

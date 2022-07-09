@@ -592,23 +592,27 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    * @return {Number} Most recent sentiment value.
    */
   _mostRecentSentiment(data) {
-    return this._findSentiment(data, moment(data.endDate));
+    return this._sentiment(data, moment(data.endDate));
   }
 
-  // TODO
   /**
-   * Find sentiment at the specified date.
+   * Get sentiment at the specified date.
    * @param {Object} data Data containing sentiments.
    * @param {moment.Moment} date Date for which sentiment data will be gathered.
    * @return {Number} Sentiment at the specified date.
    */
-  // _findSentiment(data, date) {
+  // _sentiment(data, date) {
   //   const year = date.year();
   //   const month = date.month();
   //   const day = date.day();
   //   const hour = date.hour();
   //   const minute = date.minute();
 
+  //   let yearNode = null;
+  //   for (const timeUnit in data)
+  //   // numChildren
+  //   // firstChild
+  //   // sentiment
   // }
 
   /**

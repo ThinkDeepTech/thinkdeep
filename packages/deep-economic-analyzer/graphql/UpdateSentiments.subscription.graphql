@@ -10,6 +10,8 @@ subscription UpdateSentiments($economicEntityName: String!, $economicEntityType:
 
 subscription UpdateSentimentsTODO($economicEntities: [EconomicEntity!]!, $startDate: DateTime, $endDate: DateTime) {
   updateSentiments(economicEntities: $economicEntities, startDate: $startDate, endDate: $endDate) {
+      startDate
+      endDate
       year {
         numChildren
         firstChild
