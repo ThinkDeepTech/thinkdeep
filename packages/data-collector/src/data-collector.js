@@ -118,6 +118,7 @@ try {
         );
 
         const data = {
+          // TODO: a library should provide unix timestamps so that * 1000 is uniform across app boundaries.
           timestamp: moment().format('X'),
           economicEntityName: options.entityName,
           economicEntityType: options.entityType,
