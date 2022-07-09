@@ -47,9 +47,6 @@
       neo4j:
         enabled: false
         annotations: { }
-        ports:
-          http:
-            enabled: false
 
     config:
       dbms.default_database: ""
