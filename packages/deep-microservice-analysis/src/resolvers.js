@@ -15,9 +15,15 @@ const resolvers = {
     //   ),
     sentiments: async (
       _,
-      {economicEntityName, economicEntityType},
+      {economicEntities, startDate, endDate},
       {dataSources, permissions}
-    ) => [],
+    ) =>
+      dataSources.analysisService.sentiments(
+        economicEntities,
+        startDate,
+        endDate,
+        permissions
+      ),
   },
 };
 

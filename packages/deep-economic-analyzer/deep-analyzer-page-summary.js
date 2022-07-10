@@ -15,7 +15,7 @@ import './deep-site-configuration.js';
 import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
 import GetSentiment from './graphql/GetSentiment.query.graphql';
 import UpdateSentiments from './graphql/UpdateSentiments.subscription.graphql';
-import moment from 'moment';
+import moment from 'moment/dist/moment.js';
 
 const DEFAULT_DATA = {
   year: [
@@ -106,9 +106,10 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     this.selectedEconomicEntity = {name: '', type: 'business'};
     this.selectedSentiments = [];
     this.configuration = {observedEconomicEntities: []};
+    // TODO
     // this.sentiments = [];
 
-    const defaultStartDate = moment().subtract('month', 1).unix(); // TODO: Verify
+    const defaultStartDate = moment().subtract(1, 'month').unix();
     const defaultEndDate = moment().unix();
 
     this._getInitialSentimentQuery = new ApolloQueryController(

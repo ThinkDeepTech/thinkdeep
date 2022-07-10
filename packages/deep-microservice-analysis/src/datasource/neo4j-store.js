@@ -6,12 +6,12 @@ import moment from 'moment';
  */
 class Neo4jStore extends Neo4jDataSource {
   /**
-   * Add tweets to neo4j.
+   * Add sentiments to neo4j.
    * @param {Object} economicEntity Object of form { name: <name>, type: <type> }. I.e, { name: 'Google', type: 'BUSINESS' }.
    * @param {Number} timestamp Unix timestamp in seconds.
-   * @param {Array<String>} tweets Array of tweets to add.
+   * @param {Array<Object>} datas Array of the form [{ tweet: <tweet>, sentiment: <sentiment> }]
    */
-  async addTweets(economicEntity, timestamp, tweets) {
+  async addSentiments(economicEntity, timestamp, datas) {
     if (!timestamp) {
       throw new Error(
         `Adding tweets requires a timestamp. Received ${timestamp}`
@@ -30,26 +30,26 @@ class Neo4jStore extends Neo4jDataSource {
       );
     }
 
-    if (!Array.isArray(tweets) || tweets.length <= 0) {
-      throw new Error(`Adding tweets requires populated tweets to add.`);
+    if (!Array.isArray(datas) || datas.length <= 0) {
+      throw new Error(`Adding data requires populated data to add.`);
     }
 
     await this.addEconomicEntity(economicEntity);
 
     await this.addDateToEconomicEntity(economicEntity, timestamp);
 
-    for (const tweet of tweets) {
-      this.addTweet(economicEntity, timestamp, tweet);
+    for (const data of datas) {
+      this.addSentiment(economicEntity, timestamp, data);
     }
   }
 
   /**
-   * Add tweet to neo4j.
+   * Add sentiment and tweet to neo4j.
    * @param {Object} economicEntity Object of form { name: <name>, type: <type> }. I.e, { name: 'Google', type: 'BUSINESS' }.
    * @param {Number} timestamp Unix timestamp in seconds.
-   * @param {String} tweet Text string.
+   * @param {Object} data Object of the form { tweet: <tweet>, sentiment: <sentiment> }
    */
-  async addTweet(economicEntity, timestamp, tweet) {
+  async addSentiment(economicEntity, timestamp, data) {
     if (!timestamp) {
       throw new Error(
         `Adding tweet requires a timestamp. Received ${timestamp}`
@@ -68,8 +68,12 @@ class Neo4jStore extends Neo4jDataSource {
       );
     }
 
-    if (tweet.length <= 0) {
-      throw new Error(`Adding tweet requires populated tweet to add.`);
+    if (Object.keys(data).length <= 0 || !data.tweets || !data.sentiment) {
+      throw new Error(
+        `Invalid data received. tweet and sentiment are required fields. Received: ${JSON.stringify(
+          data
+        )}`
+      );
     }
 
     const date = this._date(timestamp);
@@ -82,7 +86,8 @@ class Neo4jStore extends Neo4jDataSource {
       MATCH (month) -[:HAS]-> (day:DateTime {type: "day", value: $day})
       MATCH (day) -[:HAS]-> (hour:DateTime { type: "hour", value: $hour })
       MATCH (hour) -[:HAS]-> (minute:DateTime {type: "minute", value: $minute })
-      MERGE (minute) -[:HAS_DATA]-> (:Tweet { type: "tweet", value: $tweet })
+      MERGE (minute) -[:HAS_DATA]-> (data:Data { type: "tweet", value: $tweet })
+      MERGE (data) -[:HAS_MEASUREMENT]-> (:Sentiment { value: $sentiment })
     `,
       {
         entityName: economicEntity.name,
@@ -92,7 +97,8 @@ class Neo4jStore extends Neo4jDataSource {
         day: this._day(date),
         hour: this._hour(date),
         minute: this._minute(date),
-        tweet,
+        tweet: data.tweet,
+        sentiment: data.sentiment,
       },
       {
         // TODO: Verify that eliminating this in favor of apollo-datasource-neo4j defaultDatabase still applies access mode.
@@ -187,12 +193,27 @@ class Neo4jStore extends Neo4jDataSource {
   }
 
   /**
-   * Get the sentiment.
-   * @return {Number} Sentiment value.
+   * Read the sentiment.
+   * @param {Object} economicEntity Subject for which sentiment will be read.
+   * @param {Number} startDate Unix timestamp representing start date (in seconds). TODO
+   * @param {Number} endDate Unix timestamp representing end date (in seconds). TODO
+   * @return {Object} Sentiment.
    */
-  async getSentiment() {
-    // TODO
-    return 2.5;
+  async readSentiment(economicEntity, startDate, endDate) {
+    return this.run(
+      `
+        MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[*6..6]-> (tweet:Data { type: "tweet" }) -[:HAS_MEASUREMENT]-> (sentiment:Sentiment)
+        RETURN tweet, sentiment
+      `,
+      {
+        entityName: economicEntity.name,
+        entityType: economicEntity.type,
+      },
+      {
+        database: 'neo4j',
+        accessMode: this.neo4j.session.READ,
+      }
+    );
   }
 
   /**

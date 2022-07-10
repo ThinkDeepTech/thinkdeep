@@ -93,33 +93,69 @@ class AnalysisService {
   /**
    * Get the sentiments associated with the specified economic entity and type.
    *
-   * @param {String} economicEntityName - Name of the economic entity (i.e, 'Google').
-   * @param {String} economicEntityType - Type of the economic entity (i.e, 'BUSINESS').
-   * @param {Object} permissions - Permissions for the user making the request.
-   * @return {Array} - The formatted sentiment objects in array form or [].
+   * @param {Array<Object>} economicEntities Array of objects of the form { name: <some business name>, type: <some entity type> }.
+   * @param {Number} startDate Unix timestamp in seconds indicating start date for request.
+   * @param {Number} endDate Unix timestamp in seconds indicating end date for request.
+   * @param {Object} permissions Permissions for the user making the request.
+   * @return {Array} The formatted sentiment objects in array form or [].
    */
-  async sentiments(economicEntityName, economicEntityType, permissions) {
-    if (!economicEntityName || typeof economicEntityName !== 'string')
-      return [];
-
-    if (!economicEntityType || typeof economicEntityType !== 'string')
-      return [];
-
+  async sentiments(economicEntities, startDate, endDate, permissions) {
     if (!hasReadAllAccess(permissions)) return [];
 
-    this._logger.debug(
-      `Querying sentiments for economic entity name: ${economicEntityName}, type: ${economicEntityType}`
-    );
+    // TODO: Input validation
 
-    const databaseData = await this._mongoDataStore.readMostRecentSentiments(
-      economicEntityName,
-      economicEntityType
-    );
+    const results = [];
+    for (const economicEntity of economicEntities) {
+      this._logger.info(
+        `Querying sentiments for ${economicEntity.type} ${economicEntity.name}.`
+      );
 
-    this._logger.debug(`Sentiments read: ${JSON.stringify(databaseData)}`);
+      results.push(
+        await this._sentimentData(economicEntity, startDate, endDate)
+      );
+    }
 
-    return databaseData.sentiments;
+    this._logger.debug(`Sentiments read: ${JSON.stringify(results)}`);
+
+    return results;
   }
+
+  /**
+   * Get the sentiment.
+   * @param {Object} economicEntity Object of the form { name: <entity name>, type: <entity type> }.
+   * @param {Number} startDate Unix timestamp in seconds indicating start date for request.
+   * @param {Number} endDate Unix timestamp in seconds indicating end date for request.
+   * @return {Object} Sentiment data.
+   */
+  async _sentimentData(economicEntity, startDate, endDate) {
+    // TODO: Input validity.
+
+    return this._neo4jDataStore.readSentiment(
+      economicEntity,
+      startDate,
+      endDate
+    );
+  }
+
+  // TODO
+  /**
+   * Read the most recent sentiments.
+   * @param {Array<Object>} economicEntities
+   */
+  // async _mostRecentSentiments(economicEntities) {
+
+  //   let results = [];
+  //   for (const economicEntity of economicEntities) {
+
+  //     this._logger.debug(`Reading most recent sentiment for ${economicEntity.type} ${economicEntity.name}.`);
+
+  //     const data = await this._neo4jDataStore.readSentiment(economicEntity)
+
+  //     results.push(  );
+  //   }
+
+  //   return results;
+  // }
 
   /**
    * Compute sentiments for the specified tweets.
@@ -216,17 +252,23 @@ class AnalysisService {
 
     this._logger.debug(`Adding tweets to neo4j with value:\n\n${tweets}\n`);
 
-    await this._neo4jDataStore.addTweets(economicEntity, timestamp, tweets);
+    for (const tweet of tweets) {
+      await this._neo4jDataStore.addSentiment(economicEntity, timestamp, {
+        tweet,
+        sentiment: this._sentiment(tweet),
+      });
+    }
 
-    const sentiments = await this._neo4jDataStore.getSentiment({
-      economicEntity,
-    });
+    // TODO
+    // const datas = await this._mostRecentSentiments([economicEntity]);
+
+    const datas = [{sentiment: 2.3, tweet: 'Hello World!'}];
 
     const event = {
       timestamp,
       economicEntityName,
       economicEntityType,
-      sentiments,
+      data: datas[0],
     };
 
     // TODO: Rename TWEET_SENTIMENT_COMPUTED to SENTIMENT_UPDATED.
@@ -261,6 +303,15 @@ class AnalysisService {
     response.tweets = timeSeriesEntry.tweets;
 
     return response;
+  }
+
+  /**
+   * Compute the sentiment.
+   * @param {String} text Subject of the computation.
+   * @return {Number} Sentiment computed.
+   */
+  _sentiment(text) {
+    return this._sentimentLib.analyze(text.toLowerCase());
   }
 
   /**
