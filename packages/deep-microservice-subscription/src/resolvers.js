@@ -16,7 +16,7 @@ const resolvers = {
         if (!hasReadAllAccess(permissions)) {
           return [];
         } else {
-          return payload.sentiments;
+          return payload;
         }
       },
       subscribe: withFilter(
