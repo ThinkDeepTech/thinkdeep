@@ -13,8 +13,8 @@ import '@material/mwc-textfield';
 import '@thinkdeep/deep-card';
 import './deep-site-configuration.js';
 import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
-import GetSentiment from './graphql/GetSentiment.query.graphql';
-import UpdateSentiments from './graphql/UpdateSentiments.subscription.graphql';
+import GetSentiment from './graphql/GetSentiment.new.query.graphql';
+import UpdateSentiments from './graphql/UpdateSentiments.new.subscription.graphql';
 import moment from 'moment/dist/moment.js';
 
 const DEFAULT_DATA = {
