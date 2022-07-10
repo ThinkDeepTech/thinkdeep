@@ -142,20 +142,25 @@ class AnalysisService {
    * Read the most recent sentiments.
    * @param {Array<Object>} economicEntities
    */
-  // async _mostRecentSentiments(economicEntities) {
+  async _mostRecentSentiments(economicEntities) {
+    const results = [];
+    for (const economicEntity of economicEntities) {
+      this._logger.debug(
+        `Reading most recent sentiment for ${economicEntity.type} ${economicEntity.name}.`
+      );
 
-  //   let results = [];
-  //   for (const economicEntity of economicEntities) {
+      // TODO Apply dates
+      results.push(await this._neo4jDataStore.readSentiment(economicEntity));
+    }
 
-  //     this._logger.debug(`Reading most recent sentiment for ${economicEntity.type} ${economicEntity.name}.`);
+    this._logger.debug(`
 
-  //     const data = await this._neo4jDataStore.readSentiment(economicEntity)
+      Sentiment values read: ${JSON.stringify(results)}
 
-  //     results.push(  );
-  //   }
+    `);
 
-  //   return results;
-  // }
+    return results;
+  }
 
   /**
    * Compute sentiments for the specified tweets.
@@ -259,10 +264,7 @@ class AnalysisService {
       });
     }
 
-    // TODO
-    // const datas = await this._mostRecentSentiments([economicEntity]);
-
-    const datas = [{sentiment: 2.3, tweet: 'Hello World!'}];
+    const datas = await this._mostRecentSentiments([economicEntity]);
 
     const event = {
       timestamp,
