@@ -68,7 +68,11 @@ class Neo4jStore extends Neo4jDataSource {
       );
     }
 
-    if (Object.keys(data).length <= 0 || !data.tweets || !data.sentiment) {
+    if (
+      Object.keys(data).length <= 0 ||
+      !data.tweets ||
+      Number.isNaN(data.sentiment)
+    ) {
       throw new Error(
         `Invalid data received. tweet and sentiment are required fields. Received: ${JSON.stringify(
           data
