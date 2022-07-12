@@ -77,21 +77,6 @@ class CollectionService {
           },
         });
 
-        const economicEntities =
-          await this._economicEntityMemo.readEconomicEntities();
-        for (const economicEntity of economicEntities) {
-          this._logger.info(
-            `Starting data collection for ${economicEntity.name}, ${economicEntity.type}`
-          );
-          await this._startDataCollection(
-            economicEntity.name,
-            economicEntity.type
-          );
-        }
-
-        // TODO:
-        await new Promise((resolve) => setTimeout(resolve, 10000));
-
         await this._applicationConsumer.subscribe({
           topic: 'TWEETS_FETCHED',
           fromBeginning: true,
@@ -113,6 +98,18 @@ class CollectionService {
             );
           },
         });
+
+        const economicEntities =
+          await this._economicEntityMemo.readEconomicEntities();
+        for (const economicEntity of economicEntities) {
+          this._logger.info(
+            `Starting data collection for ${economicEntity.name}, ${economicEntity.type}`
+          );
+          await this._startDataCollection(
+            economicEntity.name,
+            economicEntity.type
+          );
+        }
       })
       .catch((reason) => {
         this._logger.error(
