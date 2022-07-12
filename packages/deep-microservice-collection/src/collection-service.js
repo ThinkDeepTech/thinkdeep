@@ -70,7 +70,10 @@ class CollectionService {
             this._logger.info(
               `Kafka message received. Starting data collection for ${economicEntityName}, ${economicEntityType}`
             );
-            this._startDataCollection(economicEntityName, economicEntityType);
+            await this._startDataCollection(
+              economicEntityName,
+              economicEntityType
+            );
           },
         });
 
@@ -80,7 +83,10 @@ class CollectionService {
           this._logger.info(
             `Starting data collection for ${economicEntity.name}, ${economicEntity.type}`
           );
-          this._startDataCollection(economicEntity.name, economicEntity.type);
+          await this._startDataCollection(
+            economicEntity.name,
+            economicEntity.type
+          );
         }
 
         await this._applicationConsumer.subscribe({
@@ -138,7 +144,7 @@ class CollectionService {
     );
 
     if (!collectingData) {
-      this._startDataCollection(entityName, entityType);
+      await this._startDataCollection(entityName, entityType);
 
       await this._economicEntityMemo.memoizeDataCollection(
         entityName,
@@ -184,7 +190,7 @@ class CollectionService {
    * @param {String} entityName - Name of the economic entity (i.e, 'Google')
    * @param {String} entityType - Type of the economic entity (i.e, 'BUSINESS')
    */
-  _startDataCollection(entityName, entityType) {
+  async _startDataCollection(entityName, entityType) {
     if (!validString(entityName)) return;
 
     if (!validString(entityType)) return;
@@ -196,7 +202,7 @@ class CollectionService {
 
     const commands = this._commands(entityName, entityType);
 
-    this._commander.execute(key, commands);
+    await this._commander.execute(key, commands);
   }
 
   /**
