@@ -89,6 +89,9 @@ class CollectionService {
           );
         }
 
+        // TODO:
+        await new Promise((resolve) => setTimeout(resolve, 10000));
+
         await this._applicationConsumer.subscribe({
           topic: 'TWEETS_FETCHED',
           fromBeginning: true,
