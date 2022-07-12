@@ -13,9 +13,7 @@ class Neo4jStore extends Neo4jDataSource {
    */
   async addSentiments(economicEntity, timestamp, datas) {
     if (!timestamp) {
-      throw new Error(
-        `Adding tweets requires a timestamp. Received ${timestamp}`
-      );
+      throw new Error(`A timestamp is required. Received ${timestamp}`);
     }
 
     if (
@@ -70,7 +68,7 @@ class Neo4jStore extends Neo4jDataSource {
 
     if (
       Object.keys(data).length <= 0 ||
-      !data.tweets ||
+      !data.tweet ||
       Number.isNaN(data.sentiment)
     ) {
       throw new Error(
