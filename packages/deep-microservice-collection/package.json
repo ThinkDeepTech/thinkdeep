@@ -37,7 +37,7 @@
     "express": "^4.17.1",
     "graphql": "^15.5.1",
     "graphql-depth-limit": "^1.1.0",
-    "kafkajs": "^1.15.0",
+    "kafkajs": "^2.1.0",
     "log4js": "^6.3.0",
     "moment": "^2.29.4",
     "mongodb": "^4.2.1"

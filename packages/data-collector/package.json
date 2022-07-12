@@ -18,7 +18,7 @@
   "dependencies": {
     "@thinkdeep/attach-exit-handler": "^1.0.0",
     "commander": "^9.0.0",
-    "kafkajs": "^1.15.0",
+    "kafkajs": "^2.1.0",
     "log4js": "^6.3.0",
     "moment": "^2.29.4",
     "sinon": "^12.0.1",
