@@ -260,7 +260,7 @@ class AnalysisService {
     for (const tweet of tweets) {
       await this._neo4jDataStore.addSentiment(economicEntity, timestamp, {
         tweet,
-        sentiment: this._sentiment(tweet),
+        sentiment: this._sentiment(tweet).score,
       });
     }
 
