@@ -80,7 +80,7 @@ class Neo4jStore extends Neo4jDataSource {
 
     const date = this._date(timestamp);
     const accessMode = this.neo4j.session.WRITE;
-    await this.run(
+    const results = await this.run(
       `
       MATCH (economicEntity:EconomicEntity { name: $entityName, type: $entityType})
       MATCH (economicEntity) -[:HAS_TIMELINE]-> (year:DateTime { type: "year", value: $year})
@@ -108,6 +108,8 @@ class Neo4jStore extends Neo4jDataSource {
         accessMode,
       }
     );
+
+    console.log(`\n\nResults of run:\n\n${JSON.stringify(results)}\n\n`);
   }
 
   /**
