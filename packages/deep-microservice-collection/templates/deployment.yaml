@@ -9,8 +9,8 @@ spec:
   strategy:
     type: "RollingUpdate"
     rollingUpdate:
-      maxUnavailable: 3
-      maxSurge: 3
+      maxUnavailable: 1
+      maxSurge: 1
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
