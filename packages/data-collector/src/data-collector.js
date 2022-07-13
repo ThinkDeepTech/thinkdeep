@@ -113,9 +113,6 @@ try {
           query: `${options.entityName} lang:en -is:retweet`,
           max_results: options.numTweets,
         });
-        logger.debug(
-          `Retrieved the following tweets: ${JSON.stringify(recentTweets)}`
-        );
 
         const data = {
           // TODO: a library should provide unix timestamps so that * 1000 is uniform across app boundaries.

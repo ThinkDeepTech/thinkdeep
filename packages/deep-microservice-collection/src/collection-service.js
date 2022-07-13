@@ -80,7 +80,7 @@ class CollectionService {
               message.value.toString()
             );
             this._logger.info(
-              `Kafka message received. Starting data collection for ${economicEntityName}, ${economicEntityType}`
+              `Kafka message received. Starting data collection for ${economicEntityType} ${economicEntityName}.`
             );
             await this._startDataCollection(
               economicEntityName,
