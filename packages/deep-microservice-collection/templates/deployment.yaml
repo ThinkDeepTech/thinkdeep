@@ -7,11 +7,9 @@ metadata:
     app: {{ printf "%s-deep-microservice-collection-deployment" .Release.Name | quote }}
 spec:
   strategy:
-    type: "Recreate"
-    # TODO:
-    # type: "RollingUpdate"
-    # maxUnavailable: 1
-    # maxSurge: 1
+    type: "RollingUpdate"
+    maxUnavailable: 3
+    maxSurge: 1
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
