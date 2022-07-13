@@ -37,7 +37,7 @@ class Neo4jStore extends Neo4jDataSource {
     await this.addDateToEconomicEntity(economicEntity, timestamp);
 
     for (const data of datas) {
-      this.addSentiment(economicEntity, timestamp, data);
+      this._addSentiment(economicEntity, timestamp, data);
     }
   }
 
@@ -47,7 +47,7 @@ class Neo4jStore extends Neo4jDataSource {
    * @param {Number} timestamp Unix timestamp in seconds.
    * @param {Object} data Object of the form { tweet: <tweet>, sentiment: <sentiment> }
    */
-  async addSentiment(economicEntity, timestamp, data) {
+  async _addSentiment(economicEntity, timestamp, data) {
     if (!timestamp) {
       throw new Error(
         `Adding tweet requires a timestamp. Received ${timestamp}`

@@ -1,7 +1,7 @@
 import {
   ApolloMutationController,
-  ApolloQueryController,
-  ApolloSubscriptionController,
+  // ApolloQueryController,
+  // ApolloSubscriptionController,
 } from '@apollo-elements/core';
 import {LitElement, css, html} from '@apollo-elements/lit-apollo';
 import '@google-web-components/google-chart';
@@ -13,9 +13,9 @@ import '@material/mwc-textfield';
 import '@thinkdeep/deep-card';
 import './deep-site-configuration.js';
 import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
-import GetSentiment from './graphql/GetSentiment.new.query.graphql';
-import UpdateSentiments from './graphql/UpdateSentiments.new.subscription.graphql';
-import moment from 'moment/dist/moment.js';
+// import GetSentiment from './graphql/GetSentiment.new.query.graphql';
+// import UpdateSentiments from './graphql/UpdateSentiments.new.subscription.graphql';
+// import moment from 'moment/dist/moment.js';
 
 const DEFAULT_DATA = {
   year: [
@@ -107,74 +107,74 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     this.selectedSentiments = [];
     this.configuration = {observedEconomicEntities: []};
     // TODO
-    // this.sentiments = [];
+    this.sentiments = [];
 
-    const defaultStartDate = moment().subtract(1, 'month').unix();
-    const defaultEndDate = moment().unix();
+    // const defaultStartDate = moment().subtract(1, 'month').unix();
+    // const defaultEndDate = moment().unix();
 
-    this._getInitialSentimentQuery = new ApolloQueryController(
-      this,
-      GetSentiment,
-      {
-        variables: {
-          economicEntities: [
-            {
-              name: '',
-              type: 'BUSINESS',
-            },
-          ],
-          startDate: defaultStartDate,
-          endDate: defaultEndDate,
-        },
-        noAutoSubscribe: true,
-        onData: (data) => {
-          // TODO : Implement fetch from cache before default data.
-          this.data = data?.getSentiments || this._cachedData() || DEFAULT_DATA;
+    // this._getInitialSentimentQuery = new ApolloQueryController(
+    //   this,
+    //   GetSentiment,
+    //   {
+    //     variables: {
+    //       economicEntities: [
+    //         {
+    //           name: '',
+    //           type: 'BUSINESS',
+    //         },
+    //       ],
+    //       startDate: defaultStartDate,
+    //       endDate: defaultEndDate,
+    //     },
+    //     noAutoSubscribe: true,
+    //     onData: (data) => {
+    //       // TODO : Implement fetch from cache before default data.
+    //       this.data = data?.getSentiments || this._cachedData() || DEFAULT_DATA;
 
-          // TODO
-          this._cacheData(this.data);
-        },
-        onError: (error) => {
-          this.data = this._cachedData();
-          console.error(
-            `Fetch sentiments failed with error: ${JSON.stringify(error)}`
-          );
-        },
-      }
-    );
+    //       // TODO
+    //       this._cacheData(this.data);
+    //     },
+    //     onError: (error) => {
+    //       this.data = this._cachedData();
+    //       console.error(
+    //         `Fetch sentiments failed with error: ${JSON.stringify(error)}`
+    //       );
+    //     },
+    //   }
+    // );
 
-    this.subscriptionClient = new ApolloSubscriptionController(
-      this,
-      UpdateSentiments,
-      {
-        variables: {
-          economicEntities: [
-            {
-              name: '', // TODO: Use defaultBusiness.
-              type: 'BUSINESS',
-            },
-          ],
-          startDate: defaultStartDate,
-          endDate: defaultEndDate,
-        },
-        onData: ({subscriptionData}) => {
-          this.data =
-            subscriptionData?.data?.updateSentiments ||
-            this._cachedData() ||
-            DEFAULT_DATA;
+    // this.subscriptionClient = new ApolloSubscriptionController(
+    //   this,
+    //   UpdateSentiments,
+    //   {
+    //     variables: {
+    //       economicEntities: [
+    //         {
+    //           name: '', // TODO: Use defaultBusiness.
+    //           type: 'BUSINESS',
+    //         },
+    //       ],
+    //       startDate: defaultStartDate,
+    //       endDate: defaultEndDate,
+    //     },
+    //     onData: ({subscriptionData}) => {
+    //       this.data =
+    //         subscriptionData?.data?.updateSentiments ||
+    //         this._cachedData() ||
+    //         DEFAULT_DATA;
 
-          this._cacheData(this.data);
-        },
-        onError: (error) => {
-          this.data = this._cachedData();
-          console.error(
-            `An error occurred while subscribing to sentiment updates: ${JSON.stringify(
-              error
-            )}`
-          );
-        },
-      }
-    );
+    //       this._cacheData(this.data);
+    //     },
+    //     onError: (error) => {
+    //       this.data = this._cachedData();
+    //       console.error(
+    //         `An error occurred while subscribing to sentiment updates: ${JSON.stringify(
+    //           error
+    //         )}`
+    //       );
+    //     },
+    //   }
+    // );
 
     this.collectEconomicData = new ApolloMutationController(
       this,
@@ -593,7 +593,8 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    * @return {Number} Most recent sentiment value.
    */
   _mostRecentSentiment(data) {
-    return this._sentiment(data, moment(data.endDate));
+    return 1;
+    // return this._sentiment(data, moment(data.endDate));
   }
 
   /**

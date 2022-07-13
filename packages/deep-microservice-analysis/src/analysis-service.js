@@ -260,13 +260,12 @@ class AnalysisService {
     for (const tweet of tweets) {
       const comparativeSentiment = this._sentiment(tweet).comparative;
 
-      this._logger.debug(
-        `Adding comparative sentiment score ${comparativeSentiment} to tweet\n\n${tweet}\n`
-      );
-      await this._neo4jDataStore.addSentiment(economicEntity, timestamp, {
-        tweet,
-        sentiment: comparativeSentiment,
-      });
+      await this._neo4jDataStore.addSentiments(economicEntity, timestamp, [
+        {
+          tweet,
+          sentiment: comparativeSentiment,
+        },
+      ]);
     }
 
     const datas = await this._mostRecentSentiments([economicEntity]);
