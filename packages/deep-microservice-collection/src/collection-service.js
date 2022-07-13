@@ -57,21 +57,9 @@ class CollectionService {
       },
     ])
       .then(async () => {
-        const economicEntities =
-          await this._economicEntityMemo.readEconomicEntities();
-        for (const economicEntity of economicEntities) {
-          this._logger.info(
-            `Starting data collection for ${economicEntity.type} ${economicEntity.name}`
-          );
-          await this._startDataCollection(
-            economicEntity.name,
-            economicEntity.type
-          );
-        }
-
         await this._microserviceSyncConsumer.subscribe({
           topic: 'DATA_COLLECTION_STARTED',
-          fromBeginning: true,
+          // fromBeginning: true,
         });
 
         await this._microserviceSyncConsumer.run({
@@ -91,7 +79,7 @@ class CollectionService {
 
         await this._applicationConsumer.subscribe({
           topic: 'TWEETS_FETCHED',
-          fromBeginning: true,
+          // fromBeginning: true,
         });
 
         await this._applicationConsumer.run({
@@ -110,6 +98,18 @@ class CollectionService {
             );
           },
         });
+
+        const economicEntities =
+          await this._economicEntityMemo.readEconomicEntities();
+        for (const economicEntity of economicEntities) {
+          this._logger.info(
+            `Starting data collection for ${economicEntity.type} ${economicEntity.name}`
+          );
+          await this._startDataCollection(
+            economicEntity.name,
+            economicEntity.type
+          );
+        }
       })
       .catch((reason) => {
         this._logger.error(
