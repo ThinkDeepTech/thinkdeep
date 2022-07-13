@@ -6,6 +6,7 @@ metadata:
   labels:
     app: {{ printf "%s-deep-microservice-collection-deployment" .Release.Name | quote }}
 spec:
+  minReadySeconds: 30
   strategy:
     type: "RollingUpdate"
     rollingUpdate:
