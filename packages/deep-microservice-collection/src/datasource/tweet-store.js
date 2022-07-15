@@ -87,10 +87,10 @@ class TweetStore extends MongoDataSource {
     const response = [];
 
     for (const entry of dbData) {
-      if (!Object.keys(entry).length || !entry?.timestamp) continue;
+      if (!Object.keys(entry).length || !entry?.utcDateTime) continue;
 
       response.push({
-        timestamp: entry.timestamp,
+        utcDateTime: entry.utcDateTime,
         tweets: entry.tweets || [],
       });
     }
