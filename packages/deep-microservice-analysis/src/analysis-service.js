@@ -163,44 +163,42 @@ class AnalysisService {
    *
    * @param {String} economicEntityName Name of the economic entity (i.e, Google)
    * @param {String} economicEntityType Type of economic entity (i.e, BUSINESS)
-   * @param {Array} data Consists of objects of the form { utcDateTime: <Number>, tweets: [{ text: 'tweet text' }]}
+   * @param {Array} datas Consists of objects of the form [{ utcDateTime: <Number>, tweets: [{ text: 'tweet text' }]}]
    */
-  async _computeSentiment(economicEntityName, economicEntityType, data) {
+  async _computeSentiment(economicEntityName, economicEntityType, datas) {
     const economicEntity = {
       name: economicEntityName,
       type: economicEntityType,
     };
-    this._logger.info(
-      `Adding sentiment to graph for ${economicEntityType} ${economicEntityName} received ${data.utcDateTime}`
-    );
 
-    const tweets = data
-      .map((entry) =>
-        entry.tweets
-          .map((tweet) => tweet.text || null)
-          .filter((val) => val.length > 0)
-      )
-      .reduce((prev, curr) => [...prev, ...curr]);
+    for (const data of datas) {
+      for (const tweet of data.tweets) {
+        this._logger.info(
+          `
+          Adding sentiment to graph for ${economicEntityType} ${economicEntityName}
+          tweet ${tweet}
+          received ${data.utcDateTime}
+          `
+        );
 
-    this._logger.debug(`Adding tweets to neo4j:\n\n${tweets}\n`);
-
-    for (const tweet of tweets) {
-      await this._neo4jDataStore.addSentiments(economicEntity, [
-        {
-          utcDateTime: data.utcDateTime,
-          tweet,
-          sentiment: this._sentiment(tweet),
-        },
-      ]);
+        await this._neo4jDataStore.addSentiments(economicEntity, [
+          {
+            utcDateTime: data.utcDateTime,
+            tweet,
+            sentiment: this._sentiment(tweet),
+          },
+        ]);
+      }
     }
 
-    const datas = await this._mostRecentSentiments([economicEntity]);
+    const mostRecentData = await this._mostRecentSentiments([
+      economicEntity,
+    ])[0];
 
     const event = {
-      utcDateTime: data.utcDateTime,
       economicEntityName,
       economicEntityType,
-      data: datas[0],
+      data: mostRecentData,
     };
 
     // TODO: Rename TWEET_SENTIMENT_COMPUTED to SENTIMENT_UPDATED.
