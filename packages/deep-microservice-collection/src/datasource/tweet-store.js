@@ -1,4 +1,5 @@
 import {MongoDataSource} from 'apollo-datasource-mongodb';
+import moment from 'moment';
 
 /**
  * Store providing interaction with twitter tweet database collection.
@@ -58,7 +59,7 @@ class TweetStore extends MongoDataSource {
   ) {
     try {
       await this.collection.insertOne({
-        utcDateTime,
+        utcDateTime: moment.utc(utcDateTime).toDate(),
         economicEntityName: economicEntityName.toLowerCase(),
         economicEntityType: economicEntityType.toLowerCase(),
         tweets,
