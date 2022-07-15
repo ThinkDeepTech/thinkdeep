@@ -189,7 +189,7 @@ class AnalysisService {
           {
             utcDateTime: data.utcDateTime,
             tweet: text,
-            sentiment: this._sentiment(tweet),
+            sentiment: this._sentiment(text),
           },
         ]);
       }
