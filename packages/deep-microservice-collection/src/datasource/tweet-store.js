@@ -28,7 +28,7 @@ class TweetStore extends MongoDataSource {
           economicEntityName: economicEntityName.toLowerCase(),
           economicEntityType: economicEntityType.toLowerCase(),
         })
-        .sort({timestamp: -1})
+        .sort({utcDateTime: -1})
         .limit(numTweetsToReturn)
         .toArray();
 
@@ -44,21 +44,21 @@ class TweetStore extends MongoDataSource {
 
   /**
    * Create a timeseries entry in the database including tweets.
-   * @param {Number} timestamp - Timestamp to associate with the database entry.
-   * @param {String} economicEntityName - Name of the economic entity (i.e, 'Google')
-   * @param {String} economicEntityType - Type of the economic entity (i.e, 'BUSINESS')
-   * @param {Array} tweets - The tweets to add to the database.
-   * @return {Boolean} - True if the operation is successful, false otherwise.
+   * @param {String} utcDateTime UTC date time.
+   * @param {String} economicEntityName Name of the economic entity (i.e, 'Google')
+   * @param {String} economicEntityType Type of the economic entity (i.e, 'BUSINESS')
+   * @param {Array} tweets The tweets to add to the database.
+   * @return {Boolean} True if the operation is successful, false otherwise.
    */
   async createTweets(
-    timestamp,
+    utcDateTime,
     economicEntityName,
     economicEntityType,
     tweets
   ) {
     try {
       await this.collection.insertOne({
-        timestamp,
+        utcDateTime,
         economicEntityName: economicEntityName.toLowerCase(),
         economicEntityType: economicEntityType.toLowerCase(),
         tweets,

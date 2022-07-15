@@ -1,16 +1,4 @@
 const resolvers = {
-  Query: {
-    tweets: async (
-      _,
-      {economicEntityName, economicEntityType},
-      {dataSources, permissions}
-    ) =>
-      dataSources.collectionService.tweets(
-        economicEntityName,
-        economicEntityType,
-        permissions
-      ),
-  },
   Mutation: {
     collectEconomicData: async (
       _,

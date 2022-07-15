@@ -1,5 +1,4 @@
 import {attachExitHandler} from '@thinkdeep/attach-exit-handler';
-import moment from 'moment';
 import {hasReadAllAccess} from './permissions.js';
 
 /**
@@ -74,14 +73,9 @@ class AnalysisService {
           `Received kafka message: ${message.value.toString()}`
         );
 
-        const {
-          timestamp,
-          economicEntityName,
-          economicEntityType,
-          timeSeriesItems,
-        } = JSON.parse(message.value.toString());
+        const {economicEntityName, economicEntityType, timeSeriesItems} =
+          JSON.parse(message.value.toString());
         await this._computeSentiment(
-          timestamp,
           economicEntityName,
           economicEntityType,
           timeSeriesItems
@@ -94,8 +88,8 @@ class AnalysisService {
    * Get the sentiments associated with the specified economic entity and type.
    *
    * @param {Array<Object>} economicEntities Array of objects of the form { name: <some business name>, type: <some entity type> }.
-   * @param {Number} startDate Unix timestamp in seconds indicating start date for request.
-   * @param {Number} endDate Unix timestamp in seconds indicating end date for request.
+   * @param {String} startDate UTC date time.
+   * @param {String} endDate UTC date time.
    * @param {Object} permissions Permissions for the user making the request.
    * @return {Array} The formatted sentiment objects in array form or [].
    */
@@ -123,8 +117,8 @@ class AnalysisService {
   /**
    * Get the sentiment.
    * @param {Object} economicEntity Object of the form { name: <entity name>, type: <entity type> }.
-   * @param {Number} startDate Unix timestamp in seconds indicating start date for request.
-   * @param {Number} endDate Unix timestamp in seconds indicating end date for request.
+   * @param {String} startDate UTC date time.
+   * @param {String} endDate UTC date time.
    * @return {Object} Sentiment data.
    */
   async _sentimentData(economicEntity, startDate, endDate) {
@@ -137,7 +131,6 @@ class AnalysisService {
     );
   }
 
-  // TODO
   /**
    * Read the most recent sentiments.
    * @param {Array<Object>} economicEntities
@@ -149,8 +142,9 @@ class AnalysisService {
         `Reading most recent sentiment for ${economicEntity.type} ${economicEntity.name}.`
       );
 
-      // TODO Apply dates
-      results.push(await this._neo4jDataStore.readSentiment(economicEntity));
+      results.push(
+        await this._neo4jDataStore.readMostRecentSentiment(economicEntity)
+      );
     }
 
     this._logger.debug(`
@@ -167,103 +161,35 @@ class AnalysisService {
    *
    * NOTE: This sends a kafka event after sentiment computation.
    *
-   * @param {Number} timestamp - Epoch timestamp.
-   * @param {String} economicEntityName - Name of the economic entity (i.e, Google)
-   * @param {String} economicEntityType - Type of economic entity (i.e, BUSINESS)
-   * @param {Array} timeseriesTweets - Consists of objects of the form { timestamp: <Number>, tweets: [{ text: 'tweet text' }]}
+   * @param {String} economicEntityName Name of the economic entity (i.e, Google)
+   * @param {String} economicEntityType Type of economic entity (i.e, BUSINESS)
+   * @param {Array} data Consists of objects of the form { utcDateTime: <Number>, tweets: [{ text: 'tweet text' }]}
    */
-  // async _computeSentiment(
-  //   timestamp,
-  //   economicEntityName,
-  //   economicEntityType,
-  //   timeseriesTweets
-  // ) {
-  //   if (!economicEntityName || typeof economicEntityName !== 'string') return;
-
-  //   if (!economicEntityType || typeof economicEntityType !== 'string') return;
-
-  //   if (!Array.isArray(timeseriesTweets) || timeseriesTweets.length === 0)
-  //     return;
-
-  //   this._logger.info(
-  //     `Received timeseries entry: ${JSON.stringify(timeseriesTweets)}`
-  //   );
-
-  //   const sentiments = [];
-  //   for (const entry of timeseriesTweets) {
-  //     if (
-  //       !entry?.timestamp ||
-  //       !Array.isArray(entry?.tweets) ||
-  //       !entry?.tweets?.length
-  //     )
-  //       continue;
-
-  //     sentiments.push(this._averageSentiment(entry));
-  //   }
-
-  //   await this._mongoDataStore.createSentiments(
-  //     timestamp,
-  //     economicEntityName,
-  //     economicEntityType,
-  //     sentiments
-  //   );
-
-  //   const event = {
-  //     timestamp,
-  //     economicEntityName,
-  //     economicEntityType,
-  //     sentiments,
-  //   };
-
-  //   this._logger.info(`Adding event with value: ${JSON.stringify(event)}`);
-
-  //   await this._producer.send({
-  //     topic: `TWEET_SENTIMENT_COMPUTED`,
-  //     messages: [{value: JSON.stringify(event)}],
-  //   });
-  // }
-
-  // TODO
-  /**
-   * Compute sentiments for the specified tweets.
-   *
-   * NOTE: This sends a kafka event after sentiment computation.
-   *
-   * @param {Number} timestamp - Epoch timestamp.
-   * @param {String} economicEntityName - Name of the economic entity (i.e, Google)
-   * @param {String} economicEntityType - Type of economic entity (i.e, BUSINESS)
-   * @param {Array} data - Consists of objects of the form { timestamp: <Number>, tweets: [{ text: 'tweet text' }]}
-   */
-  async _computeSentiment(
-    timestamp,
-    economicEntityName,
-    economicEntityType,
-    data
-  ) {
+  async _computeSentiment(economicEntityName, economicEntityType, data) {
     const economicEntity = {
       name: economicEntityName,
       type: economicEntityType,
     };
     this._logger.info(
-      `Adding sentiment to graph for ${economicEntityType} ${economicEntityName} received ${moment(
-        timestamp * 1000
-      ).format('LLL')}`
+      `Adding sentiment to graph for ${economicEntityType} ${economicEntityName} received ${data.utcDateTime}`
     );
 
     const tweets = data
-      .map((entry) => entry.tweets.map((tweet) => tweet.text || null))
-      .filter((val) => !!val)
+      .map((entry) =>
+        entry.tweets
+          .map((tweet) => tweet.text || null)
+          .filter((val) => val.length > 0)
+      )
       .reduce((prev, curr) => [...prev, ...curr]);
 
-    this._logger.debug(`Adding tweets to neo4j with value:\n\n${tweets}\n`);
+    this._logger.debug(`Adding tweets to neo4j:\n\n${tweets}\n`);
 
     for (const tweet of tweets) {
-      const comparativeSentiment = this._sentiment(tweet).comparative;
-
-      await this._neo4jDataStore.addSentiments(economicEntity, timestamp, [
+      await this._neo4jDataStore.addSentiments(economicEntity, [
         {
+          utcDateTime: data.utcDateTime,
           tweet,
-          sentiment: comparativeSentiment,
+          sentiment: this._sentiment(tweet),
         },
       ]);
     }
@@ -271,7 +197,7 @@ class AnalysisService {
     const datas = await this._mostRecentSentiments([economicEntity]);
 
     const event = {
-      timestamp,
+      utcDateTime: data.utcDateTime,
       economicEntityName,
       economicEntityType,
       data: datas[0],
@@ -279,42 +205,17 @@ class AnalysisService {
 
     // TODO: Rename TWEET_SENTIMENT_COMPUTED to SENTIMENT_UPDATED.
     const eventName = 'TWEET_SENTIMENT_COMPUTED';
+
+    this._logger.info(
+      `Emitting event ${eventName} with data ${JSON.stringify(event)}`
+    );
     await this._emit(eventName, event);
-  }
-
-  /**
-   * Get the average sentiment associated with the response from the collection service.
-   * @param {Object} timeSeriesEntry - Entry as it's returned from the collection service tweets endpoint.
-   * @return {Object} - An object of the form:
-   * {
-   *      timestamp: <number>,
-   *      score: <float>,
-   *      tweets: <array of objects with a text field>
-   * }
-   */
-  _averageSentiment(timeSeriesEntry) {
-    const response = {};
-    response.timestamp = timeSeriesEntry.timestamp;
-
-    let score = 0;
-    for (const tweet of timeSeriesEntry.tweets) {
-      const sentiment = this._sentimentLib.analyze(tweet.text.toLowerCase());
-      score += sentiment.score;
-    }
-
-    score = score / timeSeriesEntry.tweets.length;
-
-    response.score = score;
-
-    response.tweets = timeSeriesEntry.tweets;
-
-    return response;
   }
 
   /**
    * Compute the sentiment.
    * @param {String} text Subject of the computation.
-   * @return {Number} Sentiment computed.
+   * @return {Object} Sentiment object of the form { score: <number>, comparative: <number>, ...}.
    */
   _sentiment(text) {
     return this._sentimentLib.analyze(text.toLowerCase());

@@ -9,22 +9,6 @@ const typeDefs = gql`
     success: Boolean!
   }
 
-  type TimeSeriesTweets {
-    timestamp: Int!
-    tweets: [Tweet!]!
-  }
-
-  type Tweet {
-    text: String!
-  }
-
-  extend type Query {
-    tweets(
-      economicEntityName: String!
-      economicEntityType: EconomicEntityType!
-    ): [TimeSeriesTweets!]!
-  }
-
   extend type Mutation {
     collectEconomicData(
       economicEntityName: String!

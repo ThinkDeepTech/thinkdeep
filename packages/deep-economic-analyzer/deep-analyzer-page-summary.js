@@ -391,9 +391,9 @@ export default class DeepAnalyzerPageSummary extends LitElement {
               @google-chart-select="${this._handleChartSelection}"
               options="{}"
               type="line"
-              cols='[{"label": "Timestamp", "type": "number"}, {"label": "Sentiment", "type": "number"}]'
+              cols='[{"label": "Timestamp", "type": "string"}, {"label": "Sentiment", "type": "number"}]'
               rows="[${this.sentiments?.map((sentiment) =>
-                JSON.stringify([sentiment.timestamp, sentiment.score])
+                JSON.stringify([sentiment.utcDateTime, sentiment.score])
               )}]"
             ></google-chart>
           </deep-card>
@@ -482,7 +482,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    */
   _hasMatchingData(sentiment, selectedPoint) {
     return (
-      sentiment.timestamp === selectedPoint[0] &&
+      sentiment.utcDateTime === selectedPoint[0] &&
       sentiment.score === selectedPoint[1]
     );
   }

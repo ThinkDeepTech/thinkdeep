@@ -79,7 +79,7 @@ class CollectionService {
 
         await this._applicationConsumer.subscribe({
           topic: 'TWEETS_FETCHED',
-          // fromBeginning: true,
+          fromBeginning: true,
         });
 
         await this._applicationConsumer.run({
@@ -88,10 +88,14 @@ class CollectionService {
               `Received kafka message: ${message.value.toString()}`
             );
 
-            const {timestamp, economicEntityName, economicEntityType, tweets} =
-              JSON.parse(message.value.toString());
+            const {
+              utcDateTime,
+              economicEntityName,
+              economicEntityType,
+              tweets,
+            } = JSON.parse(message.value.toString());
             await this._handleTweetsFetched(
-              timestamp,
+              utcDateTime,
               economicEntityName,
               economicEntityType,
               tweets
@@ -263,13 +267,12 @@ class CollectionService {
 
   /**
    * Handle the tweets fetched event.
-   * @param {Number} timestamp - Epoch timestamp.
-   * @param {String} entityName - Economic entity name (i.e, 'Google').
-   * @param {String} entityType - Economic entity type (i.e, 'BUSINESS').
-   * @param {Array} tweets - Array of tweet objects of the form { text: '...' }.
-   * @return {Boolean} - True if the function succeeds, false otherwise.
+   * @param {String} utcDateTime UTC date time.
+   * @param {String} entityName Economic entity name (i.e, 'Google').
+   * @param {String} entityType Economic entity type (i.e, 'BUSINESS').
+   * @param {Array} tweets Array of tweet objects of the form { text: '...' }.
    */
-  async _handleTweetsFetched(timestamp, entityName, entityType, tweets) {
+  async _handleTweetsFetched(utcDateTime, entityName, entityType, tweets) {
     if (!validString(entityName)) return false;
 
     if (!validString(entityType)) return false;
@@ -277,29 +280,28 @@ class CollectionService {
     if (!Array.isArray(tweets) || tweets.length === 0) return false;
 
     this._logger.info(
-      `Adding timeseries entry to tweet store with timestamp ${timestamp}, tweets ${JSON.stringify(
+      `Adding timeseries entry to tweet store with date ${utcDateTime}, tweets ${JSON.stringify(
         tweets
       )}`
     );
 
-    const tweetsCreated = await this._tweetStore.createTweets(
-      timestamp,
+    await this._tweetStore.createTweets(
+      utcDateTime,
       entityName,
       entityType,
       tweets
     );
 
-    const timeSeriesItems = await this._tweetStore.readRecentTweets(
+    const mostRecentData = await this._tweetStore.readRecentTweets(
       entityName,
       entityType,
-      10
+      1
     );
 
     const event = {
-      timestamp,
       economicEntityName: entityName,
       economicEntityType: entityType,
-      timeSeriesItems,
+      timeSeriesItems: mostRecentData,
     };
 
     this._logger.info(
@@ -307,8 +309,6 @@ class CollectionService {
     );
 
     await this._emit('TWEETS_COLLECTED', event);
-
-    return tweetsCreated;
   }
 
   /**

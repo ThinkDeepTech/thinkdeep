@@ -1,6 +1,6 @@
 query GetSentiment($economicEntityName: String!, $economicEntityType: EconomicEntityType!) {
   sentiments(economicEntityName: $economicEntityName, economicEntityType: $economicEntityType) {
-      timestamp
+      utcDateTime
       score
       tweets{
         text
