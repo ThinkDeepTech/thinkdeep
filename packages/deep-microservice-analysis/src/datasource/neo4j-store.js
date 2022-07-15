@@ -53,7 +53,7 @@ class Neo4jStore extends Neo4jDataSource {
   async readSentiment(economicEntity, startDate, endDate) {
     const result = await this.run(
       `
-        MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[*2..2]-> (tweet:Data { type: "tweet" }) -[:HAS_MEASUREMENT]-> (sentiment:Sentiment)
+        MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[*2..2]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
         RETURN tweet, sentiment
       `,
       {
@@ -77,7 +77,7 @@ class Neo4jStore extends Neo4jDataSource {
   async readMostRecentSentiment(economicEntity) {
     const result = await this.run(
       `
-        MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED_ON]-> (dateTime:DateTime) -[:HAS_DATA]-> (tweet:Data { type: "tweet" }) -[:HAS_MEASUREMENT]-> (sentiment:Sentiment)
+        MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED_ON]-> (dateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
         WITH dateTime, tweet, sentiment
         ORDER BY dateTime.value DESC
         WITH collect(tweet)[0] as tweet, collect(sentiment)[0] as sentiment
@@ -93,7 +93,14 @@ class Neo4jStore extends Neo4jDataSource {
       }
     );
 
-    return this._someFunction(result);
+    console.log(
+      `
+    Most recent sentiments:
+    ${JSON.stringify(result)}
+    `
+    );
+
+    return result;
   }
 
   /**
@@ -140,12 +147,12 @@ class Neo4jStore extends Neo4jDataSource {
     }
 
     const accessMode = this.neo4j.session.WRITE;
-    const results = await this.run(
+    await this.run(
       `
       MATCH (economicEntity:EconomicEntity { name: $entityName, type: $entityType})
       MATCH (economicEntity) -[:OPERATED_ON]-> (dateTime:DateTime { value: datetime($utcDateTime) })
-      MERGE (dateTime) -[:HAS_DATA]-> (data:Data { type: "tweet", value: $tweet })
-      MERGE (data) -[:HAS_MEASUREMENT]-> (:Sentiment { comparative: $comparative })
+      MERGE (dateTime) -[:RECEIVED_DATA]-> (data:Data { type: "tweet", value: $tweet })
+      MERGE (data) -[:RECEIVED_MEASUREMENT]-> (:Sentiment { comparative: $comparative })
     `,
       {
         entityName: economicEntity.name,
@@ -160,8 +167,6 @@ class Neo4jStore extends Neo4jDataSource {
         accessMode,
       }
     );
-
-    console.log(`\n\nResults of run:\n\n${JSON.stringify(results)}\n\n`);
   }
 
   /**
