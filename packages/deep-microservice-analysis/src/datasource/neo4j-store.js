@@ -133,7 +133,7 @@ class Neo4jStore extends Neo4jDataSource {
       );
     }
 
-    if (!Number.isNaN(data.sentiment.comparative)) {
+    if (Number.isNaN(data.sentiment.comparative)) {
       throw new TypeError(
         `${data.sentiment.comparative} is an invalid sentiment comparative score. A number is required.`
       );
