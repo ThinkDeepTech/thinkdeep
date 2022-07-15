@@ -15,7 +15,7 @@ import './deep-site-configuration.js';
 import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
 // import GetSentiment from './graphql/GetSentiment.new.query.graphql';
 // import UpdateSentiments from './graphql/UpdateSentiments.new.subscription.graphql';
-// import moment from 'moment/dist/moment.js';
+import moment from 'moment/dist/moment.js';
 
 const DEFAULT_DATA = {
   year: [
@@ -104,10 +104,9 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
     this.data = DEFAULT_DATA;
     this.selectedEconomicEntity = {name: '', type: 'business'};
-    this.selectedSentiments = [];
     this.configuration = {observedEconomicEntities: []};
-    // TODO
-    this.sentiments = [];
+    this.sentimentDatas = [];
+    this.selectedSentiments = [];
 
     // const defaultStartDate = moment().subtract(1, 'month').unix();
     // const defaultEndDate = moment().unix();
@@ -368,17 +367,15 @@ export default class DeepAnalyzerPageSummary extends LitElement {
             <div class="summary" slot="body">
               <div>
                 Recent
-                <!-- TODO Verify -->
-                <!-- <div>${this.sentiments[0]?.score}</div> -->
                 <div>${this._mostRecentSentiment(this.data)}</div>
               </div>
               <div>
                 Average
                 <div>
-                  ${this.sentiments
-                    .map((value) => value.score || 0)
+                  ${this.sentimentDatas
+                    .map((value) => value.comparative || 0)
                     .reduce((previous, current) => previous + current, 0) /
-                  this.sentiments.length}
+                  this.sentimentDatas.length}
                 </div>
               </div>
             </div>
@@ -391,9 +388,12 @@ export default class DeepAnalyzerPageSummary extends LitElement {
               @google-chart-select="${this._handleChartSelection}"
               options="{}"
               type="line"
-              cols='[{"label": "Timestamp", "type": "string"}, {"label": "Sentiment", "type": "number"}]'
-              rows="[${this.sentiments?.map((sentiment) =>
-                JSON.stringify([sentiment.utcDateTime, sentiment.score])
+              cols='[{"label": "Date", "type": "date"}, {"label": "Comparative Score", "type": "number"}]'
+              rows="[${this.sentimentDatas?.map((data) =>
+                JSON.stringify([
+                  moment(data.utcDateTime).local().toDate(),
+                  data.comparative,
+                ])
               )}]"
             ></google-chart>
           </deep-card>
@@ -455,9 +455,9 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
       const selectedPoint = googleChart.rows[selectedRow];
 
-      this.sentiments?.forEach((sentiment) => {
-        if (this._hasMatchingData(sentiment, selectedPoint)) {
-          this.selectedSentiments.push(sentiment);
+      this.sentimentDatas?.forEach((data) => {
+        if (this._hasMatchingData(data, selectedPoint)) {
+          this.selectedSentiments.push(data);
         }
       });
     }
@@ -483,7 +483,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   _hasMatchingData(sentiment, selectedPoint) {
     return (
       sentiment.utcDateTime === selectedPoint[0] &&
-      sentiment.score === selectedPoint[1]
+      sentiment.comparative === selectedPoint[1]
     );
   }
 

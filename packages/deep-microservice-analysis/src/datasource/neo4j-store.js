@@ -75,7 +75,7 @@ class Neo4jStore extends Neo4jDataSource {
    * @return {Object} Sentiment.
    */
   async readMostRecentSentiment(economicEntity) {
-    const result = await this.run(
+    const databaseDatas = await this.run(
       `
         MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED_ON]-> (dateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
         WITH dateTime, tweet, sentiment
@@ -93,14 +93,52 @@ class Neo4jStore extends Neo4jDataSource {
       }
     );
 
+    // const thing =
+    // [
+    //   {
+    //     "keys":["tweet","sentiment"],
+    //     "length":2,
+    //     "_fields": [
+    //       {
+    //         "identity":100,
+    //         "labels":["Data"],
+    //         "properties":{
+    //           "type":"tweet",
+    //           "value":"Poppy could sure use some new wheels, especially ones as cool as a new Bronco.  Thanks to Moosehead for this great sweeps.  The entry https://t.co/bpBzjfJ5rJ #sweeps #sweepstakes #contest #giveaway"
+    //         }
+    //       },
+    //       {
+    //         "identity":101,
+    //         "labels":["Sentiment"],
+    //         "properties":{
+    //           "comparative":0.1875
+    //         }
+    //       }
+    //     ],
+    //     "_fieldLookup":{
+    //       "tweet":0,
+    //       "sentiment":1
+    //     }
+    //   }
+    // ];
+
+    const datas = [];
+    for (const dbData of databaseDatas) {
+      datas.push({
+        comparative:
+          dbData._fields[dbData._fieldLookup.sentiment].properties.comparative,
+        text: dbData._fields[dbData._fieldLookup.tweet].properties.value,
+      });
+    }
+
     console.log(
       `
-    Most recent sentiments:
-    ${JSON.stringify(result)}
-    `
+      Most recent sentiments:
+      ${JSON.stringify(datas)}
+      `
     );
 
-    return result;
+    return datas;
   }
 
   /**
@@ -245,48 +283,6 @@ class Neo4jStore extends Neo4jDataSource {
       }
     );
   }
-
-  // _someFunction(neo4jResult) {
-  //   const data =
-  //   {
-  //     "keys": [
-  //       "tweet",
-  //       "sentiment"
-  //     ],
-  //     "length": 2,
-  //     "_fields": [
-  //       {
-  //         "identity": {
-  //           "low": 6,
-  //           "high": 0
-  //         },
-  //         "labels": [
-  //           "Data"
-  //         ],
-  //         "properties": {
-  //           "type": "tweet",
-  //           "value": "This generation of players loves AI so much @Reebok would be STEWPID not to re-up and create a legacy slate of players inspired by how he approached the game and approached life. Everybody loves Chuck. https://t.co/NIF1yHV91X"
-  //         }
-  //       },
-  //       {
-  //         "identity": {
-  //           "low": 7,
-  //           "high": 0
-  //         },
-  //         "labels": [
-  //           "Sentiment"
-  //         ],
-  //         "properties": {
-  //           "value": 0.20512820512820512
-  //         }
-  //       }
-  //     ],
-  //     "_fieldLookup": {
-  //       "tweet": 0,
-  //       "sentiment": 1
-  //     }
-  //   };
-  // }
 }
 
 export {Neo4jStore};
