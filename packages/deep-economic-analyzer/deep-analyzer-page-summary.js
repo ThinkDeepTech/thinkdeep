@@ -1,7 +1,7 @@
 import {
   ApolloMutationController,
-  // ApolloQueryController,
-  // ApolloSubscriptionController,
+  ApolloQueryController,
+  ApolloSubscriptionController,
 } from '@apollo-elements/core';
 import {LitElement, css, html} from '@apollo-elements/lit-apollo';
 import '@google-web-components/google-chart';
@@ -13,52 +13,9 @@ import '@material/mwc-textfield';
 import '@thinkdeep/deep-card';
 import './deep-site-configuration.js';
 import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
-// import GetSentiment from './graphql/GetSentiment.new.query.graphql';
-// import UpdateSentiments from './graphql/UpdateSentiments.new.subscription.graphql';
+import GetSentiment from './graphql/GetSentiment.new.query.graphql';
+import UpdateSentiments from './graphql/UpdateSentiments.new.subscription.graphql';
 import moment from 'moment/dist/moment.js';
-
-const DEFAULT_DATA = {
-  year: [
-    {
-      numChildren: 0,
-      firstChild: 0,
-      sentiment: 0,
-    },
-  ],
-  month: [
-    {
-      numChildren: 0,
-      firstChild: 0,
-      sentiment: 0,
-    },
-  ],
-  day: [
-    {
-      numChildren: 0,
-      firstChild: 0,
-      sentiment: 0,
-    },
-  ],
-  hour: [
-    {
-      numChildren: 0,
-      firstChild: 0,
-      sentiment: 0,
-    },
-  ],
-  minute: [
-    {
-      numChildren: 0,
-      firstChild: 0,
-      sentiment: 0,
-    },
-  ],
-  tweets: [
-    {
-      value: '',
-    },
-  ],
-};
 
 /**
  * Lit summary page component.
@@ -102,78 +59,70 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   constructor() {
     super();
 
-    this.data = DEFAULT_DATA;
     this.selectedEconomicEntity = {name: '', type: 'business'};
     this.configuration = {observedEconomicEntities: []};
     this.sentimentDatas = [];
     this.selectedSentiments = [];
 
-    // const defaultStartDate = moment().subtract(1, 'month').unix();
-    // const defaultEndDate = moment().unix();
+    const defaultStartDate = moment().utc().subtract(1, 'month');
+    const defaultEndDate = moment().utc();
 
-    // this._getInitialSentimentQuery = new ApolloQueryController(
-    //   this,
-    //   GetSentiment,
-    //   {
-    //     variables: {
-    //       economicEntities: [
-    //         {
-    //           name: '',
-    //           type: 'BUSINESS',
-    //         },
-    //       ],
-    //       startDate: defaultStartDate,
-    //       endDate: defaultEndDate,
-    //     },
-    //     noAutoSubscribe: true,
-    //     onData: (data) => {
-    //       // TODO : Implement fetch from cache before default data.
-    //       this.data = data?.getSentiments || this._cachedData() || DEFAULT_DATA;
+    this._getInitialSentimentQuery = new ApolloQueryController(
+      this,
+      GetSentiment,
+      {
+        variables: {
+          economicEntities: [],
+          startDate: defaultStartDate,
+          endDate: defaultEndDate,
+        },
+        noAutoSubscribe: true,
+        onData: (response) => {
+          // TODO : Implement fetch from cache before default data.
+          // this.sentimentDatas = response?.getSentiments || this._cachedData() || [];
+          this.sentimentDatas = response?.data?.getSentiments || [];
 
-    //       // TODO
-    //       this._cacheData(this.data);
-    //     },
-    //     onError: (error) => {
-    //       this.data = this._cachedData();
-    //       console.error(
-    //         `Fetch sentiments failed with error: ${JSON.stringify(error)}`
-    //       );
-    //     },
-    //   }
-    // );
+          // TODO
+          // this._cacheData(this.sentimentDatas);
+        },
+        onError: (error) => {
+          // this.sentimentDatas = this._cachedData() || [];
+          this.sentimentDatas = [];
+          console.error(
+            `Fetch sentiments failed with error: ${JSON.stringify(error)}`
+          );
+        },
+      }
+    );
 
-    // this.subscriptionClient = new ApolloSubscriptionController(
-    //   this,
-    //   UpdateSentiments,
-    //   {
-    //     variables: {
-    //       economicEntities: [
-    //         {
-    //           name: '', // TODO: Use defaultBusiness.
-    //           type: 'BUSINESS',
-    //         },
-    //       ],
-    //       startDate: defaultStartDate,
-    //       endDate: defaultEndDate,
-    //     },
-    //     onData: ({subscriptionData}) => {
-    //       this.data =
-    //         subscriptionData?.data?.updateSentiments ||
-    //         this._cachedData() ||
-    //         DEFAULT_DATA;
+    this.subscriptionClient = new ApolloSubscriptionController(
+      this,
+      UpdateSentiments,
+      {
+        variables: {
+          economicEntities: [],
+          startDate: defaultStartDate,
+          endDate: defaultEndDate,
+        },
+        onData: ({response}) => {
+          this.sentimentDatas =
+            response?.data?.updateSentiments ||
+            // this._cachedData() ||
+            [];
 
-    //       this._cacheData(this.data);
-    //     },
-    //     onError: (error) => {
-    //       this.data = this._cachedData();
-    //       console.error(
-    //         `An error occurred while subscribing to sentiment updates: ${JSON.stringify(
-    //           error
-    //         )}`
-    //       );
-    //     },
-    //   }
-    // );
+          // this._cacheData(this.sentimentDatas);
+        },
+        onError: (error) => {
+          // this.sentimentDatas = this._cachedData() || [];
+          this.sentimentDatas = [];
+          console.error(
+            `An error occurred while subscribing to sentiment updates: ${JSON.stringify(
+              error
+            )}`
+          );
+        },
+      }
+    );
 
     this.collectEconomicData = new ApolloMutationController(
       this,
@@ -367,7 +316,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
             <div class="summary" slot="body">
               <div>
                 Recent
-                <div>${this._mostRecentSentiment(this.data)}</div>
+                <div>${this._mostRecentSentiment(this.sentimentDatas)}</div>
               </div>
               <div>
                 Average
@@ -391,7 +340,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
               cols='[{"label": "Date", "type": "date"}, {"label": "Comparative Score", "type": "number"}]'
               rows="[${this.sentimentDatas?.map((data) =>
                 JSON.stringify([
-                  moment(data.utcDateTime).local().toDate(),
+                  moment.utc(data.utcDateTime).local().toDate(),
                   data.comparative,
                 ])
               )}]"
@@ -594,37 +543,18 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    */
   _mostRecentSentiment(data) {
     return 1;
+    // TODO
     // return this._sentiment(data, moment(data.endDate));
   }
-
-  /**
-   * Get sentiment at the specified date.
-   * @param {Object} data Data containing sentiments.
-   * @param {moment.Moment} date Date for which sentiment data will be gathered.
-   * @return {Number} Sentiment at the specified date.
-   */
-  // _sentiment(data, date) {
-  //   const year = date.year();
-  //   const month = date.month();
-  //   const day = date.day();
-  //   const hour = date.hour();
-  //   const minute = date.minute();
-
-  //   let yearNode = null;
-  //   for (const timeUnit in data)
-  //   // numChildren
-  //   // firstChild
-  //   // sentiment
-  // }
 
   /**
    * Fetch data from cache.
    * @return {Object} Cached data.
    */
-  _cachedData() {
-    // TODO
-    return DEFAULT_DATA;
-  }
+  // _cachedData() {
+  //   // TODO
+  //   return DEFAULT_DATA;
+  // }
 
   /**
    * Add data to cache.
