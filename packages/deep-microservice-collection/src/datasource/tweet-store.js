@@ -59,7 +59,7 @@ class TweetStore extends MongoDataSource {
   ) {
     try {
       await this.collection.insertOne({
-        utcDateTime: moment.utc(utcDateTime).toDate(),
+        utcDateTime: new Date(moment.utc(utcDateTime).toDate()),
         economicEntityName: economicEntityName.toLowerCase(),
         economicEntityType: economicEntityType.toLowerCase(),
         tweets,
