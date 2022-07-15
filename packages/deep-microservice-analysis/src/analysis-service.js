@@ -173,10 +173,14 @@ class AnalysisService {
 
     for (const data of datas) {
       for (const tweet of data.tweets) {
+        const text = tweet.text || '';
+
+        if (!text) continue;
+
         this._logger.info(
           `
           Adding sentiment to graph for ${economicEntityType} ${economicEntityName}
-          tweet ${tweet}
+          tweet ${text}
           received ${data.utcDateTime}
           `
         );
@@ -184,7 +188,7 @@ class AnalysisService {
         await this._neo4jDataStore.addSentiments(economicEntity, [
           {
             utcDateTime: data.utcDateTime,
-            tweet,
+            tweet: text,
             sentiment: this._sentiment(tweet),
           },
         ]);
