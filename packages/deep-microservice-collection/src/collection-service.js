@@ -285,12 +285,16 @@ class CollectionService {
       )}`
     );
 
-    await this._tweetStore.createTweets(
+    const created = await this._tweetStore.createTweets(
       utcDateTime,
       entityName,
       entityType,
       tweets
     );
+
+    if (!created) {
+      throw new Error(`Failed to create tweets.`);
+    }
 
     const mostRecentData = await this._tweetStore.readRecentTweets(
       entityName,
