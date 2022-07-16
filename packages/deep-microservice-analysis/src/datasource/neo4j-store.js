@@ -78,9 +78,10 @@ class Neo4jStore extends Neo4jDataSource {
   async readMostRecentSentiment(economicEntity) {
     const databaseData = await this.run(
       `
-        MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED_ON]-> (utcDateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
-        RETURN datetime(utcDateTime) as utcDateTime, tweet, sentiment
-        ORDER BY utcDateTime.value DESC
+        MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED_ON]-> (dateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
+        WITH dateTime.epochMillis as dateTime, tweet, sentiment
+        RETURN apoc.date.format(dateTime, 'ms', 'ISO_INSTANT') as utcDateTime, tweet, sentiment
+        ORDER BY dateTime.value DESC
         LIMIT 1
       `,
       {
