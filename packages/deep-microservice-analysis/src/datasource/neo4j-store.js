@@ -54,8 +54,8 @@ class Neo4jStore extends Neo4jDataSource {
     const databaseDatas = await this.run(
       `
         MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED]-> (utcDateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
-        WHERE date($startDate) <= utcDateTime.value ${
-          !endDate ? `` : `<= date($endDate)`
+        WHERE datetime($startDate) <= utcDateTime.value ${
+          !endDate ? `` : `<= datetime($endDate)`
         }
         RETURN utcDateTime, tweet, sentiment
       `,
@@ -79,9 +79,9 @@ class Neo4jStore extends Neo4jDataSource {
     const databaseDatas = await this.run(
       `
         MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED_ON]-> (utcDateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
-        WITH utcDateTime, tweet, sentiment
-        ORDER BY utcDateTime.value DESC LIMIT 1
         RETURN utcDateTime, tweet, sentiment
+        ORDER BY utcDateTime.value DESC
+        LIMIT 1
       `,
       {
         entityName: economicEntity.name,
