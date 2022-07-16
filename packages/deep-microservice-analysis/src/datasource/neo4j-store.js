@@ -57,7 +57,7 @@ class Neo4jStore extends Neo4jDataSource {
         WHERE datetime($startDate) <= utcDateTime.value ${
           !endDate ? `` : `<= datetime($endDate)`
         }
-        RETURN datetime(utcDateTime) as utcDateTime, tweet, sentiment
+        RETURN apoc.date.format(utcDateTime.value.epochMillis, 'ms', "yyyy-MM-dd'T'HH:mm:ssz'Z'") as utcDateTime, tweet, sentiment
       `,
       {
         entityName: economicEntity.name,
@@ -78,9 +78,9 @@ class Neo4jStore extends Neo4jDataSource {
   async readMostRecentSentiment(economicEntity) {
     const databaseData = await this.run(
       `
-        MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED_ON]-> (dateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
-        RETURN apoc.date.format(dateTime.value.epochMillis, 'ms', "yyyy-MM-dd'T'HH:mm:ssz'Z'") as utcDateTime, tweet, sentiment as utcDateTime, tweet, sentiment
-        ORDER BY dateTime.value DESC
+        MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED_ON]-> (utcDateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
+        RETURN apoc.date.format(utcDateTime.value.epochMillis, 'ms', "yyyy-MM-dd'T'HH:mm:ssz'Z'") as utcDateTime, tweet, sentiment
+        ORDER BY utcDateTime.value DESC
         LIMIT 1
       `,
       {
