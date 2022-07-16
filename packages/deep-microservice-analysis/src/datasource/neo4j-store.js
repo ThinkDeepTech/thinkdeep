@@ -53,21 +53,17 @@ class Neo4jStore extends Neo4jDataSource {
   async readSentiment(economicEntity, startDate, endDate) {
     const databaseDatas = await this.run(
       `
-        MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED]-> (dateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
+        MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED]-> (utcDateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
         WHERE date($startDate) <= dateTime.value ${
           !endDate ? `` : `<= date($endDate)`
         }
-        RETURN tweet, sentiment
+        RETURN utcDateTime, tweet, sentiment
       `,
       {
         entityName: economicEntity.name,
         entityType: economicEntity.type,
         startDate,
         endDate,
-      },
-      {
-        database: 'neo4j',
-        accessMode: this.neo4j.session.READ,
       }
     );
 
@@ -91,10 +87,6 @@ class Neo4jStore extends Neo4jDataSource {
       {
         entityName: economicEntity.name,
         entityType: economicEntity.type,
-      },
-      {
-        database: 'neo4j',
-        accessMode: this.neo4j.session.READ,
       }
     );
 
@@ -206,7 +198,6 @@ class Neo4jStore extends Neo4jDataSource {
       );
     }
 
-    const accessMode = this.neo4j.session.WRITE;
     await this.run(
       `
       MATCH (economicEntity:EconomicEntity { name: $entityName, type: $entityType})
@@ -221,11 +212,7 @@ class Neo4jStore extends Neo4jDataSource {
         tweet: data.tweet,
         comparative: data.sentiment.comparative,
       },
-      {
-        // TODO: Verify that eliminating this in favor of apollo-datasource-neo4j defaultDatabase still applies access mode.
-        database: 'neo4j',
-        accessMode,
-      }
+      this.neo4j.session.WRITE
     );
   }
 
@@ -246,7 +233,6 @@ class Neo4jStore extends Neo4jDataSource {
       );
     }
 
-    const accessMode = this.neo4j.session.WRITE;
     await this.run(
       `
       MERGE (:EconomicEntity { name: $entityName, type: $entityType})
@@ -255,11 +241,7 @@ class Neo4jStore extends Neo4jDataSource {
         entityName: economicEntity.name,
         entityType: economicEntity.type,
       },
-      {
-        // TODO: Same as above
-        database: 'neo4j',
-        accessMode,
-      }
+      this.neo4j.session.WRITE
     );
   }
 
@@ -287,7 +269,6 @@ class Neo4jStore extends Neo4jDataSource {
       );
     }
 
-    const accessMode = this.neo4j.session.WRITE;
     await this.run(
       `
       MATCH (economicEntity:EconomicEntity { name: $entityName, type: $entityType})
@@ -298,11 +279,7 @@ class Neo4jStore extends Neo4jDataSource {
         entityType: economicEntity.type,
         utcDateTime,
       },
-      {
-        // TODO: Same as above
-        database: 'neo4j',
-        accessMode,
-      }
+      this.neo4j.session.WRITE
     );
   }
 }
