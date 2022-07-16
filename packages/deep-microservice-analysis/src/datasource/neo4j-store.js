@@ -80,8 +80,7 @@ class Neo4jStore extends Neo4jDataSource {
       `
         MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED_ON]-> (utcDateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
         WITH utcDateTime, tweet, sentiment
-        ORDER BY utcDateTime.value DESC
-        WITH collect(utcDateTime)[0] as utcDateTime, collect(tweet)[0] as tweet, collect(sentiment)[0] as sentiment
+        ORDER BY utcDateTime.value DESC LIMIT 1
         RETURN utcDateTime, tweet, sentiment
       `,
       {
