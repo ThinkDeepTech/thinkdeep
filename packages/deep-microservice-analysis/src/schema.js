@@ -4,6 +4,7 @@ const typeDefs = gql`
   scalar Date
 
   type SentimentResult {
+    utcDateTime: Date!
     comparative: Number!
     text: String!
   }

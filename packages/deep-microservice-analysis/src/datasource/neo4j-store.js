@@ -46,19 +46,24 @@ class Neo4jStore extends Neo4jDataSource {
   /**
    * Read the sentiment.
    * @param {Object} economicEntity Subject for which sentiment will be read.
-   * @param {String} startDate UTC date time. TODO
-   * @param {String} endDate UTC date time. TODO
+   * @param {String} startDate UTC date time.
+   * @param {String} endDate UTC date time.
    * @return {Object} Sentiment.
    */
   async readSentiment(economicEntity, startDate, endDate) {
-    const result = await this.run(
+    const databaseDatas = await this.run(
       `
-        MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[*2..2]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
+        MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED]-> (dateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
+        WHERE date($startDate) <= dateTime.value ${
+          !endDate ? `` : `<= date($endDate)`
+        }
         RETURN tweet, sentiment
       `,
       {
         entityName: economicEntity.name,
         entityType: economicEntity.type,
+        startDate,
+        endDate,
       },
       {
         database: 'neo4j',
@@ -66,7 +71,7 @@ class Neo4jStore extends Neo4jDataSource {
       }
     );
 
-    return this._someFunction(result);
+    return this._reduceSentimentGraph(databaseDatas);
   }
 
   /**
@@ -80,8 +85,8 @@ class Neo4jStore extends Neo4jDataSource {
         MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED_ON]-> (dateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
         WITH dateTime, tweet, sentiment
         ORDER BY dateTime.value DESC
-        WITH collect(tweet)[0] as tweet, collect(sentiment)[0] as sentiment
-        RETURN tweet, sentiment
+        WITH collect(dateTime)[0] as utcDateTime, collect(tweet)[0] as tweet, collect(sentiment)[0] as sentiment
+        RETURN utcDateTime, tweet, sentiment
       `,
       {
         entityName: economicEntity.name,
@@ -122,14 +127,7 @@ class Neo4jStore extends Neo4jDataSource {
     //   }
     // ];
 
-    const datas = [];
-    for (const dbData of databaseDatas) {
-      datas.push({
-        comparative:
-          dbData._fields[dbData._fieldLookup.sentiment].properties.comparative,
-        text: dbData._fields[dbData._fieldLookup.tweet].properties.value,
-      });
-    }
+    const datas = this._reduceSentimentGraph(databaseDatas);
 
     console.log(
       `
@@ -139,6 +137,30 @@ class Neo4jStore extends Neo4jDataSource {
     );
 
     return datas;
+  }
+
+  /**
+   * Reduce database sentiment graph.
+   *
+   * @param {Array<Object>} databaseDatas Data returned from the database query.
+   * @return {Array<Object>} Reduced data or [].
+   */
+  _reduceSentimentGraph(databaseDatas) {
+    const results = [];
+    for (const dbData of databaseDatas) {
+      results.push({
+        utcDateTime:
+          dbData._fields[dbData._fieldLookup.utcDateTime].properties.value ||
+          null,
+        comparative:
+          dbData._fields[dbData._fieldLookup.sentiment].properties
+            .comparative || null,
+        text:
+          dbData._fields[dbData._fieldLookup.tweet].properties.value || null,
+      });
+    }
+
+    return results;
   }
 
   /**
