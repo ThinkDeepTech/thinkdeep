@@ -5,16 +5,16 @@ const dateScalar = new GraphQLScalarType({
   name: 'Date',
   description: 'Date custom scalar type.',
   serialize(value) {
-    return moment(value).unix();
+    return moment.utc(value);
   },
   parseValue(value) {
-    return moment(value).unix();
+    return moment.utc(value);
   },
   parseLiteral(ast) {
-    if (ast.kind === Kind.INT) {
-      return moment(parseInt(ast.value, 10)).unix();
+    if (ast.kind === Kind.STRING) {
+      return moment.utc(ast.value);
     }
-    return null; // Invalid hard-coded value (not an integer)
+    return null; // Invalid hard-coded value
   },
 });
 

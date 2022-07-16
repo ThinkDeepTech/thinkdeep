@@ -64,7 +64,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     this.sentimentDatas = [];
     this.selectedSentiments = [];
 
-    const defaultStartDate = moment().utc().subtract(1, 'month');
+    const defaultStartDate = moment().utc().subtract(1, 'month').format();
     const defaultEndDate = null;
 
     this._getInitialSentimentQuery = new ApolloQueryController(

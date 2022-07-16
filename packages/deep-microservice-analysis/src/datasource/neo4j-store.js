@@ -76,6 +76,7 @@ class Neo4jStore extends Neo4jDataSource {
    * @return {Object} Sentiment.
    */
   async readMostRecentSentiment(economicEntity) {
+    // TODO: Use functions to return query string components that are shared among functions.
     const databaseData = await this.run(
       `
         MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED_ON]-> (dateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
