@@ -119,6 +119,13 @@ class Neo4jStore extends Neo4jDataSource {
     //   }
     // ];
 
+    console.log(
+      `
+      Most recent sentiments:
+      ${JSON.stringify(databaseDatas)}
+      `
+    );
+
     const datas = this._reduceSentimentGraph(databaseDatas);
 
     console.log(
