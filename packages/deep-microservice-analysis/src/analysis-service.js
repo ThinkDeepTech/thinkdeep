@@ -177,10 +177,13 @@ class AnalysisService {
 
         if (!text) continue;
 
+        const sentiment = this._sentiment(text);
+
         this._logger.info(
           `
           Adding sentiment to graph for ${economicEntityType} ${economicEntityName}
           tweet ${text}
+          comparative sentament ${sentiment.comparative}
           received ${data.utcDateTime}
           `
         );
@@ -189,7 +192,7 @@ class AnalysisService {
           {
             utcDateTime: data.utcDateTime,
             tweet: text,
-            sentiment: this._sentiment(text),
+            sentiment,
           },
         ]);
       }
