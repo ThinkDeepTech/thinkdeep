@@ -5,7 +5,7 @@ const typeDefs = gql`
 
   type SentimentResult {
     utcDateTime: Date!
-    comparative: Number!
+    comparative: Float!
     text: String!
   }
 
