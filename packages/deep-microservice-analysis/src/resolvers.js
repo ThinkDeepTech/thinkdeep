@@ -3,7 +3,7 @@ import {dateScalar} from './scalars.js';
 const resolvers = {
   Date: dateScalar,
   Query: {
-    sentiments: async (
+    getSentiments: async (
       _,
       {economicEntities, startDate, endDate},
       {dataSources, permissions}
