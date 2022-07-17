@@ -40,7 +40,8 @@
           - "ReadWriteOnce"
           resources:
             requests:
-              storage: "64Gi"
+              # TODO Reduce storage for money savings.
+              storage: "128Gi"
           storageClassName: "do-block-storage"
 
     services:

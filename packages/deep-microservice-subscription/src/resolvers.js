@@ -14,7 +14,7 @@ const resolvers = {
     updateSentiments: {
       resolve: async (payload, _, {permissions}, __) => {
         if (!hasReadAllAccess(permissions)) {
-          return [];
+          return {};
         } else {
           return payload;
         }

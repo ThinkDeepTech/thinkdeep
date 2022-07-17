@@ -6,7 +6,7 @@ const typeDefs = gql`
       economicEntities: [EconomicEntityInput!]!
       startDate: Date!
       endDate: Date
-    ): [SentimentResult!]!
+    ): SentimentResult!
   }
 `;
 

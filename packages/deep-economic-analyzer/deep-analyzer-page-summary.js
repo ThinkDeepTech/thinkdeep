@@ -87,7 +87,11 @@ export default class DeepAnalyzerPageSummary extends LitElement {
           // this.sentimentDatas = data?.getSentiments || this._cachedData() || [];
           const targetDatas = data?.getSentiments[0] || [];
           if (targetDatas.length > 0) {
-            console.log(`Target data received: ${JSON.stringify(targetDatas)}`);
+            console.log(
+              `Target data received from get sentiments: \n${JSON.stringify(
+                targetDatas
+              )}`
+            );
 
             this.sentimentDatas = targetDatas;
 
@@ -115,6 +119,8 @@ export default class DeepAnalyzerPageSummary extends LitElement {
           endDate: DEFAULT_END_DATE,
         },
         onData: ({data}) => {
+          console.log(`Data received when subscribing\n${data}`);
+
           const newSentiment = data?.updateSentiments; // || this._cachedData() || {};
           if (Object.keys(newSentiment).length > 0) {
             this.sentimentDatas.shift();
