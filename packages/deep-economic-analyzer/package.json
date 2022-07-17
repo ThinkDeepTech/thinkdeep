@@ -47,6 +47,7 @@
     "@material/mwc-textfield": "^0.25.3",
     "@material/mwc-top-app-bar-fixed": "^0.25.3",
     "@thinkdeep/deep-card": "^0.0.9-alpha.1",
+    "@vaadin/date-picker": "^23.1.4",
     "@vaadin/router": "^1.7.4",
     "@webcomponents/webcomponentsjs": "^2.5.0",
     "graphql": "^15.8.0",
