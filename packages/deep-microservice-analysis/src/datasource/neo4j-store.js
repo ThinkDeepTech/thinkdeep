@@ -53,7 +53,7 @@ class Neo4jStore extends Neo4jDataSource {
   async readSentiment(economicEntity, startDate, endDate) {
     const databaseData = await this.run(
       `
-        MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED]-> (utcDateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
+        MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED_ON]-> (utcDateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
         WHERE datetime($startDate) <= utcDateTime.value ${
           !endDate ? `` : `<= datetime($endDate)`
         }
