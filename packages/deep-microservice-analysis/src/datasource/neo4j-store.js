@@ -116,100 +116,13 @@ class Neo4jStore extends Neo4jDataSource {
    * @return {Array<Object>} Reduced data or [].
    */
   _reduceSentimentGraph(databaseData) {
-    // const thing = {
-    //   "records":[
-    //     {
-    //       "keys":[
-    //         "utcDateTime",
-    //         "tweet",
-    //         "sentiment"
-    //       ],
-    //       "length":3,
-    //       "_fields":[
-    //         {
-    //           "identity":23,
-    //           "labels":["DateTime"],
-    //           "properties":
-    //           {
-    //             "value":
-    //             {
-    //               "year":2022,
-    //               "month":7,
-    //               "day":16,
-    //               "hour":16,
-    //               "minute":6,
-    //               "second":12,
-    //               "nanosecond":0,
-    //               "timeZoneOffsetSeconds":0
-    //             }
-    //           }
-    //         },{
-    //           "identity":34,
-    //           "labels":["Data"],
-    //           "properties":
-    //           {
-    //             "type":"tweet",
-    //             "value":"@UnemployedEng @learysp ummmm maybe obly the ones your buying? only low cal/low carb beers/ciders/coolers do in ON because they cater to that demographic but for instance cracked canoe only JUST pit it on their cans because they wanted to compete with the Michelobe Ultra crowd....a lot of selters do"
-    //           }
-    //         },
-    //         {
-    //           "identity":35,
-    //           "labels":["Sentiment"],
-    //           "properties":
-    //           {
-    //             "comparative":0
-    //           }
-    //         }
-    //       ],
-    //       "_fieldLookup":
-    //       {
-    //         "utcDateTime":0,
-    //         "tweet":1,
-    //         "sentiment":2
-    //       }
-    //     }
-    //   ],
-    //   "summary":
-    //   {
-    //     "query":
-    //     {
-    //       "text":"\n        MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED_ON]-> (utcDateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: \"tweet\" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)\n        RETURN utcDateTime, tweet, sentiment\n        ORDER BY utcDateTime.value DESC\n        LIMIT 1\n      ",
-    //       "parameters":
-    //       {
-    //         "entityName":"Cracked Canoe",
-    //         "entityType":"BUSINESS"
-    //       }
-    //     },
-    //     "queryType":"r",
-    //     "counters":
-    //     {
-    //       "_stats":
-    //       {
-    //         "nodesCreated":0,
-    //         "nodesDeleted":0,
-    //         "relationshipsCreated":0,
-    //         "relationshipsDeleted":0,
-    //         "propertiesSet":0,
-    //         "labelsAdded":0,
-    //         "labelsRemoved":0,
-    //         "indexesAdded":0,
-    //         "indexesRemoved":0,
-    //         "constraintsAdded":0,
-    //         "constraintsRemoved":0
-    //       },
-    //       "_systemUpdates":0
-    //     },
-    //     "updateStatistics":{"_stats":{"nodesCreated":0,"nodesDeleted":0,"relationshipsCreated":0,"relationshipsDeleted":0,"propertiesSet":0,"labelsAdded":0,"labelsRemoved":0,"indexesAdded":0,"indexesRemoved":0,"constraintsAdded":0,"constraintsRemoved":0},"_systemUpdates":0},"plan":false,"profile":false,"notifications":[],"server":{"address":"test.api.neo4j.predecos.com:7687","version":"Neo4j/4.4.8","agent":"Neo4j/4.4.8","protocolVersion":4.4},"resultConsumedAfter":1,"resultAvailableAfter":2,"database":{"name":"neo4j"}}}
-
     const results = [];
     for (const record of databaseData.records) {
       results.push({
-        utcDateTime: record._fields[record._fieldLookup.utcDateTime] || null,
+        utcDateTime: record._fields[record._fieldLookup.utcDateTime],
         comparative:
-          record._fields[record._fieldLookup.sentiment].properties
-            .comparative || null,
-        text:
-          record._fields[record._fieldLookup.tweet].properties.value || null,
+          record._fields[record._fieldLookup.sentiment].properties.comparative,
+        text: record._fields[record._fieldLookup.tweet].properties.value,
       });
     }
 
