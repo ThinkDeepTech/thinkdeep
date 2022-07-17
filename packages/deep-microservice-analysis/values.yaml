@@ -40,7 +40,7 @@
           - "ReadWriteOnce"
           resources:
             requests:
-              storage: "128Gi"
+              storage: "64Gi"
           storageClassName: "do-block-storage"
 
     services:

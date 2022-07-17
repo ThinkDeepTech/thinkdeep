@@ -13,9 +13,17 @@ import '@material/mwc-textfield';
 import '@thinkdeep/deep-card';
 import './deep-site-configuration.js';
 import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
-import GetSentiment from './graphql/GetSentiment.new.query.graphql';
-import UpdateSentiments from './graphql/UpdateSentiments.new.subscription.graphql';
+import GetSentiment from './graphql/GetSentiment.query.graphql';
+import UpdateSentiments from './graphql/UpdateSentiments.subscription.graphql';
 import moment from 'moment/dist/moment.js';
+
+const DEFAULT_START_DATE = moment().utc().subtract(1, 'month').format();
+const DEFAULT_END_DATE = null;
+const DEFAULT_SENTIMENT = {
+  utcDateTime: DEFAULT_START_DATE,
+  comparative: 0,
+  tweet: '',
+};
 
 /**
  * Lit summary page component.
@@ -28,15 +36,15 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     return {
       subscriptionClient: {type: Object},
 
-      sentiments: {type: Array},
+      sentimentDatas: {type: Array},
+
+      selectedSentiments: {type: Array},
 
       // Data collection mutation object
       collectEconomicData: {type: Object},
 
       // The users site configuration.
       configuration: {type: Object},
-
-      selectedSentiments: {type: Array},
 
       // Fetch sentiment query object
       _getInitialSentimentQuery: {type: Object},
@@ -61,11 +69,8 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
     this.selectedEconomicEntity = {name: '', type: 'business'};
     this.configuration = {observedEconomicEntities: []};
-    this.sentimentDatas = [];
+    this.sentimentDatas = [DEFAULT_SENTIMENT];
     this.selectedSentiments = [];
-
-    const defaultStartDate = moment().utc().subtract(1, 'month').format();
-    const defaultEndDate = null;
 
     this._getInitialSentimentQuery = new ApolloQueryController(
       this,
@@ -73,21 +78,26 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       {
         variables: {
           economicEntities: [],
-          startDate: defaultStartDate,
-          endDate: defaultEndDate,
+          startDate: DEFAULT_START_DATE,
+          endDate: DEFAULT_END_DATE,
         },
         noAutoSubscribe: true,
-        onData: (response) => {
+        onData: (data) => {
           // TODO : Implement fetch from cache before default data.
-          // this.sentimentDatas = response?.getSentiments || this._cachedData() || [];
-          this.sentimentDatas = response?.data?.getSentiments || [];
+          // this.sentimentDatas = data?.getSentiments || this._cachedData() || [];
+          const targetDatas = data?.getSentiments[0] || [];
+          if (targetDatas.length > 0) {
+            console.log(`Target data received: ${JSON.stringify(targetDatas)}`);
 
-          // TODO
-          // this._cacheData(this.sentimentDatas);
+            this.sentimentDatas = targetDatas;
+
+            // TODO
+            // this._cacheData(this.sentimentDatas);
+          }
         },
         onError: (error) => {
-          // this.sentimentDatas = this._cachedData() || [];
-          this.sentimentDatas = [];
+          // TODO
+          // this.sentimentDatas = this._cachedData() || [DEFAULT_SENTIMENT];
           console.error(
             `Fetch sentiments failed with error: ${JSON.stringify(error)}`
           );
@@ -101,20 +111,23 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       {
         variables: {
           economicEntities: [],
-          startDate: defaultStartDate,
-          endDate: defaultEndDate,
+          startDate: DEFAULT_START_DATE,
+          endDate: DEFAULT_END_DATE,
         },
-        onData: ({response}) => {
-          this.sentimentDatas =
-            response?.data?.updateSentiments ||
-            // this._cachedData() ||
-            [];
+        onData: ({data}) => {
+          const newSentiment = data?.updateSentiments; // || this._cachedData() || {};
+          if (Object.keys(newSentiment).length > 0) {
+            this.sentimentDatas.shift();
 
-          // this._cacheData(this.sentimentDatas);
+            this.sentimentDatas.push(newSentiment);
+
+            // TODO
+            // this._cacheData(this.sentimentDatas);
+          }
         },
         onError: (error) => {
-          // this.sentimentDatas = this._cachedData() || [];
-          this.sentimentDatas = [];
+          // TODO
+          // this.sentimentDatas = this._cachedData() || [DEFAULT_SENTIMENT];
           console.error(
             `An error occurred while subscribing to sentiment updates: ${JSON.stringify(
               error
@@ -337,11 +350,11 @@ export default class DeepAnalyzerPageSummary extends LitElement {
               @google-chart-select="${this._handleChartSelection}"
               options="{}"
               type="line"
-              cols='[{"label": "Date", "type": "date"}, {"label": "Comparative Score", "type": "number"}]'
-              rows="[${this.sentimentDatas?.map((data) =>
+              cols='[{"label": "Date", "type": "string"}, {"label": "Comparative Score", "type": "number"}]'
+              rows="[${this.sentimentDatas?.map((sentiment) =>
                 JSON.stringify([
-                  moment.utc(data.utcDateTime).local().toDate(),
-                  data.comparative,
+                  moment.utc(sentiment.utcDateTime).local().toDate(),
+                  sentiment.comparative,
                 ])
               )}]"
             ></google-chart>
@@ -538,13 +551,11 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
   /**
    * Get the most recent sentiment value.
-   * @param {Object} data Data which will be used to fetch most recent sentiment.
+   * @param {Object} sentimentDatas Data which will be used to fetch most recent sentiment.
    * @return {Number} Most recent sentiment value.
    */
-  _mostRecentSentiment(data) {
-    return 1;
-    // TODO
-    // return this._sentiment(data, moment(data.endDate));
+  _mostRecentSentiment(sentimentDatas) {
+    return sentimentDatas[sentimentDatas.length - 1]?.comparative || 0;
   }
 
   /**

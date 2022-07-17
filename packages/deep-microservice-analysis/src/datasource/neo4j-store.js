@@ -57,6 +57,7 @@ class Neo4jStore extends Neo4jDataSource {
         WHERE datetime($startDate) <= utcDateTime.value ${
           !endDate ? `` : `<= datetime($endDate)`
         }
+        ORDER BY utcDateTime.value
         RETURN apoc.date.format(utcDateTime.value.epochMillis, 'ms', "yyyy-MM-dd'T'HH:mm:ss'Z'") as utcDateTime, tweet, sentiment
       `,
       {

@@ -1,9 +1,7 @@
-query GetSentiment($economicEntityName: String!, $economicEntityType: EconomicEntityType!) {
-  sentiments(economicEntityName: $economicEntityName, economicEntityType: $economicEntityType) {
+query GetSentiment($economicEntities: [EconomicEntityInput!]!, $startDate: Date!, $endDate: Date) {
+  getSentiments(economicEntities: $economicEntities, startDate: $startDate, endDate: $endDate) {
       utcDateTime
-      score
-      tweets{
-        text
-      }
+      comparative
+      text
   }
 }
