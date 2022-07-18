@@ -22,9 +22,12 @@ const resolvers = {
   Subscription: {
     updateSentiments: {
       resolve: async (payload, _, {permissions}, __) => {
+        console.debug(
+          `Payload received in updateSentiments \n${JSON.stringify(payload)}`
+        );
         if (
           !hasReadAllAccess(permissions) ||
-          Object.keys(payload.data).length <= 0
+          Object.keys(payload.data || {}).length <= 0
         ) {
           return {};
         } else {
@@ -34,6 +37,10 @@ const resolvers = {
       subscribe: withFilter(
         () => pubsub.asyncIterator([`TWEET_SENTIMENT_COMPUTED`]),
         (payload, variables) => {
+          console.debug(`
+          Variables received in filter: \n${JSON.stringify(variables)}
+          Payload received in filter: \n${JSON.stringify(payload)}
+          `);
           for (const economicEntity of variables.economicEntities) {
             if (
               identicalEconomicEntity(economicEntity, payload.economicEntity)
