@@ -22,10 +22,13 @@ const resolvers = {
   Subscription: {
     updateSentiments: {
       resolve: async (payload, _, {permissions}, __) => {
-        if (!hasReadAllAccess(permissions)) {
+        if (
+          !hasReadAllAccess(permissions) ||
+          Object.keys(payload.data).length <= 0
+        ) {
           return {};
         } else {
-          return payload;
+          return payload.data;
         }
       },
       subscribe: withFilter(
