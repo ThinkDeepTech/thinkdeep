@@ -198,13 +198,17 @@ class AnalysisService {
       }
     }
 
-    const mostRecentData = await this._mostRecentSentiments([
+    const mostRecentSentiment = await this._mostRecentSentiments([
       economicEntity,
     ])[0][0];
 
+    this._logger.debug(
+      `Most recent data received\n${JSON.stringify(mostRecentSentiment)}`
+    );
+
     const event = {
       economicEntity,
-      data: mostRecentData,
+      data: mostRecentSentiment,
     };
 
     // TODO: Rename TWEET_SENTIMENT_COMPUTED to SENTIMENT_UPDATED.
