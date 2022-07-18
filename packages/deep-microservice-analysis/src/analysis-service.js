@@ -203,8 +203,7 @@ class AnalysisService {
     ])[0];
 
     const event = {
-      economicEntityName,
-      economicEntityType,
+      economicEntity,
       data: mostRecentData,
     };
 

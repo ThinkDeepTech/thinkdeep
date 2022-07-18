@@ -9,6 +9,15 @@ const pubsub = new KafkaPubSub({
   globalConfig: {}, // options passed directly to the consumer and producer
 });
 
+const identicalEconomicEntity = (economicEntity1, economicEntity2) => {
+  return (
+    !!economicEntity1.name &&
+    !!economicEntity1.type &&
+    economicEntity1.name === economicEntity2.name &&
+    economicEntity1.type === economicEntity2.type
+  );
+};
+
 const resolvers = {
   Subscription: {
     updateSentiments: {
@@ -22,12 +31,15 @@ const resolvers = {
       subscribe: withFilter(
         () => pubsub.asyncIterator([`TWEET_SENTIMENT_COMPUTED`]),
         (payload, variables) => {
-          return (
-            payload.economicEntityName === variables.economicEntityName &&
-            payload.economicEntityType === variables.economicEntityType
-            // TODO
-            // payload.endDate === null
-          );
+          for (const economicEntity of variables.economicEntities) {
+            if (
+              identicalEconomicEntity(economicEntity, payload.economicEntity)
+            ) {
+              return true;
+            }
+          }
+
+          return false;
         }
       ),
     },
