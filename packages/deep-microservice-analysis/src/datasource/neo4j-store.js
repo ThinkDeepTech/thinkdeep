@@ -81,9 +81,9 @@ class Neo4jStore extends Neo4jDataSource {
     const databaseData = await this.run(
       `
         MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED_ON]-> (dateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
-        ORDER BY dateTime.value DESC
-        WITH apoc.date.format(dateTime.value.epochMillis, 'ms', "yyyy-MM-dd'T'HH:mm:ss'Z'") as utcDateTime, tweet, sentiment
+        WITH apoc.date.format(dateTime.value.epochMillis, 'ms', "yyyy-MM-dd'T'HH:mm:ss'Z'") as utcDateTime, tweet, sentiment, dateTime
         RETURN collect(utcDateTime), tweet, sentiment
+        ORDER BY dateTime.value DESC
         LIMIT 1
       `,
       {
