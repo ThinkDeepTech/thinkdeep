@@ -18,7 +18,10 @@ import GetSentiment from './graphql/GetSentiment.query.graphql';
 import UpdateSentiments from './graphql/UpdateSentiments.subscription.graphql';
 import moment from 'moment/dist/moment.js';
 
-const DEFAULT_START_DATE = moment().utc().subtract(1, 'month').format();
+const DEFAULT_START_DATE = moment()
+  .utc()
+  .subtract(1, 'month')
+  .format('YYYY-MM-DD');
 const DEFAULT_END_DATE = null;
 
 /**
@@ -368,12 +371,18 @@ export default class DeepAnalyzerPageSummary extends LitElement {
           </mwc-select>
           <vaadin-date-picker
             id="start-date"
+            label="Start Date"
             class="date-picker"
+            placeholder="MM/DD/YYYY"
+            .value="${DEFAULT_START_DATE}"
             @value-changed="${this._onSelectStartDate.bind(this)}"
+            required
           ></vaadin-date-picker>
           <vaadin-date-picker
             id="end-date"
+            label="End Date"
             class="date-picker"
+            placeholder="MM/DD/YYYY"
             @value-changed="${this._onSelectEndDate.bind(this)}"
           ></vaadin-date-picker>
         </div>
@@ -490,7 +499,8 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    * Handle user selection of new end date.
    */
   _onSelectEndDate() {
-    const selectedEndDate = this.shadowRoot.querySelector('#end-date').value;
+    const selectedEndDate =
+      this.shadowRoot.querySelector('#end-date').value || null;
 
     const variables = {
       ...this._sentimentQueryController.variables,
