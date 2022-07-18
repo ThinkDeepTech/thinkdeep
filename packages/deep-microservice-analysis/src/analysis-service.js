@@ -63,7 +63,6 @@ class AnalysisService {
     this._logger.info(`Subscribing to TWEETS_COLLECTED topic`);
     await this._consumer.subscribe({
       topic: 'TWEETS_COLLECTED',
-      fromBeginning: true,
     });
 
     this._logger.info(`Running consumer handlers on each message.`);

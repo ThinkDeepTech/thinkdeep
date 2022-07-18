@@ -105,14 +105,28 @@ export default class DeepAnalyzerPageSummary extends LitElement {
           startDate: DEFAULT_START_DATE,
           endDate: DEFAULT_END_DATE,
         },
-        onData: ({data}) => {
-          console.log(`Data received when subscribing\n${data}`);
+        onData: ({subscriptionData}) => {
+          console.log(
+            `Data received when subscribing\n${JSON.stringify(
+              subscriptionData.data
+            )}`
+          );
 
-          const newSentiment = data?.updateSentiments; // || this._cachedData() || {};
+          const newSentiment = subscriptionData?.data?.updateSentiments; // || this._cachedData() || {};
+
+          console.log(`New sentiment\n${JSON.stringify(newSentiment)}`);
           if (Object.keys(newSentiment).length > 0) {
+            console.log(
+              `Original datas\n${JSON.stringify(this.sentimentDatas)}`
+            );
+
             this.sentimentDatas.shift();
+            console.log(
+              `Shifted datas\n${JSON.stringify(this.sentimentDatas)}`
+            );
 
             this.sentimentDatas.push(newSentiment);
+            console.log(`Pushed datas\n${JSON.stringify(this.sentimentDatas)}`);
 
             // TODO
             // this._cacheData(this.sentimentDatas);
