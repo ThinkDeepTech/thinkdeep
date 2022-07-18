@@ -109,8 +109,6 @@ class AnalysisService {
       );
     }
 
-    this._logger.debug(`Sentiments read: ${JSON.stringify(results)}`);
-
     return results;
   }
 
