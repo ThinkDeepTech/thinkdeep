@@ -1,7 +1,7 @@
 import {gql} from 'apollo-server';
 
 const typeDefs = gql`
-  extend type Subscription {
+  type Subscription {
     updateSentiments(
       economicEntities: [EconomicEntityInput!]!
       startDate: Date!
