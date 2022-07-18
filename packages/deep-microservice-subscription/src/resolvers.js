@@ -24,8 +24,9 @@ const resolvers = {
         (payload, variables) => {
           return (
             payload.economicEntityName === variables.economicEntityName &&
-            payload.economicEntityType === variables.economicEntityType &&
-            payload.endDate === null
+            payload.economicEntityType === variables.economicEntityType
+            // TODO
+            // payload.endDate === null
           );
         }
       ),
