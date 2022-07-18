@@ -200,7 +200,7 @@ class AnalysisService {
 
     const mostRecentData = await this._mostRecentSentiments([
       economicEntity,
-    ])[0];
+    ])[0][0];
 
     const event = {
       economicEntity,
