@@ -196,9 +196,9 @@ class AnalysisService {
       }
     }
 
-    const mostRecentSentiment = await this._mostRecentSentiments([
-      economicEntity,
-    ])[0][0];
+    const mostRecentSentiment = (
+      await this._mostRecentSentiments([economicEntity])
+    )[0][0];
 
     this._logger.debug(
       `Most recent data received\n${JSON.stringify(mostRecentSentiment)}`
