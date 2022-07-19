@@ -89,11 +89,10 @@ class AnalysisService {
    * @param {Array<Object>} economicEntities Array of objects of the form { name: <some business name>, type: <some entity type> }.
    * @param {String} startDate UTC date time.
    * @param {String} endDate UTC date time.
-   * @param {Number} limit Number of sentiments to return.
    * @param {Object} permissions Permissions for the user making the request.
    * @return {Array} The formatted sentiment objects in array form or [].
    */
-  async sentiments(economicEntities, startDate, endDate, limit, permissions) {
+  async sentiments(economicEntities, startDate, endDate, permissions) {
     if (!hasReadAllAccess(permissions)) return [];
 
     // TODO: Input validation
@@ -105,7 +104,7 @@ class AnalysisService {
       );
 
       results.push(
-        await this._sentimentData(economicEntity, startDate, endDate, limit)
+        await this._sentimentData(economicEntity, startDate, endDate)
       );
     }
 
@@ -117,17 +116,15 @@ class AnalysisService {
    * @param {Object} economicEntity Object of the form { name: <entity name>, type: <entity type> }.
    * @param {String} startDate UTC date time.
    * @param {String} endDate UTC date time.
-   * @param {Number} limit Number of sentiments to return.
    * @return {Object} Sentiment data.
    */
-  async _sentimentData(economicEntity, startDate, endDate, limit) {
+  async _sentimentData(economicEntity, startDate, endDate) {
     // TODO: Input validity.
 
     return this._neo4jDataStore.readSentiments(
       economicEntity,
       startDate,
-      endDate,
-      limit
+      endDate
     );
   }
 
