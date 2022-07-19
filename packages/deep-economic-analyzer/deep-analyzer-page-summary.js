@@ -47,11 +47,6 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
   /**
    * TODO
-   * - Ensure multiple economic entities are supported (i.e, data should be restructured to include array).
-   * - Modify subscription to use new data interface.
-   * - Evaluate user experience in various cases and create TODOs to handle a good user interface
-   * when a shotty network is used.
-   * - Implement cache read and write.
    * - Translations
    */
 
@@ -76,14 +71,9 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         },
         noAutoSubscribe: true,
         onData: (data) => {
-          // TODO : Implement fetch from cache before default data.
-          // this.sentimentDatas = data?.getSentiments || this._cachedData() || [];
           const targetDatas = data?.getSentiments[0] || [];
           if (targetDatas.length > 0) {
             this.sentimentDatas = targetDatas;
-
-            // TODO
-            // this._cacheData(this.sentimentDatas);
           }
         },
         onError: (error) => {
@@ -106,35 +96,16 @@ export default class DeepAnalyzerPageSummary extends LitElement {
           endDate: DEFAULT_END_DATE,
         },
         onData: ({subscriptionData}) => {
-          console.log(
-            `Data received when subscribing\n${JSON.stringify(
-              subscriptionData.data
-            )}`
-          );
-
-          const newSentiment = subscriptionData?.data?.updateSentiments; // || this._cachedData() || {};
-
-          console.log(`New sentiment\n${JSON.stringify(newSentiment)}`);
+          const newSentiment = subscriptionData?.data?.updateSentiments;
           if (Object.keys(newSentiment).length > 0) {
-            console.log(
-              `Original datas\n${JSON.stringify(this.sentimentDatas)}`
-            );
-
+            // Remove oldest reading from array.
             this.sentimentDatas.shift();
-            console.log(
-              `Shifted datas\n${JSON.stringify(this.sentimentDatas)}`
-            );
 
+            // Push newest reading into array.
             this.sentimentDatas.push(newSentiment);
-            console.log(`Pushed datas\n${JSON.stringify(this.sentimentDatas)}`);
-
-            // TODO
-            // this._cacheData(this.sentimentDatas);
           }
         },
         onError: (error) => {
-          // TODO
-          // this.sentimentDatas = this._cachedData() || [DEFAULT_SENTIMENT];
           console.error(
             `An error occurred while subscribing to sentiment updates: ${JSON.stringify(
               error
@@ -347,60 +318,8 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       ></deep-site-configuration>
 
       <div class="page-grid">
-        <div class="card-deck">
-          ${this.sentimentDatas.length > 0
-            ? this._sentimentSummaryCard(this.sentimentDatas)
-            : ``}
-          ${this.sentimentDatas.length > 0
-            ? this._sentimentGraphCard(this.sentimentDatas)
-            : ``}
-        </div>
-
-        <div class="input watch">
-          <mwc-textfield
-            label="Watch (i.e, Google)"
-            @input="${this._onInput.bind(this)}"
-          ></mwc-textfield>
-          <mwc-button
-            raised
-            @click="${this._collectEconomicData.bind(this)}"
-            icon="add"
-          ></mwc-button>
-        </div>
-
-        <div class="input selection">
-          <mwc-select
-            id="business"
-            label="Analyze"
-            @selected="${this._onSelectBusiness}"
-          >
-            ${this._siteConfiguration.observedEconomicEntities.map(
-              (economicEntity, index) =>
-                html`<mwc-list-item
-                  ?selected="${index === 0}"
-                  value="${economicEntity.name}"
-                  >${economicEntity.name}</mwc-list-item
-                >`
-            )}
-          </mwc-select>
-          <vaadin-date-picker
-            id="start-date"
-            label="Start Date"
-            class="date-picker"
-            placeholder="MM/DD/YYYY"
-            .value="${DEFAULT_START_DATE}"
-            @value-changed="${this._onSelectStartDate.bind(this)}"
-            required
-          ></vaadin-date-picker>
-          <vaadin-date-picker
-            id="end-date"
-            label="End Date"
-            class="date-picker"
-            placeholder="MM/DD/YYYY"
-            clear-button-visible
-            @value-changed="${this._onSelectEndDate.bind(this)}"
-          ></vaadin-date-picker>
-        </div>
+        ${this._cardDeck(this.sentimentDatas)} ${this._watchInputs()}
+        ${this._selectionInputs(this._siteConfiguration)}
       </div>
     `;
   }
@@ -551,23 +470,6 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   }
 
   /**
-   * Fetch data from cache.
-   * @return {Object} Cached data.
-   */
-  // _cachedData() {
-  //   // TODO
-  //   return DEFAULT_DATA;
-  // }
-
-  /**
-   * Add data to cache.
-   * @param {Object} data Data to cache.
-   */
-  _cacheData(data) {
-    // TODO
-  }
-
-  /**
    * Get markup for sentiment summary card.
    * @param {Array<Object>} sentimentDatas
    * @return {Object} Lit HTML template result or ''.
@@ -617,7 +519,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
               options="{}"
               type="line"
               cols='[{"label": "Date", "type": "string"}, {"label": "Comparative Score", "type": "number"}]'
-              rows="[${this.sentimentDatas?.map((sentiment) =>
+              rows="[${sentimentDatas?.map((sentiment) =>
                 JSON.stringify([
                   moment.utc(sentiment.utcDateTime).local().toDate(),
                   sentiment.comparative,
@@ -627,6 +529,85 @@ export default class DeepAnalyzerPageSummary extends LitElement {
           </deep-card>
         `
       : ``;
+  }
+
+  /**
+   * Get watch input markup.
+   * @return {Object} Lit template result.
+   */
+  _watchInputs() {
+    return html` <div class="input watch">
+      <mwc-textfield
+        label="Watch (i.e, Google)"
+        @input="${this._onInput.bind(this)}"
+      ></mwc-textfield>
+      <mwc-button
+        raised
+        @click="${this._collectEconomicData.bind(this)}"
+        icon="add"
+      ></mwc-button>
+    </div>`;
+  }
+
+  /**
+   * Get selection input markup.
+   * @param {Object} siteConfiguration User configuration.
+   * @return {Object} Lit template result.
+   */
+  _selectionInputs(siteConfiguration) {
+    return html`
+      <div class="input selection">
+        <mwc-select
+          id="business"
+          label="Analyze"
+          @selected="${this._onSelectBusiness}"
+        >
+          ${siteConfiguration.observedEconomicEntities.map(
+            (economicEntity, index) =>
+              html`<mwc-list-item
+                ?selected="${index === 0}"
+                value="${economicEntity.name}"
+                >${economicEntity.name}</mwc-list-item
+              >`
+          )}
+        </mwc-select>
+        <vaadin-date-picker
+          id="start-date"
+          label="Start Date"
+          class="date-picker"
+          placeholder="MM/DD/YYYY"
+          .value="${DEFAULT_START_DATE}"
+          @value-changed="${this._onSelectStartDate.bind(this)}"
+          required
+        ></vaadin-date-picker>
+        <vaadin-date-picker
+          id="end-date"
+          label="End Date"
+          class="date-picker"
+          placeholder="MM/DD/YYYY"
+          clear-button-visible
+          @value-changed="${this._onSelectEndDate.bind(this)}"
+        ></vaadin-date-picker>
+      </div>
+    `;
+  }
+
+  /**
+   * Get card deck markup.
+   * @param {Array<Object>} sentimentDatas Sentiment data from the api.
+   * @return {Object} Lit template result.
+   */
+  _cardDeck(sentimentDatas) {
+    return html`
+      <div class="card-deck">
+        ${sentimentDatas.length > 0
+          ? this._sentimentSummaryCard(sentimentDatas)
+          : ``}
+        ${sentimentDatas.length > 0
+          ? this._sentimentGraphCard(sentimentDatas)
+          : ``}
+      </div>
+    `;
   }
 
   /**
