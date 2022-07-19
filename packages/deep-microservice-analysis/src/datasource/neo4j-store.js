@@ -57,8 +57,9 @@ class Neo4jStore extends Neo4jDataSource {
         WHERE datetime($startDate) <= dateTime.value ${
           !endDate ? `` : `<= datetime($endDate)`
         }
-        RETURN apoc.date.format(dateTime.value.epochMillis, 'ms', "yyyy-MM-dd'T'HH:mm:ss'Z'") as utcDateTime, tweet, sentiment
+        WITH dateTime, tweet, sentiment
         ORDER BY dateTime.value
+        RETURN apoc.date.format(dateTime.value.epochMillis, 'ms', "yyyy-MM-dd'T'HH:mm:ss'Z'") as utcDateTime, collect(tweet) as tweets, avg(sentiment.comparative) as comparativeAvg
       `,
       {
         entityName: economicEntity.name,
@@ -81,8 +82,9 @@ class Neo4jStore extends Neo4jDataSource {
     const databaseData = await this.run(
       `
         MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED_ON]-> (dateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
-        RETURN apoc.date.format(dateTime.value.epochMillis, 'ms', "yyyy-MM-dd'T'HH:mm:ss'Z'") as utcDateTime, collect(tweet), collect(sentiment)
+        WITH dateTime, tweet, sentiment
         ORDER BY dateTime.value DESC
+        RETURN apoc.date.format(dateTime.value.epochMillis, 'ms', "yyyy-MM-dd'T'HH:mm:ss'Z'") as utcDateTime, collect(tweet) as tweets, avg(sentiment.comparative) as comparativeAvg
         LIMIT 1
       `,
       {
@@ -121,9 +123,10 @@ class Neo4jStore extends Neo4jDataSource {
     for (const record of databaseData.records) {
       results.push({
         utcDateTime: record._fields[record._fieldLookup.utcDateTime],
-        comparative:
-          record._fields[record._fieldLookup.sentiment].properties.comparative,
-        text: record._fields[record._fieldLookup.tweet].properties.value,
+        comparative: record._fields[record._fieldLookup.comparativeAvg],
+        tweets: record._fields[record._fieldLookup.tweets].map((tweetNode) => ({
+          text: tweetNode.properties.value,
+        })),
       });
     }
 

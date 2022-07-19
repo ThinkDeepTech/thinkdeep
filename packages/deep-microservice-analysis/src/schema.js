@@ -6,6 +6,10 @@ const typeDefs = gql`
   type SentimentResult {
     utcDateTime: Date!
     comparative: Float!
+    tweets: [Tweet!]!
+  }
+
+  type Tweet {
     text: String!
   }
 
