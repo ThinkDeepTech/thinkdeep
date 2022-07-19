@@ -397,6 +397,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
             label="End Date"
             class="date-picker"
             placeholder="MM/DD/YYYY"
+            clear-button-visible
             @value-changed="${this._onSelectEndDate.bind(this)}"
           ></vaadin-date-picker>
         </div>
