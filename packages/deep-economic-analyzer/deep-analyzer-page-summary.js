@@ -66,8 +66,20 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       {
         variables: {
           economicEntities: [],
-          startDate: DEFAULT_START_DATE,
-          endDate: DEFAULT_END_DATE,
+          startDate: this._utcDateString(DEFAULT_START_DATE, {
+            hour: 0,
+            minute: 0,
+            second: 0,
+            millisecond: 0,
+          }),
+          endDate: DEFAULT_END_DATE
+            ? this._utcDateString(DEFAULT_END_DATE, {
+                hour: 23,
+                minute: 59,
+                second: 59,
+                millisecond: 999,
+              })
+            : DEFAULT_END_DATE,
         },
         noAutoSubscribe: true,
         onData: (data) => {
@@ -92,8 +104,20 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       {
         variables: {
           economicEntities: [],
-          startDate: DEFAULT_START_DATE,
-          endDate: DEFAULT_END_DATE,
+          startDate: this._utcDateString(DEFAULT_START_DATE, {
+            hour: 0,
+            minute: 0,
+            second: 0,
+            millisecond: 0,
+          }),
+          endDate: DEFAULT_END_DATE
+            ? this._utcDateString(DEFAULT_END_DATE, {
+                hour: 23,
+                minute: 59,
+                second: 59,
+                millisecond: 999,
+              })
+            : DEFAULT_END_DATE,
         },
         onData: ({subscriptionData}) => {
           const newSentiment = subscriptionData?.data?.updateSentiments;
@@ -420,9 +444,24 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     const selectedStartDate =
       this.shadowRoot.querySelector('#start-date').value;
 
+    let utcDate = selectedStartDate;
+    if (!utcDate) {
+      console.warn(
+        `An invalid start date was received. Falling back on the defaults.`
+      );
+      utcDate = DEFAULT_START_DATE;
+    }
+
+    utcDate = this._utcDateString(utcDate, {
+      hour: 0,
+      minute: 0,
+      second: 0,
+      millisecond: 0,
+    });
+
     const variables = {
       ...this._sentimentQueryController.variables,
-      startDate: selectedStartDate, // TODO: Incorporate date picker and verify/modify selection to work with that component.
+      startDate: utcDate,
     };
 
     this._updateSentimentControllers(variables);
@@ -436,13 +475,36 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     const selectedEndDate =
       this.shadowRoot.querySelector('#end-date').value || null;
 
+    const utcDate = selectedEndDate
+      ? this._utcDateString(selectedEndDate, {
+          hour: 23,
+          minute: 59,
+          second: 59,
+          millisecond: 999,
+        })
+      : null;
+
     const variables = {
       ...this._sentimentQueryController.variables,
-      endDate: selectedEndDate, // TODO: Incorporate date picker and verify/modify selection to work with that component.
+      endDate: utcDate,
     };
 
     this._updateSentimentControllers(variables);
     this._sentimentQueryController.executeQuery();
+  }
+
+  /**
+   * Convert date to utc string.
+   * @param {String} subject Date string.
+   * @param {Object} options Date transform options. I.e, { hour: <hour to set>, minute: <minute to set>, etc }.
+   * @return {String} UTC formatted date time.
+   */
+  _utcDateString(subject, options) {
+    const utcDate = moment.utc(subject);
+    if (Object.keys(options).length > 0) {
+      utcDate.set(options);
+    }
+    return utcDate.format();
   }
 
   _subscriptionClient;
@@ -576,7 +638,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
           label="Start Date"
           class="date-picker"
           placeholder="MM/DD/YYYY"
-          .value="${DEFAULT_START_DATE}"
+          value="${DEFAULT_START_DATE}"
           @value-changed="${this._onSelectStartDate.bind(this)}"
           required
         ></vaadin-date-picker>

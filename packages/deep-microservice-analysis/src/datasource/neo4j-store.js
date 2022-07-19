@@ -55,7 +55,7 @@ class Neo4jStore extends Neo4jDataSource {
       `
         MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED_ON]-> (dateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
         WHERE datetime($startDate) <= dateTime.value ${
-          !endDate ? `` : `<= datetime($endDate)`
+          !endDate ? `` : ` AND dateTime.value <= datetime($endDate)`
         }
         WITH dateTime, tweet, sentiment
         ORDER BY dateTime.value
