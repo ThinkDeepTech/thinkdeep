@@ -5,13 +5,14 @@ const resolvers = {
   Query: {
     getSentiments: async (
       _,
-      {economicEntities, startDate, endDate},
+      {economicEntities, startDate, endDate, limit},
       {dataSources, permissions}
     ) =>
       dataSources.analysisService.sentiments(
         economicEntities,
         startDate,
         endDate,
+        limit,
         permissions
       ),
   },

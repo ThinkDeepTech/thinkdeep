@@ -48,9 +48,10 @@ class Neo4jStore extends Neo4jDataSource {
    * @param {Object} economicEntity Subject for which sentiment will be read.
    * @param {String} startDate UTC date time.
    * @param {String} endDate UTC date time.
+   * @param {Number} [limit = 10] Number of sentiments to return.
    * @return {Object} Sentiment.
    */
-  async readSentiments(economicEntity, startDate, endDate) {
+  async readSentiments(economicEntity, startDate, endDate, limit = 10) {
     const databaseData = await this.run(
       `
         MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED_ON]-> (dateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
@@ -60,12 +61,14 @@ class Neo4jStore extends Neo4jDataSource {
         WITH dateTime, tweet, sentiment
         ORDER BY dateTime.value
         RETURN apoc.date.format(dateTime.value.epochMillis, 'ms', "yyyy-MM-dd'T'HH:mm:ss'Z'") as utcDateTime, collect(tweet) as tweets, avg(sentiment.comparative) as comparativeAvg
+        LIMIT $limit
       `,
       {
         entityName: economicEntity.name,
         entityType: economicEntity.type,
         startDate,
         endDate,
+        limit,
       }
     );
 

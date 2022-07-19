@@ -89,8 +89,6 @@ export default class DeepAnalyzerPageSummary extends LitElement {
           }
         },
         onError: (error) => {
-          // TODO
-          // this.sentimentDatas = this._cachedData() || [DEFAULT_SENTIMENT];
           console.error(
             `Fetch sentiments failed with error: ${JSON.stringify(error)}`
           );

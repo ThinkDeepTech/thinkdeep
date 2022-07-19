@@ -32,6 +32,7 @@ const typeDefs = gql`
       economicEntities: [EconomicEntityInput!]!
       startDate: Date!
       endDate: Date
+      limit: Int = 10
     ): [[SentimentResult!]!]!
   }
 `;
