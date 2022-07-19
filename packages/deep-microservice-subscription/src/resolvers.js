@@ -37,10 +37,10 @@ const resolvers = {
       subscribe: withFilter(
         () => pubsub.asyncIterator([`TWEET_SENTIMENT_COMPUTED`]),
         (payload, variables) => {
-          console.debug(`
-          Variables received in filter: \n${JSON.stringify(variables)}
-          Payload received in filter: \n${JSON.stringify(payload)}
-          `);
+          if (variables.endDate) {
+            return false;
+          }
+
           for (const economicEntity of variables.economicEntities) {
             if (
               identicalEconomicEntity(economicEntity, payload.economicEntity)
