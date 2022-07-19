@@ -44,13 +44,13 @@ class Neo4jStore extends Neo4jDataSource {
   }
 
   /**
-   * Read the sentiment.
+   * Read the sentiments.
    * @param {Object} economicEntity Subject for which sentiment will be read.
    * @param {String} startDate UTC date time.
    * @param {String} endDate UTC date time.
    * @return {Object} Sentiment.
    */
-  async readSentiment(economicEntity, startDate, endDate) {
+  async readSentiments(economicEntity, startDate, endDate) {
     const databaseData = await this.run(
       `
         MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED_ON]-> (dateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)

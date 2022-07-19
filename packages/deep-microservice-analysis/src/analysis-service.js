@@ -121,7 +121,7 @@ class AnalysisService {
   async _sentimentData(economicEntity, startDate, endDate) {
     // TODO: Input validity.
 
-    return this._neo4jDataStore.readSentiment(
+    return this._neo4jDataStore.readSentiments(
       economicEntity,
       startDate,
       endDate
@@ -143,12 +143,6 @@ class AnalysisService {
         await this._neo4jDataStore.readMostRecentSentiment(economicEntity)
       );
     }
-
-    this._logger.debug(`
-
-      Sentiment values read: ${JSON.stringify(results)}
-
-    `);
 
     return results;
   }
