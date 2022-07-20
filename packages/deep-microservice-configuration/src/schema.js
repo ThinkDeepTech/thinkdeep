@@ -1,24 +1,21 @@
 import {gql} from 'apollo-server';
+import {EconomicEntityFactory, EconomicEntityType} from '@thinkdeep/type';
+
+const economicEntity = EconomicEntityFactory.economicEntity(
+  'dummy',
+  EconomicEntityType.Business
+);
 
 const typeDefs = gql`
-  enum EconomicEntityType {
-    BUSINESS
-  }
 
   # The site configuration associated with a given user.
   type Configuration {
-    observedEconomicEntities: [EconomicEntity!]!
+    observedEconomicEntities: [${economicEntity.graphQLType()}!]!
   }
 
-  input EconomicEntityInput {
-    name: String!
-    type: EconomicEntityType!
-  }
+  ${economicEntity.graphQLTypeDefinition()}
 
-  type EconomicEntity {
-    name: String!
-    type: EconomicEntityType!
-  }
+  ${economicEntity.graphQLInputTypeDefinition()}
 
   extend type Mutation {
     # Fetch or create the site config.
@@ -26,7 +23,7 @@ const typeDefs = gql`
 
     updateConfiguration(
       userEmail: String!
-      observedEconomicEntities: [EconomicEntityInput!]!
+      observedEconomicEntities: [${economicEntity.graphQLInputType()}!]!
     ): Configuration!
   }
 `;

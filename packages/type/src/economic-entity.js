@@ -30,6 +30,17 @@ class EconomicEntity {
   }
 
   /**
+   * Convert entity type to a plain javascript object.
+   * @return {Object} Entity type represented as plain object.
+   */
+  toObject() {
+    return Object.freeze({
+      name: this.name,
+      type: this.type,
+    });
+  }
+
+  /**
    * Check whether the economic entity type is valid.
    * @return {Boolean} True if valid. False otherwise.
    */
@@ -84,4 +95,19 @@ class EconomicEntity {
   }
 }
 
-export {EconomicEntity};
+/**
+ * Check if economic entities are valid.
+ * @param {Array<EconomicEntity>} economicEntities Economic entities to validate.
+ * @return {Boolean} True if the economic entities are valid. False otherwise.
+ */
+const validEconomicEntities = (economicEntities) => {
+  for (const economicEntity of economicEntities) {
+    if (!economicEntity.valid || !economicEntity.valid()) {
+      throw new Error(`An invalid economic entity was received.`);
+    }
+  }
+
+  return true;
+};
+
+export {EconomicEntity, validEconomicEntities};

@@ -2647,8 +2647,10 @@
     "@kubernetes/client-node" "0.15"
     "@thinkdeep/k8s-manifest" "^2.0.1"
 
-"@thinkdeep/type@file:./packages/type":
+"@thinkdeep/type@file:packages/type":
   version "0.0.9-alpha.1"
+  dependencies:
+    moment "^2.29.4"
 
 "@tootallnate/once@1":
   version "1.1.2"

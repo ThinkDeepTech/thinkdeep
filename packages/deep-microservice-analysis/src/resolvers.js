@@ -1,4 +1,5 @@
 import {dateScalar} from './scalars.js';
+import {EconomicEntityFactory} from '@thinkdeep/type';
 
 const resolvers = {
   Date: dateScalar,
@@ -9,7 +10,7 @@ const resolvers = {
       {dataSources, permissions}
     ) =>
       dataSources.analysisService.sentiments(
-        economicEntities,
+        EconomicEntityFactory.economicEntities(economicEntities),
         startDate,
         endDate,
         permissions

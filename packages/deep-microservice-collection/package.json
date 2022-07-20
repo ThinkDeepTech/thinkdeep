@@ -31,6 +31,7 @@
     "@thinkdeep/attach-exit-handler": "^1.0.0",
     "@thinkdeep/get-public-ip": "^1.0.0",
     "@thinkdeep/k8s": "^5.0.7",
+    "@thinkdeep/type": "file:../type",
     "apollo-datasource-mongodb": "^0.5.2",
     "apollo-server": "3.8.0",
     "apollo-server-express": "^3.5.0",

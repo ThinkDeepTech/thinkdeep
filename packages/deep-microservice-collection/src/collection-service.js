@@ -1,8 +1,15 @@
+import {
+  EconomicEntityFactory,
+  validDate,
+  validEconomicEntities,
+} from '@thinkdeep/type';
 import {K8sCronJob} from './command/k8s-cron-job.js';
 import {K8sJob} from './command/k8s-job.js';
 import {validString} from './helpers.js';
 import {Operations} from './operation/operations.js';
 import {hasReadAllAccess} from './permissions.js';
+
+// TODO: Modify to use new EconomicEntityFactory. All locations.
 
 /**
  * Service handling data collection activity.
@@ -59,7 +66,7 @@ class CollectionService {
       .then(async () => {
         await this._microserviceSyncConsumer.subscribe({
           topic: 'DATA_COLLECTION_STARTED',
-          // fromBeginning: true,
+          fromBeginning: true,
         });
 
         await this._microserviceSyncConsumer.run({
@@ -88,16 +95,18 @@ class CollectionService {
               `Received kafka message: ${message.value.toString()}`
             );
 
-            const {
-              utcDateTime,
-              economicEntityName,
-              economicEntityType,
-              tweets,
-            } = JSON.parse(message.value.toString());
+            const eventData = JSON.parse(message.value.toString());
+
+            const utcDateTime = eventData.utcDateTime;
+            const economicEntity = EconomicEntityFactory.economicEntity(
+              eventData.economicEntity.name,
+              eventData.economicEntity.type
+            );
+            const tweets = eventData.tweets;
+
             await this._handleTweetsFetched(
               utcDateTime,
-              economicEntityName,
-              economicEntityType,
+              economicEntity,
               tweets
             );
           },
@@ -268,16 +277,24 @@ class CollectionService {
   /**
    * Handle the tweets fetched event.
    * @param {String} utcDateTime UTC date time.
-   * @param {String} entityName Economic entity name (i.e, 'Google').
-   * @param {String} entityType Economic entity type (i.e, 'BUSINESS').
+   * @param {Object} economicEntity Economic entity produced from economic entity factory.
    * @param {Array} tweets Array of tweet objects of the form { text: '...' }.
    */
-  async _handleTweetsFetched(utcDateTime, entityName, entityType, tweets) {
-    if (!validString(entityName)) return false;
+  async _handleTweetsFetched(utcDateTime, economicEntity, tweets) {
+    if (!validDate(utcDateTime)) {
+      throw new Error(`${utcDateTime} is an invalid date.`);
+    }
 
-    if (!validString(entityType)) return false;
+    if (!validEconomicEntities([economicEntity])) {
+      throw new Error(`Invalid economic entity supplied.`);
+    }
 
-    if (!Array.isArray(tweets) || tweets.length === 0) return false;
+    if (!Array.isArray(tweets) || tweets.length === 0) {
+      this._logger.warn(
+        `The tweets received were invalid: ${JSON.stringify(tweets)}`
+      );
+      return;
+    }
 
     this._logger.info(
       `Adding timeseries entry to tweet store with date ${utcDateTime}, tweets ${JSON.stringify(
@@ -287,8 +304,8 @@ class CollectionService {
 
     const created = await this._tweetStore.createTweets(
       utcDateTime,
-      entityName,
-      entityType,
+      economicEntity.name,
+      economicEntity.type,
       tweets
     );
 
@@ -297,14 +314,13 @@ class CollectionService {
     }
 
     const mostRecentData = await this._tweetStore.readRecentTweets(
-      entityName,
-      entityType,
+      economicEntity.name,
+      economicEntity.type,
       1
     );
 
     const event = {
-      economicEntityName: entityName,
-      economicEntityType: entityType,
+      economicEntity: economicEntity.toObject(),
       timeSeriesItems: mostRecentData,
     };
 

@@ -10,6 +10,9 @@
   "homepage": "https://github.com/ThinkDeepTech/thinkdeep#readme",
   "license": "GPL-3.0",
   "main": "src/index.js",
+  "dependencies": {
+    "moment": "^2.29.4"
+  },
   "directories": {
     "lib": "src",
     "test": "test"

@@ -30,7 +30,7 @@
     "@thinkdeep/apollo-datasource-neo4j": "^0.0.1-alpha.7",
     "@thinkdeep/attach-exit-handler": "^1.0.0",
     "@thinkdeep/get-public-ip": "^1.0.0",
-    "@thinkdeep/type": "file:./packages/type",
+    "@thinkdeep/type": "file:../type",
     "apollo-datasource-mongodb": "^0.5.2",
     "apollo-server": "3.8.0",
     "apollo-server-express": "^3.5.0",

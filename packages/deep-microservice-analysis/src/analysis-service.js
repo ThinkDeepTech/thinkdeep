@@ -1,5 +1,12 @@
 import {attachExitHandler} from '@thinkdeep/attach-exit-handler';
+import {
+  EconomicEntityFactory,
+  validDate,
+  validEconomicEntities,
+} from '@thinkdeep/type';
 import {hasReadAllAccess} from './permissions.js';
+
+// TODO: Modify entire project to use economic entity type object.
 
 /**
  * Service that applies business logic to data analysis operations for the application.
@@ -72,11 +79,17 @@ class AnalysisService {
           `Received kafka message: ${message.value.toString()}`
         );
 
-        const {economicEntityName, economicEntityType, timeSeriesItems} =
-          JSON.parse(message.value.toString());
+        const eventData = JSON.parse(message.value.toString());
+
+        const economicEntity = EconomicEntityFactory.economicEntity(
+          eventData.economicEntity.name,
+          eventData.economicEntity.type
+        );
+        const timeSeriesItems = eventData.timeSeriesItems;
+
         await this._computeSentiment(
-          economicEntityName,
-          economicEntityType,
+          economicEntity.name,
+          economicEntity.type,
           timeSeriesItems
         );
       },
@@ -93,9 +106,20 @@ class AnalysisService {
    * @return {Array} The formatted sentiment objects in array form or [].
    */
   async sentiments(economicEntities, startDate, endDate, permissions) {
-    if (!hasReadAllAccess(permissions)) return [];
+    if (!validEconomicEntities(economicEntities)) {
+      throw new Error(`An invalid economic entity was received.`);
+    }
 
-    // TODO: Input validation
+    if (!validDate(startDate)) {
+      throw new Error(`The start date ${startDate} is invalid.`);
+    }
+
+    if (!validDate(endDate)) {
+      throw new Error(`The end date ${endDate} is invalid.`);
+    }
+
+    // TODO: Move access checks to separate project.
+    if (!hasReadAllAccess(permissions)) return [];
 
     const results = [];
     for (const economicEntity of economicEntities) {
@@ -119,7 +143,17 @@ class AnalysisService {
    * @return {Object} Sentiment data.
    */
   async _sentimentData(economicEntity, startDate, endDate) {
-    // TODO: Input validity.
+    if (!validEconomicEntities([economicEntity])) {
+      throw new Error(`An invalid economic entity was received.`);
+    }
+
+    if (!validDate(startDate)) {
+      throw new Error(`The start date ${startDate} is invalid.`);
+    }
+
+    if (!validDate(endDate)) {
+      throw new Error(`The end date ${endDate} is invalid.`);
+    }
 
     return this._neo4jDataStore.readSentiments(
       economicEntity,
@@ -133,6 +167,10 @@ class AnalysisService {
    * @param {Array<Object>} economicEntities
    */
   async _mostRecentSentiments(economicEntities) {
+    if (!validEconomicEntities(economicEntities)) {
+      throw new Error(`An invalid economic entity was received.`);
+    }
+
     const results = [];
     for (const economicEntity of economicEntities) {
       this._logger.debug(
