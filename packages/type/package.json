@@ -1,0 +1,30 @@
+{
+  "name": "@thinkdeep/type",
+  "version": "0.0.9-alpha.1",
+  "description": "Types for the application.",
+  "keywords": [
+    "JavaScript",
+    "NodeJS"
+  ],
+  "author": "Hayden McParlane <hayden.mcparlane@gmail.com>",
+  "homepage": "https://github.com/ThinkDeepTech/thinkdeep#readme",
+  "license": "GPL-3.0",
+  "main": "src/index.js",
+  "directories": {
+    "lib": "src",
+    "test": "test"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThinkDeepTech/thinkdeep.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/ThinkDeepTech/thinkdeep/issues"
+  }
+}

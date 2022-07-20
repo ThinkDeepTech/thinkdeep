@@ -2647,6 +2647,9 @@
     "@kubernetes/client-node" "0.15"
     "@thinkdeep/k8s-manifest" "^2.0.1"
 
+"@thinkdeep/type@file:./packages/type":
+  version "0.0.9-alpha.1"
+
 "@tootallnate/once@1":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"

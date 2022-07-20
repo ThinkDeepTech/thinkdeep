@@ -1,4 +1,10 @@
 import {gql} from 'apollo-server';
+import {EconomicEntityType, EconomicEntityFactory} from '@thinkdeep/type';
+
+const economicEntity = EconomicEntityFactory.economicEntity(
+  'dummy',
+  EconomicEntityType.Business
+);
 
 const typeDefs = gql`
   scalar Date
@@ -13,23 +19,13 @@ const typeDefs = gql`
     text: String!
   }
 
-  enum EconomicEntityType {
-    BUSINESS
-  }
+  ${economicEntity.graphQLTypeDefinition()}
 
-  type EconomicEntity {
-    name: String!
-    type: EconomicEntityType!
-  }
-
-  input EconomicEntityInput {
-    name: String!
-    type: EconomicEntityType!
-  }
+  ${economicEntity.graphQLInputTypeDefinition()}
 
   extend type Query {
     getSentiments(
-      economicEntities: [EconomicEntityInput!]!
+      economicEntities: [${economicEntity.graphQLInputType()}!]!
       startDate: Date!
       endDate: Date
     ): [[SentimentResult!]!]!
