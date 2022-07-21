@@ -8,6 +8,10 @@ COPY src/ ./src
 
 COPY package.json ./
 
-RUN yarn install
+WORKDIR /usr/src
 
-COPY ../type/* node_modules/@thinkdeep/type
+COPY ../type/* ./type
+
+WORKDIR /usr/src/app
+
+RUN yarn install
