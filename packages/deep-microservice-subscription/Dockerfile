@@ -8,6 +8,8 @@ COPY src/ ./src
 
 COPY package.json ./
 
+COPY node_modules/* ./node_modules
+
 RUN yarn install
 
 EXPOSE $PORT

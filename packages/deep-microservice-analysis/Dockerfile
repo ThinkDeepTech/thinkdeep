@@ -12,6 +12,8 @@ COPY src/ ./src/
 
 COPY package.json $BASE_DIRECTORY/
 
+COPY node_modules/* ./node_modules
+
 RUN yarn install
 
 EXPOSE $PORT
