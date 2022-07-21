@@ -259,7 +259,7 @@ jobs:
 
     build_data_collector_dev:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/node:16.14.2'
 
       working_directory: ~/project
 
