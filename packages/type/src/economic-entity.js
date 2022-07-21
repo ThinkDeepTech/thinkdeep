@@ -13,7 +13,6 @@ class EconomicEntity {
   constructor(name, type) {
     this._name = name;
     this._type = type;
-    this._graphQLDependencyTypeDefinitionsInstalled = false;
   }
 
   /**
@@ -55,8 +54,6 @@ class EconomicEntity {
    */
   graphQLTypeDefinition() {
     return `
-            ${this.graphQLDependencyTypeDefinitions()}
-
             type ${this.graphQLType()} {
                 name: String!
                 type: ${EconomicEntityType.graphQLType()}!
@@ -70,7 +67,6 @@ class EconomicEntity {
    */
   graphQLInputTypeDefinition() {
     return `
-            ${this.graphQLDependencyTypeDefinitions()}
 
             input ${this.graphQLInputType()} {
                 name: String!
@@ -100,13 +96,7 @@ class EconomicEntity {
    * @return {String} GraphQL dependency type definitions or ''.
    */
   graphQLDependencyTypeDefinitions() {
-    const definitions = this._graphQLDependencyTypeDefinitionsInstalled
-      ? ''
-      : EconomicEntityType.graphQLTypeDefinition();
-
-    this._graphQLDependencyTypeDefinitionsInstalled = true;
-
-    return definitions;
+    return EconomicEntityType.graphQLTypeDefinition();
   }
 }
 

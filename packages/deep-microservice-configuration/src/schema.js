@@ -13,6 +13,8 @@ const typeDefs = gql`
     observedEconomicEntities: [${economicEntity.graphQLType()}!]!
   }
 
+  ${economicEntity.graphQLDependencyTypeDefinitions()}
+
   ${economicEntity.graphQLTypeDefinition()}
 
   ${economicEntity.graphQLInputTypeDefinition()}

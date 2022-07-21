@@ -19,6 +19,8 @@ const typeDefs = gql`
     text: String!
   }
 
+  ${economicEntity.graphQLDependencyTypeDefinitions()}
+
   ${economicEntity.graphQLTypeDefinition()}
 
   ${economicEntity.graphQLInputTypeDefinition()}

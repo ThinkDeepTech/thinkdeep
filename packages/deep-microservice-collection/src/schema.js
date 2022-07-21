@@ -1,5 +1,6 @@
 import {gql} from 'apollo-server';
 
+// TODO: Modify to use @thinkdeep/type
 const typeDefs = gql`
   enum EconomicEntityType {
     BUSINESS
