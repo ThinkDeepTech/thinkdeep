@@ -8,7 +8,7 @@ class EconomicEntityType {
    * @return {Boolean} True if the type is an economic entity type. False otherwise.
    */
   static valid(type) {
-    return type in this.types;
+    return this.types.includes(type);
   }
 
   /**
