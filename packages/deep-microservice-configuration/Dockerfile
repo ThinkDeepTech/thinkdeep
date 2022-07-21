@@ -8,7 +8,7 @@ COPY src/ ./src
 
 COPY package.json ./
 
-COPY node_modules/* ./node_modules
+COPY node_modules/* ./node_modules/
 
 RUN yarn install
 
