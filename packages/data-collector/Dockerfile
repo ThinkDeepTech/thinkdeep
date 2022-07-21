@@ -10,7 +10,7 @@ COPY package.json ./
 
 WORKDIR /usr/src
 
-COPY ../type/ ./type
+COPY ./symbolic_type/ ./type
 
 WORKDIR /usr/src/app
 
