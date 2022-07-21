@@ -84,9 +84,6 @@ jobs:
             docker_layer_caching: true
         - login_docker
         - run:
-            command: ln -s ../type ./symbolic_type
-            working_directory: ./packages/deep-microservice-analysis
-        - run:
             command: docker build -t thinkdeeptech/deep-microservice-analysis-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis-dev:latest --build-arg PORT=$MICROSERVICE_ANALYSIS_PORT .
             working_directory: ./packages/deep-microservice-analysis
         - run: docker push thinkdeeptech/deep-microservice-analysis-dev:${CIRCLE_BUILD_NUM}
@@ -255,9 +252,6 @@ jobs:
             docker_layer_caching: true
         - login_docker
         - run:
-            command: ln -s ../type ./symbolic_type
-            working_directory: ./packages/data-collector
-        - run:
             command: docker build -t thinkdeeptech/data-collector:${CIRCLE_BUILD_NUM} -t thinkdeeptech/data-collector:latest .
             working_directory: ./packages/data-collector
         - run: docker push thinkdeeptech/data-collector:${CIRCLE_BUILD_NUM}
@@ -275,6 +269,9 @@ jobs:
             version: 20.10.7
             docker_layer_caching: true
         - login_docker
+        - run:
+            command: ln -s ../type ./symbolic_type
+            working_directory: ./packages/data-collector
         - run:
             command: docker build -t thinkdeeptech/data-collector-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/data-collector-dev:latest .
             working_directory: ./packages/data-collector
