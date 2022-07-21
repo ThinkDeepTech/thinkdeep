@@ -66,7 +66,7 @@ jobs:
             docker_layer_caching: true
         - login_docker
         - run:
-            command: yarn add file:./packages/type
+            command: yarn install
             working_directory: ./packages/deep-microservice-analysis
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis:latest --build-arg PORT=$MICROSERVICE_ANALYSIS_PORT .
@@ -87,7 +87,7 @@ jobs:
             docker_layer_caching: true
         - login_docker
         - run:
-            command: yarn add file:./packages/type
+            command: yarn install
             working_directory: ./packages/deep-microservice-analysis
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-analysis-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis-dev:latest --build-arg PORT=$MICROSERVICE_ANALYSIS_PORT .
@@ -108,7 +108,7 @@ jobs:
             docker_layer_caching: true
         - login_docker
         - run:
-            command: yarn add file:./packages/type
+            command: yarn install
             working_directory: ./packages/deep-microservice-collection
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-collection:latest --build-arg PORT=$MICROSERVICE_COLLECTION_PORT .
@@ -130,7 +130,7 @@ jobs:
             docker_layer_caching: true
         - login_docker
         - run:
-            command: yarn add file:./packages/type
+            command: yarn install
             working_directory: ./packages/deep-microservice-collection
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-collection-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-collection-dev:latest --build-arg PORT=$MICROSERVICE_COLLECTION_PORT .
@@ -151,7 +151,7 @@ jobs:
             docker_layer_caching: true
         - login_docker
         - run:
-            command: yarn add file:./packages/type
+            command: yarn install
             working_directory: ./packages/deep-microservice-configuration
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-configuration:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-configuration:latest --build-arg PORT=$MICROSERVICE_CONFIGURATION_PORT .
@@ -172,7 +172,7 @@ jobs:
             docker_layer_caching: true
         - login_docker
         - run:
-            command: yarn add file:./packages/type
+            command: yarn install
             working_directory: ./packages/deep-microservice-configuration
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-configuration-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-configuration-dev:latest --build-arg PORT=$MICROSERVICE_CONFIGURATION_PORT .
@@ -232,7 +232,7 @@ jobs:
             docker_layer_caching: true
         - login_docker
         - run:
-            command: yarn add file:./packages/type
+            command: yarn install
             working_directory: ./packages/deep-microservice-subscription
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-subscription:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-subscription:latest --build-arg PORT=$MICROSERVICE_SUBSCRIPTION_PORT .
@@ -254,7 +254,7 @@ jobs:
             docker_layer_caching: true
         - login_docker
         - run:
-            command: yarn add file:./packages/type
+            command: yarn install
             working_directory: ./packages/deep-microservice-subscription
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-subscription-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-subscription-dev:latest --build-arg PORT=$MICROSERVICE_SUBSCRIPTION_PORT .
@@ -265,7 +265,7 @@ jobs:
 
     build_data_collector:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/node:16.14.2'
 
       working_directory: ~/project
 
@@ -276,7 +276,7 @@ jobs:
             docker_layer_caching: true
         - login_docker
         - run:
-            command: yarn add file:./packages/type
+            command: yarn install
             working_directory: ./packages/data-collector
         - run:
             command: docker build -t thinkdeeptech/data-collector:${CIRCLE_BUILD_NUM} -t thinkdeeptech/data-collector:latest .
@@ -297,7 +297,7 @@ jobs:
             docker_layer_caching: true
         - login_docker
         - run:
-            command: yarn add file:./packages/type
+            command: yarn install
             working_directory: ./packages/data-collector
         - run:
             command: docker build -t thinkdeeptech/data-collector-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/data-collector-dev:latest .

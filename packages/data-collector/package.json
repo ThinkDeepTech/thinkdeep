@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@thinkdeep/attach-exit-handler": "^1.0.0",
-    "@thinkdeep/type": "file:../type",
+    "@thinkdeep/type": "file:./../type",
     "commander": "^9.0.0",
     "kafkajs": "^2.1.0",
     "log4js": "^6.3.0",

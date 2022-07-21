@@ -10,11 +10,7 @@ COPY src/ ./src
 
 COPY package.json ./
 
-WORKDIR ${BASE_DIRECTORY}/..
-
-COPY ./node_modules/@thinkdeep/type ./type/
-
-WORKDIR ${BASE_DIRECTORY}
+COPY ./node_modules/@thinkdeep/type ../type/
 
 RUN yarn install
 
