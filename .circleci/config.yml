@@ -255,6 +255,9 @@ jobs:
             docker_layer_caching: true
         - login_docker
         - run:
+            command: ln -s ../type ./symbolic_type
+            working_directory: ./packages/data-collector
+        - run:
             command: docker build -t thinkdeeptech/data-collector:${CIRCLE_BUILD_NUM} -t thinkdeeptech/data-collector:latest .
             working_directory: ./packages/data-collector
         - run: docker push thinkdeeptech/data-collector:${CIRCLE_BUILD_NUM}
