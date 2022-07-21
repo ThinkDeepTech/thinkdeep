@@ -87,11 +87,7 @@ class AnalysisService {
         );
         const timeSeriesItems = eventData.timeSeriesItems;
 
-        await this._computeSentiment(
-          economicEntity.name,
-          economicEntity.type,
-          timeSeriesItems
-        );
+        await this._computeSentiment(economicEntity, timeSeriesItems);
       },
     });
   }
@@ -190,15 +186,13 @@ class AnalysisService {
    *
    * NOTE: This sends a kafka event after sentiment computation.
    *
-   * @param {String} economicEntityName Name of the economic entity (i.e, Google)
-   * @param {String} economicEntityType Type of economic entity (i.e, BUSINESS)
+   * @param {Object} economicEntity Economic entity object.
    * @param {Array} datas Consists of objects of the form [{ utcDateTime: <Number>, tweets: [{ text: 'tweet text' }]}]
    */
-  async _computeSentiment(economicEntityName, economicEntityType, datas) {
-    const economicEntity = {
-      name: economicEntityName,
-      type: economicEntityType,
-    };
+  async _computeSentiment(economicEntity, datas) {
+    if (!validEconomicEntities([economicEntity])) {
+      throw new Error(`An invalid economic entity was received.`);
+    }
 
     for (const data of datas) {
       for (const tweet of data.tweets) {
@@ -210,7 +204,7 @@ class AnalysisService {
 
         this._logger.info(
           `
-          Adding sentiment to graph for ${economicEntityType} ${economicEntityName}
+          Adding sentiment to graph for ${economicEntity.type} ${economicEntity.name}
           tweet ${text}
           comparative sentament ${sentiment.comparative}
           received ${data.utcDateTime}
