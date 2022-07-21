@@ -9,3 +9,5 @@ COPY src/ ./src
 COPY package.json ./
 
 RUN yarn install
+
+COPY ../type/* node_modules/@thinkdeep/type
