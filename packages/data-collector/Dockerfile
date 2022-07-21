@@ -8,10 +8,6 @@ COPY src/ ./src
 
 COPY package.json ./
 
-WORKDIR /usr/src
-
-COPY ./symbolic_type/ ./type
-
-WORKDIR /usr/src/app
+COPY node_modules/* ./
 
 RUN yarn install

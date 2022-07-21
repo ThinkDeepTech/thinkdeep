@@ -270,7 +270,7 @@ jobs:
             docker_layer_caching: true
         - login_docker
         - run:
-            command: ln -s ../type ./symbolic_type
+            command: npm install
             working_directory: ./packages/data-collector
         - run:
             command: docker build -t thinkdeeptech/data-collector-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/data-collector-dev:latest .
