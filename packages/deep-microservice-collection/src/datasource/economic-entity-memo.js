@@ -78,7 +78,7 @@ class EconomicEntityMemo extends MongoDataSource {
    * Read a specified entity from the memo.
    *
    * @param {Object} economicEntity Economic entity for which the check is being conducted.
-   * @return {Object} Economic entity.
+   * @return {Object | null} Economic entity.
    */
   async _readMemo(economicEntity) {
     if (!validEconomicEntities([economicEntity])) {
@@ -93,8 +93,11 @@ class EconomicEntityMemo extends MongoDataSource {
         .limit(1)
         .toArray();
 
-      this._logger.warn(`Entries received: ${JSON.stringify(entries)}`);
-      return EconomicEntityFactory.economicEntity(entries[0]);
+      this._logger.debug(`Entries received: ${JSON.stringify(entries)}`);
+
+      return entries[0]
+        ? EconomicEntityFactory.economicEntity(entries[0])
+        : null;
     } catch (e) {
       throw new Error(
         `Read memo failed for entity name: ${economicEntity.name}, entity type: ${economicEntity.type}. ${e.message}`
