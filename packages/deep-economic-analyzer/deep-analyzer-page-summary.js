@@ -389,8 +389,12 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   _onInput() {
     const companyName = this.shadowRoot.querySelector('mwc-textfield').value;
     this._collectEconomicDataMutationController.variables = {
-      economicEntityName: companyName,
-      economicEntityType: 'BUSINESS',
+      economicEntities: [
+        {
+          name: companyName,
+          type: 'BUSINESS',
+        },
+      ],
     };
   }
 
@@ -401,13 +405,12 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     const deepSiteConfig = this.shadowRoot.querySelector(
       'deep-site-configuration'
     );
+
+    const economicEntity =
+      this._collectEconomicDataMutationController.variables.economicEntities[0];
     deepSiteConfig.observeEconomicEntity({
-      name:
-        this._collectEconomicDataMutationController.variables
-          .economicEntityName || '',
-      type:
-        this._collectEconomicDataMutationController.variables
-          .economicEntityType || '',
+      name: economicEntity.name || '',
+      type: economicEntity.type || '',
     });
     deepSiteConfig.updateConfiguration();
     this._collectEconomicDataMutationController.mutate();

@@ -101,6 +101,24 @@ class EconomicEntity {
 }
 
 /**
+ * Convert economic entities to objects.
+ * @param {Array<EconomicEntity>} economicEntities
+ * @return {Array<Object>} Economic entities converted to objects.
+ */
+const objectifyEconomicEntities = (economicEntities) => {
+  if (!validEconomicEntities(economicEntities)) {
+    throw new Error(`Economic entities provided were invalid`);
+  }
+
+  const objects = [];
+  for (const economicEntity of economicEntities) {
+    objects.push(economicEntity.toObject());
+  }
+
+  return objects;
+};
+
+/**
  * Check if economic entities are valid.
  * @param {Array<EconomicEntity>} economicEntities Economic entities to validate.
  * @return {Boolean} True if the economic entities are valid. False otherwise.
@@ -115,4 +133,4 @@ const validEconomicEntities = (economicEntities) => {
   return true;
 };
 
-export {EconomicEntity, validEconomicEntities};
+export {EconomicEntity, validEconomicEntities, objectifyEconomicEntities};

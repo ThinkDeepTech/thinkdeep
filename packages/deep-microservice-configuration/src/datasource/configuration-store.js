@@ -1,4 +1,5 @@
 import {MongoDataSource} from 'apollo-datasource-mongodb';
+import {objectifyEconomicEntities} from '@thinkdeep/type';
 
 /**
  * Check whether the provided email is valid.
@@ -111,7 +112,9 @@ class ConfigurationStore extends MongoDataSource {
         {userEmail},
         {
           $set: {
-            observedEconomicEntities: configuration.observedEconomicEntities,
+            observedEconomicEntities: objectifyEconomicEntities(
+              configuration.observedEconomicEntities
+            ),
           },
         }
       );
