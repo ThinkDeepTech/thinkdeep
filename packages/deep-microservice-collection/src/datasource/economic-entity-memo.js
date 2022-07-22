@@ -60,11 +60,10 @@ class EconomicEntityMemo extends MongoDataSource {
    */
   async readEconomicEntities() {
     try {
+      const economicEntities = await this.collection.find().toArray();
+
       return EconomicEntityFactory.economicEntities(
-        await this.collection
-          .find()
-          .toArray()
-          .filter((val) => validEconomicEntities([val]))
+        economicEntities.filter((val) => validEconomicEntities([val]))
       );
     } catch (e) {
       this._logger.error(
