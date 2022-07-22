@@ -9,6 +9,15 @@ import {hasReadAllAccess} from './permissions.js';
 // TODO: Modify entire project to use economic entity type object.
 
 /**
+ * Determine if a value is a valid end date.
+ * @param {any} val
+ * @return {Boolean} True if valid. False otherwise.
+ */
+const validEndDate = (val) => {
+  return val !== null && !validDate(val);
+};
+
+/**
  * Service that applies business logic to data analysis operations for the application.
  */
 class AnalysisService {
@@ -110,7 +119,7 @@ class AnalysisService {
       throw new Error(`The start date ${startDate} is invalid.`);
     }
 
-    if (!validDate(endDate)) {
+    if (!validEndDate(endDate)) {
       throw new Error(`The end date ${endDate} is invalid.`);
     }
 
@@ -147,7 +156,7 @@ class AnalysisService {
       throw new Error(`The start date ${startDate} is invalid.`);
     }
 
-    if (!validDate(endDate)) {
+    if (!validEndDate(endDate)) {
       throw new Error(`The end date ${endDate} is invalid.`);
     }
 
