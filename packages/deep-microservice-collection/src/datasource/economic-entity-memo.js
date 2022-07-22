@@ -61,7 +61,7 @@ class EconomicEntityMemo extends MongoDataSource {
   async readEconomicEntities() {
     try {
       return EconomicEntityFactory.economicEntities(
-        this.collection
+        await this.collection
           .find()
           .toArray()
           .filter((val) => validEconomicEntities([val]))
@@ -93,7 +93,9 @@ class EconomicEntityMemo extends MongoDataSource {
         .limit(1)
         .toArray();
 
-      this._logger.debug(`Entries received: ${JSON.stringify(entries)}`);
+      this._logger.debug(
+        `Read memo entries received: ${JSON.stringify(entries)}`
+      );
 
       return entries[0]
         ? EconomicEntityFactory.economicEntity(entries[0])
