@@ -89,10 +89,12 @@ class EconomicEntityMemo extends MongoDataSource {
         .find(economicEntity.toObject())
         .limit(1)
         .toArray();
+
+      this._logger.warn(`Entries received: ${JSON.stringify(entries)}`);
       return EconomicEntityFactory.economicEntity(entries[0]);
     } catch (e) {
       throw new Error(
-        `Read memo failed for entity name: ${economicEntity.name}, entity type: ${economicEntity.type}. Error: ${e.message}`
+        `Read memo failed for entity name: ${economicEntity.name}, entity type: ${economicEntity.type}. ${e.message}`
       );
     }
   }
