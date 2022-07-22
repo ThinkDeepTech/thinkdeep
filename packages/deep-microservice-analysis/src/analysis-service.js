@@ -14,7 +14,7 @@ import {hasReadAllAccess} from './permissions.js';
  * @return {Boolean} True if valid. False otherwise.
  */
 const validEndDate = (val) => {
-  return val !== null && !validDate(val);
+  return val === null || validDate(val);
 };
 
 /**
