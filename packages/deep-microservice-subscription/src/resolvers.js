@@ -1,3 +1,4 @@
+import {EconomicEntityFactory} from '@thinkdeep/type';
 import {KafkaPubSub} from '@thinkdeep/graphql-kafka-subscriptions';
 import {withFilter} from 'graphql-subscriptions';
 import {hasReadAllAccess} from './permissions.js';
@@ -9,22 +10,10 @@ const pubsub = new KafkaPubSub({
   globalConfig: {}, // options passed directly to the consumer and producer
 });
 
-const identicalEconomicEntity = (economicEntity1, economicEntity2) => {
-  return (
-    !!economicEntity1.name &&
-    !!economicEntity1.type &&
-    economicEntity1.name === economicEntity2.name &&
-    economicEntity1.type === economicEntity2.type
-  );
-};
-
 const resolvers = {
   Subscription: {
     updateSentiments: {
       resolve: async (payload, _, {permissions}, __) => {
-        console.debug(
-          `Payload received in updateSentiments \n${JSON.stringify(payload)}`
-        );
         if (
           !hasReadAllAccess(permissions) ||
           Object.keys(payload.data || {}).length <= 0
@@ -41,10 +30,10 @@ const resolvers = {
             return false;
           }
 
-          for (const economicEntity of variables.economicEntities) {
-            if (
-              identicalEconomicEntity(economicEntity, payload.economicEntity)
-            ) {
+          for (const economicEntity of EconomicEntityFactory.economicEntities(
+            variables.economicEntities
+          )) {
+            if (economicEntity.equals(payload.economicEntity)) {
               return true;
             }
           }

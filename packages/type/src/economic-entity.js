@@ -30,6 +30,19 @@ class EconomicEntity {
   }
 
   /**
+   * Determine if an economic entity equals another.
+   * @param {EconomicEntity} target
+   * @return {Boolean} True if equivalent. False otherwise.
+   */
+  equals(target) {
+    return (
+      validEconomicEntities([this]) &&
+      this.name === target.name &&
+      this.type === target.type
+    );
+  }
+
+  /**
    * Convert entity type to a plain javascript object.
    * @return {Object} Entity type represented as plain object.
    */
