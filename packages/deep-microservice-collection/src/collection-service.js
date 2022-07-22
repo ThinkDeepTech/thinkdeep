@@ -5,7 +5,6 @@ import {
 } from '@thinkdeep/type';
 import {K8sCronJob} from './command/k8s-cron-job.js';
 import {K8sJob} from './command/k8s-job.js';
-import {validString} from './helpers.js';
 import {Operations} from './operation/operations.js';
 import {hasReadAllAccess} from './permissions.js';
 
@@ -72,8 +71,7 @@ class CollectionService {
             const msg = JSON.parse(message.value.toString());
 
             const economicEntity = EconomicEntityFactory.economicEntity(
-              msg.economicEntity.name,
-              msg.economicEntity.type
+              msg.economicEntity
             );
 
             this._logger.info(
@@ -99,8 +97,7 @@ class CollectionService {
 
             const utcDateTime = eventData.utcDateTime;
             const economicEntity = EconomicEntityFactory.economicEntity(
-              eventData.economicEntity.name,
-              eventData.economicEntity.type
+              eventData.economicEntity
             );
             const tweets = eventData.tweets;
 
@@ -114,15 +111,11 @@ class CollectionService {
 
         const economicEntities =
           await this._economicEntityMemo.readEconomicEntities();
-        for (const entry of economicEntities) {
+        for (const economicEntity of economicEntities) {
           this._logger.info(
-            `Starting data collection for ${entry.type} ${entry.name}`
+            `Starting data collection for ${economicEntity.toString()}`
           );
 
-          const economicEntity = EconomicEntityFactory.economicEntity(
-            entry.name,
-            entry.type
-          );
           await this._startDataCollection(economicEntity);
         }
       })
@@ -150,8 +143,7 @@ class CollectionService {
 
     for (const economicEntity of economicEntities) {
       const collectingData = await this._economicEntityMemo.collectingData(
-        economicEntity.name,
-        economicEntity.type
+        economicEntity
       );
 
       if (!collectingData) {
@@ -161,10 +153,7 @@ class CollectionService {
 
         await this._startDataCollection(economicEntity);
 
-        await this._economicEntityMemo.memoizeDataCollection(
-          economicEntity.name,
-          economicEntity.type
-        );
+        await this._economicEntityMemo.memoizeDataCollection(economicEntity);
 
         await this._emit('DATA_COLLECTION_STARTED', {
           economicEntity: economicEntity.toObject(),
@@ -173,31 +162,6 @@ class CollectionService {
     }
 
     return {success: true};
-  }
-
-  /**
-   * Get the tweets associated with the specified economic entity name and type.
-   * @param {String} economicEntityName - Name of the economic entity (i.e, 'Google').
-   * @param {String} economicEntityType - Type of the economic entity (i.e, 'BUSINESS').
-   * @param {Object} permissions - Permissions for the user making the request.
-   * @return {Array} - Tweets that are in the database or [].
-   */
-  async tweets(economicEntityName, economicEntityType, permissions) {
-    if (!validString(economicEntityName)) return [];
-
-    if (!validString(economicEntityType)) return [];
-
-    if (!hasReadAllAccess(permissions)) return [];
-
-    this._logger.debug(
-      `Fetching tweets for economic entity name ${economicEntityName}, type ${economicEntityType}`
-    );
-
-    return this._tweetStore.readRecentTweets(
-      economicEntityName,
-      economicEntityType,
-      10
-    );
   }
 
   /**
@@ -307,8 +271,7 @@ class CollectionService {
 
     const created = await this._tweetStore.createTweets(
       utcDateTime,
-      economicEntity.name,
-      economicEntity.type,
+      economicEntity,
       tweets
     );
 
@@ -317,8 +280,7 @@ class CollectionService {
     }
 
     const mostRecentData = await this._tweetStore.readRecentTweets(
-      economicEntity.name,
-      economicEntity.type,
+      economicEntity,
       1
     );
 

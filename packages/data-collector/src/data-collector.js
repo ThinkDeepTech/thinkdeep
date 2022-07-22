@@ -67,10 +67,10 @@ try {
   if (!EconomicEntityType.valid(options.entityType))
     throw new Error(`Entity type ${options.entityType} is invalid.`);
 
-  const economicEntity = EconomicEntityFactory.economicEntity(
-    options.entityName,
-    options.entityType
-  );
+  const economicEntity = EconomicEntityFactory.economicEntity({
+    name: options.entityName,
+    type: options.entityType,
+  });
 
   switch (options.operationType) {
     case 'fetch-tweets': {

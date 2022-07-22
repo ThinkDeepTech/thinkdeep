@@ -8,20 +8,21 @@ import {validString} from './string.js';
 class EconomicEntityFactory {
   /**
    * Get an economic entity.
-   * @param {String} name Name of the entity.
-   * @param {String} type EconomicEntityType string.
+   * @param {Object} obj Economic entity object representation of the form { name: <name string>, type: <economic entity type> }.
+   * @param {String} obj.name Name of the entity.
+   * @param {String} obj.type EconomicEntityType string.
    * @return {EconomicEntity} Immutable economic entity.
    */
-  static economicEntity(name, type) {
-    if (!validString(name)) {
-      throw new Error(`Name ${name} is invalid.`);
+  static economicEntity(obj) {
+    if (!validString(obj.name)) {
+      throw new Error(`Name ${obj.name} is invalid.`);
     }
 
-    if (!EconomicEntityType.valid(type)) {
-      throw new Error(`Type ${type} is not a valid economic entity type.`);
+    if (!EconomicEntityType.valid(obj.type)) {
+      throw new Error(`Type ${obj.type} is not a valid economic entity type.`);
     }
 
-    return Object.freeze(new EconomicEntity(name, type));
+    return Object.freeze(new EconomicEntity(obj.name, obj.type));
   }
 
   /**
@@ -36,7 +37,7 @@ class EconomicEntityFactory {
 
     const entities = [];
     for (const subject of subjects) {
-      entities.push(this.economicEntity(subject.name, subject.type));
+      entities.push(this.economicEntity(subject));
     }
 
     return entities;

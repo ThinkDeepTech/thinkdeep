@@ -41,6 +41,14 @@ class EconomicEntity {
   }
 
   /**
+   * Get the string representation of the economic entity.
+   * @return {String} String representation of the economic entity.
+   */
+  toString() {
+    return `economic entity: type ${this.type}, name ${this.name}`;
+  }
+
+  /**
    * Check whether the economic entity type is valid.
    * @return {Boolean} True if valid. False otherwise.
    */

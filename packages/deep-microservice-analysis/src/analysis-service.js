@@ -82,8 +82,7 @@ class AnalysisService {
         const eventData = JSON.parse(message.value.toString());
 
         const economicEntity = EconomicEntityFactory.economicEntity(
-          eventData.economicEntity.name,
-          eventData.economicEntity.type
+          eventData.economicEntity
         );
         const timeSeriesItems = eventData.timeSeriesItems;
 

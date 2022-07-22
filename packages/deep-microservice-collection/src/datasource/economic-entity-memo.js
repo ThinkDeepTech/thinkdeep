@@ -1,5 +1,5 @@
+import {EconomicEntityFactory, validEconomicEntities} from '@thinkdeep/type';
 import {MongoDataSource} from 'apollo-datasource-mongodb';
-import {validString} from '../helpers.js';
 
 /**
  * Provides access to economic entity memo.
@@ -19,50 +19,38 @@ class EconomicEntityMemo extends MongoDataSource {
   /**
    * Determine whether data is being collected.
    *
-   * @param {String} entityName Name of the economic entity (i.e, Google).
-   * @param {String} entityType Type of the economic entity (i.e, BUSINESS).
+   * @param {Object} economicEntity Economic entity for which the check is being conducted.
    * @return {Boolean} True if data is already being collected. False otherwise.
    */
-  async collectingData(entityName, entityType) {
-    if (!validString(entityName))
+  async collectingData(economicEntity) {
+    if (!validEconomicEntities([economicEntity])) {
       throw new Error(
-        `Entity name must be a valid string to memoize. Received: ${entityName}`
+        `Economic entity was invalid. Received: ${economicEntity.toString()}`
       );
+    }
 
-    if (!validString(entityType))
-      throw new Error(
-        `Entity type must be a valid string to memoize. Received: ${entityType}`
-      );
-
-    const entry = await this._readMemo(entityName, entityType);
+    const entry = await this._readMemo(economicEntity);
 
     return !!entry;
   }
 
   /**
    * Memoize an economic entity.
-   * @param {String} entityName Name of the economic entity (i.e, Google).
-   * @param {String} entityType Type of the economic entity (i.e, BUSINESS).
+   * @param {Object} economicEntity Economic entity for which the check is being conducted.
    */
-  async memoizeDataCollection(entityName, entityType) {
-    if (!validString(entityName))
+  async memoizeDataCollection(economicEntity) {
+    if (!validEconomicEntities([economicEntity])) {
       throw new Error(
-        `Entity name must be a valid string to memoize. Received: ${entityName}`
+        `Economic entity was invalid. Received: ${economicEntity.toString()}`
       );
+    }
 
-    if (!validString(entityType))
-      throw new Error(
-        `Entity type must be a valid string to memoize. Received: ${entityType}`
-      );
-
-    const collectingData = await this.collectingData(entityName, entityType);
+    const collectingData = await this.collectingData(economicEntity);
 
     if (!collectingData) {
-      this._logger.debug(
-        `Memoizing entity with name: ${entityName}, type: ${entityType}.`
-      );
+      this._logger.debug(`Memoizing ${economicEntity.toString()}.`);
 
-      await this.collection.insertOne({name: entityName, type: entityType});
+      await this.collection.insertOne(economicEntity.toObject());
     }
   }
 
@@ -72,10 +60,12 @@ class EconomicEntityMemo extends MongoDataSource {
    */
   async readEconomicEntities() {
     try {
-      return this.collection.find({}).toArray();
+      return EconomicEntityFactory.economicEntities(
+        this.collection.find({}).toArray()
+      );
     } catch (e) {
       this._logger.error(
-        `Economic entity read all failed. Received: ${e.message}`
+        `Economic entity read all failed. Error: ${e.message}`
       );
       return [];
     }
@@ -84,30 +74,25 @@ class EconomicEntityMemo extends MongoDataSource {
   /**
    * Read a specified entity from the memo.
    *
-   * @param {String} entityName Name of the economic entity (i.e, Google).
-   * @param {String} entityType Type of the economic entity (i.e, BUSINESS).
+   * @param {Object} economicEntity Economic entity for which the check is being conducted.
    * @return {Object} Economic entity.
    */
-  async _readMemo(entityName, entityType) {
-    if (!validString(entityName))
+  async _readMemo(economicEntity) {
+    if (!validEconomicEntities([economicEntity])) {
       throw new Error(
-        `Entity name must be a valid string to memoize. Received: ${entityName}`
+        `Economic entity was invalid. Received: ${economicEntity.toString()}`
       );
-
-    if (!validString(entityType))
-      throw new Error(
-        `Entity type must be a valid string to memoize. Received: ${entityType}`
-      );
+    }
 
     try {
       const entries = await this.collection
-        .find({name: entityName, type: entityType})
+        .find(economicEntity.toObject())
         .limit(1)
         .toArray();
-      return entries[0];
+      return EconomicEntityFactory.economicEntity(entries[0]);
     } catch (e) {
       throw new Error(
-        `Read memo failed for entity name: ${entityName}, entity type: ${entityType}. Error: ${e.message}`
+        `Read memo failed for entity name: ${economicEntity.name}, entity type: ${economicEntity.type}. Error: ${e.message}`
       );
     }
   }

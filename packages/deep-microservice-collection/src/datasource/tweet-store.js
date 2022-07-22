@@ -1,3 +1,4 @@
+import {validEconomicEntities} from '@thinkdeep/type';
 import {MongoDataSource} from 'apollo-datasource-mongodb';
 import moment from 'moment';
 
@@ -7,28 +8,20 @@ import moment from 'moment';
 class TweetStore extends MongoDataSource {
   /**
    * Read recent tweets from the mongo store.
-   * @param {String} economicEntityName - Name of the economic entity (i.e, 'Google').
-   * @param {String} economicEntityType - Type of the economic entity (i.e, 'BUSINESS').
+   * @param {Object} economicEntity Economic entity for which the check is being conducted.
    * @param {Number} numTweetsToReturn - Number of recent tweets to return.
    * @return {Array} - Tweets read from the database and formatted for the application or [].
    */
-  async readRecentTweets(
-    economicEntityName,
-    economicEntityType,
-    numTweetsToReturn
-  ) {
-    if (!economicEntityName || typeof economicEntityName !== 'string')
-      return [];
-
-    if (!economicEntityType || typeof economicEntityType !== 'string')
-      return [];
+  async readRecentTweets(economicEntity, numTweetsToReturn) {
+    if (!validEconomicEntities([economicEntity])) {
+      throw new Error(
+        `Economic entity was invalid. Received: ${economicEntity.toString()}`
+      );
+    }
 
     try {
       const result = await this.collection
-        .find({
-          economicEntityName: economicEntityName.toLowerCase(),
-          economicEntityType: economicEntityType.toLowerCase(),
-        })
+        .find({economicEntity: economicEntity.toObject()})
         .sort({utcDateTime: -1})
         .limit(numTweetsToReturn)
         .toArray();
@@ -46,30 +39,30 @@ class TweetStore extends MongoDataSource {
   /**
    * Create a timeseries entry in the database including tweets.
    * @param {String} utcDateTime UTC date time.
-   * @param {String} economicEntityName Name of the economic entity (i.e, 'Google')
-   * @param {String} economicEntityType Type of the economic entity (i.e, 'BUSINESS')
+   * @param {Object} economicEntity Economic entity for which the check is being conducted.
    * @param {Array} tweets The tweets to add to the database.
    * @return {Boolean} True if the operation is successful, false otherwise.
    */
-  async createTweets(
-    utcDateTime,
-    economicEntityName,
-    economicEntityType,
-    tweets
-  ) {
+  async createTweets(utcDateTime, economicEntity, tweets) {
+    if (!validEconomicEntities([economicEntity])) {
+      throw new Error(
+        `Economic entity was invalid. Received: ${economicEntity.toString()}`
+      );
+    }
+
     try {
       await this.collection.insertOne({
         utcDateTime: moment.utc(utcDateTime).toDate(),
-        economicEntityName: economicEntityName.toLowerCase(),
-        economicEntityType: economicEntityType.toLowerCase(),
+        economicEntity: economicEntity.toObject(),
         tweets,
       });
       return true;
     } catch (e) {
       console.log(`
                 Database insertion failed for:
-                    economicEntityName: ${economicEntityName}
-                    economicEntityType: ${economicEntityType}
+                    economicEntity:
+                      name ${economicEntity.name}
+                      type ${economicEntity.type}
                     tweets: ${JSON.stringify(tweets)}
 
                     error: ${e.message}
