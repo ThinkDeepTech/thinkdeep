@@ -9,8 +9,6 @@ import {validString} from './helpers.js';
 import {Operations} from './operation/operations.js';
 import {hasReadAllAccess} from './permissions.js';
 
-// TODO: Modify to use new EconomicEntityFactory. All locations.
-
 /**
  * Service handling data collection activity.
  */
@@ -71,16 +69,18 @@ class CollectionService {
 
         await this._microserviceSyncConsumer.run({
           eachMessage: async ({message}) => {
-            const {economicEntityName, economicEntityType} = JSON.parse(
-              message.value.toString()
+            const msg = JSON.parse(message.value.toString());
+
+            const economicEntity = EconomicEntityFactory.economicEntity(
+              msg.economicEntity.name,
+              msg.economicEntity.type
             );
+
             this._logger.info(
-              `Kafka message received. Starting data collection for ${economicEntityType} ${economicEntityName}.`
+              `Kafka message received. Starting data collection for ${economicEntity.type} ${economicEntity.name}.`
             );
-            await this._startDataCollection(
-              economicEntityName,
-              economicEntityType
-            );
+
+            await this._startDataCollection(economicEntity);
           },
         });
 
@@ -114,14 +114,16 @@ class CollectionService {
 
         const economicEntities =
           await this._economicEntityMemo.readEconomicEntities();
-        for (const economicEntity of economicEntities) {
+        for (const entry of economicEntities) {
           this._logger.info(
-            `Starting data collection for ${economicEntity.type} ${economicEntity.name}`
+            `Starting data collection for ${entry.type} ${entry.name}`
           );
-          await this._startDataCollection(
-            economicEntity.name,
-            economicEntity.type
+
+          const economicEntity = EconomicEntityFactory.economicEntity(
+            entry.name,
+            entry.type
           );
+          await this._startDataCollection(economicEntity);
         }
       })
       .catch((reason) => {
@@ -135,39 +137,39 @@ class CollectionService {
 
   /**
    * Begin data collection related to the specified entity name and type.
-   * @param {String} entityName - Name of the economic entity (i.e, 'Google').
-   * @param {String} entityType - Type of the economic entity (i.e, 'BUSINESS').
+   * @param {Array<Object>} economicEntities Economic entities for which to start collecting data.
    * @param {Object} permissions - Permissions for the user making the request.
    * @return {Object}
    */
-  async collectEconomicData(entityName, entityType, permissions) {
-    if (!validString(entityName)) return {success: false};
-
-    if (!validString(entityType)) return {success: false};
+  async collectEconomicData(economicEntities, permissions) {
+    if (!validEconomicEntities(economicEntities)) {
+      throw new Error(`Economic entities were invalid.`);
+    }
 
     if (!hasReadAllAccess(permissions)) return {success: false};
 
-    this._logger.debug(
-      `Collecting economic data for name: ${entityName}, type: ${entityType}`
-    );
-
-    const collectingData = await this._economicEntityMemo.collectingData(
-      entityName,
-      entityType
-    );
-
-    if (!collectingData) {
-      await this._startDataCollection(entityName, entityType);
-
-      await this._economicEntityMemo.memoizeDataCollection(
-        entityName,
-        entityType
+    for (const economicEntity of economicEntities) {
+      const collectingData = await this._economicEntityMemo.collectingData(
+        economicEntity.name,
+        economicEntity.type
       );
 
-      await this._emit('DATA_COLLECTION_STARTED', {
-        economicEntityName: entityName,
-        economicEntityType: entityType,
-      });
+      if (!collectingData) {
+        this._logger.debug(
+          `Collecting economic data for ${economicEntity.type} ${economicEntity.name}`
+        );
+
+        await this._startDataCollection(economicEntity);
+
+        await this._economicEntityMemo.memoizeDataCollection(
+          economicEntity.name,
+          economicEntity.type
+        );
+
+        await this._emit('DATA_COLLECTION_STARTED', {
+          economicEntity: economicEntity.toObject(),
+        });
+      }
     }
 
     return {success: true};
@@ -200,20 +202,21 @@ class CollectionService {
 
   /**
    * Start data collection for the specified entity name and type.
-   * @param {String} entityName - Name of the economic entity (i.e, 'Google')
-   * @param {String} entityType - Type of the economic entity (i.e, 'BUSINESS')
+   * @param {Object} economicEntity Economic entity for which data should start to be collected.
    */
-  async _startDataCollection(entityName, entityType) {
-    if (!validString(entityName)) return;
+  async _startDataCollection(economicEntity) {
+    if (!validEconomicEntities([economicEntity])) {
+      throw new Error(`Economic entity is invalid.`);
+    }
 
-    if (!validString(entityType)) return;
-
-    const key = `${entityName}:${entityType}`;
+    const key = `${economicEntity.name}:${economicEntity.type}`;
     if (this._commander.registered(key)) return;
 
-    this._logger.info(`Executing commands for ${entityName}, ${entityType}`);
+    this._logger.info(
+      `Executing commands for ${economicEntity.type} ${economicEntity.name}`
+    );
 
-    const commands = this._commands(entityName, entityType);
+    const commands = this._commands(economicEntity.name, economicEntity.type);
 
     await this._commander.execute(key, commands);
   }

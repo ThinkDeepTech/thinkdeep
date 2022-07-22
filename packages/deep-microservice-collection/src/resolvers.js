@@ -1,13 +1,14 @@
+import {EconomicEntityFactory} from '@thinkdeep/type';
+
 const resolvers = {
   Mutation: {
     collectEconomicData: async (
       _,
-      {economicEntityName, economicEntityType},
+      {economicEntities},
       {dataSources, permissions}
     ) =>
       dataSources.collectionService.collectEconomicData(
-        economicEntityName,
-        economicEntityType,
+        EconomicEntityFactory.economicEntities(economicEntities),
         permissions
       ),
   },

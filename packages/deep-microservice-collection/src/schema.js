@@ -1,10 +1,16 @@
 import {gql} from 'apollo-server';
+import {EconomicEntityFactory, EconomicEntityType} from '@thinkdeep/type';
 
-// TODO: Modify to use @thinkdeep/type
+const economicEntity = EconomicEntityFactory.economicEntity(
+  'dummy',
+  EconomicEntityType.Business
+);
+
 const typeDefs = gql`
-  enum EconomicEntityType {
-    BUSINESS
-  }
+
+  ${economicEntity.graphQLDependencyTypeDefinitions()}
+
+  ${economicEntity.graphQLInputTypeDefinition()}
 
   type CollectEconomicDataResponse {
     success: Boolean!
@@ -12,8 +18,7 @@ const typeDefs = gql`
 
   extend type Mutation {
     collectEconomicData(
-      economicEntityName: String!
-      economicEntityType: EconomicEntityType!
+      economicEntities: [${economicEntity.graphQLInputType()}!]!
     ): CollectEconomicDataResponse!
   }
 `;
