@@ -1,5 +1,9 @@
 import {MongoDataSource} from 'apollo-datasource-mongodb';
-import {objectifyEconomicEntities} from '@thinkdeep/type';
+import {
+  EconomicEntityFactory,
+  objectifyEconomicEntities,
+  validEconomicEntities,
+} from '@thinkdeep/type';
 
 /**
  * Check whether the provided email is valid.
@@ -19,7 +23,8 @@ const validConfiguration = (configuration) => {
   return (
     !!configuration &&
     !!configuration?.observedEconomicEntities &&
-    !!Array.isArray(configuration?.observedEconomicEntities)
+    !!Array.isArray(configuration?.observedEconomicEntities) &&
+    validEconomicEntities(configuration?.observedEconomicEntities)
   );
 };
 
@@ -61,7 +66,13 @@ class ConfigurationStore extends MongoDataSource {
       );
 
     try {
-      await this.collection.insertOne({userEmail, ...configuration});
+      await this.collection.insertOne({
+        userEmail,
+        ...configuration,
+        observedEconomicEntities: objectifyEconomicEntities(
+          configuration.observedEconomicEntities
+        ),
+      });
     } catch (e) {
       throw new Error(`Configuration insertion failed: ${e.message}`);
     }
@@ -83,7 +94,7 @@ class ConfigurationStore extends MongoDataSource {
         .find({userEmail})
         .limit(1)
         .toArray();
-      return configurations[0];
+      return this._reduceConfigurations(configurations)[0];
     } catch (e) {
       throw new Error(`Configuration read failed: ${e.message}`);
     }
@@ -121,6 +132,25 @@ class ConfigurationStore extends MongoDataSource {
     } catch (e) {
       throw new Error(`Configuration update failed: ${e.message}`);
     }
+  }
+
+  /**
+   * Reduce the configuration.
+   * @param {Array<Object>} configurations
+   * @return {Array<Object>} Reduced configurations.
+   */
+  _reduceConfigurations(configurations) {
+    const results = [];
+    for (const configuration of configurations) {
+      results.push({
+        ...configuration,
+        observedEconomicEntities: EconomicEntityFactory.economicEntities(
+          configuration.observedEconomicEntities
+        ),
+      });
+    }
+
+    return results;
   }
 }
 

@@ -50,7 +50,7 @@ class EconomicEntityMemo extends MongoDataSource {
     if (!collectingData) {
       this._logger.debug(`Memoizing ${economicEntity.toString()}.`);
 
-      await this.collection.insertOne(economicEntity.toObject());
+      await this.collection.insertOne({...economicEntity.toObject()});
     }
   }
 
