@@ -63,7 +63,9 @@ class EconomicEntityMemo extends MongoDataSource {
       const economicEntities = await this.collection.find().toArray();
 
       return EconomicEntityFactory.economicEntities(
-        economicEntities.filter((val) => validEconomicEntities([val]))
+        economicEntities.filter((val) =>
+          EconomicEntityFactory.economicEntity(val).valid()
+        )
       );
     } catch (e) {
       this._logger.error(
