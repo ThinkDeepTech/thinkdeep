@@ -1,7 +1,9 @@
 import {
   EconomicEntityFactory,
+  EconomicEntityType,
   validDate,
   validEconomicEntities,
+  validString,
 } from '@thinkdeep/type';
 import {K8sCronJob} from './command/k8s-cron-job.js';
 import {K8sJob} from './command/k8s-job.js';
@@ -180,20 +182,24 @@ class CollectionService {
       `Executing commands for ${economicEntity.type} ${economicEntity.name}`
     );
 
-    const commands = this._commands(economicEntity.name, economicEntity.type);
+    const commands = this._commands(economicEntity);
 
     await this._commander.execute(key, commands);
   }
 
   /**
    * Fetch the commands associated with the economic entity type.
-   * @param {String} entityName - Name of the economic entity (i.e, 'Google').
-   * @param {String} entityType - Economic entity type (i.e, 'BUSINESS').
-   * @return {Array} - Array of command objects to execute for data collection.
+   * @param {Object} economicEntity Economic entity for which the check is being conducted.
+   * @return {Array} Array of command objects to execute for data collection.
    */
-  _commands(entityName, entityType) {
-    const type = entityType.toLowerCase();
-    if (type === 'business') {
+  _commands(economicEntity) {
+    if (!validEconomicEntities([economicEntity])) {
+      throw new Error(
+        `Economic entity was invalid. Received: ${economicEntity.toString()}`
+      );
+    }
+
+    if (economicEntity.type === EconomicEntityType.Business) {
       const namespace = process.env.NAMESPACE;
       if (!namespace) {
         throw new Error(
@@ -201,11 +207,17 @@ class CollectionService {
         );
       }
 
-      const kababCaseName = entityName.toLowerCase().split(' ').join('-');
-      const kababCaseType = entityType.toLowerCase().split(' ').join('-');
+      const kababCaseName = economicEntity.name
+        .toLowerCase()
+        .split(' ')
+        .join('-');
+      const kababCaseType = economicEntity.type
+        .toLowerCase()
+        .split(' ')
+        .join('-');
       const name = `fetch-tweets-${kababCaseName}-${kababCaseType}`;
 
-      const fetchTweets = Operations.FetchTweets(entityName, entityType);
+      const fetchTweets = Operations.FetchTweets(economicEntity);
 
       const fetchTweetsOnSchedule = new K8sCronJob(
         {
@@ -329,6 +341,10 @@ class CollectionService {
    * @param {Object} event Event data.
    */
   async _emit(eventName, event) {
+    if (!validString(eventName)) {
+      throw new Error(`The event name ${eventName} is invalid.`);
+    }
+
     await this._producer.send({
       topic: eventName,
       messages: [{value: JSON.stringify(event)}],

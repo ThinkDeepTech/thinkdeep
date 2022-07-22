@@ -5,22 +5,20 @@ import {Operation} from './operation.js';
  */
 class DataCollector extends Operation {
   /**
-   * @param {String} entityName Name of the economic entity (i.e, Google).
-   * @param {String} entityType Type of the economic entity (i.e, BUSINESS).
+   * @param {Object} economicEntity Economic entity subject.
    * @param {String} operationType Specific operation to execute (i.e, fetch-tweets).
    * @param {String} [imageName = process.env.DATA_COLLECTOR_IMAGE_NAME] Name of the image on which operation will execute.
    */
   constructor(
-    entityName,
-    entityType,
+    economicEntity,
     operationType,
     imageName = process.env.DATA_COLLECTOR_IMAGE_NAME
   ) {
     super();
 
     this._imageName = imageName;
-    this._entityName = entityName;
-    this._entityType = entityType;
+    this._entityName = economicEntity.name;
+    this._entityType = economicEntity.type;
     this._operationType = operationType;
   }
 
