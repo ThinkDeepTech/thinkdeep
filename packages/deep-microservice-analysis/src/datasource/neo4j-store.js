@@ -1,4 +1,14 @@
 import {Neo4jDataSource} from '@thinkdeep/apollo-datasource-neo4j';
+import {validDate, validEconomicEntities} from '@thinkdeep/type';
+
+/**
+ * Determine if a value is a valid end date.
+ * @param {any} val
+ * @return {Boolean} True if valid. False otherwise.
+ */
+const validEndDate = (val) => {
+  return val === null || validDate(val);
+};
 
 /**
  * Provides access to neo4j.
@@ -10,15 +20,9 @@ class Neo4jStore extends Neo4jDataSource {
    * @param {Array<Object>} datas Array of the form [{ utcDateTime: <UTC date time string>, tweet: <tweet>, sentiment: <sentiment> }]
    */
   async addSentiments(economicEntity, datas) {
-    if (
-      Object.keys(economicEntity).length <= 0 ||
-      !economicEntity.name ||
-      !economicEntity.type
-    ) {
+    if (!validEconomicEntities([economicEntity])) {
       throw new Error(
-        `Invalid economic entity received. name and type are required fields. Received: ${JSON.stringify(
-          economicEntity
-        )}`
+        `Invalid economic entity received:\n${JSON.stringify(economicEntity)}`
       );
     }
 
@@ -27,7 +31,7 @@ class Neo4jStore extends Neo4jDataSource {
     }
 
     for (const data of datas) {
-      if (!data.utcDateTime) {
+      if (!validDate(data.utcDateTime)) {
         throw new Error(
           `A UTC date time is required. Received ${data.utcDateTime}`
         );
@@ -51,6 +55,20 @@ class Neo4jStore extends Neo4jDataSource {
    * @return {Object} Sentiment.
    */
   async readSentiments(economicEntity, startDate, endDate) {
+    if (!validEconomicEntities([economicEntity])) {
+      throw new Error(
+        `Invalid economic entity received:\n${JSON.stringify(economicEntity)}`
+      );
+    }
+
+    if (!validDate(startDate)) {
+      throw new Error(`The start date ${startDate} is invalid.`);
+    }
+
+    if (!validEndDate(endDate)) {
+      throw new Error(`The end date ${endDate} is invalid.`);
+    }
+
     const databaseData = await this.run(
       `
         MATCH (:EconomicEntity { name: $entityName, type: $entityType}) -[:OPERATED_ON]-> (dateTime:DateTime) -[:RECEIVED_DATA]-> (tweet:Data { type: "tweet" }) -[:RECEIVED_MEASUREMENT]-> (sentiment:Sentiment)
@@ -78,6 +96,12 @@ class Neo4jStore extends Neo4jDataSource {
    * @return {Object} Sentiment.
    */
   async readMostRecentSentiment(economicEntity) {
+    if (!validEconomicEntities([economicEntity])) {
+      throw new Error(
+        `Invalid economic entity received:\n${JSON.stringify(economicEntity)}`
+      );
+    }
+
     // TODO: Use functions to return query string components that are shared among functions.
     const databaseData = await this.run(
       `
@@ -121,13 +145,17 @@ class Neo4jStore extends Neo4jDataSource {
   _reduceSentimentGraph(databaseData) {
     const results = [];
     for (const record of databaseData.records) {
-      results.push({
-        utcDateTime: record._fields[record._fieldLookup.utcDateTime],
-        comparative: record._fields[record._fieldLookup.comparativeAvg],
-        tweets: record._fields[record._fieldLookup.tweets].map((tweetNode) => ({
-          text: tweetNode.properties.value,
-        })),
-      });
+      results.push(
+        Object.freeze({
+          utcDateTime: record._fields[record._fieldLookup.utcDateTime],
+          comparative: record._fields[record._fieldLookup.comparativeAvg],
+          tweets: record._fields[record._fieldLookup.tweets].map(
+            (tweetNode) => ({
+              text: tweetNode.properties.value,
+            })
+          ),
+        })
+      );
     }
 
     return results;
@@ -140,21 +168,15 @@ class Neo4jStore extends Neo4jDataSource {
    * @param {Object} data Object of the form { tweet: <tweet>, sentiment: <sentiment> }
    */
   async _addSentiment(economicEntity, utcDateTime, data) {
-    if (!utcDateTime) {
+    if (!validEconomicEntities([economicEntity])) {
       throw new Error(
-        `A UTC date time must be included. Received ${utcDateTime}`
+        `Invalid economic entity received:\n${JSON.stringify(economicEntity)}`
       );
     }
 
-    if (
-      Object.keys(economicEntity).length <= 0 ||
-      !economicEntity.name ||
-      !economicEntity.type
-    ) {
+    if (!validDate(utcDateTime)) {
       throw new Error(
-        `Invalid economic entity received. name and type are required fields. Received: ${JSON.stringify(
-          economicEntity
-        )}`
+        `A UTC date time must be included. Received ${utcDateTime}`
       );
     }
 
@@ -199,15 +221,9 @@ class Neo4jStore extends Neo4jDataSource {
    * @param {Object} economicEntity Entity of the form { name: <entity name>, type: <entity type> }, i.e, { name: 'Google', type: 'BUSINESS' }.
    */
   async _addEconomicEntity(economicEntity) {
-    if (
-      Object.keys(economicEntity).length <= 0 ||
-      !economicEntity.name ||
-      !economicEntity.type
-    ) {
+    if (!validEconomicEntities([economicEntity])) {
       throw new Error(
-        `Invalid economic entity received. name and type are required fields. Received: ${JSON.stringify(
-          economicEntity
-        )}`
+        `Invalid economic entity received:\n${JSON.stringify(economicEntity)}`
       );
     }
 
@@ -229,21 +245,15 @@ class Neo4jStore extends Neo4jDataSource {
    * @param {String} utcDateTime UTC date time string.
    */
   async _addDateToEconomicEntity(economicEntity, utcDateTime) {
-    if (!utcDateTime) {
+    if (!validDate(utcDateTime)) {
       throw new Error(
         `A UTC date time must be included. Received ${utcDateTime}`
       );
     }
 
-    if (
-      Object.keys(economicEntity).length <= 0 ||
-      !economicEntity.name ||
-      !economicEntity.type
-    ) {
+    if (!validEconomicEntities([economicEntity])) {
       throw new Error(
-        `Invalid economic entity received. name and type are required fields. Received: ${JSON.stringify(
-          economicEntity
-        )}`
+        `Invalid economic entity received:\n${JSON.stringify(economicEntity)}`
       );
     }
 

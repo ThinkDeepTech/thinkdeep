@@ -7,7 +7,6 @@
 // chai.use(sinonChai);
 
 // describe('analysis-service', () => {
-//   let mongoDataStore;
 //   let sentimentLib;
 //   let logger;
 //   let kafkaClient;
@@ -17,10 +16,6 @@
 //   let producer;
 //   let subject;
 //   beforeEach(() => {
-//     mongoDataStore = {
-//       readMostRecentSentiments: sinon.stub(),
-//       createSentiments: sinon.stub(),
-//     };
 //     sentimentLib = {
 //       analyze: sinon.stub(),
 //     };
@@ -53,7 +48,6 @@
 //     };
 //     neo4jDataStore = {};
 //     subject = new AnalysisService(
-//       mongoDataStore,
 //       neo4jDataStore,
 //       sentimentLib,
 //       kafkaClient,
@@ -517,7 +511,7 @@
 
 //       const sendArg = producer.send.getCall(0).args[0];
 //       const sentEvent = JSON.parse(sendArg.messages[0].value);
-//       expect(sendArg.topic).to.equal('TWEET_SENTIMENT_COMPUTED');
+//       expect(sendArg.topic).to.equal('SENTIMENT_COMPUTED');
 //       expect(sentEvent.economicEntityName).to.equal(economicEntityName);
 //       expect(sentEvent.economicEntityType).to.equal(economicEntityType);
 //       expect(sentEvent.sentiments[0].score).to.equal(

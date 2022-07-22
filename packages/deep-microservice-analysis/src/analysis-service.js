@@ -3,10 +3,9 @@ import {
   EconomicEntityFactory,
   validDate,
   validEconomicEntities,
+  validString,
 } from '@thinkdeep/type';
 import {hasReadAllAccess} from './permissions.js';
-
-// TODO: Modify entire project to use economic entity type object.
 
 /**
  * Determine if a value is a valid end date.
@@ -26,20 +25,12 @@ class AnalysisService {
    *
    * NOTE: The parameters below are injected because that improves testability of the codebase.
    *
-   * @param {Object} mongoDataStore - MongoDB data store to use.
    * @param {Object} neo4jDataStore - Neo4j data store to use.
    * @param {Object} sentimentLib - Library to use for sentiment analysis. This is an instance of Sentiment from 'sentiment' package.
    * @param {Object} kafkaClient - KafkaJS client to use.
    * @param {Object} logger - Logger to use.
    */
-  constructor(
-    mongoDataStore,
-    neo4jDataStore,
-    sentimentLib,
-    kafkaClient,
-    logger
-  ) {
-    this._mongoDataStore = mongoDataStore;
+  constructor(neo4jDataStore, sentimentLib, kafkaClient, logger) {
     this._neo4jDataStore = neo4jDataStore;
     this._sentimentLib = sentimentLib;
     this._kafkaClient = kafkaClient;
@@ -73,15 +64,15 @@ class AnalysisService {
 
     await this._topicCreation([
       {topic: 'TWEETS_COLLECTED', replicationFactor: 1},
-      {topic: 'TWEET_SENTIMENT_COMPUTED', replicationFactor: 1},
+      {topic: 'SENTIMENT_COMPUTED', replicationFactor: 1},
     ]);
 
-    this._logger.info(`Subscribing to TWEETS_COLLECTED topic`);
+    this._logger.debug(`Subscribing to TWEETS_COLLECTED topic`);
     await this._consumer.subscribe({
       topic: 'TWEETS_COLLECTED',
     });
 
-    this._logger.info(`Running consumer handlers on each message.`);
+    this._logger.debug(`Running consumer handlers on each message.`);
     await this._consumer.run({
       eachMessage: async ({message}) => {
         this._logger.debug(
@@ -144,7 +135,7 @@ class AnalysisService {
    * Get the sentiment.
    * @param {Object} economicEntity Object of the form { name: <entity name>, type: <entity type> }.
    * @param {String} startDate UTC date time.
-   * @param {String} endDate UTC date time.
+   * @param {String | null} endDate UTC date time.
    * @return {Object} Sentiment data.
    */
   async _sentimentData(economicEntity, startDate, endDate) {
@@ -191,7 +182,7 @@ class AnalysisService {
   }
 
   /**
-   * Compute sentiments for the specified tweets.
+   * Compute sentiment.
    *
    * NOTE: This sends a kafka event after sentiment computation.
    *
@@ -243,8 +234,7 @@ class AnalysisService {
       data: mostRecentSentiment,
     };
 
-    // TODO: Rename TWEET_SENTIMENT_COMPUTED to SENTIMENT_UPDATED.
-    const eventName = 'TWEET_SENTIMENT_COMPUTED';
+    const eventName = 'SENTIMENT_COMPUTED';
 
     this._logger.info(
       `Emitting event ${eventName} with data ${JSON.stringify(event)}`
@@ -258,17 +248,25 @@ class AnalysisService {
    * @return {Object} Sentiment object of the form { score: <number>, comparative: <number>, ...}.
    */
   _sentiment(text) {
+    if (!validString(text)) {
+      throw new Error(`The value ${text} is invalid.`);
+    }
+
     return this._sentimentLib.analyze(text.toLowerCase());
   }
 
   /**
    * Create the specified topics.
    *
-   * @param {Array} topics - String array consisting of topic names.
+   * @param {Array<Object>} topics - Array consisting of topic objects from kafkajs.
    */
   async _topicCreation(topics) {
+    if (!topics || !Array.isArray(topics) || topics.length <= 0) {
+      throw new Error(`Valid topics are required.`);
+    }
+
     try {
-      this._logger.info(`Creating topics ${JSON.stringify(topics)}`);
+      this._logger.debug(`Creating topics ${JSON.stringify(topics)}`);
       await this._admin.createTopics({
         /**
          * NOTE: If you don't wait for leaders the system throws an error when trying to write to the topic if a leader
@@ -295,6 +293,10 @@ class AnalysisService {
    * @param {Object} data - Event data to transmit.
    */
   async _emit(eventName, data) {
+    if (!validString(eventName)) {
+      throw new Error(`The event name ${eventName} is invalid.`);
+    }
+
     this._logger.debug(`Emitting ${eventName}`);
     await this._producer.send({
       topic: eventName,

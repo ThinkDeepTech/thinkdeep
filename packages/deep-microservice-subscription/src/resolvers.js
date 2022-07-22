@@ -3,7 +3,7 @@ import {withFilter} from 'graphql-subscriptions';
 import {hasReadAllAccess} from './permissions.js';
 
 const pubsub = new KafkaPubSub({
-  topic: 'TWEET_SENTIMENT_COMPUTED',
+  topic: 'SENTIMENT_COMPUTED',
   host: `${process.env.PREDECOS_KAFKA_HOST}`,
   port: `${process.env.PREDECOS_KAFKA_PORT}`,
   globalConfig: {}, // options passed directly to the consumer and producer
@@ -35,7 +35,7 @@ const resolvers = {
         }
       },
       subscribe: withFilter(
-        () => pubsub.asyncIterator([`TWEET_SENTIMENT_COMPUTED`]),
+        () => pubsub.asyncIterator([`SENTIMENT_COMPUTED`]),
         (payload, variables) => {
           if (variables.endDate) {
             return false;
