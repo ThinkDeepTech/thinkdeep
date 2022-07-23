@@ -17,6 +17,7 @@ import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql'
 import GetSentiment from './graphql/GetSentiment.query.graphql';
 import UpdateSentiments from './graphql/UpdateSentiments.subscription.graphql';
 import moment from 'moment/dist/moment.js';
+import {EconomicEntityFactory, EconomicEntityType} from '@thinkdeep/type';
 
 const DEFAULT_START_DATE = moment()
   .utc()
@@ -389,12 +390,12 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   _onInput() {
     const companyName = this.shadowRoot.querySelector('mwc-textfield').value;
     this._collectEconomicDataMutationController.variables = {
-      economicEntities: [
-        {
+      economicEntities: EconomicEntityFactory.economicEntities([
+        EconomicEntityFactory.economicEntity({
           name: companyName,
-          type: 'BUSINESS',
-        },
-      ],
+          type: EconomicEntityType.Business,
+        }),
+      ]),
     };
   }
 
@@ -408,10 +409,9 @@ export default class DeepAnalyzerPageSummary extends LitElement {
 
     const economicEntity =
       this._collectEconomicDataMutationController.variables.economicEntities[0];
-    deepSiteConfig.observeEconomicEntity({
-      name: economicEntity.name || '',
-      type: economicEntity.type || '',
-    });
+    deepSiteConfig.observeEconomicEntity(
+      EconomicEntityFactory.economicEntity(economicEntity)
+    );
     deepSiteConfig.updateConfiguration();
     this._collectEconomicDataMutationController.mutate();
   }

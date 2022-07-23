@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from 'moment/dist/moment.js';
 
 /**
  * Determine if a date is valid.
