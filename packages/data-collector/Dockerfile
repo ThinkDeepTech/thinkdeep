@@ -11,5 +11,6 @@ COPY src/ ./src
 COPY package.json ./
 
 COPY ./node_modules/@thinkdeep/model ../model/
+COPY ./node_modules/@thinkdeep/util ../util/
 
 RUN yarn install
