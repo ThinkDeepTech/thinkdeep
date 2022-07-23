@@ -13,9 +13,9 @@ import '@material/mwc-textfield';
 import '@thinkdeep/deep-card';
 import '@vaadin/date-picker';
 import './deep-site-configuration.js';
-import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
-import GetSentiment from './graphql/GetSentiment.query.graphql';
-import UpdateSentiments from './graphql/UpdateSentiments.subscription.graphql';
+import {CollectEconomicData} from './graphql/CollectEconomicData.mutation.graphql.js';
+import {GetSentiment} from './graphql/GetSentiment.query.graphql.js';
+import {UpdateSentiments} from './graphql/UpdateSentiments.subscription.graphql.js';
 import moment from 'moment/dist/moment.js';
 import {EconomicEntityFactory, EconomicEntityType} from '@thinkdeep/model';
 
@@ -365,6 +365,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    * from addEventListener.
    */
   _redrawChart = () => {
+    // eslint-disable-next-line
     const chart = this.shadowRoot.querySelector('google-chart');
     if (chart) {
       chart.redraw();

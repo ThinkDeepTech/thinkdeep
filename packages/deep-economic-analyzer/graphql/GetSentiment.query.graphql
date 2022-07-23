@@ -1,9 +1,0 @@
-query GetSentiment($economicEntities: [EconomicEntityInput!]!, $startDate: Date!, $endDate: Date) {
-  getSentiments(economicEntities: $economicEntities, startDate: $startDate, endDate: $endDate) {
-      utcDateTime
-      comparative
-      tweets {
-        text
-      }
-  }
-}

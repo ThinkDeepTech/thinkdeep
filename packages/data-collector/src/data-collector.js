@@ -69,6 +69,8 @@ try {
     type: options.entityType,
   });
 
+  const currentUtcDateTime = moment().utc().format();
+
   switch (options.operationType) {
     case 'fetch-tweets': {
       logger.info('Fetching tweets.');
@@ -131,7 +133,7 @@ try {
         );
 
         const data = {
-          utcDateTime: moment().utc().format(),
+          utcDateTime: currentUtcDateTime,
           economicEntity: economicEntity.toObject(),
           tweets: recentTweets,
         };

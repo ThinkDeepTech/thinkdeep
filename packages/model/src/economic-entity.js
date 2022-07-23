@@ -11,22 +11,8 @@ class EconomicEntity {
    * @param {String} type Type of the economic entity.
    */
   constructor(name, type) {
-    this._name = name;
-    this._type = type;
-  }
-
-  /**
-   * Get the name.
-   */
-  get name() {
-    return this._name;
-  }
-
-  /**
-   * Get the type.
-   */
-  get type() {
-    return this._type;
+    this.name = name;
+    this.type = type;
   }
 
   /**
@@ -36,7 +22,7 @@ class EconomicEntity {
    */
   equals(target) {
     return (
-      validEconomicEntities([this]) &&
+      validEconomicEntities([this, target]) &&
       this.name === target.name &&
       this.type === target.type
     );

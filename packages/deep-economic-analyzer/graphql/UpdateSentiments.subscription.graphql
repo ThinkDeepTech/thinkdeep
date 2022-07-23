@@ -1,9 +1,0 @@
-subscription UpdateSentiments($economicEntities: [EconomicEntityInput!]!, $startDate: Date!, $endDate: Date) {
-  updateSentiments(economicEntities: $economicEntities, startDate: $startDate, endDate: $endDate) {
-      utcDateTime
-      comparative
-      tweets {
-        text
-      }
-  }
-}

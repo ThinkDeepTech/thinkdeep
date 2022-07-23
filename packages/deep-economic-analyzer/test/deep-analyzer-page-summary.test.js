@@ -181,8 +181,8 @@ describe('deep-analyzer-page-summary', () => {
 
     const founds = chart.cols.map(
       (col) =>
-        col.label.toLowerCase().includes('time') ||
-        col.label.toLowerCase().includes('sentiment')
+        col.label.toLowerCase().includes('date') ||
+        col.label.toLowerCase().includes('comparative score')
     );
     for (const found of founds) {
       expect(found).to.equal(true);

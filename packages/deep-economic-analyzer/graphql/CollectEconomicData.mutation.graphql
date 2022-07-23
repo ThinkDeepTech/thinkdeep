@@ -1,5 +1,0 @@
-mutation CollectEconomicData($economicEntities: [EconomicEntityInput!]!){
-  collectEconomicData(economicEntities: $economicEntities) {
-    success
-  }
-}
