@@ -1,4 +1,4 @@
-import {validEconomicEntities} from '@thinkdeep/type';
+import {validEconomicEntities} from '@thinkdeep/model';
 import {MongoDataSource} from 'apollo-datasource-mongodb';
 import moment from 'moment';
 

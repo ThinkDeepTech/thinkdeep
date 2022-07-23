@@ -10,6 +10,6 @@ COPY src/ ./src
 
 COPY package.json ./
 
-COPY ./node_modules/@thinkdeep/type ../type/
+COPY ./node_modules/@thinkdeep/model ../model/
 
 RUN yarn install

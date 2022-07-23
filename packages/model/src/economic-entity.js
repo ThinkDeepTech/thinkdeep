@@ -1,5 +1,5 @@
 import {EconomicEntityType} from './economic-entity-type.js';
-import {validString} from './string.js';
+import {validString} from './helpers.js';
 
 /**
  * Economic entity object.

@@ -1,10 +1,9 @@
 import {
   EconomicEntityFactory,
   EconomicEntityType,
-  validDate,
   validEconomicEntities,
-  validString,
-} from '@thinkdeep/type';
+} from '@thinkdeep/model';
+import {validDate, validString} from '@thinkdeep/util';
 import {K8sCronJob} from './command/k8s-cron-job.js';
 import {K8sJob} from './command/k8s-job.js';
 import {Operations} from './operation/operations.js';

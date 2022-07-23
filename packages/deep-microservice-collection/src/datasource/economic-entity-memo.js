@@ -1,4 +1,4 @@
-import {EconomicEntityFactory, validEconomicEntities} from '@thinkdeep/type';
+import {EconomicEntityFactory, validEconomicEntities} from '@thinkdeep/model';
 import {MongoDataSource} from 'apollo-datasource-mongodb';
 
 /**

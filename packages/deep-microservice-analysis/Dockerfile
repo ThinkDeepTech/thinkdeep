@@ -12,7 +12,7 @@ COPY src/ ./src/
 
 COPY package.json $BASE_DIRECTORY/
 
-COPY ./node_modules/@thinkdeep/type ../type/
+COPY ./node_modules/@thinkdeep/model ../model/
 
 RUN yarn install
 

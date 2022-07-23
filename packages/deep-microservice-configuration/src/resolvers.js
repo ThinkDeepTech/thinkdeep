@@ -1,4 +1,4 @@
-import {EconomicEntityFactory} from '@thinkdeep/type';
+import {EconomicEntityFactory} from '@thinkdeep/model';
 
 const resolvers = {
   Mutation: {

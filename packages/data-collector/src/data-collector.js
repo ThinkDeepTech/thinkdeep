@@ -1,8 +1,5 @@
-import {
-  EconomicEntityFactory,
-  EconomicEntityType,
-  validString,
-} from '@thinkdeep/type';
+import {EconomicEntityFactory, EconomicEntityType} from '@thinkdeep/model';
+import {validString} from '@thinkdeep/util';
 import {Client} from './client.js';
 import {Command, Option} from 'commander';
 import {Kafka} from 'kafkajs';

@@ -1,5 +1,6 @@
 import {Neo4jDataSource} from '@thinkdeep/apollo-datasource-neo4j';
-import {validDate, validEconomicEntities} from '@thinkdeep/type';
+import {validEconomicEntities} from '@thinkdeep/model';
+import {validDate} from '@thinkdeep/util';
 
 /**
  * Determine if a value is a valid end date.

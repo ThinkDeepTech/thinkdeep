@@ -1,10 +1,6 @@
 import {attachExitHandler} from '@thinkdeep/attach-exit-handler';
-import {
-  EconomicEntityFactory,
-  validDate,
-  validEconomicEntities,
-  validString,
-} from '@thinkdeep/type';
+import {EconomicEntityFactory, validEconomicEntities} from '@thinkdeep/model';
+import {validDate, validString} from '@thinkdeep/util';
 import {hasReadAllAccess} from './permissions.js';
 
 /**

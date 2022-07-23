@@ -1,4 +1,4 @@
-import {EconomicEntityFactory} from '@thinkdeep/type';
+import {EconomicEntityFactory} from '@thinkdeep/model';
 import {KafkaPubSub} from '@thinkdeep/graphql-kafka-subscriptions';
 import {withFilter} from 'graphql-subscriptions';
 import {hasReadAllAccess} from './permissions.js';

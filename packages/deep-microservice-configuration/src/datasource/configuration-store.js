@@ -3,7 +3,7 @@ import {
   EconomicEntityFactory,
   objectifyEconomicEntities,
   validEconomicEntities,
-} from '@thinkdeep/type';
+} from '@thinkdeep/model';
 
 /**
  * Check whether the provided email is valid.

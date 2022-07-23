@@ -17,7 +17,7 @@ import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql'
 import GetSentiment from './graphql/GetSentiment.query.graphql';
 import UpdateSentiments from './graphql/UpdateSentiments.subscription.graphql';
 import moment from 'moment/dist/moment.js';
-import {EconomicEntityFactory, EconomicEntityType} from '@thinkdeep/type';
+import {EconomicEntityFactory, EconomicEntityType} from '@thinkdeep/model';
 
 const DEFAULT_START_DATE = moment()
   .utc()
@@ -390,12 +390,12 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   _onInput() {
     const companyName = this.shadowRoot.querySelector('mwc-textfield').value;
     this._collectEconomicDataMutationController.variables = {
-      economicEntities: EconomicEntityFactory.economicEntities([
+      economicEntities: [
         EconomicEntityFactory.economicEntity({
           name: companyName,
           type: EconomicEntityType.Business,
         }),
-      ]),
+      ],
     };
   }
 

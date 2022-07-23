@@ -1,5 +1,5 @@
 import {gql} from 'apollo-server';
-import {EconomicEntityType, EconomicEntityFactory} from '@thinkdeep/type';
+import {EconomicEntityType, EconomicEntityFactory} from '@thinkdeep/model';
 
 const economicEntity = EconomicEntityFactory.economicEntity({
   name: 'dummy',

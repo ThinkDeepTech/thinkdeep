@@ -1,11 +1,11 @@
-# `@thinkdeep/type`
+# `@thinkdeep/util`
 
 > TODO: description
 
 ## Usage
 
 ```
-const type = require('@thinkdeep/type');
+const util = require('@thinkdeep/util');
 
 // TODO: DEMONSTRATE API
 ```

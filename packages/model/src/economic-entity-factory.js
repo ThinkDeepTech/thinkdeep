@@ -1,6 +1,6 @@
 import {EconomicEntityType} from './economic-entity-type.js';
 import {EconomicEntity} from './economic-entity.js';
-import {validString} from './string.js';
+import {validString} from './helpers.js';
 
 /**
  * Factory providing access to economic entity objects.

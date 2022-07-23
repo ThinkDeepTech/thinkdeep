@@ -1,5 +1,5 @@
 {
-  "name": "@thinkdeep/type",
+  "name": "@thinkdeep/model",
   "version": "0.0.9-alpha.1",
   "description": "Types for the application.",
   "keywords": [
@@ -11,9 +11,6 @@
   "license": "GPL-3.0",
   "main": "src/index.js",
   "type": "module",
-  "dependencies": {
-    "moment": "^2.29.4"
-  },
   "directories": {
     "lib": "src",
     "test": "test"

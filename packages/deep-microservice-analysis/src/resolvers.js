@@ -1,5 +1,5 @@
 import {dateScalar} from './scalars.js';
-import {EconomicEntityFactory} from '@thinkdeep/type';
+import {EconomicEntityFactory} from '@thinkdeep/model';
 
 const resolvers = {
   Date: dateScalar,
