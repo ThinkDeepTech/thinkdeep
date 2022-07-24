@@ -7,6 +7,7 @@ import {
   wait,
 } from '@thinkdeep/tools/test-helper.js';
 import {initializeE2e} from './initialize-e2e.js';
+import sinon from 'sinon';
 
 import '../deep-analyzer-page-summary.js';
 
@@ -172,7 +173,7 @@ describe('deep-analyzer-page-summary', () => {
     expect(chart.rows.length).to.be.greaterThan(0);
   });
 
-  it('should display a graph of sentiment vs time', async () => {
+  it('should display a graph of sentiment vs date', async () => {
     const element = await fixtureSync(
       html`<deep-analyzer-page-summary></deep-analyzer-page-summary>`
     );
@@ -188,5 +189,27 @@ describe('deep-analyzer-page-summary', () => {
       expect(found).to.equal(true);
     }
     expect(founds.length).to.be.greaterThan(0);
+  });
+
+  it('should redraw the sentiment graph when the screen is resized', async () => {
+    const element = await fixtureSync(
+      html`<deep-analyzer-page-summary></deep-analyzer-page-summary>`
+    );
+
+    const chart = sentimentChart(element);
+
+    sinon.spy(chart, 'redraw');
+
+    expect(chart.redraw.callCount).to.equal(0);
+
+    element.dispatchEvent(
+      new UIEvent('resize', {
+        bubbles: true,
+      })
+    );
+
+    await wait(4000);
+
+    expect(chart.redraw.callCount).to.be.greaterThan(0);
   });
 });

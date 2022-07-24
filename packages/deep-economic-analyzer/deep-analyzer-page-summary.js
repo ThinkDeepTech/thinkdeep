@@ -428,10 +428,10 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     const variables = {
       ...this._sentimentQueryController.variables,
       economicEntities: [
-        {
+        EconomicEntityFactory.economicEntity({
           name: businessName,
-          type: 'BUSINESS',
-        },
+          type: EconomicEntityType.Business,
+        }),
       ],
     };
 

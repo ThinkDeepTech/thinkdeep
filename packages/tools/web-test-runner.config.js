@@ -13,6 +13,7 @@ const browsers = {
     product: 'chromium',
     createBrowserContext: ({browser}) =>
       browser.newContext({ignoreHTTPSErrors: true}),
+    createPage: ({context}) => context.newPage(),
     launchOptions: {
       headless: true,
       devtools: true,
@@ -23,6 +24,7 @@ const browsers = {
     product: 'firefox',
     createBrowserContext: ({browser}) =>
       browser.newContext({ignoreHTTPSErrors: true}),
+    createPage: ({context}) => context.newPage(),
     launchOptions: {
       headless: true,
     },
@@ -33,7 +35,7 @@ const browsers = {
 const port = await getPort();
 
 export default {
-  files: ['test/**/*.test.js', 'test/**/*.test.js'],
+  // files: ['test/**/*.test.js', 'test/**/*.test.js'],
   nodeResolve: true,
   coverage: true,
   coverageConfig: {
@@ -46,12 +48,12 @@ export default {
   preserveSymlinks: true,
   concurrency: 1,
   browserStartTimeout: 60000,
-  testsStartTimeout: 20000,
+  testsStartTimeout: 60000,
   testsFinishTimeout: 180000,
   testFramework: {
     config: {
       ui: 'bdd',
-      timeout: 20000,
+      timeout: 30000,
     },
   },
   port,
