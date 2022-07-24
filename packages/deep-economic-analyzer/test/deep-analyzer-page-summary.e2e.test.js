@@ -6,97 +6,16 @@ import {
   fixtureSync,
   wait,
 } from '@thinkdeep/tools/test-helper.js';
+import {
+  collectDataButton,
+  collectDataInput,
+  sentimentChart,
+  analysisDropdownOption,
+} from './deep-analyzer-page-summary-helpers.js';
 import {initializeE2e} from './initialize-e2e.js';
 import sinon from 'sinon';
 
 import '../deep-analyzer-page-summary.js';
-
-/**
- * Get collect data textfield.
- * @param {HTMLElement} element Ancestor element.
- * @return {HTMLElement} The html element.
- */
-const collectDataInput = (element) => {
-  return element.shadowRoot.querySelector('mwc-textfield');
-};
-
-/**
- * Get collect data button.
- * @param {HTMLElement} element Ancestor element.
- * @return {HTMLElement} The html element.
- */
-const collectDataButton = (element) => {
-  return element.shadowRoot.querySelector('mwc-button');
-};
-
-/**
- * Get the specified analysis dropdown option element.
- * @param {Element} element Parent element of the drop down.
- * @param {String} value Dropdown option value.
- * @return {Element} Element with a matching value.
- */
-const analysisDropdownOption = (element, value) => {
-  const analysisOptions = element.shadowRoot.querySelectorAll(
-    'mwc-select > mwc-list-item'
-  );
-
-  let target = null;
-  for (const option of analysisOptions) {
-    if (option.value === value) {
-      target = option;
-    }
-  }
-
-  if (!target) {
-    throw new Error(
-      `Failed to find analysis dropdown target with value: ${value}`
-    );
-  }
-
-  return target;
-};
-
-/**
- * Get sentiment chart.
- * @param {HTMLElement} element Ancestor element.
- * @return {HTMLElement} The html element.
- */
-const sentimentChart = (element) => {
-  return element.shadowRoot.querySelector('google-chart');
-};
-
-// /**
-//  * Select a point on the specified chart.
-//  *
-//  * @param {Element} targetChart Chart element on which selection will occur.
-//  * @param {Array<Number>} point Array of size two of the form [x, y].
-//  */
-// const selectChartValue = async (targetChart, point) => {
-//   const selections = [];
-
-//   for (let i = 0; i < targetChart.rows.length; i++) {
-//     const prospectivePoint = targetChart.rows[i];
-//     if (point[0] === prospectivePoint[0] && point[1] === prospectivePoint[1]) {
-//       selections.push({row: i, column: 0});
-//     }
-//   }
-
-//   targetChart.selection = selections;
-
-//   // NOTE: Keep this synced with google chart to ensure correctness.
-//   targetChart.dispatchEvent(
-//     new CustomEvent(`google-chart-select`, {
-//       bubbles: true,
-//       composed: true,
-//       detail: {
-//         // Events fire after `chartWrapper` is initialized.
-//         chart: targetChart,
-//       },
-//     })
-//   );
-
-//   await delayForPageRender();
-// };
 
 describe('deep-analyzer-page-summary', () => {
   beforeEach(async () => {

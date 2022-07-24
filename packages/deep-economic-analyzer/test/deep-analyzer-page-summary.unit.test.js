@@ -1,8 +1,9 @@
 import {html, expect} from '@open-wc/testing';
-import {fixtureSync} from '@thinkdeep/tools/test-helper.js';
+import {fixtureSync, select} from '@thinkdeep/tools/test-helper.js';
 import {initializeE2e} from './initialize-e2e.js';
 import sinon from 'sinon';
 
+import {unselectedAnalysisDropdownOptions} from './deep-analyzer-page-summary-helpers.js';
 import DeepAnalyzerPageSummary from '../deep-analyzer-page-summary.js';
 import {EconomicEntityFactory, EconomicEntityType} from '@thinkdeep/model';
 
@@ -112,6 +113,78 @@ describe('deep-analyzer-page-summary', () => {
       expect(
         element._collectEconomicDataMutationController.mutate.callCount
       ).to.equal(1);
+    });
+  });
+
+  describe('_onSelectBusiness', () => {
+    let element;
+    beforeEach(async () => {
+      element = await fixtureSync(
+        html`<deep-analyzer-page-summary></deep-analyzer-page-summary>`
+      );
+    });
+
+    it('should update the subscription to the selected business', async () => {
+      const unselectedDropdownOption =
+        unselectedAnalysisDropdownOptions(element)[0];
+
+      expect(!!unselectedDropdownOption).to.equal(true);
+
+      await select(unselectedDropdownOption);
+
+      element._onSelectBusiness();
+
+      const expectedEconomicEntity = EconomicEntityFactory.economicEntity({
+        name: unselectedDropdownOption.value,
+        type: EconomicEntityType.Business,
+      });
+
+      const actualEconomicEntity =
+        element._sentimentSubscriptionController.variables.economicEntities[0];
+
+      expect(expectedEconomicEntity.equals(actualEconomicEntity)).to.equal(
+        true
+      );
+    });
+
+    it('should update the sentiment query with the new economic entity', async () => {
+      const unselectedDropdownOption =
+        unselectedAnalysisDropdownOptions(element)[0];
+
+      expect(!!unselectedDropdownOption).to.equal(true);
+
+      await select(unselectedDropdownOption);
+
+      element._onSelectBusiness();
+
+      const expectedEconomicEntity = EconomicEntityFactory.economicEntity({
+        name: unselectedDropdownOption.value,
+        type: EconomicEntityType.Business,
+      });
+
+      const actualEconomicEntity =
+        element._sentimentQueryController.variables.economicEntities[0];
+
+      expect(expectedEconomicEntity.equals(actualEconomicEntity)).to.equal(
+        true
+      );
+    });
+
+    it('should immediately fetch data associated with selected business', async () => {
+      const unselectedDropdownOption =
+        unselectedAnalysisDropdownOptions(element)[0];
+
+      expect(!!unselectedDropdownOption).to.equal(true);
+
+      sinon.spy(element._sentimentQueryController, 'executeQuery');
+
+      await select(unselectedDropdownOption);
+
+      element._onSelectBusiness();
+
+      expect(element._sentimentQueryController.executeQuery.callCount).to.equal(
+        1
+      );
     });
   });
 });
