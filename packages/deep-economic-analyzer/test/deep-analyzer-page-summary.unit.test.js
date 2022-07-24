@@ -105,7 +105,7 @@ describe('deep-analyzer-page-summary', () => {
       element._collectEconomicDataMutationController.variables = {};
       element._collectEconomicDataMutationController.variables.economicEntities =
         [economicEntity];
-      element._collectEconomicDataMutationController.mutate = sinon.stub();
+      sinon.spy(element._collectEconomicDataMutationController, 'mutate');
 
       element._collectEconomicData();
 
