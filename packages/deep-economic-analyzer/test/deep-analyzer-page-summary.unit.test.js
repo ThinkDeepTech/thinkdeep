@@ -229,7 +229,7 @@ describe('deep-analyzer-page-summary', () => {
 
       const initialDateValue = dateComponent.value;
 
-      await click(unselectedDates[0]);
+      await click(unselectedDates[1]);
 
       const subsequentDateValue = dateComponent.value;
 
@@ -248,7 +248,7 @@ describe('deep-analyzer-page-summary', () => {
 
       const initialDateValue = dateComponent.value;
 
-      await click(unselectedDates[0]);
+      await click(unselectedDates[1]);
 
       const subsequentDateValue = dateComponent.value;
 
