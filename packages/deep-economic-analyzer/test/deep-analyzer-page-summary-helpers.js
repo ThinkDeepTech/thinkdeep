@@ -82,7 +82,7 @@ const unselectedAnalysisDropdownOptions = (element) => {
 
   const unselectedOptions = [];
   for (const dropdownOption of dropdownOptions) {
-    if (!dropdownOption.matches('[aria-selected="false"]')) {
+    if (!selected(dropdownOption)) {
       unselectedOptions.push(dropdownOption);
     }
   }
@@ -97,6 +97,76 @@ const unselectedAnalysisDropdownOptions = (element) => {
  */
 const sentimentChart = (element) => {
   return element.shadowRoot.querySelector('google-chart');
+};
+
+/**
+ * Get the start date element.
+ * @param {Element} element
+ * @return {Element} The element.
+ */
+const startDate = (element) => {
+  return element.shadowRoot.querySelector('#start-date');
+};
+
+/**
+ * Get the end date element.
+ * @param {Element} element
+ * @return {Element} The element.
+ */
+const endDate = (element) => {
+  return element.shadowRoot.querySelector('#end-date');
+};
+
+/**
+ * Get the date picker overlay.
+ * @return {Element} Date picker overlay.
+ */
+const datePickerOverlay = () => {
+  return document.documentElement.querySelector('vaadin-date-picker-overlay');
+};
+
+/**
+ * Get all the date options from the overlay.
+ * @param {Element} overlayElement
+ * @return {NodeListOf<Element>} Date options from overlay.
+ */
+const dateOptions = (overlayElement) => {
+  const overlayContentDiv = overlayElement.shadowRoot.querySelector('#content');
+  const vaadinOverlayContent =
+    overlayContentDiv.shadowRoot.querySelector('#overlay-content');
+  const monthScroller =
+    vaadinOverlayContent.shadowRoot.querySelector('#monthScroller');
+  const monthCalendar = monthScroller.querySelector(
+    '[part="month"]:not([aria-hidden="true"])'
+  );
+
+  return monthCalendar.shadowRoot.querySelectorAll('td:not([aria-label=""])');
+};
+
+/**
+ * Get the unselected date options from the overlay.
+ * @param {Element} overlayElement
+ * @return {Array<Element>} Unselected date options.
+ */
+const unselectedDateOptions = (overlayElement) => {
+  const unselectedOptions = [];
+
+  for (const option of dateOptions(overlayElement)) {
+    if (!selected(option)) {
+      unselectedOptions.push(option);
+    }
+  }
+
+  return unselectedOptions;
+};
+
+/**
+ * Determine if the element is selected.
+ * @param {Element} element
+ * @return {Boolean} True if selected. False otherwise.
+ */
+const selected = (element) => {
+  return element.matches('[aria-selected="true"]');
 };
 
 // /**
@@ -140,4 +210,8 @@ export {
   analysisDropdownOptions,
   unselectedAnalysisDropdownOptions,
   selectedAnalysisDropdownOption,
+  startDate,
+  endDate,
+  unselectedDateOptions,
+  datePickerOverlay,
 };

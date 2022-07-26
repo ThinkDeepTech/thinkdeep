@@ -12,7 +12,12 @@ const browsers = {
   chromium: playwrightLauncher({
     product: 'chromium',
     createBrowserContext: ({browser}) =>
-      browser.newContext({ignoreHTTPSErrors: true}),
+      browser.newContext({
+        viewport: {width: 1800, height: 1000},
+        browser: {width: 1800, height: 1000},
+        recordVideo: {dir: './video'},
+        ignoreHTTPSErrors: true,
+      }),
     createPage: ({context}) => context.newPage(),
     launchOptions: {
       headless: true,
@@ -23,7 +28,12 @@ const browsers = {
   firefox: playwrightLauncher({
     product: 'firefox',
     createBrowserContext: ({browser}) =>
-      browser.newContext({ignoreHTTPSErrors: true}),
+      browser.newContext({
+        viewport: {width: 1800, height: 1000},
+        browser: {width: 1800, height: 1000},
+        recordVideo: {dir: './video'},
+        ignoreHTTPSErrors: true,
+      }),
     createPage: ({context}) => context.newPage(),
     launchOptions: {
       headless: true,
@@ -35,7 +45,7 @@ const browsers = {
 const port = await getPort();
 
 export default {
-  // files: ['test/**/*.test.js', 'test/**/*.test.js'],
+  // files: ['test/**/*.test.js'],
   nodeResolve: true,
   coverage: true,
   coverageConfig: {

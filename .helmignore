@@ -19,6 +19,7 @@ packages/*
 .pnp.*
 .nycrc.json
 .dccache
+**/video
 
 
 # General files for the project

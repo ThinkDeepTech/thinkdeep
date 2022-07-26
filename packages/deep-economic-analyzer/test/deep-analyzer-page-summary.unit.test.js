@@ -1,9 +1,15 @@
 import {html, expect} from '@open-wc/testing';
-import {fixtureSync, select} from '@thinkdeep/tools/test-helper.js';
+import {click, fixtureSync, select} from '@thinkdeep/tools/test-helper.js';
 import {initializeE2e} from './initialize-e2e.js';
+import moment from 'moment/dist/moment.js';
 import sinon from 'sinon';
 
-import {unselectedAnalysisDropdownOptions} from './deep-analyzer-page-summary-helpers.js';
+import {
+  unselectedAnalysisDropdownOptions,
+  startDate,
+  unselectedDateOptions,
+  datePickerOverlay,
+} from './deep-analyzer-page-summary-helpers.js';
 import DeepAnalyzerPageSummary from '../deep-analyzer-page-summary.js';
 import {EconomicEntityFactory, EconomicEntityType} from '@thinkdeep/model';
 
@@ -182,9 +188,74 @@ describe('deep-analyzer-page-summary', () => {
 
       element._onSelectBusiness();
 
-      expect(element._sentimentQueryController.executeQuery.callCount).to.equal(
-        1
+      expect(
+        element._sentimentQueryController.executeQuery.callCount
+      ).to.be.greaterThan(0);
+    });
+  });
+
+  describe('_onSelectStartDate', () => {
+    let element;
+    beforeEach(async () => {
+      element = await fixtureSync(
+        html`<deep-analyzer-page-summary></deep-analyzer-page-summary>`
       );
+    });
+
+    it('should set the default to today minus one month', async () => {
+      const dateComponent = startDate(element);
+
+      expect(!!dateComponent).to.equal(true);
+
+      const actualDate = dateComponent.value;
+
+      expect(actualDate).to.equal(
+        moment().utc().subtract(1, 'month').format('YYYY-MM-DD')
+      );
+    });
+
+    it('should not allow clearing the date', async () => {
+      expect(!startDate(element).getAttribute('clear-button-visible')).to.equal(
+        true
+      );
+    });
+
+    it('should allow the user to select a new date', async () => {
+      const dateComponent = startDate(element);
+
+      await click(dateComponent);
+
+      const unselectedDates = unselectedDateOptions(datePickerOverlay());
+
+      const initialDateValue = dateComponent.value;
+
+      await click(unselectedDates[0]);
+
+      const subsequentDateValue = dateComponent.value;
+
+      expect(!!initialDateValue).to.equal(true);
+      expect(!!subsequentDateValue).to.equal(true);
+      expect(initialDateValue).not.to.equal(subsequentDateValue);
+      expect(moment.utc(subsequentDateValue).isValid()).to.equal(true);
+    });
+
+    it('should update the subscription query variables', async () => {
+      const dateComponent = startDate(element);
+
+      await click(dateComponent);
+
+      const unselectedDates = unselectedDateOptions(datePickerOverlay());
+
+      const initialDateValue = dateComponent.value;
+
+      await click(unselectedDates[0]);
+
+      const subsequentDateValue = dateComponent.value;
+
+      expect(!!initialDateValue).to.equal(true);
+      expect(!!subsequentDateValue).to.equal(true);
+      expect(initialDateValue).not.to.equal(subsequentDateValue);
+      expect(moment.utc(subsequentDateValue).isValid()).to.equal(true);
     });
   });
 });
