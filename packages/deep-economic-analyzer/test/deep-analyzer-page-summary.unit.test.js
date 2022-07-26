@@ -7,6 +7,7 @@ import sinon from 'sinon';
 import {
   unselectedAnalysisDropdownOptions,
   startDate,
+  endDate,
   unselectedDateOptions,
   datePickerOverlay,
 } from './deep-analyzer-page-summary-helpers.js';
@@ -215,8 +216,8 @@ describe('deep-analyzer-page-summary', () => {
     });
 
     it('should not allow clearing the date', async () => {
-      expect(!startDate(element).getAttribute('clear-button-visible')).to.equal(
-        true
+      expect(startDate(element).getAttribute('clear-button-visible')).to.equal(
+        null
       );
     });
 
@@ -252,10 +253,143 @@ describe('deep-analyzer-page-summary', () => {
 
       const subsequentDateValue = dateComponent.value;
 
-      expect(!!initialDateValue).to.equal(true);
+      expect(initialDateValue).not.to.equal(subsequentDateValue);
+      expect(
+        element._sentimentSubscriptionController.variables.startDate
+      ).to.equal(`${subsequentDateValue}T00:00:00Z`);
+    });
+
+    it('should update the sentiment query variables', async () => {
+      const dateComponent = startDate(element);
+
+      await click(dateComponent);
+
+      const unselectedDates = unselectedDateOptions(datePickerOverlay());
+
+      const initialDateValue = dateComponent.value;
+
+      await click(unselectedDates[1]);
+
+      const subsequentDateValue = dateComponent.value;
+
+      expect(initialDateValue).not.to.equal(subsequentDateValue);
+      expect(element._sentimentQueryController.variables.startDate).to.equal(
+        `${subsequentDateValue}T00:00:00Z`
+      );
+    });
+
+    it('should query the api for new data', async () => {
+      const dateComponent = startDate(element);
+
+      await click(dateComponent);
+
+      const unselectedDates = unselectedDateOptions(datePickerOverlay());
+
+      sinon.spy(element._sentimentQueryController, 'executeQuery');
+
+      await click(unselectedDates[1]);
+
+      expect(
+        element._sentimentQueryController.executeQuery.callCount
+      ).to.be.greaterThan(0);
+    });
+  });
+
+  describe('_onSelectEndDate', () => {
+    let element;
+    beforeEach(async () => {
+      element = await fixtureSync(
+        html`<deep-analyzer-page-summary></deep-analyzer-page-summary>`
+      );
+    });
+
+    it('should set the default to null', async () => {
+      const dateComponent = endDate(element);
+
+      expect(!!dateComponent).to.equal(true);
+
+      const actualDate = dateComponent.value;
+
+      expect(!actualDate).to.equal(true);
+    });
+
+    it('should allow clearing the date', async () => {
+      expect(endDate(element).getAttribute('clear-button-visible')).to.equal(
+        ''
+      );
+    });
+
+    it('should allow the user to select a new date', async () => {
+      const dateComponent = endDate(element);
+
+      await click(dateComponent);
+
+      const unselectedDates = unselectedDateOptions(datePickerOverlay());
+
+      const initialDateValue = dateComponent.value;
+
+      await click(unselectedDates[1]);
+
+      const subsequentDateValue = dateComponent.value;
+
+      expect(!initialDateValue).to.equal(true);
       expect(!!subsequentDateValue).to.equal(true);
       expect(initialDateValue).not.to.equal(subsequentDateValue);
       expect(moment.utc(subsequentDateValue).isValid()).to.equal(true);
+    });
+
+    it('should update the subscription query variables', async () => {
+      const dateComponent = endDate(element);
+
+      await click(dateComponent);
+
+      const unselectedDates = unselectedDateOptions(datePickerOverlay());
+
+      const initialDateValue = dateComponent.value;
+
+      await click(unselectedDates[1]);
+
+      const subsequentDateValue = dateComponent.value;
+
+      expect(initialDateValue).not.to.equal(subsequentDateValue);
+      expect(
+        element._sentimentSubscriptionController.variables.endDate
+      ).to.equal(`${subsequentDateValue}T23:59:59Z`);
+    });
+
+    it('should update the sentiment query variables', async () => {
+      const dateComponent = endDate(element);
+
+      await click(dateComponent);
+
+      const unselectedDates = unselectedDateOptions(datePickerOverlay());
+
+      const initialDateValue = dateComponent.value;
+
+      await click(unselectedDates[1]);
+
+      const subsequentDateValue = dateComponent.value;
+
+      expect(initialDateValue).not.to.equal(subsequentDateValue);
+      expect(element._sentimentQueryController.variables.endDate).to.equal(
+        `${subsequentDateValue}T23:59:59Z`
+      );
+    });
+
+    it('should query the api for new data', async () => {
+      const dateComponent = endDate(element);
+
+      await click(dateComponent);
+
+      const unselectedDates = unselectedDateOptions(datePickerOverlay());
+
+      sinon.spy(element._sentimentQueryController, 'executeQuery');
+
+      await click(unselectedDates[1]);
+
+      expect(
+        element._sentimentQueryController.executeQuery.callCount
+      ).to.be.greaterThan(0);
     });
   });
 });
