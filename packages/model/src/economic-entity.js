@@ -44,7 +44,7 @@ class EconomicEntity {
    * @return {String} String representation of the economic entity.
    */
   toString() {
-    return `economic entity: type ${this.type}, name ${this.name}`;
+    return JSON.stringify(this);
   }
 
   /**
@@ -131,12 +131,7 @@ const objectifyEconomicEntities = (economicEntities) => {
  * @return {Boolean} True if valid. False otherwise.
  */
 const validEconomicEntity = (economicEntity) => {
-  return (
-    validString(economicEntity.name) &&
-    EconomicEntityType.valid(economicEntity.type) &&
-    typeof economicEntity.valid === 'function' &&
-    economicEntity.valid()
-  );
+  return typeof economicEntity.valid === 'function' && economicEntity.valid();
 };
 
 /**
@@ -147,9 +142,7 @@ const validEconomicEntity = (economicEntity) => {
 const validEconomicEntities = (economicEntities) => {
   for (const economicEntity of economicEntities) {
     if (!validEconomicEntity(economicEntity)) {
-      throw new Error(
-        `Invalid economic entity: type ${economicEntity.type}, name ${economicEntity.name}`
-      );
+      return false;
     }
   }
 

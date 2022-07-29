@@ -66,10 +66,9 @@ describe('deep-analyzer-page-summary', () => {
 
       element._onInput();
 
-      const actualEconomicEntity = EconomicEntityFactory.economicEntity(
+      const actualEconomicEntity =
         element._collectEconomicDataMutationController.variables
-          .economicEntities[0]
-      );
+          .economicEntities[0];
       expect(expectedEconomicEntity.equals(actualEconomicEntity)).to.equal(
         true
       );
@@ -147,8 +146,11 @@ describe('deep-analyzer-page-summary', () => {
         type: EconomicEntityType.Business,
       });
 
-      const actualEconomicEntity = EconomicEntityFactory.economicEntity(
-        element._sentimentSubscriptionController.variables.economicEntities[0]
+      const actualEconomicEntity =
+        element._sentimentSubscriptionController.variables.economicEntities[0];
+
+      console.warn(
+        `Actual economic entity: ${JSON.stringify(actualEconomicEntity)}`
       );
 
       expect(expectedEconomicEntity.equals(actualEconomicEntity)).to.equal(
@@ -171,9 +173,8 @@ describe('deep-analyzer-page-summary', () => {
         type: EconomicEntityType.Business,
       });
 
-      const actualEconomicEntity = EconomicEntityFactory.economicEntity(
-        element._sentimentQueryController.variables.economicEntities[0]
-      );
+      const actualEconomicEntity =
+        element._sentimentQueryController.variables.economicEntities[0];
 
       expect(expectedEconomicEntity.equals(actualEconomicEntity)).to.equal(
         true
