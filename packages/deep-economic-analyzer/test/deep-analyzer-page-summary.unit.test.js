@@ -149,10 +149,6 @@ describe('deep-analyzer-page-summary', () => {
       const actualEconomicEntity =
         element._sentimentSubscriptionController.variables.economicEntities[0];
 
-      console.warn(
-        `Actual economic entity: ${JSON.stringify(actualEconomicEntity)}`
-      );
-
       expect(expectedEconomicEntity.equals(actualEconomicEntity)).to.equal(
         true
       );
