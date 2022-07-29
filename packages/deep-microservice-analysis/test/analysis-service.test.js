@@ -425,7 +425,159 @@ describe('analysis-service', () => {
     });
   });
 
+  describe('_mostRecentSentiments', () => {
+    it('should require valid economic entities', async () => {
+      const economicEntity = {
+        name: 'google',
+        type: 'GOOGLE',
+      };
+      await expect(
+        subject._mostRecentSentiments([economicEntity])
+      ).to.be.rejectedWith(Error);
+    });
+
+    it('should read most recent sentiments', async () => {
+      const economicEntity = EconomicEntityFactory.economicEntity({
+        name: 'google',
+        type: EconomicEntityType.Business,
+      });
+      await subject._mostRecentSentiments([economicEntity]);
+      expect(
+        neo4jDataStore.readMostRecentSentiment.callCount
+      ).to.be.greaterThan(0);
+    });
+
+    it('should preserve the order of the economic entities', async () => {
+      const economicEntity1 = EconomicEntityFactory.economicEntity({
+        name: 'google',
+        type: EconomicEntityType.Business,
+      });
+      const economicEntity1ReturnValue = Object.freeze([
+        {
+          utcDateTime: moment().utc().format(),
+          comparative: 1,
+          tweets: [
+            {
+              text: 'text',
+            },
+          ],
+        },
+      ]);
+      neo4jDataStore.readMostRecentSentiment
+        .withArgs(economicEntity1)
+        .returns(economicEntity1ReturnValue);
+
+      const economicEntity2 = EconomicEntityFactory.economicEntity({
+        name: 'amazon',
+        type: EconomicEntityType.Business,
+      });
+      const economicEntity2ReturnValue = Object.freeze([
+        {
+          utcDateTime: moment().utc().format(),
+          comparative: 2,
+          tweets: [
+            {
+              text: 'some text',
+            },
+            {
+              text: 'second return value',
+            },
+          ],
+        },
+      ]);
+      neo4jDataStore.readMostRecentSentiment
+        .withArgs(economicEntity2)
+        .returns(economicEntity2ReturnValue);
+
+      const actuals = await subject._mostRecentSentiments([
+        economicEntity1,
+        economicEntity2,
+      ]);
+
+      expect(actuals[0]).to.equal(economicEntity1ReturnValue);
+      expect(actuals[1]).to.equal(economicEntity2ReturnValue);
+    });
+  });
+
   describe('_computeSentiment', () => {
+    it('should require valid economic entities', async () => {
+      const economicEntity = {
+        name: 'google',
+        type: 'GOOGLE',
+      };
+      await expect(
+        subject._computeSentiment(economicEntity, [])
+      ).to.be.rejectedWith(Error);
+    });
+
+    it('should do nothing when empty datas are passed', async () => {
+      const economicEntity = EconomicEntityFactory.economicEntity({
+        name: 'google',
+        type: EconomicEntityType.Business,
+      });
+      const datas = [];
+      await subject._computeSentiment(economicEntity, datas);
+      expect(neo4jDataStore.readMostRecentSentiment.callCount).to.equal(0);
+    });
+
+    it('should do nothing when datas includes an invalid date', async () => {
+      const economicEntity = EconomicEntityFactory.economicEntity({
+        name: 'google',
+        type: EconomicEntityType.Business,
+      });
+      const datas = [
+        {
+          utcDateTime: '1G',
+        },
+      ];
+      await subject._computeSentiment(economicEntity, datas);
+      expect(neo4jDataStore.readMostRecentSentiment.callCount).to.equal(0);
+    });
+
+    it('should do nothing when datas includes a null date', async () => {
+      const economicEntity = EconomicEntityFactory.economicEntity({
+        name: 'google',
+        type: EconomicEntityType.Business,
+      });
+      const datas = [
+        {
+          utcDateTime: null,
+        },
+      ];
+      await subject._computeSentiment(economicEntity, datas);
+      expect(neo4jDataStore.readMostRecentSentiment.callCount).to.equal(0);
+    });
+
+    it('should do nothing when datas includes empty tweets', async () => {
+      const economicEntity = EconomicEntityFactory.economicEntity({
+        name: 'google',
+        type: EconomicEntityType.Business,
+      });
+      const datas = [
+        {
+          utcDateTime: moment().utc().format(),
+          tweets: [],
+        },
+      ];
+      await subject._computeSentiment(economicEntity, datas);
+      expect(neo4jDataStore.readMostRecentSentiment.callCount).to.equal(0);
+    });
+
+    it('should do nothing when datas includes null tweets', async () => {
+      const economicEntity = EconomicEntityFactory.economicEntity({
+        name: 'google',
+        type: EconomicEntityType.Business,
+      });
+      const datas = [
+        {
+          utcDateTime: moment().utc().format(),
+          tweets: null,
+        },
+      ];
+      await subject._computeSentiment(economicEntity, datas);
+      expect(neo4jDataStore.readMostRecentSentiment.callCount).to.equal(0);
+    });
+
     it('should compute the sentiment for each tweet entry', async () => {
       const utcDateTime = moment().utc().format();
       const economicEntity = EconomicEntityFactory.economicEntity({
@@ -453,10 +605,10 @@ describe('analysis-service', () => {
 
       await subject._computeSentiment(economicEntity, timeSeriesData);
 
-      expect(sentimentLib.analyze.callCount).to.be.greaterThan(0);
+      expect(sentimentLib.analyze.callCount).to.equal(2);
     });
 
-    it('should skip over entries that include a null value for tweets ', async () => {
+    it('should add sentiments to the data store', async () => {
       const utcDateTime = moment().utc().format();
       const economicEntity = EconomicEntityFactory.economicEntity({
         name: 'google',
@@ -466,32 +618,24 @@ describe('analysis-service', () => {
         {
           utcDateTime,
           economicEntity,
-          tweets: null,
+          tweets: [
+            {
+              text: 'something random',
+            },
+            {
+              text: 'something different',
+            },
+          ],
         },
       ];
 
-      sentimentLib.analyze.returns({
-        comparative: 1,
-      });
-
-      await subject._computeSentiment(economicEntity, timeSeriesData);
-
-      expect(sentimentLib.analyze.callCount).to.equal(0);
-    });
-
-    it('should skip over entries that include an empty tweets array ', async () => {
-      const utcDateTime = moment().utc().format();
-      const economicEntity = EconomicEntityFactory.economicEntity({
-        name: 'google',
-        type: EconomicEntityType.Business,
-      });
-      const timeSeriesData = [
-        {
+      neo4jDataStore.readMostRecentSentiment.returns([
+        Object.freeze({
           utcDateTime,
-          economicEntity,
-          tweets: [],
-        },
-      ];
+          comparative: 1,
+          tweets: timeSeriesData[0].tweets,
+        }),
+      ]);
 
       sentimentLib.analyze.returns({
         comparative: 1,
@@ -499,7 +643,7 @@ describe('analysis-service', () => {
 
       await subject._computeSentiment(economicEntity, timeSeriesData);
 
-      expect(sentimentLib.analyze.callCount).to.equal(0);
+      expect(neo4jDataStore.addSentiments.callCount).to.equal(2);
     });
 
     it('should add a message to the queue indicating the sentiments computed', async () => {

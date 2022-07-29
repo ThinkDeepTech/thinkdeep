@@ -191,11 +191,16 @@ class AnalysisService {
       throw new Error(`An invalid economic entity was received.`);
     }
 
+    if (!this._validSentimentDatas(datas)) {
+      this._logger.debug(
+        `Invalid sentiment data received: ${JSON.stringify(datas)}`
+      );
+      return;
+    }
+
     for (const data of datas) {
       for (const tweet of data.tweets || []) {
         const text = tweet.text || '';
-
-        if (!text) continue;
 
         const sentiment = this._sentiment(text);
 
@@ -222,10 +227,6 @@ class AnalysisService {
       await this._mostRecentSentiments([economicEntity])
     )[0][0];
 
-    this._logger.debug(
-      `Most recent data received\n${JSON.stringify(mostRecentSentiment)}`
-    );
-
     const event = {
       economicEntity,
       data: mostRecentSentiment,
@@ -233,10 +234,36 @@ class AnalysisService {
 
     const eventName = 'SENTIMENT_COMPUTED';
 
-    this._logger.info(
-      `Emitting event ${eventName} with data ${JSON.stringify(event)}`
-    );
     await this._emit(eventName, event);
+  }
+
+  /**
+   * Validate sentiment datas.
+   * @param {Array} datas Consists of objects of the form [{ utcDateTime: <Number>, tweets: [{ text: 'tweet text' }]}]
+   * @return {Boolean} True if valid. False otherwise.
+   */
+  _validSentimentDatas(datas) {
+    if (!Array.isArray(datas) || datas.length <= 0) {
+      return false;
+    }
+
+    for (const data of datas || []) {
+      if (!validDate(data.utcDateTime)) {
+        return false;
+      }
+
+      if (!Array.isArray(data.tweets) || data.tweets.length <= 0) {
+        return false;
+      }
+
+      for (const tweet of data.tweets || []) {
+        if (!tweet.text) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 
   /**
@@ -294,7 +321,9 @@ class AnalysisService {
       throw new Error(`The event name ${eventName} is invalid.`);
     }
 
-    this._logger.debug(`Emitting ${eventName}`);
+    this._logger.info(
+      `Emitting event ${eventName} with data ${JSON.stringify(data)}`
+    );
     await this._producer.send({
       topic: eventName,
       messages: [{value: JSON.stringify(data)}],
