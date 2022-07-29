@@ -126,14 +126,30 @@ const objectifyEconomicEntities = (economicEntities) => {
 };
 
 /**
+ * Check if an economic entity is valid.
+ * @param {EconomicEntity} economicEntity
+ * @return {Boolean} True if valid. False otherwise.
+ */
+const validEconomicEntity = (economicEntity) => {
+  return (
+    validString(economicEntity.name) &&
+    EconomicEntityType.valid(economicEntity.type) &&
+    typeof economicEntity.valid === 'function' &&
+    economicEntity.valid()
+  );
+};
+
+/**
  * Check if economic entities are valid.
  * @param {Array<EconomicEntity>} economicEntities Economic entities to validate.
  * @return {Boolean} True if the economic entities are valid. False otherwise.
  */
 const validEconomicEntities = (economicEntities) => {
   for (const economicEntity of economicEntities) {
-    if (!economicEntity.valid || !economicEntity.valid()) {
-      throw new Error(`An invalid economic entity was received.`);
+    if (!validEconomicEntity(economicEntity)) {
+      throw new Error(
+        `Invalid economic entity: type ${economicEntity.type}, name ${economicEntity.name}`
+      );
     }
   }
 

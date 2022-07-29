@@ -293,6 +293,25 @@ describe('deep-analyzer-page-summary', () => {
         element._sentimentQueryController.executeQuery.callCount
       ).to.be.greaterThan(0);
     });
+
+    it('should include entities starting from the beginning of the day', async () => {
+      const dateComponent = startDate(element);
+
+      await click(dateComponent);
+
+      const unselectedDates = unselectedDateOptions(datePickerOverlay());
+
+      const initialDateValue = dateComponent.value;
+
+      await click(unselectedDates[1]);
+
+      const subsequentDateValue = dateComponent.value;
+
+      expect(initialDateValue).not.to.equal(subsequentDateValue);
+      expect(element._sentimentQueryController.variables.startDate).to.include(
+        `T00:00:00Z`
+      );
+    });
   });
 
   describe('_onSelectEndDate', () => {
@@ -373,6 +392,25 @@ describe('deep-analyzer-page-summary', () => {
       expect(initialDateValue).not.to.equal(subsequentDateValue);
       expect(element._sentimentQueryController.variables.endDate).to.equal(
         `${subsequentDateValue}T23:59:59Z`
+      );
+    });
+
+    it('should include entities up until the end of the day', async () => {
+      const dateComponent = endDate(element);
+
+      await click(dateComponent);
+
+      const unselectedDates = unselectedDateOptions(datePickerOverlay());
+
+      const initialDateValue = dateComponent.value;
+
+      await click(unselectedDates[1]);
+
+      const subsequentDateValue = dateComponent.value;
+
+      expect(initialDateValue).not.to.equal(subsequentDateValue);
+      expect(element._sentimentQueryController.variables.endDate).to.include(
+        `T23:59:59Z`
       );
     });
 

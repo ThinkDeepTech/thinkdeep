@@ -66,6 +66,7 @@ class AnalysisService {
     this._logger.debug(`Subscribing to TWEETS_COLLECTED topic`);
     await this._consumer.subscribe({
       topic: 'TWEETS_COLLECTED',
+      fromBeginning: true,
     });
 
     this._logger.debug(`Running consumer handlers on each message.`);
@@ -110,6 +111,7 @@ class AnalysisService {
     }
 
     // TODO: Move access checks to separate project.
+    // TODO: Create object to store user data that's shared among ms's.
     if (!hasReadAllAccess(permissions)) return [];
 
     const results = [];
@@ -190,7 +192,7 @@ class AnalysisService {
     }
 
     for (const data of datas) {
-      for (const tweet of data.tweets) {
+      for (const tweet of data.tweets || []) {
         const text = tweet.text || '';
 
         if (!text) continue;
