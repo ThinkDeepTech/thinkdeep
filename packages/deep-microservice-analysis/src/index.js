@@ -31,6 +31,7 @@ const logger = getLogger();
     ),
     defaultDatabase: process.env.MICROSERVICE_ANALYSIS_NEO4J_DATABASE,
     defaultAccessMode: neo4j.session.READ,
+    neo4j,
   });
 
   const analysisService = new AnalysisService(
