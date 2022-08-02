@@ -174,7 +174,7 @@ class CollectionService {
       throw new Error(`Economic entity is invalid.`);
     }
 
-    const key = `${economicEntity.name}:${economicEntity.type}`;
+    const key = `${economicEntity.type}:${economicEntity.name}`;
     if (this._commander.registered(key)) return;
 
     this._logger.info(
