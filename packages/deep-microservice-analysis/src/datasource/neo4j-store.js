@@ -12,6 +12,21 @@ const validEndDate = (val) => {
 };
 
 /**
+ * Determine if the sentiment data is valid.
+ * @param {Array<Object>} datas Array of the form [{ utcDateTime: <UTC date time string>, tweet: <tweet>, sentiment: <sentiment> }]
+ * @return {Boolean} True if valid. False otherwise.
+ */
+const validSentimentDatas = (datas) => {
+  for (const data of datas) {
+    if (!validDate(data.utcDateTime)) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+/**
  * Provides access to neo4j.
  */
 class Neo4jStore extends Neo4jDataSource {
@@ -27,16 +42,20 @@ class Neo4jStore extends Neo4jDataSource {
       );
     }
 
-    if (!Array.isArray(datas) || datas.length <= 0) {
-      throw new Error(`Adding data requires populated data to add.`);
+    if (!Array.isArray(datas)) {
+      throw new TypeError(
+        `Data must be an array. Received invalid value ${JSON.stringify(datas)}`
+      );
     }
 
-    for (const data of datas) {
-      if (!validDate(data.utcDateTime)) {
-        throw new Error(
-          `A UTC date time is required. Received ${data.utcDateTime}`
-        );
-      }
+    if (datas.length <= 0) {
+      return;
+    }
+
+    if (!validSentimentDatas(datas)) {
+      throw new Error(
+        `The data received was invalid. Received ${JSON.stringify(datas)}`
+      );
     }
 
     await this._addEconomicEntity(economicEntity);

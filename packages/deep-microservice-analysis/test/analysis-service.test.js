@@ -240,7 +240,7 @@ describe('analysis-service', () => {
       ).to.be.rejectedWith(Error);
     });
 
-    it('should accept a null for the end date', async () => {
+    it('should accept null for the end date', async () => {
       const startDate = moment().utc().subtract(1, 'month').format();
       const endDate = null;
 
