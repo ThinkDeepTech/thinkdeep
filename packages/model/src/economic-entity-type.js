@@ -33,7 +33,11 @@ class EconomicEntityType {
   static graphQLTypeDefinition() {
     return `
             enum ${this.graphQLType()} {
-                ${this.Business}
+                ${this.types.map(
+                  (type) => `
+                  ${type}
+                `
+                )}
             }
         `;
   }

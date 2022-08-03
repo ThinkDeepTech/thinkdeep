@@ -33,29 +33,24 @@ describe('configuration-store', () => {
     subject = new ConfigurationStore(collection);
   });
 
+  afterEach(() => {
+    sinon.restore();
+  });
+
   describe('configurationExists', () => {
-    it('should throw an error if the user email is empty', (done) => {
+    it('should throw an error if the user email is empty', async () => {
       const userEmail = '';
 
-      subject.configurationExists(userEmail).then(
-        () => {
-          done('An error was not thrown');
-        },
-        () => {
-          done();
-        }
+      await expect(subject.configurationExists(userEmail)).to.be.rejectedWith(
+        Error
       );
     });
 
-    it('should throw an error if the user email is not a string', (done) => {
+    it('should throw an error if the user email is not a string', async () => {
       const userEmail = [];
-      subject.configurationExists(userEmail).then(
-        () => {
-          done('An error was not thrown');
-        },
-        () => {
-          done();
-        }
+
+      await expect(subject.configurationExists(userEmail)).to.be.rejectedWith(
+        Error
       );
     });
 
@@ -83,57 +78,35 @@ describe('configuration-store', () => {
   });
 
   describe('createConfigurationForUser', () => {
-    it('should throw an error if the user email is empty', (done) => {
+    it('should throw an error if the user email is empty', async () => {
       const userEmail = '';
 
-      subject.createConfigurationForUser(userEmail, configuration).then(
-        () => {
-          done('An error was not thrown');
-        },
-        () => {
-          done();
-        }
-      );
+      await expect(
+        subject.createConfigurationForUser(userEmail, configuration)
+      ).to.be.rejectedWith(Error);
     });
 
-    it('should throw an error if the user email is not a string', (done) => {
+    it('should throw an error if the user email is not a string', async () => {
       const userEmail = [];
-      subject.createConfigurationForUser(userEmail, configuration).then(
-        () => {
-          done('An error was not thrown');
-        },
-        () => {
-          done();
-        }
-      );
+      await expect(
+        subject.createConfigurationForUser(userEmail, configuration)
+      ).to.be.rejectedWith(Error);
     });
 
-    it('should throw an error if an invalid configuration is supplied', (done) => {
+    it('should throw an error if an invalid configuration is supplied', async () => {
       const userEmail = 'somevalid@email.com';
-      subject
-        .createConfigurationForUser(userEmail, {observedEconomicEntities: null})
-        .then(
-          () => {
-            done('An error was not thrown');
-          },
-          () => {
-            done();
-          }
-        );
+      await expect(
+        subject.createConfigurationForUser(userEmail, configuration)
+      ).to.be.rejectedWith(Error);
     });
 
-    it('should throw an error if insertion fails', (done) => {
+    it('should throw an error if insertion fails', async () => {
       const userEmail = 'somevalid@email.com';
       collection.insertOne.throws();
 
-      subject.createConfigurationForUser(userEmail, configuration).then(
-        () => {
-          done('An error was not thrown');
-        },
-        () => {
-          done();
-        }
-      );
+      await expect(
+        subject.createConfigurationForUser(userEmail, configuration)
+      ).to.be.rejectedWith(Error);
     });
 
     it('should correctly insert the configuration', async () => {
@@ -144,43 +117,28 @@ describe('configuration-store', () => {
   });
 
   describe('readConfigurationForUser', () => {
-    it('should throw an error if the user email is empty', (done) => {
+    it('should throw an error if the user email is empty', async () => {
       const userEmail = '';
 
-      subject.readConfigurationForUser(userEmail).then(
-        () => {
-          done('An error was not thrown');
-        },
-        () => {
-          done();
-        }
-      );
+      await expect(
+        subject.readConfigurationForUser(userEmail)
+      ).to.be.rejectedWith(Error);
     });
 
-    it('should throw an error if the user email is not a string', (done) => {
+    it('should throw an error if the user email is not a string', async () => {
       const userEmail = [];
-      subject.readConfigurationForUser(userEmail).then(
-        () => {
-          done('An error was not thrown');
-        },
-        () => {
-          done();
-        }
-      );
+      await expect(
+        subject.readConfigurationForUser(userEmail)
+      ).to.be.rejectedWith(Error);
     });
 
-    it('should throw an error if a failure occurs during the read', (done) => {
+    it('should throw an error if a failure occurs during the read', async () => {
       const userEmail = 'somevalid@email.com';
       collection.find.throws();
 
-      subject.readConfigurationForUser(userEmail).then(
-        () => {
-          done('An error was not thrown');
-        },
-        () => {
-          done();
-        }
-      );
+      await expect(
+        subject.readConfigurationForUser(userEmail)
+      ).to.be.rejectedWith(Error);
     });
 
     it('should return the desired configuration', async () => {
@@ -192,58 +150,36 @@ describe('configuration-store', () => {
   });
 
   describe('updateConfigurationForUser', () => {
-    it('should throw an error if the user email is empty', (done) => {
+    it('should throw an error if the user email is empty', async () => {
       const userEmail = '';
 
-      subject.updateConfigurationForUser(userEmail, configuration).then(
-        () => {
-          done('An error was not thrown');
-        },
-        () => {
-          done();
-        }
-      );
+      await expect(
+        subject.updateConfigurationForUser(userEmail, configuration)
+      ).to.be.rejectedWith(Error);
     });
 
-    it('should throw an error if the user email is not a string', (done) => {
+    it('should throw an error if the user email is not a string', async () => {
       const userEmail = [];
-      subject.updateConfigurationForUser(userEmail, configuration).then(
-        () => {
-          done('An error was not thrown');
-        },
-        () => {
-          done();
-        }
-      );
+      await expect(
+        subject.updateConfigurationForUser(userEmail, configuration)
+      ).to.be.rejectedWith(Error);
     });
 
-    it('should throw an error if an invalid configuration is supplied', (done) => {
+    it('should throw an error if an invalid configuration is supplied', async () => {
       const userEmail = 'somevalid@email.com';
-      subject
-        .updateConfigurationForUser(userEmail, {observedEconomicEntities: null})
-        .then(
-          () => {
-            done('An error was not thrown');
-          },
-          () => {
-            done();
-          }
-        );
+      await expect(
+        subject.updateConfigurationForUser(userEmail, configuration)
+      ).to.be.rejectedWith(Error);
     });
 
-    it('should throw an error if the update fails', (done) => {
+    it('should throw an error if the update fails', async () => {
       const userEmail = 'somevalid@email.com';
 
       collection.updateOne.throws();
 
-      subject.updateConfigurationForUser(userEmail, configuration).then(
-        () => {
-          done('An error was not thrown');
-        },
-        () => {
-          done();
-        }
-      );
+      await expect(
+        subject.updateConfigurationForUser(userEmail, configuration)
+      ).to.be.rejectedWith(Error);
     });
 
     it('should update the configuration', async () => {
