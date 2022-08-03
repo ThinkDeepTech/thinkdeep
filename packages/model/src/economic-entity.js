@@ -11,6 +11,14 @@ class EconomicEntity {
    * @param {String} type Type of the economic entity.
    */
   constructor(name, type) {
+    if (!validString(name)) {
+      throw new Error(`Name ${name} is invalid.`);
+    }
+
+    if (!EconomicEntityType.valid(type)) {
+      throw new Error(`Type ${type} is not a valid economic entity type.`);
+    }
+
     this.name = name;
     this.type = type;
   }
