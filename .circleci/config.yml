@@ -65,9 +65,16 @@ jobs:
             version: 20.10.7
             docker_layer_caching: true
         - login_docker
+        - restore_cache:
+            key: ms-analysis1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-analysis/package.json" }}
         - run:
+            name: Installing package
             command: yarn install
             working_directory: ./packages/deep-microservice-analysis
+        - save_cache:
+            key: ms-analysis1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-analysis/package.json" }}
+            paths:
+              - "./packages/deep-microservice-analysis/node_modules"
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis:latest --build-arg PORT=$MICROSERVICE_ANALYSIS_PORT .
             working_directory: ./packages/deep-microservice-analysis
@@ -86,9 +93,16 @@ jobs:
             version: 20.10.7
             docker_layer_caching: true
         - login_docker
+        - restore_cache:
+            key: ms-analysis1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-analysis/package.json" }}
         - run:
+            name: Installing package
             command: yarn install
             working_directory: ./packages/deep-microservice-analysis
+        - save_cache:
+            key: ms-analysis1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-analysis/package.json" }}
+            paths:
+              - "./packages/deep-microservice-analysis/node_modules"
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-analysis-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis-dev:latest --build-arg PORT=$MICROSERVICE_ANALYSIS_PORT .
             working_directory: ./packages/deep-microservice-analysis
@@ -107,9 +121,16 @@ jobs:
             version: 20.10.7
             docker_layer_caching: true
         - login_docker
+        - restore_cache:
+            key: ms-collection1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-collection/package.json" }}
         - run:
+            name: Installing package
             command: yarn install
             working_directory: ./packages/deep-microservice-collection
+        - save_cache:
+            key: ms-collection1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-collection/package.json" }}
+            paths:
+              - "./packages/deep-microservice-collection/node_modules"
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-collection:latest --build-arg PORT=$MICROSERVICE_COLLECTION_PORT .
             working_directory: ./packages/deep-microservice-collection
@@ -129,9 +150,16 @@ jobs:
             version: 20.10.7
             docker_layer_caching: true
         - login_docker
+        - restore_cache:
+            key: ms-collection1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-collection/package.json" }}
         - run:
+            name: Installing package
             command: yarn install
             working_directory: ./packages/deep-microservice-collection
+        - save_cache:
+            key: ms-collection1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-collection/package.json" }}
+            paths:
+              - "./packages/deep-microservice-collection/node_modules"
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-collection-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-collection-dev:latest --build-arg PORT=$MICROSERVICE_COLLECTION_PORT .
             working_directory: ./packages/deep-microservice-collection
@@ -150,9 +178,16 @@ jobs:
             version: 20.10.7
             docker_layer_caching: true
         - login_docker
+        - restore_cache:
+            key: ms-config1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-configuration/package.json" }}
         - run:
+            name: Installing package
             command: yarn install
             working_directory: ./packages/deep-microservice-configuration
+        - save_cache:
+            key: ms-config1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-configuration/package.json" }}
+            paths:
+              - "./packages/deep-microservice-configuration/node_modules"
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-configuration:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-configuration:latest --build-arg PORT=$MICROSERVICE_CONFIGURATION_PORT .
             working_directory: ./packages/deep-microservice-configuration
@@ -171,9 +206,16 @@ jobs:
             version: 20.10.7
             docker_layer_caching: true
         - login_docker
+        - restore_cache:
+            key: ms-config1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-configuration/package.json" }}
         - run:
+            name: Installing package
             command: yarn install
             working_directory: ./packages/deep-microservice-configuration
+        - save_cache:
+            key: ms-config1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-configuration/package.json" }}
+            paths:
+              - "./packages/deep-microservice-configuration/node_modules"
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-configuration-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-configuration-dev:latest --build-arg PORT=$MICROSERVICE_CONFIGURATION_PORT .
             working_directory: ./packages/deep-microservice-configuration
@@ -275,9 +317,16 @@ jobs:
             version: 20.10.7
             docker_layer_caching: true
         - login_docker
+        - restore_cache:
+            key: ms-datacollector-{{ .Branch }}-{{ checksum "./packages/data-collector/package.json" }}
         - run:
+            name: Installing package
             command: yarn install
             working_directory: ./packages/data-collector
+        - save_cache:
+            key: ms-datacollector-{{ .Branch }}-{{ checksum "./packages/data-collector/package.json" }}
+            paths:
+              - "./packages/data-collector/node_modules"
         - run:
             command: docker build -t thinkdeeptech/data-collector:${CIRCLE_BUILD_NUM} -t thinkdeeptech/data-collector:latest .
             working_directory: ./packages/data-collector
@@ -296,9 +345,16 @@ jobs:
             version: 20.10.7
             docker_layer_caching: true
         - login_docker
+        - restore_cache:
+            key: ms-datacollector-{{ .Branch }}-{{ checksum "./packages/data-collector/package.json" }}
         - run:
+            name: Installing package
             command: yarn install
             working_directory: ./packages/data-collector
+        - save_cache:
+            key: ms-datacollector-{{ .Branch }}-{{ checksum "./packages/data-collector/package.json" }}
+            paths:
+              - "./packages/data-collector/node_modules"
         - run:
             command: docker build -t thinkdeeptech/data-collector-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/data-collector-dev:latest .
             working_directory: ./packages/data-collector
@@ -361,7 +417,7 @@ jobs:
             namespace: "production"
             release-name: "v1"
             atomic: true
-            values-to-override: 'gateway.service.certificateId=9fe8414d-2b42-4029-b836-20c11a2abce9,subscription.service.certificateId=ebbf7f14-f13c-4568-bc5f-34fdc7d90c05,auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,analysis.neo4j.neo4j.username=$MICROSERVICE_ANALYSIS_NEO4J_USERNAME,analysis.neo4j.neo4j.password=$MICROSERVICE_ANALYSIS_NEO4J_PASSWORD_PROD,analysis.neo4j.config.dbms\.default_database=$MICROSERVICE_ANALYSIS_NEO4J_DATABASE,collection.replicas=3,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,collection.data.collector.image=thinkdeeptech/data-collector:latest,replicas=1,global.docker.secretName=docker-secret,global.nodeEnv=production'
+            values-to-override: 'gateway.service.certificateId=$PROD_MICROSERVICE_GATEWAY_CERTIFICATE_ID,subscription.service.certificateId=$PROD_MICROSERVICE_SUBSCRIPTION_CERTIFICATE_ID,auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,analysis.neo4j.neo4j.username=$PROD_MICROSERVICE_ANALYSIS_NEO4J_USERNAME,analysis.neo4j.neo4j.password=$PROD_MICROSERVICE_ANALYSIS_NEO4J_PASSWORD,analysis.neo4j.config.dbms\.default_database=$PROD_MICROSERVICE_ANALYSIS_NEO4J_DATABASE,collection.replicas=3,collection.twitter.bearer=$PROD_PREDECOS_TWITTER_BEARER,collection.data.collector.image=thinkdeeptech/data-collector:latest,replicas=1,global.docker.secretName=docker-secret,global.nodeEnv=production'
             update-repositories: true
             timeout: "480s"
             wait: true
@@ -409,7 +465,7 @@ jobs:
             namespace: "development"
             release-name: "v1"
             atomic: true
-            values-to-override: 'gateway.service.certificateId=d56f9588-fca5-4c28-b744-41119c5672fe,subscription.service.certificateId=84ae21b6-7357-4098-9191-083a5000ae35,auth.audience=$PREDECOS_TEST_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_TEST_AUTH_JWKS_URI,auth.issuer=$PREDECOS_TEST_AUTH_ISSUER,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,replicas=1,global.docker.secretName=docker-secret,analysis.container.image=thinkdeeptech/deep-microservice-analysis-dev:latest,analysis.neo4j.neo4j.username=$MICROSERVICE_ANALYSIS_NEO4J_USERNAME,analysis.neo4j.neo4j.password=$MICROSERVICE_ANALYSIS_NEO4J_PASSWORD_DEV,analysis.neo4j.services.neo4j.enabled=true,analysis.neo4j.config.dbms\.default_database=$MICROSERVICE_ANALYSIS_NEO4J_DATABASE,analysis.neo4j.config.dbms\.default_advertised_address=$MICROSERVICE_ANALYSIS_NEO4J_ADVERTISED_ADDRESS,collection.replicas=3,collection.container.image=thinkdeeptech/deep-microservice-collection-dev:latest,collection.data.collector.image=thinkdeeptech/data-collector-dev:latest,configuration.container.image=thinkdeeptech/deep-microservice-configuration-dev:latest,gateway.container.image=thinkdeeptech/deep-microservice-gateway-dev:latest,subscription.container.image=thinkdeeptech/deep-microservice-subscription-dev:latest,global.nodeEnv=development'
+            values-to-override: 'gateway.service.certificateId=$DEV_MICROSERVICE_GATEWAY_CERTIFICATE_ID,subscription.service.certificateId=$DEV_MICROSERVICE_SUBSCRIPTION_CERTIFICATE_ID,auth.audience=$PREDECOS_TEST_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_TEST_AUTH_JWKS_URI,auth.issuer=$PREDECOS_TEST_AUTH_ISSUER,collection.twitter.bearer=$DEV_PREDECOS_TWITTER_BEARER,replicas=1,global.docker.secretName=docker-secret,analysis.container.image=thinkdeeptech/deep-microservice-analysis-dev:latest,analysis.neo4j.neo4j.username=$DEV_MICROSERVICE_ANALYSIS_NEO4J_USERNAME,analysis.neo4j.neo4j.password=$DEV_MICROSERVICE_ANALYSIS_NEO4J_PASSWORD,analysis.neo4j.services.neo4j.enabled=true,analysis.neo4j.config.dbms\.default_database=$DEV_MICROSERVICE_ANALYSIS_NEO4J_DATABASE,analysis.neo4j.config.dbms\.default_advertised_address=$DEV_MICROSERVICE_ANALYSIS_NEO4J_ADVERTISED_ADDRESS,collection.replicas=3,collection.container.image=thinkdeeptech/deep-microservice-collection-dev:latest,collection.data.collector.image=thinkdeeptech/data-collector-dev:latest,configuration.container.image=thinkdeeptech/deep-microservice-configuration-dev:latest,gateway.container.image=thinkdeeptech/deep-microservice-gateway-dev:latest,subscription.container.image=thinkdeeptech/deep-microservice-subscription-dev:latest,global.nodeEnv=development'
             update-repositories: true
             timeout: "480s"
             wait: true
