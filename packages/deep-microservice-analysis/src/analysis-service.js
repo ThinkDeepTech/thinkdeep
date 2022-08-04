@@ -120,7 +120,9 @@ class AnalysisService {
         `Querying sentiments for ${economicEntity.type} ${economicEntity.name}.`
       );
 
-      results.push(this._sentimentData(economicEntity, startDate, endDate));
+      results.push(
+        await this._sentimentData(economicEntity, startDate, endDate)
+      );
     }
 
     return results;

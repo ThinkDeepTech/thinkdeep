@@ -1,6 +1,7 @@
 import {EconomicEntityFactory, EconomicEntityType} from '@thinkdeep/model';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import deepEqual from 'deep-equal';
 import moment from 'moment';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
@@ -290,7 +291,7 @@ describe('analysis-service', () => {
         endDate,
         permissions
       );
-      expect(actuals[0][0]).to.equal(expected);
+      expect(deepEqual(actuals[0][0], expected)).to.equal(true);
     });
 
     it('should keep the order of the received economic entities in results', async () => {
