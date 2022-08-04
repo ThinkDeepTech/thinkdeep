@@ -1,10 +1,13 @@
+import {EconomicEntityFactory, EconomicEntityType} from '@thinkdeep/model';
 import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
 import {ConfigurationStore} from '../../src/datasource/configuration-store.js';
 
 chai.use(sinonChai);
+chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 describe('configuration-store', () => {
@@ -15,10 +18,10 @@ describe('configuration-store', () => {
   };
   const configuration = {
     observedEconomicEntities: [
-      {
+      EconomicEntityFactory.economicEntity({
         name: 'SomeBusiness',
-        type: 'BUSINESS',
-      },
+        type: EconomicEntityType.Business,
+      }),
     ],
   };
   beforeEach(() => {
@@ -62,6 +65,7 @@ describe('configuration-store', () => {
 
     it('should check that the configuration is an object', async () => {
       const userEmail = 'someemail@email.com';
+
       intermediate.limit().toArray.returns([{}]);
 
       const exists = await subject.configurationExists(userEmail);
@@ -96,7 +100,7 @@ describe('configuration-store', () => {
     it('should throw an error if an invalid configuration is supplied', async () => {
       const userEmail = 'somevalid@email.com';
       await expect(
-        subject.createConfigurationForUser(userEmail, configuration)
+        subject.createConfigurationForUser(userEmail, {})
       ).to.be.rejectedWith(Error);
     });
 
@@ -143,9 +147,34 @@ describe('configuration-store', () => {
 
     it('should return the desired configuration', async () => {
       const userEmail = 'somevalid@email.com';
-      const config = await subject.readConfigurationForUser(userEmail);
+      const actual = await subject.readConfigurationForUser(userEmail);
+      console.log(JSON.stringify(actual));
       expect(collection.find.callCount).to.equal(1);
-      expect(config).to.equal(configuration);
+
+      // Ensure the only key is observedEconomicEntities so that the test
+      // fails if new keys are added requiring an update. If the test fails,
+      // update it to include the new keys.
+      expect(Object.keys(actual).length).to.equal(1);
+
+      // Validate observedEconomicEntities
+      const founds = [];
+      for (const actualEconomicEntity of actual.observedEconomicEntities ||
+        []) {
+        for (const expectedEconomicEntity of configuration.observedEconomicEntities ||
+          []) {
+          if (actualEconomicEntity.equals(expectedEconomicEntity)) {
+            founds.push(true);
+          }
+        }
+      }
+
+      expect(founds.length).to.be.greaterThan(0);
+      expect(founds.length).to.equal(
+        configuration.observedEconomicEntities.length
+      );
+      expect(Array.isArray(configuration.observedEconomicEntities)).to.equal(
+        true
+      );
     });
   });
 
@@ -168,7 +197,7 @@ describe('configuration-store', () => {
     it('should throw an error if an invalid configuration is supplied', async () => {
       const userEmail = 'somevalid@email.com';
       await expect(
-        subject.updateConfigurationForUser(userEmail, configuration)
+        subject.updateConfigurationForUser(userEmail, {})
       ).to.be.rejectedWith(Error);
     });
 

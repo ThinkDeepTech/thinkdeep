@@ -29,7 +29,7 @@
     "url": "git+https://github.com/ThinkDeepTech/thinkdeep.git"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "tests:unit": "c8 --clean mocha --exit --recursive"
   },
   "bugs": {
     "url": "https://github.com/ThinkDeepTech/thinkdeep/issues"

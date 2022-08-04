@@ -22,6 +22,8 @@ const validEmail = (userEmail) => {
 const validConfiguration = (configuration) => {
   return (
     !!configuration &&
+    typeof configuration === 'object' &&
+    Object.keys(configuration).length > 0 &&
     !!configuration?.observedEconomicEntities &&
     !!Array.isArray(configuration?.observedEconomicEntities) &&
     validEconomicEntities(configuration?.observedEconomicEntities)
@@ -142,6 +144,8 @@ class ConfigurationStore extends MongoDataSource {
   _reduceConfigurations(configurations) {
     const results = [];
     for (const configuration of configurations) {
+      if (!Array.isArray(configuration?.observedEconomicEntities)) continue;
+
       results.push({
         ...configuration,
         observedEconomicEntities: EconomicEntityFactory.economicEntities(

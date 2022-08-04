@@ -11,23 +11,26 @@ import {
   unselectedDateOptions,
   datePickerOverlay,
 } from './deep-analyzer-page-summary-helpers.js';
-import DeepAnalyzerPageSummary from '../deep-analyzer-page-summary.js';
+import '../deep-analyzer-page-summary.js';
 import {EconomicEntityFactory, EconomicEntityType} from '@thinkdeep/model';
 
 describe('deep-analyzer-page-summary', () => {
+  let element;
   beforeEach(async () => {
     await initializeE2e(
       process.env.PREDECOS_TEST_AUTH_PREMIUM_USERNAME,
       process.env.PREDECOS_TEST_AUTH_PREMIUM_PASSWORD
     );
+    element = await fixtureSync(
+      html`<deep-analyzer-page-summary></deep-analyzer-page-summary>`
+    );
+  });
+
+  afterEach(() => {
+    sinon.restore();
   });
 
   describe('_hasMatchingData', () => {
-    let element;
-    beforeEach(() => {
-      element = new DeepAnalyzerPageSummary();
-    });
-
     it('should return true when the selected point matches the sentiment', async () => {
       const sentiment = {utcDateTime: '2022-12-20T00:00:00Z', comparative: 1};
       const point = [sentiment.utcDateTime, sentiment.comparative];
@@ -48,13 +51,6 @@ describe('deep-analyzer-page-summary', () => {
   });
 
   describe('_onInput', () => {
-    let element;
-    beforeEach(async () => {
-      element = await fixtureSync(
-        html`<deep-analyzer-page-summary></deep-analyzer-page-summary>`
-      );
-    });
-
     it('should pass the value in the watch text input into the mutation controller', () => {
       const companyName = 'Google';
       const input = element.shadowRoot.querySelector('mwc-textfield');
@@ -76,13 +72,6 @@ describe('deep-analyzer-page-summary', () => {
   });
 
   describe('_collectEconomicData', () => {
-    let element;
-    beforeEach(async () => {
-      element = await fixtureSync(
-        html`<deep-analyzer-page-summary></deep-analyzer-page-summary>`
-      );
-    });
-
     it('should update the site configuration to include the necessary economic entity', () => {
       const economicEntity = EconomicEntityFactory.economicEntity({
         name: 'Google',
@@ -124,13 +113,6 @@ describe('deep-analyzer-page-summary', () => {
   });
 
   describe('_onSelectBusiness', () => {
-    let element;
-    beforeEach(async () => {
-      element = await fixtureSync(
-        html`<deep-analyzer-page-summary></deep-analyzer-page-summary>`
-      );
-    });
-
     it('should update the subscription to the selected business', async () => {
       const unselectedDropdownOption =
         unselectedAnalysisDropdownOptions(element)[0];
@@ -196,13 +178,6 @@ describe('deep-analyzer-page-summary', () => {
   });
 
   describe('_onSelectStartDate', () => {
-    let element;
-    beforeEach(async () => {
-      element = await fixtureSync(
-        html`<deep-analyzer-page-summary></deep-analyzer-page-summary>`
-      );
-    });
-
     it('should set the default to today minus one month', async () => {
       const dateComponent = startDate(element);
 
@@ -315,13 +290,6 @@ describe('deep-analyzer-page-summary', () => {
   });
 
   describe('_onSelectEndDate', () => {
-    let element;
-    beforeEach(async () => {
-      element = await fixtureSync(
-        html`<deep-analyzer-page-summary></deep-analyzer-page-summary>`
-      );
-    });
-
     it('should set the default to null', async () => {
       const dateComponent = endDate(element);
 
