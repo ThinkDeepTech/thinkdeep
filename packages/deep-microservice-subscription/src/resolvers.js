@@ -20,7 +20,8 @@ const resolvers = {
         ) {
           return {};
         } else {
-          return payload;
+          console.warn(`Payload: ${JSON.stringify(payload)}`);
+          return payload.data;
         }
       },
       subscribe: withFilter(
@@ -29,6 +30,12 @@ const resolvers = {
           if (variables.endDate) {
             return false;
           }
+
+          console.warn(
+            `Payload: ${JSON.stringify(payload)}\nVariables: ${JSON.stringify(
+              variables
+            )}`
+          );
 
           for (const economicEntity of EconomicEntityFactory.economicEntities(
             variables.economicEntities
