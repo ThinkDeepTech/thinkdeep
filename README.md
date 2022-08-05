@@ -2,7 +2,7 @@
 [![CircleCI](https://circleci.com/gh/ThinkDeepTech/thinkdeep.svg?style=shield)](https://circleci.com/gh/ThinkDeepTech/thinkdeep)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ThinkDeepTech_thinkdeep&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ThinkDeepTech_thinkdeep)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ThinkDeepTech_thinkdeep&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ThinkDeepTech_thinkdeep)
-[![Coverage Status](https://coveralls.io/repos/github/ThinkDeepTech/thinkdeep/badge.svg?branch=master)](https://coveralls.io/github/ThinkDeepTech/thinkdeep?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/ThinkDeepTech/thinkdeep/badge.png?branch=master)](https://coveralls.io/github/ThinkDeepTech/thinkdeep?branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/a9eb1d6f95a73bfda23d/maintainability)](https://codeclimate.com/github/ThinkDeepTech/thinkdeep/maintainability)
 [<img src="https://i.stack.imgur.com/gVE0j.png" height="20" width="20">](https://www.linkedin.com/in/haydenmcp/)
 [<img src="https://i.stack.imgur.com/tskMh.png" height="20" width="20">](https://github.com/haydenmcp)
