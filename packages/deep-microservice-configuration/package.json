@@ -16,7 +16,7 @@
   },
   "scripts": {
     "start": "node ./src/index.js",
-    "tests:unit": "c8 --clean mocha --exit"
+    "tests:unit": "c8 --clean mocha --recursive --exit"
   },
   "devDependencies": {
     "c8": "^7.11.3",
@@ -29,9 +29,11 @@
     "@apollo/subgraph": "^0.1.5",
     "@thinkdeep/attach-exit-handler": "^1.0.0",
     "@thinkdeep/get-public-ip": "^1.0.0",
+    "@thinkdeep/model": "file:../model",
     "apollo-datasource-mongodb": "^0.5.2",
     "apollo-server": "3.8.0",
     "apollo-server-express": "^3.5.0",
+    "chai-as-promised": "^7.1.1",
     "express": "^4.17.1",
     "graphql": "^15.5.1",
     "graphql-depth-limit": "^1.1.0",

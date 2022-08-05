@@ -29,6 +29,7 @@
     "@graphql-tools/schema": "^8.3.1",
     "@thinkdeep/get-public-ip": "^1.0.0",
     "@thinkdeep/graphql-kafka-subscriptions": "^0.4.1",
+    "@thinkdeep/model": "file:../model",
     "apollo-server": "3.8.0",
     "apollo-server-express": "^3.5.0",
     "cors": "^2.8.5",
@@ -39,7 +40,7 @@
     "graphql-subscriptions": "^2.0.0",
     "graphql-ws": "^5.6.0",
     "jwks-rsa": "^2.0.5",
-    "kafkajs": "^1.15.0",
+    "kafkajs": "^2.1.0",
     "log4js": "^6.3.0",
     "ws": "^7.4.4"
   },

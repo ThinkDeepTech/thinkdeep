@@ -1,7 +1,10 @@
+import {EconomicEntityFactory, EconomicEntityType} from '@thinkdeep/model';
+import {validString} from '@thinkdeep/util';
 import {Client} from './client.js';
 import {Command, Option} from 'commander';
 import {Kafka} from 'kafkajs';
 import log4js from 'log4js';
+import moment from 'moment';
 import sinon from 'sinon';
 import {TwitterApi} from 'twitter-api-v2';
 
@@ -49,11 +52,24 @@ try {
 
   const options = program.opts();
 
-  if (!options.entityName) throw new Error(`Entity name is required`);
+  if (!validString(options.operationType))
+    throw new Error('Operation type is required');
 
-  if (!options.entityType) throw new Error(`Entity type is required`);
+  if (!validString(options.entityName))
+    throw new Error(`Entity name is required`);
 
-  if (!options.operationType) throw new Error('Operation type is required');
+  if (!validString(options.entityType))
+    throw new Error(`Entity type is required`);
+
+  if (!EconomicEntityType.valid(options.entityType))
+    throw new Error(`Entity type ${options.entityType} is invalid.`);
+
+  const economicEntity = EconomicEntityFactory.economicEntity({
+    name: options.entityName,
+    type: options.entityType,
+  });
+
+  const currentUtcDateTime = moment().utc().format();
 
   switch (options.operationType) {
     case 'fetch-tweets': {
@@ -117,8 +133,8 @@ try {
         );
 
         const data = {
-          economicEntityName: options.entityName,
-          economicEntityType: options.entityType,
+          utcDateTime: currentUtcDateTime,
+          economicEntity: economicEntity.toObject(),
           tweets: recentTweets,
         };
 

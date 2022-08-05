@@ -1,6 +1,16 @@
 import {attachExitHandler} from '@thinkdeep/attach-exit-handler';
-import moment from 'moment';
+import {EconomicEntityFactory, validEconomicEntities} from '@thinkdeep/model';
+import {validDate, validString} from '@thinkdeep/util';
 import {hasReadAllAccess} from './permissions.js';
+
+/**
+ * Determine if a value is a valid end date.
+ * @param {any} val
+ * @return {Boolean} True if valid. False otherwise.
+ */
+const validEndDate = (val) => {
+  return val === null || validDate(val);
+};
 
 /**
  * Service that applies business logic to data analysis operations for the application.
@@ -11,13 +21,13 @@ class AnalysisService {
    *
    * NOTE: The parameters below are injected because that improves testability of the codebase.
    *
-   * @param {Object} analysisDataStore - AnalysisDataStore to use when interacting with the database.
+   * @param {Object} neo4jDataStore - Neo4j data store to use.
    * @param {Object} sentimentLib - Library to use for sentiment analysis. This is an instance of Sentiment from 'sentiment' package.
    * @param {Object} kafkaClient - KafkaJS client to use.
    * @param {Object} logger - Logger to use.
    */
-  constructor(analysisDataStore, sentimentLib, kafkaClient, logger) {
-    this._analysisDataStore = analysisDataStore;
+  constructor(neo4jDataStore, sentimentLib, kafkaClient, logger) {
+    this._neo4jDataStore = neo4jDataStore;
     this._sentimentLib = sentimentLib;
     this._kafkaClient = kafkaClient;
 
@@ -50,29 +60,30 @@ class AnalysisService {
 
     await this._topicCreation([
       {topic: 'TWEETS_COLLECTED', replicationFactor: 1},
-      {topic: 'TWEET_SENTIMENT_COMPUTED', replicationFactor: 1},
+      {topic: 'SENTIMENT_COMPUTED', replicationFactor: 1},
     ]);
 
-    this._logger.info(`Subscribing to TWEETS_COLLECTED topic`);
+    this._logger.debug(`Subscribing to TWEETS_COLLECTED topic`);
     await this._consumer.subscribe({
       topic: 'TWEETS_COLLECTED',
       fromBeginning: true,
     });
 
-    this._logger.info(`Running consumer handlers on each message.`);
+    this._logger.debug(`Running consumer handlers on each message.`);
     await this._consumer.run({
       eachMessage: async ({message}) => {
         this._logger.debug(
           `Received kafka message: ${message.value.toString()}`
         );
 
-        const {economicEntityName, economicEntityType, timeSeriesItems} =
-          JSON.parse(message.value.toString());
-        await this._computeSentiment(
-          economicEntityName,
-          economicEntityType,
-          timeSeriesItems
+        const eventData = JSON.parse(message.value.toString());
+
+        const economicEntity = EconomicEntityFactory.economicEntity(
+          eventData.economicEntity
         );
+        const timeSeriesItems = eventData.timeSeriesItems;
+
+        await this._computeSentiment(economicEntity, timeSeriesItems);
       },
     });
   }
@@ -80,129 +91,204 @@ class AnalysisService {
   /**
    * Get the sentiments associated with the specified economic entity and type.
    *
-   * @param {String} economicEntityName - Name of the economic entity (i.e, 'Google').
-   * @param {String} economicEntityType - Type of the economic entity (i.e, 'BUSINESS').
-   * @param {Object} permissions - Permissions for the user making the request.
-   * @return {Array} - The formatted sentiment objects in array form or [].
+   * @param {Array<Object>} economicEntities Array of objects of the form { name: <some business name>, type: <some entity type> }.
+   * @param {String} startDate UTC date time.
+   * @param {String} endDate UTC date time.
+   * @param {Object} permissions Permissions for the user making the request.
+   * @return {Array} The formatted sentiment objects in array form or [].
    */
-  async sentiments(economicEntityName, economicEntityType, permissions) {
-    if (!economicEntityName || typeof economicEntityName !== 'string')
-      return [];
+  async sentiments(economicEntities, startDate, endDate, permissions) {
+    if (!validEconomicEntities(economicEntities)) {
+      throw new Error(`An invalid economic entity was received.`);
+    }
 
-    if (!economicEntityType || typeof economicEntityType !== 'string')
-      return [];
+    if (!validDate(startDate)) {
+      throw new Error(`The start date ${startDate} is invalid.`);
+    }
+
+    if (!validEndDate(endDate)) {
+      throw new Error(`The end date ${endDate} is invalid.`);
+    }
 
     if (!hasReadAllAccess(permissions)) return [];
 
-    this._logger.debug(
-      `Querying sentiments for economic entity name: ${economicEntityName}, type: ${economicEntityType}`
-    );
+    const results = [];
+    for (const economicEntity of economicEntities) {
+      this._logger.info(
+        `Querying sentiments for ${economicEntity.type} ${economicEntity.name}.`
+      );
 
-    const databaseData = await this._analysisDataStore.readMostRecentSentiments(
-      economicEntityName,
-      economicEntityType
-    );
+      results.push(
+        await this._sentimentData(economicEntity, startDate, endDate)
+      );
+    }
 
-    this._logger.debug(`Sentiments read: ${JSON.stringify(databaseData)}`);
-
-    return databaseData.sentiments;
+    return results;
   }
 
   /**
-   * Compute sentiments for the specified tweets.
+   * Get the sentiment.
+   * @param {Object} economicEntity Object of the form { name: <entity name>, type: <entity type> }.
+   * @param {String} startDate UTC date time.
+   * @param {String | null} endDate UTC date time.
+   * @return {Object} Sentiment data.
+   */
+  async _sentimentData(economicEntity, startDate, endDate) {
+    if (!validEconomicEntities([economicEntity])) {
+      throw new Error(`An invalid economic entity was received.`);
+    }
+
+    if (!validDate(startDate)) {
+      throw new Error(`The start date ${startDate} is invalid.`);
+    }
+
+    if (!validEndDate(endDate)) {
+      throw new Error(`The end date ${endDate} is invalid.`);
+    }
+
+    return this._neo4jDataStore.readSentiments(
+      economicEntity,
+      startDate,
+      endDate
+    );
+  }
+
+  /**
+   * Read the most recent sentiments.
+   * @param {Array<Object>} economicEntities
+   */
+  async _mostRecentSentiments(economicEntities) {
+    if (!validEconomicEntities(economicEntities)) {
+      throw new Error(`An invalid economic entity was received.`);
+    }
+
+    const results = [];
+    for (const economicEntity of economicEntities) {
+      this._logger.debug(
+        `Reading most recent sentiment for ${economicEntity.type} ${economicEntity.name}.`
+      );
+
+      results.push(
+        await this._neo4jDataStore.readMostRecentSentiment(economicEntity)
+      );
+    }
+
+    return results;
+  }
+
+  /**
+   * Compute sentiment.
    *
    * NOTE: This sends a kafka event after sentiment computation.
    *
-   * @param {String} economicEntityName - Name of the economic entity (i.e, Google)
-   * @param {String} economicEntityType - Type of economic entity (i.e, BUSINESS)
-   * @param {Array} timeseriesTweets - Consists of objects of the form { timestamp: <Number>, tweets: [{ text: 'tweet text' }]}
+   * @param {Object} economicEntity Economic entity object.
+   * @param {Array} datas Consists of objects of the form [{ utcDateTime: <Number>, tweets: [{ text: 'tweet text' }]}]
    */
-  async _computeSentiment(
-    economicEntityName,
-    economicEntityType,
-    timeseriesTweets
-  ) {
-    if (!economicEntityName || typeof economicEntityName !== 'string') return;
-
-    if (!economicEntityType || typeof economicEntityType !== 'string') return;
-
-    if (!Array.isArray(timeseriesTweets) || timeseriesTweets.length === 0)
-      return;
-
-    this._logger.info(
-      `Received timeseries entry: ${JSON.stringify(timeseriesTweets)}`
-    );
-
-    const sentiments = [];
-    for (const entry of timeseriesTweets) {
-      if (
-        !entry?.timestamp ||
-        !Array.isArray(entry?.tweets) ||
-        !entry?.tweets?.length
-      )
-        continue;
-
-      sentiments.push(this._averageSentiment(entry));
+  async _computeSentiment(economicEntity, datas) {
+    if (!validEconomicEntities([economicEntity])) {
+      throw new Error(`An invalid economic entity was received.`);
     }
 
-    await this._analysisDataStore.createSentiments(
-      moment().unix(),
-      economicEntityName,
-      economicEntityType,
-      sentiments
-    );
+    if (!this._validSentimentDatas(datas)) {
+      this._logger.debug(
+        `Invalid sentiment data received: ${JSON.stringify(datas)}`
+      );
+      return;
+    }
+
+    for (const data of datas) {
+      for (const tweet of data.tweets || []) {
+        const text = tweet.text || '';
+
+        const sentiment = this._sentiment(text);
+
+        this._logger.info(
+          `
+          Adding sentiment to graph for ${economicEntity.type} ${economicEntity.name}
+          tweet ${text}
+          comparative sentament ${sentiment.comparative}
+          received ${data.utcDateTime}
+          `
+        );
+
+        await this._neo4jDataStore.addSentiments(economicEntity, [
+          {
+            utcDateTime: data.utcDateTime,
+            tweet: text,
+            sentiment,
+          },
+        ]);
+      }
+    }
+
+    const mostRecentSentiment = (
+      await this._mostRecentSentiments([economicEntity])
+    )[0][0];
 
     const event = {
-      economicEntityName,
-      economicEntityType,
-      sentiments,
+      economicEntity,
+      data: mostRecentSentiment,
     };
 
-    this._logger.info(`Adding event with value: ${JSON.stringify(event)}`);
+    const eventName = 'SENTIMENT_COMPUTED';
 
-    await this._producer.send({
-      topic: `TWEET_SENTIMENT_COMPUTED`,
-      messages: [{value: JSON.stringify(event)}],
-    });
+    await this._emit(eventName, event);
   }
 
   /**
-   * Get the average sentiment associated with the response from the collection service.
-   * @param {Object} timeSeriesEntry - Entry as it's returned from the collection service tweets endpoint.
-   * @return {Object} - An object of the form:
-   * {
-   *      timestamp: <number>,
-   *      score: <float>,
-   *      tweets: <array of objects with a text field>
-   * }
+   * Validate sentiment datas.
+   * @param {Array} datas Consists of objects of the form [{ utcDateTime: <Number>, tweets: [{ text: 'tweet text' }]}]
+   * @return {Boolean} True if valid. False otherwise.
    */
-  _averageSentiment(timeSeriesEntry) {
-    const response = {};
-    response.timestamp = timeSeriesEntry.timestamp;
-
-    let score = 0;
-    for (const tweet of timeSeriesEntry.tweets) {
-      const sentiment = this._sentimentLib.analyze(tweet.text.toLowerCase());
-      score += sentiment.score;
+  _validSentimentDatas(datas) {
+    if (!Array.isArray(datas) || datas.length <= 0) {
+      return false;
     }
 
-    score = score / timeSeriesEntry.tweets.length;
+    for (const data of datas || []) {
+      if (!validDate(data.utcDateTime)) {
+        return false;
+      }
 
-    response.score = score;
+      if (!Array.isArray(data.tweets) || data.tweets.length <= 0) {
+        return false;
+      }
 
-    response.tweets = timeSeriesEntry.tweets;
+      for (const tweet of data.tweets || []) {
+        if (!tweet.text) {
+          return false;
+        }
+      }
+    }
 
-    return response;
+    return true;
+  }
+
+  /**
+   * Compute the sentiment.
+   * @param {String} text Subject of the computation.
+   * @return {Object} Sentiment object of the form { score: <number>, comparative: <number>, ...}.
+   */
+  _sentiment(text) {
+    if (!validString(text)) {
+      throw new Error(`The value ${text} is invalid.`);
+    }
+
+    return this._sentimentLib.analyze(text.toLowerCase());
   }
 
   /**
    * Create the specified topics.
    *
-   * @param {Array} topics - String array consisting of topic names.
+   * @param {Array<Object>} topics - Array consisting of topic objects from kafkajs.
    */
   async _topicCreation(topics) {
+    if (!topics || !Array.isArray(topics) || topics.length <= 0) {
+      throw new Error(`Valid topics are required.`);
+    }
+
     try {
-      this._logger.info(`Creating topics ${JSON.stringify(topics)}`);
+      this._logger.debug(`Creating topics ${JSON.stringify(topics)}`);
       await this._admin.createTopics({
         /**
          * NOTE: If you don't wait for leaders the system throws an error when trying to write to the topic if a leader
@@ -221,6 +307,25 @@ class AnalysisService {
         )}, message: ${error.message.toString()}`
       );
     }
+  }
+
+  /**
+   * Emit a particular kafka event.
+   * @param {String} eventName - Name of the event.
+   * @param {Object} data - Event data to transmit.
+   */
+  async _emit(eventName, data) {
+    if (!validString(eventName)) {
+      throw new Error(`The event name ${eventName} is invalid.`);
+    }
+
+    this._logger.info(
+      `Emitting event ${eventName} with data ${JSON.stringify(data)}`
+    );
+    await this._producer.send({
+      topic: eventName,
+      messages: [{value: JSON.stringify(data)}],
+    });
   }
 }
 

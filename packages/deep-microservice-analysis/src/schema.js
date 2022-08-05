@@ -1,13 +1,17 @@
 import {gql} from 'apollo-server';
+import {EconomicEntityType, EconomicEntityFactory} from '@thinkdeep/model';
+
+const economicEntity = EconomicEntityFactory.economicEntity({
+  name: 'dummy',
+  type: EconomicEntityType.Business,
+});
 
 const typeDefs = gql`
-  enum EconomicEntityType {
-    BUSINESS
-  }
+  scalar Date
 
-  type Sentiment {
-    timestamp: Float!
-    score: Float!
+  type SentimentResult {
+    utcDateTime: Date!
+    comparative: Float!
     tweets: [Tweet!]!
   }
 
@@ -15,11 +19,18 @@ const typeDefs = gql`
     text: String!
   }
 
+  ${economicEntity.graphQLDependencyTypeDefinitions()}
+
+  ${economicEntity.graphQLTypeDefinition()}
+
+  ${economicEntity.graphQLInputTypeDefinition()}
+
   extend type Query {
-    sentiments(
-      economicEntityName: String!
-      economicEntityType: EconomicEntityType!
-    ): [Sentiment!]!
+    getSentiments(
+      economicEntities: [${economicEntity.graphQLInputType()}!]!
+      startDate: Date!
+      endDate: Date
+    ): [[SentimentResult!]!]!
   }
 `;
 

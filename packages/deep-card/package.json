@@ -18,9 +18,7 @@
   "main": "deep-card.js",
   "scripts": {
     "start": "web-dev-server --config ./web-dev-server.config.js --esbuild-target auto",
-    "start:watch": "web-dev-server --config ./web-dev-server.config.js --watch --esbuild-target auto",
-    "tests:e2e": "web-test-runner --config ./web-test-runner.config.js",
-    "tests:e2e:watch": "web-test-runner --config ./web-test-runner.config.js --watch"
+    "tests:e2e": "web-test-runner --config ./web-test-runner.config.js --files test/**/*.test.js"
   },
   "devDependencies": {
     "@esm-bundle/chai": "^4.3.4",
@@ -31,7 +29,6 @@
     "@web/dev-server-rollup": "^0.3.5",
     "@web/test-runner": "^0.13.15",
     "@web/test-runner-playwright": "^0.8.6",
-    "@web/test-runner-puppeteer": "^0.10.0",
     "chai": "^4.3.4",
     "mocha": "^9.0.2",
     "rimraf": "^3.0.2",

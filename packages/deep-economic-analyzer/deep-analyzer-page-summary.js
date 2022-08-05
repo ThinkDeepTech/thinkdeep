@@ -11,10 +11,19 @@ import '@material/mwc-list/mwc-list-item';
 import '@material/mwc-select';
 import '@material/mwc-textfield';
 import '@thinkdeep/deep-card';
+import '@vaadin/date-picker';
 import './deep-site-configuration.js';
-import CollectEconomicData from './graphql/CollectEconomicData.mutation.graphql';
-import GetSentiment from './graphql/GetSentiment.query.graphql';
-import UpdateSentiments from './graphql/UpdateSentiments.subscription.graphql';
+import {CollectEconomicData} from './graphql/CollectEconomicData.mutation.graphql.js';
+import {GetSentiment} from './graphql/GetSentiment.query.graphql.js';
+import {UpdateSentiments} from './graphql/UpdateSentiments.subscription.graphql.js';
+import moment from 'moment/dist/moment.js';
+import {EconomicEntityFactory, EconomicEntityType} from '@thinkdeep/model';
+
+const DEFAULT_START_DATE = moment()
+  .utc()
+  .subtract(1, 'month')
+  .format('YYYY-MM-DD');
+const DEFAULT_END_DATE = null;
 
 /**
  * Lit summary page component.
@@ -25,20 +34,15 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    */
   static get properties() {
     return {
-      subscriptionClient: {type: Object},
+      sentimentDatas: {type: Array},
 
-      sentiments: {type: Array},
+      _siteConfiguration: {type: Object},
 
-      // Data collection mutation object
-      collectEconomicData: {type: Object},
+      _sentimentQueryController: {type: Object},
 
-      // The users site configuration.
-      configuration: {type: Object},
+      _sentimentSubscriptionController: {type: Object},
 
-      selectedSentiments: {type: Array},
-
-      // Fetch sentiment query object
-      _getInitialSentimentQuery: {type: Object},
+      _collectEconomicDataMutationController: {type: Object},
     };
   }
 
@@ -48,22 +52,39 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   constructor() {
     super();
 
-    this.sentiments = [];
+    this.sentimentDatas = [];
 
-    this._getInitialSentimentQuery = new ApolloQueryController(
+    this._siteConfiguration = {observedEconomicEntities: []};
+
+    this._sentimentQueryController = new ApolloQueryController(
       this,
       GetSentiment,
       {
         variables: {
-          economicEntityName: '',
-          economicEntityType: 'BUSINESS',
+          economicEntities: [],
+          startDate: this._utcDateString(DEFAULT_START_DATE, {
+            hour: 0,
+            minute: 0,
+            second: 0,
+            millisecond: 0,
+          }),
+          endDate: DEFAULT_END_DATE
+            ? this._utcDateString(DEFAULT_END_DATE, {
+                hour: 23,
+                minute: 59,
+                second: 59,
+                millisecond: 999,
+              })
+            : DEFAULT_END_DATE,
         },
         noAutoSubscribe: true,
         onData: (data) => {
-          this.sentiments = data?.sentiments || [];
+          const targetDatas = data?.getSentiments[0] || [];
+          if (targetDatas.length > 0) {
+            this.sentimentDatas = targetDatas;
+          }
         },
         onError: (error) => {
-          this.sentiments = [];
           console.error(
             `Fetch sentiments failed with error: ${JSON.stringify(error)}`
           );
@@ -71,19 +92,38 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       }
     );
 
-    this.subscriptionClient = new ApolloSubscriptionController(
+    this._sentimentSubscriptionController = new ApolloSubscriptionController(
       this,
       UpdateSentiments,
       {
         variables: {
-          economicEntityName: 'Google',
-          economicEntityType: 'BUSINESS',
+          economicEntities: [],
+          startDate: this._utcDateString(DEFAULT_START_DATE, {
+            hour: 0,
+            minute: 0,
+            second: 0,
+            millisecond: 0,
+          }),
+          endDate: DEFAULT_END_DATE
+            ? this._utcDateString(DEFAULT_END_DATE, {
+                hour: 23,
+                minute: 59,
+                second: 59,
+                millisecond: 999,
+              })
+            : DEFAULT_END_DATE,
         },
         onData: ({subscriptionData}) => {
-          this.sentiments = subscriptionData?.data?.updateSentiments || [];
+          const newSentiment = subscriptionData?.data?.updateSentiments;
+          if (Object.keys(newSentiment).length > 0) {
+            // Remove oldest reading from array.
+            this.sentimentDatas.shift();
+
+            // Push newest reading into array.
+            this.sentimentDatas.push(newSentiment);
+          }
         },
         onError: (error) => {
-          this.sentiments = [];
           console.error(
             `An error occurred while subscribing to sentiment updates: ${JSON.stringify(
               error
@@ -93,7 +133,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       }
     );
 
-    this.collectEconomicData = new ApolloMutationController(
+    this._collectEconomicDataMutationController = new ApolloMutationController(
       this,
       CollectEconomicData,
       {
@@ -106,10 +146,6 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         },
       }
     );
-
-    this.configuration = {observedEconomicEntities: []};
-
-    this.selectedSentiments = [];
   }
 
   /**
@@ -117,7 +153,6 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    */
   async firstUpdated() {
     super.firstUpdated();
-    this._setChartOptions();
 
     // NOTE: TODO: While a fix goes into place allowing mwc-button height/width to be set this
     // hack will be used to make the button size equal to what's desired for the app.
@@ -152,6 +187,8 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    * @return {TemplateResult}
    */
   static get styles() {
+    const INPUT_RADIUS = 3;
+    const INPUT_WIDTH = 90;
     return css`
       :host {
         display: block;
@@ -162,7 +199,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       .page-grid {
         display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: auto 62px 62px;
+        grid-template-rows: auto 62px auto;
         justify-items: center;
         align-items: center;
         height: 100%;
@@ -174,8 +211,8 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         grid-template-columns: 1fr;
         grid-gap: 4px;
         justify-items: center;
-        height: 100%;
-        width: 90%;
+        height: 75vh;
+        width: ${INPUT_WIDTH}%;
         padding: 8px;
         margin: 8px;
         overflow: scroll;
@@ -188,7 +225,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       }
 
       .card {
-        width: 90%;
+        width: ${INPUT_WIDTH}%;
         height: 275px;
         max-height: 275px;
         padding: 8px;
@@ -196,8 +233,8 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       }
 
       .input {
-        width: 90%;
-        max-width: 90%;
+        width: ${INPUT_WIDTH}%;
+        max-width: ${INPUT_WIDTH}%;
         margin: 2px;
       }
 
@@ -207,6 +244,20 @@ export default class DeepAnalyzerPageSummary extends LitElement {
         grid-gap: 0.35%;
         justify-content: center;
         align-items: center;
+      }
+
+      .selection {
+        display: grid;
+        grid-template-columns: auto;
+        grid-template-rows: auto auto auto;
+        grid-gap: 2%;
+        align-items: stretch;
+      }
+
+      .date-picker {
+        background-color: white;
+        border-radius: ${INPUT_RADIUS}px;
+        width: 100%;
       }
 
       google-chart {
@@ -249,12 +300,28 @@ export default class DeepAnalyzerPageSummary extends LitElement {
           height: 80%;
           margin: 0;
         }
+
+        .selection {
+          grid-template-columns: 1fr 1fr 1fr;
+          grid-template-rows: auto;
+          justify-content: space-between;
+        }
       }
 
       [hidden] {
         display: none;
       }
     `;
+  }
+
+  /**
+   * Lit updated lifecycle callback.
+   */
+  updated() {
+    const chart = this.shadowRoot.querySelector('google-chart');
+    if (chart) {
+      this._setChartOptions();
+    }
   }
 
   /**
@@ -269,67 +336,8 @@ export default class DeepAnalyzerPageSummary extends LitElement {
       ></deep-site-configuration>
 
       <div class="page-grid">
-        <div class="card-deck">
-          <deep-card class="card">
-            <h4 slot="header">Public Sentiment</h4>
-            <div class="summary" slot="body">
-              <div>
-                Last
-                <div>${this.sentiments[0]?.score}</div>
-              </div>
-              <div>
-                Average
-                <div>
-                  ${this.sentiments
-                    .map((value) => value.score || 0)
-                    .reduce((previous, current) => previous + current, 0) /
-                  this.sentiments.length}
-                </div>
-              </div>
-            </div>
-          </deep-card>
-
-          <deep-card class="card">
-            <h4 slot="header">Public Sentiment</h4>
-            <google-chart
-              slot="body"
-              @google-chart-select="${this._handleChartSelection}"
-              options="{}"
-              type="line"
-              cols='[{"label": "Timestamp", "type": "number"}, {"label": "Sentiment", "type": "number"}]'
-              rows="[${this.sentiments?.map((sentiment) =>
-                JSON.stringify([sentiment.timestamp, sentiment.score])
-              )}]"
-            ></google-chart>
-          </deep-card>
-        </div>
-
-        <div class="input watch">
-          <mwc-textfield
-            label="Watch (i.e, Google)"
-            @input="${this._onInput.bind(this)}"
-          ></mwc-textfield>
-          <mwc-button
-            raised
-            @click="${this._collectEconomicData.bind(this)}"
-            icon="add"
-          ></mwc-button>
-        </div>
-
-        <mwc-select
-          class="input"
-          label="Analyze (i.e, Google)"
-          @selected="${this._onSelect}"
-        >
-          ${this.configuration.observedEconomicEntities.map(
-            (economicEntity, index) =>
-              html`<mwc-list-item
-                ?selected="${index === 0}"
-                value="${economicEntity.name}"
-                >${economicEntity.name}</mwc-list-item
-              >`
-          )}
-        </mwc-select>
+        ${this._cardDeck(this.sentimentDatas)} ${this._watchInputs()}
+        ${this._selectionInputs(this._siteConfiguration)}
       </div>
     `;
   }
@@ -345,27 +353,6 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   }
 
   /**
-   * Handle a user's click on point present in the google chart.
-   */
-  _handleChartSelection() {
-    const googleChart = this.shadowRoot.querySelector('google-chart');
-
-    this.selectedSentiments = [];
-
-    for (const selection of googleChart.selection) {
-      const selectedRow = selection.row || 0;
-
-      const selectedPoint = googleChart.rows[selectedRow];
-
-      this.sentiments?.forEach((sentiment) => {
-        if (this._hasMatchingData(sentiment, selectedPoint)) {
-          this.selectedSentiments.push(sentiment);
-        }
-      });
-    }
-  }
-
-  /**
    * Redraw the chart.
    *
    * NOTE: The use of an arrow function is required here because it ensures that
@@ -373,7 +360,11 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    * from addEventListener.
    */
   _redrawChart = () => {
-    this.shadowRoot.querySelector('google-chart').redraw();
+    // eslint-disable-next-line
+    const chart = this.shadowRoot.querySelector('google-chart');
+    if (chart) {
+      chart.redraw();
+    }
   };
 
   /**
@@ -384,8 +375,8 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    */
   _hasMatchingData(sentiment, selectedPoint) {
     return (
-      sentiment.timestamp === selectedPoint[0] &&
-      sentiment.score === selectedPoint[1]
+      sentiment.utcDateTime === selectedPoint[0] &&
+      sentiment.comparative === selectedPoint[1]
     );
   }
 
@@ -394,9 +385,13 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    */
   _onInput() {
     const companyName = this.shadowRoot.querySelector('mwc-textfield').value;
-    this.collectEconomicData.variables = {
-      economicEntityName: companyName,
-      economicEntityType: 'BUSINESS',
+    this._collectEconomicDataMutationController.variables = {
+      economicEntities: [
+        EconomicEntityFactory.economicEntity({
+          name: companyName,
+          type: EconomicEntityType.Business,
+        }),
+      ],
     };
   }
 
@@ -407,35 +402,271 @@ export default class DeepAnalyzerPageSummary extends LitElement {
     const deepSiteConfig = this.shadowRoot.querySelector(
       'deep-site-configuration'
     );
-    deepSiteConfig.observeEconomicEntity({
-      name: this.collectEconomicData.variables.economicEntityName || '',
-      type: this.collectEconomicData.variables.economicEntityType || '',
-    });
+
+    const economicEntity =
+      this._collectEconomicDataMutationController.variables.economicEntities[0];
+    deepSiteConfig.observeEconomicEntity(
+      EconomicEntityFactory.economicEntity(economicEntity)
+    );
     deepSiteConfig.updateConfiguration();
-    this.collectEconomicData.mutate();
+    this._collectEconomicDataMutationController.mutate();
   }
 
   /**
    * Find the selected business and add it to the query variables.
    */
-  _onSelect() {
+  _onSelectBusiness() {
     const businessName = this.shadowRoot.querySelector(
-      '[aria-selected="true"]'
+      '#business > [aria-selected="true"]'
     ).value;
 
     const variables = {
-      economicEntityName: businessName,
-      economicEntityType: 'BUSINESS',
+      ...this._sentimentQueryController.variables,
+      economicEntities: [
+        EconomicEntityFactory.economicEntity({
+          name: businessName,
+          type: EconomicEntityType.Business,
+        }),
+      ],
     };
 
+    this._updateSentimentControllers(variables);
+    this._sentimentQueryController.executeQuery();
+  }
+
+  /**
+   * Handle user selection of new start date.
+   */
+  _onSelectStartDate() {
+    const selectedStartDate =
+      this.shadowRoot.querySelector('#start-date').value;
+
+    let utcDate = selectedStartDate;
+    if (!utcDate) {
+      console.warn(
+        `An invalid start date was received. Falling back on the defaults.`
+      );
+      utcDate = DEFAULT_START_DATE;
+    }
+
+    utcDate = this._utcDateString(utcDate, {
+      hour: 0,
+      minute: 0,
+      second: 0,
+      millisecond: 0,
+    });
+
+    const variables = {
+      ...this._sentimentQueryController.variables,
+      startDate: utcDate,
+    };
+
+    this._updateSentimentControllers(variables);
+    this._sentimentQueryController.executeQuery();
+  }
+
+  /**
+   * Handle user selection of new end date.
+   */
+  _onSelectEndDate() {
+    const selectedEndDate =
+      this.shadowRoot.querySelector('#end-date').value || null;
+
+    const utcDate = selectedEndDate
+      ? this._utcDateString(selectedEndDate, {
+          hour: 23,
+          minute: 59,
+          second: 59,
+          millisecond: 999,
+        })
+      : null;
+
+    const variables = {
+      ...this._sentimentQueryController.variables,
+      endDate: utcDate,
+    };
+
+    this._updateSentimentControllers(variables);
+    this._sentimentQueryController.executeQuery();
+  }
+
+  /**
+   * Convert date to utc string.
+   * @param {String} subject Date string.
+   * @param {Object} options Date transform options. I.e, { hour: <hour to set>, minute: <minute to set>, etc }.
+   * @return {String} UTC formatted date time.
+   */
+  _utcDateString(subject, options) {
+    const utcDate = moment.utc(subject);
+    if (Object.keys(options).length > 0) {
+      utcDate.set(options);
+    }
+    return utcDate.format();
+  }
+
+  _subscriptionClient;
+  /**
+   * Update sentiment controllers to use new values.
+   * @param {Object} variables
+   */
+  _updateSentimentControllers(variables) {
     // Subscribe to updates for the desired business.
     // NOTE: This must occur before the data is fetched for the first time. Otherwise,
     // updating from zero to one watched business won't update the sentiment graph.
-    this.subscriptionClient.variables = variables;
+    this._sentimentSubscriptionController.variables = variables;
 
     // Fetch the data right away
-    this._getInitialSentimentQuery.variables = variables;
-    this._getInitialSentimentQuery.executeQuery();
+    this._sentimentQueryController.variables = variables;
+  }
+
+  /**
+   * Get the most recent sentiment value.
+   * @param {Object} sentimentDatas Data which will be used to fetch most recent sentiment.
+   * @return {Number} Most recent sentiment value.
+   */
+  _mostRecentSentiment(sentimentDatas) {
+    return sentimentDatas[sentimentDatas.length - 1]?.comparative || 0;
+  }
+
+  /**
+   * Get markup for sentiment summary card.
+   * @param {Array<Object>} sentimentDatas
+   * @return {Object} Lit HTML template result or ''.
+   */
+  _sentimentSummaryCard(sentimentDatas) {
+    return sentimentDatas.length > 0
+      ? html`
+          <deep-card class="card">
+            <h4 slot="header">Sentiment Summary</h4>
+            <div class="summary" slot="body">
+              <div>
+                Recent
+                <div>
+                  ${this._mostRecentSentiment(this.sentimentDatas).toFixed(3)}
+                </div>
+              </div>
+              <div>
+                Average
+                <div>
+                  ${(
+                    this.sentimentDatas
+                      .map((value) => value.comparative || 0)
+                      .reduce((previous, current) => previous + current, 0) /
+                    this.sentimentDatas.length
+                  ).toFixed(3)}
+                </div>
+              </div>
+            </div>
+          </deep-card>
+        `
+      : ``;
+  }
+
+  /**
+   * Get markup for sentiment graph.
+   * @param {Array<Object>} sentimentDatas
+   * @return {Object} Lit HTML template result or ''.
+   */
+  _sentimentGraphCard(sentimentDatas) {
+    // @google-chart-select="${this._handleChartSelection}"
+    return sentimentDatas.length > 0
+      ? html`
+          <deep-card class="card">
+            <h4 slot="header">Public Sentiment</h4>
+            <google-chart
+              slot="body"
+              options="{}"
+              type="line"
+              cols='[{"label": "Date", "type": "string"}, {"label": "Comparative Score", "type": "number"}]'
+              rows="[${sentimentDatas?.map((sentiment) =>
+                JSON.stringify([
+                  moment.utc(sentiment.utcDateTime).local().toDate(),
+                  sentiment.comparative,
+                ])
+              )}]"
+            ></google-chart>
+          </deep-card>
+        `
+      : ``;
+  }
+
+  /**
+   * Get watch input markup.
+   * @return {Object} Lit template result.
+   */
+  _watchInputs() {
+    return html` <div class="input watch">
+      <mwc-textfield
+        label="Watch (i.e, Google)"
+        @input="${this._onInput.bind(this)}"
+      ></mwc-textfield>
+      <mwc-button
+        raised
+        @click="${this._collectEconomicData.bind(this)}"
+        icon="add"
+      ></mwc-button>
+    </div>`;
+  }
+
+  /**
+   * Get selection input markup.
+   * @param {Object} siteConfiguration User configuration.
+   * @return {Object} Lit template result.
+   */
+  _selectionInputs(siteConfiguration) {
+    return html`
+      <div class="input selection">
+        <mwc-select
+          id="business"
+          label="Analyze"
+          @selected="${this._onSelectBusiness}"
+        >
+          ${siteConfiguration.observedEconomicEntities.map(
+            (economicEntity, index) =>
+              html`<mwc-list-item
+                ?selected="${index === 0}"
+                value="${economicEntity.name}"
+                >${economicEntity.name}</mwc-list-item
+              >`
+          )}
+        </mwc-select>
+        <vaadin-date-picker
+          id="start-date"
+          label="Start Date"
+          class="date-picker"
+          placeholder="MM/DD/YYYY"
+          value="${DEFAULT_START_DATE}"
+          @value-changed="${this._onSelectStartDate.bind(this)}"
+          required
+        ></vaadin-date-picker>
+        <vaadin-date-picker
+          id="end-date"
+          label="End Date"
+          class="date-picker"
+          placeholder="MM/DD/YYYY"
+          clear-button-visible
+          @value-changed="${this._onSelectEndDate.bind(this)}"
+        ></vaadin-date-picker>
+      </div>
+    `;
+  }
+
+  /**
+   * Get card deck markup.
+   * @param {Array<Object>} sentimentDatas Sentiment data from the api.
+   * @return {Object} Lit template result.
+   */
+  _cardDeck(sentimentDatas) {
+    return html`
+      <div class="card-deck">
+        ${sentimentDatas.length > 0
+          ? this._sentimentSummaryCard(sentimentDatas)
+          : ``}
+        ${sentimentDatas.length > 0
+          ? this._sentimentGraphCard(sentimentDatas)
+          : ``}
+      </div>
+    `;
   }
 
   /**
@@ -443,7 +674,7 @@ export default class DeepAnalyzerPageSummary extends LitElement {
    * @param {Object} detail - Configuration of the form { observedEconomicEntities: [...]}.
    */
   _handleSiteConfig({detail}) {
-    this.configuration = detail || {observedEconomicEntities: []};
+    this._siteConfiguration = detail || {observedEconomicEntities: []};
   }
 }
 

@@ -71,4 +71,51 @@ const fixtureSync = async (template) => {
   return element;
 };
 
-export {delayForPageRender, wait, sleep, input, click, select, fixtureSync};
+/**
+ * Resize the window.
+ * @param {Number} width
+ * @param {Number} height
+ * @return {Promise<void>} Promise that resolves after wait to resize.
+ */
+const resizeWindow = async (width, height) => {
+  window.resizeTo(width, height);
+
+  await delayForPageRender();
+};
+
+/**
+ * Resize the window to mobile proportions.
+ * @return {Promise<void>} Promise that resolves after wait to resize.
+ */
+const resizeWindowToMobile = async () => {
+  await resizeWindow(390, 740);
+};
+
+/**
+ * Resize the window to tablet proportions.
+ * @return {Promise<void>} Promise that resolves after wait to resize.
+ */
+const resizeWindowToTablet = async () => {
+  await resizeWindow(820, 1180);
+};
+
+/**
+ * Resize the window to desktop proportions.
+ * @return {Promise<void>} Promise that resolves after wait to resize.
+ */
+const resizeWindowToDesktop = async () => {
+  await resizeWindow(1025, 1200);
+};
+
+export {
+  delayForPageRender,
+  wait,
+  sleep,
+  input,
+  click,
+  select,
+  fixtureSync,
+  resizeWindowToMobile,
+  resizeWindowToTablet,
+  resizeWindowToDesktop,
+};
