@@ -19,7 +19,7 @@ import {
   unselectedAnalysisDropdownOptions,
 } from './deep-analyzer-page-summary-helpers.js';
 import {initializeE2e} from './initialize-e2e.js';
-import moment from 'moment';
+import moment from 'moment/dist/moment.js';
 import sinon from 'sinon';
 
 import '../deep-analyzer-page-summary.js';
