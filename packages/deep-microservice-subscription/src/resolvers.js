@@ -20,8 +20,7 @@ const resolvers = {
         ) {
           return {};
         } else {
-          console.warn(`Payload: ${JSON.stringify(payload)}`);
-          return payload.data;
+          return payload;
         }
       },
       subscribe: withFilter(
@@ -31,16 +30,14 @@ const resolvers = {
             return false;
           }
 
-          console.warn(
-            `Payload: ${JSON.stringify(payload)}\nVariables: ${JSON.stringify(
-              variables
-            )}`
-          );
-
           for (const economicEntity of EconomicEntityFactory.economicEntities(
             variables.economicEntities
           )) {
-            if (economicEntity.equals(payload.economicEntity)) {
+            if (
+              economicEntity.equals(
+                EconomicEntityFactory.economicEntity(payload.economicEntity)
+              )
+            ) {
               return true;
             }
           }
