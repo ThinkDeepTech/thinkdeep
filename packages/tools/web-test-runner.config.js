@@ -8,16 +8,18 @@ import getPort from 'get-port';
 const graphql = fromRollup(rollupGraphQL);
 const injectEnv = fromRollup(rollupInjectEnv);
 
+const setBrowserContext = ({browser}) =>
+  browser.newContext({
+    viewport: {width: 1800, height: 1000},
+    browser: {width: 1800, height: 1000},
+    recordVideo: {dir: './video'},
+    ignoreHTTPSErrors: true,
+  });
+
 const browsers = {
   chromium: playwrightLauncher({
     product: 'chromium',
-    createBrowserContext: ({browser}) =>
-      browser.newContext({
-        viewport: {width: 1800, height: 1000},
-        browser: {width: 1800, height: 1000},
-        recordVideo: {dir: './video'},
-        ignoreHTTPSErrors: true,
-      }),
+    createBrowserContext: setBrowserContext,
     createPage: ({context}) => context.newPage(),
     launchOptions: {
       headless: true,
@@ -27,13 +29,7 @@ const browsers = {
   }),
   firefox: playwrightLauncher({
     product: 'firefox',
-    createBrowserContext: ({browser}) =>
-      browser.newContext({
-        viewport: {width: 1800, height: 1000},
-        browser: {width: 1800, height: 1000},
-        recordVideo: {dir: './video'},
-        ignoreHTTPSErrors: true,
-      }),
+    createBrowserContext: setBrowserContext,
     createPage: ({context}) => context.newPage(),
     launchOptions: {
       headless: true,

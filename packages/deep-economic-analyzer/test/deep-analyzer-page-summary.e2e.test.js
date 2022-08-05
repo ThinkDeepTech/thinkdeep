@@ -46,10 +46,6 @@ describe('deep-analyzer-page-summary', () => {
 
     const businessName = 'Moosehead';
 
-    const element = await fixtureSync(
-      html`<deep-analyzer-page-summary></deep-analyzer-page-summary>`
-    );
-
     await input(collectDataInput(element), businessName);
 
     await click(collectDataButton(element));
@@ -70,10 +66,6 @@ describe('deep-analyzer-page-summary', () => {
   });
 
   it('should allow users to analyze collected data', async () => {
-    const element = await fixtureSync(
-      html`<deep-analyzer-page-summary></deep-analyzer-page-summary>`
-    );
-
     const chart = sentimentChart(element);
 
     for (const coordinates of chart.rows) {
@@ -84,10 +76,6 @@ describe('deep-analyzer-page-summary', () => {
 
   it('should allow users to select a business to analyze', async () => {
     const businessName = 'Moosehead';
-
-    const element = await fixtureSync(
-      html`<deep-analyzer-page-summary></deep-analyzer-page-summary>`
-    );
 
     await input(collectDataInput(element), businessName);
 
@@ -109,10 +97,6 @@ describe('deep-analyzer-page-summary', () => {
   });
 
   it('should display a graph of sentiment vs date', async () => {
-    const element = await fixtureSync(
-      html`<deep-analyzer-page-summary></deep-analyzer-page-summary>`
-    );
-
     const chart = sentimentChart(element);
 
     const founds = chart.cols.map(
@@ -127,10 +111,6 @@ describe('deep-analyzer-page-summary', () => {
   });
 
   it('should redraw the sentiment graph when the screen is resized', async () => {
-    const element = await fixtureSync(
-      html`<deep-analyzer-page-summary></deep-analyzer-page-summary>`
-    );
-
     const chart = sentimentChart(element);
 
     sinon.spy(chart, 'redraw');

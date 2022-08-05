@@ -47,11 +47,6 @@ export default class DeepAnalyzerPageSummary extends LitElement {
   }
 
   /**
-   * TODO
-   * - Translations
-   */
-
-  /**
    * Lit component constructor.
    */
   constructor() {

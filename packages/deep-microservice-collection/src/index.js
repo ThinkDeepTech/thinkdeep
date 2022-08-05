@@ -57,7 +57,6 @@ const startApolloServer = async () => {
       namespace
     );
 
-    // TODO: Need way to determine that system is restarting.
     if (!readyReplicas) {
       await callback();
     }
