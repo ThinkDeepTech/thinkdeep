@@ -11,6 +11,7 @@ log.txt
 ./**/Chart.lock
 *charts/
 .dccache
+**/video
 
 # General files for the project
 pkg/*

@@ -1,5 +1,5 @@
 import {Command} from './command.js';
-import {validString} from '../helpers.js';
+import {validString} from '@thinkdeep/util';
 import {stringify} from '@thinkdeep/k8s';
 
 /**

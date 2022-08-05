@@ -1,7 +1,11 @@
+import {
+  EconomicEntityFactory,
+  EconomicEntityType,
+  validEconomicEntities,
+} from '@thinkdeep/model';
+import {validDate, validString} from '@thinkdeep/util';
 import {K8sCronJob} from './command/k8s-cron-job.js';
 import {K8sJob} from './command/k8s-job.js';
-import {validString} from './helpers.js';
-import moment from 'moment';
 import {Operations} from './operation/operations.js';
 import {hasReadAllAccess} from './permissions.js';
 
@@ -65,24 +69,19 @@ class CollectionService {
 
         await this._microserviceSyncConsumer.run({
           eachMessage: async ({message}) => {
-            const {economicEntityName, economicEntityType} = JSON.parse(
-              message.value.toString()
+            const msg = JSON.parse(message.value.toString());
+
+            const economicEntity = EconomicEntityFactory.economicEntity(
+              msg.economicEntity
             );
+
             this._logger.info(
-              `Kafka message received. Starting data collection for ${economicEntityName}, ${economicEntityType}`
+              `Kafka message received. Starting data collection for ${economicEntity.type} ${economicEntity.name}.`
             );
-            this._startDataCollection(economicEntityName, economicEntityType);
+
+            await this._startDataCollection(economicEntity);
           },
         });
-
-        const economicEntities =
-          await this._economicEntityMemo.readEconomicEntities();
-        for (const economicEntity of economicEntities) {
-          this._logger.info(
-            `Starting data collection for ${economicEntity.name}, ${economicEntity.type}`
-          );
-          this._startDataCollection(economicEntity.name, economicEntity.type);
-        }
 
         await this._applicationConsumer.subscribe({
           topic: 'TWEETS_FETCHED',
@@ -95,16 +94,31 @@ class CollectionService {
               `Received kafka message: ${message.value.toString()}`
             );
 
-            const {economicEntityName, economicEntityType, tweets} = JSON.parse(
-              message.value.toString()
+            const eventData = JSON.parse(message.value.toString());
+
+            const utcDateTime = eventData.utcDateTime;
+            const economicEntity = EconomicEntityFactory.economicEntity(
+              eventData.economicEntity
             );
+            const tweets = eventData.tweets;
+
             await this._handleTweetsFetched(
-              economicEntityName,
-              economicEntityType,
+              utcDateTime,
+              economicEntity,
               tweets
             );
           },
         });
+
+        const economicEntities =
+          await this._economicEntityMemo.readEconomicEntities();
+        for (const economicEntity of economicEntities) {
+          this._logger.info(
+            `Starting data collection for ${economicEntity.toString()}`
+          );
+
+          await this._startDataCollection(economicEntity);
+        }
       })
       .catch((reason) => {
         this._logger.error(
@@ -117,98 +131,74 @@ class CollectionService {
 
   /**
    * Begin data collection related to the specified entity name and type.
-   * @param {String} entityName - Name of the economic entity (i.e, 'Google').
-   * @param {String} entityType - Type of the economic entity (i.e, 'BUSINESS').
+   * @param {Array<Object>} economicEntities Economic entities for which to start collecting data.
    * @param {Object} permissions - Permissions for the user making the request.
    * @return {Object}
    */
-  async collectEconomicData(entityName, entityType, permissions) {
-    if (!validString(entityName)) return {success: false};
-
-    if (!validString(entityType)) return {success: false};
+  async collectEconomicData(economicEntities, permissions) {
+    if (!validEconomicEntities(economicEntities)) {
+      throw new Error(`Economic entities were invalid.`);
+    }
 
     if (!hasReadAllAccess(permissions)) return {success: false};
 
-    this._logger.debug(
-      `Collecting economic data for name: ${entityName}, type: ${entityType}`
-    );
-
-    const collectingData = await this._economicEntityMemo.collectingData(
-      entityName,
-      entityType
-    );
-
-    if (!collectingData) {
-      this._startDataCollection(entityName, entityType);
-
-      await this._economicEntityMemo.memoizeDataCollection(
-        entityName,
-        entityType
+    for (const economicEntity of economicEntities) {
+      const collectingData = await this._economicEntityMemo.collectingData(
+        economicEntity
       );
 
-      await this._emit('DATA_COLLECTION_STARTED', {
-        economicEntityName: entityName,
-        economicEntityType: entityType,
-      });
+      if (!collectingData) {
+        this._logger.debug(
+          `Collecting economic data for ${economicEntity.type} ${economicEntity.name}`
+        );
+
+        await this._startDataCollection(economicEntity);
+
+        await this._economicEntityMemo.memoizeDataCollection(economicEntity);
+
+        await this._emit('DATA_COLLECTION_STARTED', {
+          economicEntity: economicEntity.toObject(),
+        });
+      }
     }
 
     return {success: true};
   }
 
   /**
-   * Get the tweets associated with the specified economic entity name and type.
-   * @param {String} economicEntityName - Name of the economic entity (i.e, 'Google').
-   * @param {String} economicEntityType - Type of the economic entity (i.e, 'BUSINESS').
-   * @param {Object} permissions - Permissions for the user making the request.
-   * @return {Array} - Tweets that are in the database or [].
-   */
-  async tweets(economicEntityName, economicEntityType, permissions) {
-    if (!validString(economicEntityName)) return [];
-
-    if (!validString(economicEntityType)) return [];
-
-    if (!hasReadAllAccess(permissions)) return [];
-
-    this._logger.debug(
-      `Fetching tweets for economic entity name ${economicEntityName}, type ${economicEntityType}`
-    );
-
-    return this._tweetStore.readRecentTweets(
-      economicEntityName,
-      economicEntityType,
-      10
-    );
-  }
-
-  /**
    * Start data collection for the specified entity name and type.
-   * @param {String} entityName - Name of the economic entity (i.e, 'Google')
-   * @param {String} entityType - Type of the economic entity (i.e, 'BUSINESS')
+   * @param {Object} economicEntity Economic entity for which data should start to be collected.
    */
-  _startDataCollection(entityName, entityType) {
-    if (!validString(entityName)) return;
+  async _startDataCollection(economicEntity) {
+    if (!validEconomicEntities([economicEntity])) {
+      throw new Error(`Economic entity is invalid.`);
+    }
 
-    if (!validString(entityType)) return;
-
-    const key = `${entityName}:${entityType}`;
+    const key = `${economicEntity.type}:${economicEntity.name}`;
     if (this._commander.registered(key)) return;
 
-    this._logger.info(`Executing commands for ${entityName}, ${entityType}`);
+    this._logger.info(
+      `Executing commands for ${economicEntity.type} ${economicEntity.name}`
+    );
 
-    const commands = this._commands(entityName, entityType);
+    const commands = this._commands(economicEntity);
 
-    this._commander.execute(key, commands);
+    await this._commander.execute(key, commands);
   }
 
   /**
    * Fetch the commands associated with the economic entity type.
-   * @param {String} entityName - Name of the economic entity (i.e, 'Google').
-   * @param {String} entityType - Economic entity type (i.e, 'BUSINESS').
-   * @return {Array} - Array of command objects to execute for data collection.
+   * @param {Object} economicEntity Economic entity for which the check is being conducted.
+   * @return {Array} Array of command objects to execute for data collection.
    */
-  _commands(entityName, entityType) {
-    const type = entityType.toLowerCase();
-    if (type === 'business') {
+  _commands(economicEntity) {
+    if (!validEconomicEntities([economicEntity])) {
+      throw new Error(
+        `Economic entity was invalid. Received: ${economicEntity.toString()}`
+      );
+    }
+
+    if (economicEntity.type === EconomicEntityType.Business) {
       const namespace = process.env.NAMESPACE;
       if (!namespace) {
         throw new Error(
@@ -216,11 +206,17 @@ class CollectionService {
         );
       }
 
-      const kababCaseName = entityName.toLowerCase().split(' ').join('-');
-      const kababCaseType = entityType.toLowerCase().split(' ').join('-');
+      const kababCaseName = economicEntity.name
+        .toLowerCase()
+        .split(' ')
+        .join('-');
+      const kababCaseType = economicEntity.type
+        .toLowerCase()
+        .split(' ')
+        .join('-');
       const name = `fetch-tweets-${kababCaseName}-${kababCaseType}`;
 
-      const fetchTweets = Operations.FetchTweets(entityName, entityType);
+      const fetchTweets = Operations.FetchTweets(economicEntity);
 
       const fetchTweetsOnSchedule = new K8sCronJob(
         {
@@ -258,42 +254,50 @@ class CollectionService {
 
   /**
    * Handle the tweets fetched event.
-   * @param {String} entityName - Economic entity name (i.e, 'Google').
-   * @param {String} entityType - Economic entity type (i.e, 'BUSINESS').
-   * @param {Array} tweets - Array of tweet objects of the form { text: '...' }.
-   * @return {Boolean} - True if the function succeeds, false otherwise.
+   * @param {String} utcDateTime UTC date time.
+   * @param {Object} economicEntity Economic entity produced from economic entity factory.
+   * @param {Array} tweets Array of tweet objects of the form { text: '...' }.
    */
-  async _handleTweetsFetched(entityName, entityType, tweets) {
-    if (!validString(entityName)) return false;
+  async _handleTweetsFetched(utcDateTime, economicEntity, tweets) {
+    if (!validDate(utcDateTime)) {
+      throw new Error(`${utcDateTime} is an invalid date.`);
+    }
 
-    if (!validString(entityType)) return false;
+    if (!validEconomicEntities([economicEntity])) {
+      throw new Error(`Invalid economic entity supplied.`);
+    }
 
-    if (!Array.isArray(tweets) || tweets.length === 0) return false;
-
-    const timestamp = moment().unix();
+    if (!Array.isArray(tweets) || tweets.length === 0) {
+      this._logger.warn(
+        `The tweets received were invalid: ${JSON.stringify(tweets)}`
+      );
+      return;
+    }
 
     this._logger.info(
-      `Adding timeseries entry to tweet store with timestamp ${timestamp}, tweets ${JSON.stringify(
+      `Adding timeseries entry to tweet store with date ${utcDateTime}, tweets ${JSON.stringify(
         tweets
       )}`
     );
-    const tweetsCreated = await this._tweetStore.createTweets(
-      timestamp,
-      entityName,
-      entityType,
+
+    const created = await this._tweetStore.createTweets(
+      utcDateTime,
+      economicEntity,
       tweets
     );
 
-    const timeSeriesItems = await this._tweetStore.readRecentTweets(
-      entityName,
-      entityType,
-      10
+    if (!created) {
+      throw new Error(`Failed to create tweets.`);
+    }
+
+    const mostRecentData = await this._tweetStore.readRecentTweets(
+      economicEntity,
+      1
     );
 
     const event = {
-      economicEntityName: entityName,
-      economicEntityType: entityType,
-      timeSeriesItems,
+      economicEntity: economicEntity.toObject(),
+      timeSeriesItems: mostRecentData,
     };
 
     this._logger.info(
@@ -301,8 +305,6 @@ class CollectionService {
     );
 
     await this._emit('TWEETS_COLLECTED', event);
-
-    return tweetsCreated;
   }
 
   /**
@@ -338,6 +340,10 @@ class CollectionService {
    * @param {Object} event Event data.
    */
   async _emit(eventName, event) {
+    if (!validString(eventName)) {
+      throw new Error(`The event name ${eventName} is invalid.`);
+    }
+
     await this._producer.send({
       topic: eventName,
       messages: [{value: JSON.stringify(event)}],

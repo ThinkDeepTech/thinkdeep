@@ -1,13 +1,18 @@
+import {dateScalar} from './scalars.js';
+import {EconomicEntityFactory} from '@thinkdeep/model';
+
 const resolvers = {
+  Date: dateScalar,
   Query: {
-    sentiments: async (
+    getSentiments: async (
       _,
-      {economicEntityName, economicEntityType},
+      {economicEntities, startDate, endDate},
       {dataSources, permissions}
     ) =>
       dataSources.analysisService.sentiments(
-        economicEntityName,
-        economicEntityType,
+        EconomicEntityFactory.economicEntities(economicEntities),
+        startDate,
+        endDate,
         permissions
       ),
   },

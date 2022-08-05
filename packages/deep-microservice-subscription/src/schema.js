@@ -1,11 +1,19 @@
 import {gql} from 'apollo-server';
 
+import {EconomicEntityFactory, EconomicEntityType} from '@thinkdeep/model';
+
+const economicEntity = EconomicEntityFactory.economicEntity({
+  name: 'dummy',
+  type: EconomicEntityType.Business,
+});
+
 const typeDefs = gql`
   type Subscription {
     updateSentiments(
-      economicEntityName: String!
-      economicEntityType: EconomicEntityType!
-    ): [Sentiment!]!
+      economicEntities: [${economicEntity.graphQLInputType()}!]!
+      startDate: Date!
+      endDate: Date
+    ): SentimentResult!
   }
 `;
 
