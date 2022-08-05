@@ -20,7 +20,7 @@ const resolvers = {
         ) {
           return {};
         } else {
-          return payload;
+          return payload.data;
         }
       },
       subscribe: withFilter(
