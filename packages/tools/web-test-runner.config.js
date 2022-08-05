@@ -59,7 +59,7 @@ export default {
   concurrency: 1,
   browserStartTimeout: 60000,
   testsStartTimeout: 60000,
-  testsFinishTimeout: 180000,
+  testsFinishTimeout: 240000,
   testFramework: {
     config: {
       ui: 'bdd',
