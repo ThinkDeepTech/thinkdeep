@@ -110,8 +110,6 @@ class AnalysisService {
       throw new Error(`The end date ${endDate} is invalid.`);
     }
 
-    // TODO: Move access checks to separate project.
-    // TODO: Create object to store user data that's shared among ms's.
     if (!hasReadAllAccess(permissions)) return [];
 
     const results = [];
