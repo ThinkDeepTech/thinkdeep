@@ -14,7 +14,7 @@ describe('economic-entity-memo', () => {
   let mongoCollection;
   const entityName = 'firstbusiness';
   const entityType = EconomicEntityType.Business;
-  const economicEntity = EconomicEntityFactory.economicEntity({
+  const economicEntity = EconomicEntityFactory.get({
     name: entityName,
     type: entityType,
   });
@@ -86,7 +86,7 @@ describe('economic-entity-memo', () => {
 
       mongoCollection.toArray.returns([]);
       await subject.memoizeDataCollection(
-        EconomicEntityFactory.economicEntity({
+        EconomicEntityFactory.get({
           name: 'somethingdifferent',
           type: EconomicEntityType.Business,
         })

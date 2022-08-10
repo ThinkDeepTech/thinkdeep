@@ -137,7 +137,7 @@ describe('deep-analyzer-page-summary', () => {
 
       await select(unselectedDropdownOption);
 
-      const expectedEconomicEntity = EconomicEntityFactory.economicEntity({
+      const expectedEconomicEntity = EconomicEntityFactory.get({
         name: unselectedDropdownOption.value,
         type: EconomicEntityType.Business,
       });
@@ -158,7 +158,7 @@ describe('deep-analyzer-page-summary', () => {
 
       await select(unselectedDropdownOption);
 
-      const expectedEconomicEntity = EconomicEntityFactory.economicEntity({
+      const expectedEconomicEntity = EconomicEntityFactory.get({
         name: unselectedDropdownOption.value,
         type: EconomicEntityType.Business,
       });

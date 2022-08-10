@@ -1,7 +1,13 @@
 import chai from 'chai';
 import {execute} from './execute.js';
 import moment from 'moment';
-import {EconomicEntityFactory} from '@thinkdeep/model';
+import {
+  EconomicEntityFactory,
+  CollectionOperationType,
+  EconomicEntityType,
+  EconomicSectorFactory,
+  EconomicSectorType,
+} from '@thinkdeep/model';
 
 const expect = chai.expect;
 
@@ -14,7 +20,7 @@ describe('data-collector', () => {
 
   it('should require the entity name', async () => {
     const entityType = 'BUSINESS';
-    const operationType = 'fetch-tweets';
+    const operationType = CollectionOperationType.FetchTweets;
 
     try {
       await execute(
@@ -34,7 +40,7 @@ describe('data-collector', () => {
 
   it('should require the entity type', async () => {
     const entityName = 'Google';
-    const operationType = 'fetch-tweets';
+    const operationType = CollectionOperationType.FetchTweets;
 
     try {
       await execute(
@@ -54,7 +60,7 @@ describe('data-collector', () => {
 
   it('should require the operation type', async () => {
     const entityName = 'Google';
-    const entityType = 'BUSINESS';
+    const entityType = EconomicEntityType.Business;
 
     try {
       await execute(
@@ -74,8 +80,8 @@ describe('data-collector', () => {
 
   it('should use utc formatted time as event', async () => {
     const entityName = 'Google';
-    const entityType = 'BUSINESS';
-    const operationType = 'fetch-tweets';
+    const entityType = EconomicEntityType.Business;
+    const operationType = CollectionOperationType.FetchTweets;
 
     const logMessage = await execute(
       modulePath,
@@ -104,8 +110,8 @@ describe('data-collector', () => {
 
   it('should pass valid economic entity in event', async () => {
     const entityName = 'Google';
-    const entityType = 'BUSINESS';
-    const operationType = 'fetch-tweets';
+    const entityType = EconomicEntityType.Business;
+    const operationType = CollectionOperationType.FetchTweets;
 
     const logMessage = await execute(
       modulePath,
@@ -127,16 +133,14 @@ describe('data-collector', () => {
 
     const data = JSON.parse(dataStr);
 
-    expect(() =>
-      EconomicEntityFactory.economicEntity(data.economicEntity)
-    ).not.to.throw();
+    expect(() => EconomicEntityFactory.get(data.economicEntity)).not.to.throw();
   });
 
-  describe('fetch-tweets', () => {
+  describe(`${CollectionOperationType.FetchTweets}`, () => {
     it('should fetch tweets from the twitter API', async () => {
       const entityName = 'Google';
-      const entityType = 'BUSINESS';
-      const operationType = 'fetch-tweets';
+      const entityType = EconomicEntityType.Business;
+      const operationType = CollectionOperationType.FetchTweets;
 
       const response = await execute(
         modulePath,
@@ -168,8 +172,8 @@ describe('data-collector', () => {
 
     it('should add the TWEETS_FETCHED event to kafka', async () => {
       const entityName = 'Google';
-      const entityType = 'BUSINESS';
-      const operationType = 'fetch-tweets';
+      const entityType = EconomicEntityType.Business;
+      const operationType = CollectionOperationType.FetchTweets;
 
       const response = await execute(
         modulePath,
@@ -183,6 +187,223 @@ describe('data-collector', () => {
       );
 
       expect(response.trim()).to.include('Emitting event TWEETS_FETCHED');
+    });
+  });
+
+  describe(`${CollectionOperationType.ScrapeData}`, () => {
+    it('should scrape the competitors', async () => {
+      const entityName = 'Google';
+      const entityType = EconomicEntityType.Business;
+      const operationType = CollectionOperationType.ScrapeData;
+
+      const data = {
+        subject: EconomicEntityFactory.get(),
+        owns: [EconomicEntityFactory.get()],
+        competitors: [EconomicEntityFactory.get()],
+        products: [EconomicEntityFactory.get()],
+        services: [EconomicEntityFactory.get()],
+        executives: [EconomicEntityFactory.get()],
+        sectors: [
+          EconomicSectorFactory.get({
+            type: EconomicSectorType.InformationTechnology,
+          }),
+        ],
+      };
+
+      const response = await execute(
+        modulePath,
+        [
+          `--entity-name=${entityName}`,
+          `--entity-type=${entityType}`,
+          `--operation-type=${operationType}`,
+          '--mock-run',
+        ],
+        {env: process.env}
+      );
+
+      expect(response.trim()).to.include(
+        `Scraping data for ${entityType} ${entityName}.`
+      );
+      expect(response.trim()).to.include(`${JSON.stringify(data.competitors)}`);
+    });
+
+    it('should scrape the products', async () => {
+      const entityName = 'Google';
+      const entityType = EconomicEntityType.Business;
+      const operationType = CollectionOperationType.ScrapeData;
+
+      const data = {
+        subject: EconomicEntityFactory.get(),
+        owns: [EconomicEntityFactory.get()],
+        competitors: [EconomicEntityFactory.get()],
+        products: [EconomicEntityFactory.get()],
+        services: [EconomicEntityFactory.get()],
+        executives: [EconomicEntityFactory.get()],
+        sectors: [
+          EconomicSectorFactory.get({
+            type: EconomicSectorType.InformationTechnology,
+          }),
+        ],
+      };
+
+      const response = await execute(
+        modulePath,
+        [
+          `--entity-name=${entityName}`,
+          `--entity-type=${entityType}`,
+          `--operation-type=${operationType}`,
+          '--mock-run',
+        ],
+        {env: process.env}
+      );
+
+      expect(response.trim()).to.include(
+        `Scraping data for ${entityType} ${entityName}.`
+      );
+      expect(response.trim()).to.include(`${JSON.stringify(data.products)}`);
+    });
+    it('should scrape the services', async () => {
+      const entityName = 'Google';
+      const entityType = EconomicEntityType.Business;
+      const operationType = CollectionOperationType.ScrapeData;
+
+      const data = {
+        subject: EconomicEntityFactory.get(),
+        owns: [EconomicEntityFactory.get()],
+        competitors: [EconomicEntityFactory.get()],
+        products: [EconomicEntityFactory.get()],
+        services: [EconomicEntityFactory.get()],
+        executives: [EconomicEntityFactory.get()],
+        sectors: [
+          EconomicSectorFactory.get({
+            type: EconomicSectorType.InformationTechnology,
+          }),
+        ],
+      };
+
+      const response = await execute(
+        modulePath,
+        [
+          `--entity-name=${entityName}`,
+          `--entity-type=${entityType}`,
+          `--operation-type=${operationType}`,
+          '--mock-run',
+        ],
+        {env: process.env}
+      );
+
+      expect(response.trim()).to.include(
+        `Scraping data for ${entityType} ${entityName}.`
+      );
+      expect(response.trim()).to.include(`${JSON.stringify(data.services)}`);
+    });
+
+    it('should scrape the executives', async () => {
+      const entityName = 'Google';
+      const entityType = EconomicEntityType.Business;
+      const operationType = CollectionOperationType.ScrapeData;
+
+      const data = {
+        subject: EconomicEntityFactory.get(),
+        owns: [EconomicEntityFactory.get()],
+        competitors: [EconomicEntityFactory.get()],
+        products: [EconomicEntityFactory.get()],
+        services: [EconomicEntityFactory.get()],
+        executives: [EconomicEntityFactory.get()],
+        sectors: [
+          EconomicSectorFactory.get({
+            type: EconomicSectorType.InformationTechnology,
+          }),
+        ],
+      };
+
+      const response = await execute(
+        modulePath,
+        [
+          `--entity-name=${entityName}`,
+          `--entity-type=${entityType}`,
+          `--operation-type=${operationType}`,
+          '--mock-run',
+        ],
+        {env: process.env}
+      );
+
+      expect(response.trim()).to.include(
+        `Scraping data for ${entityType} ${entityName}.`
+      );
+      expect(response.trim()).to.include(`${JSON.stringify(data.executives)}`);
+    });
+
+    it('should scrape the business size', async () => {
+      const entityName = 'Google';
+      const entityType = EconomicEntityType.Business;
+      const operationType = CollectionOperationType.ScrapeData;
+
+      const data = {
+        subject: EconomicEntityFactory.get(),
+        owns: [EconomicEntityFactory.get()],
+        competitors: [EconomicEntityFactory.get()],
+        products: [EconomicEntityFactory.get()],
+        services: [EconomicEntityFactory.get()],
+        executives: [EconomicEntityFactory.get()],
+        sectors: [
+          EconomicSectorFactory.get({
+            type: EconomicSectorType.InformationTechnology,
+          }),
+        ],
+      };
+
+      const response = await execute(
+        modulePath,
+        [
+          `--entity-name=${entityName}`,
+          `--entity-type=${entityType}`,
+          `--operation-type=${operationType}`,
+          '--mock-run',
+        ],
+        {env: process.env}
+      );
+
+      expect(response.trim()).to.include(
+        `Scraping data for ${entityType} ${entityName}.`
+      );
+      expect(response.trim()).to.include(`${JSON.stringify(data.size)}`);
+    });
+
+    it('should scrape the industry', async () => {
+      const entityName = 'Google';
+      const entityType = EconomicEntityType.Business;
+      const operationType = CollectionOperationType.ScrapeData;
+
+      const data = {
+        subject: EconomicEntityFactory.get(),
+        owns: [EconomicEntityFactory.get()],
+        competitors: [EconomicEntityFactory.get()],
+        products: [EconomicEntityFactory.get()],
+        services: [EconomicEntityFactory.get()],
+        executives: [EconomicEntityFactory.get()],
+        sectors: [
+          EconomicSectorFactory.get({
+            type: EconomicSectorType.InformationTechnology,
+          }),
+        ],
+      };
+
+      const response = await execute(
+        modulePath,
+        [
+          `--entity-name=${entityName}`,
+          `--entity-type=${entityType}`,
+          `--operation-type=${operationType}`,
+          '--mock-run',
+        ],
+        {env: process.env}
+      );
+
+      expect(response.trim()).to.include(
+        `Scraping data for ${entityType} ${entityName}.`
+      );
+      expect(response.trim()).to.include(`${JSON.stringify(data.industry)}`);
     });
   });
 });

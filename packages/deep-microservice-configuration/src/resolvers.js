@@ -16,7 +16,7 @@ const resolvers = {
     ) =>
       dataSources.configurationService.updateConfiguration(
         userEmail,
-        EconomicEntityFactory.economicEntities(observedEconomicEntities),
+        EconomicEntityFactory.get(observedEconomicEntities),
         permissions,
         me
       ),

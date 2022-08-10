@@ -62,10 +62,8 @@ class EconomicEntityMemo extends MongoDataSource {
     try {
       const economicEntities = await this.collection.find().toArray();
 
-      return EconomicEntityFactory.economicEntities(
-        economicEntities.filter((val) =>
-          EconomicEntityFactory.economicEntity(val).valid()
-        )
+      return EconomicEntityFactory.get(
+        economicEntities.filter((val) => EconomicEntityFactory.get(val).valid())
       );
     } catch (e) {
       this._logger.error(
@@ -98,9 +96,7 @@ class EconomicEntityMemo extends MongoDataSource {
         `Read memo entries received: ${JSON.stringify(entries)}`
       );
 
-      return entries[0]
-        ? EconomicEntityFactory.economicEntity(entries[0])
-        : null;
+      return entries[0] ? EconomicEntityFactory.get(entries[0]) : null;
     } catch (e) {
       throw new Error(
         `Read memo failed for entity name: ${economicEntity.name}, entity type: ${economicEntity.type}. ${e.message}`

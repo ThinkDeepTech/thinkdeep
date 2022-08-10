@@ -18,11 +18,11 @@ describe('collection-service', () => {
   process.env.DATA_COLLECTOR_IMAGE_NAME = 'thinkdeeptech/collect-data:latest';
 
   const memoizedEconomicEntities = [
-    EconomicEntityFactory.economicEntity({
+    EconomicEntityFactory.get({
       name: 'firstbusiness',
       type: 'BUSINESS',
     }),
-    EconomicEntityFactory.economicEntity({
+    EconomicEntityFactory.get({
       name: 'secondbusiness',
       type: 'BUSINESS',
     }),
@@ -116,7 +116,7 @@ describe('collection-service', () => {
     });
 
     it('should process each of the tweets fetched with its handler', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'Google',
         type: EconomicEntityType.Business,
       });
@@ -180,7 +180,7 @@ describe('collection-service', () => {
     });
 
     it('should indicate failure if the read:all scope is absent from the permissions', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'Google',
         type: EconomicEntityType.Business,
       });
@@ -193,7 +193,7 @@ describe('collection-service', () => {
     });
 
     it('should indicate failure if a permissions object is not supplied', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'Google',
         type: EconomicEntityType.Business,
       });
@@ -205,7 +205,7 @@ describe('collection-service', () => {
     });
 
     it('should execute the body if the permissions has read:all scope', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'Google',
         type: EconomicEntityType.Business,
       });
@@ -221,7 +221,7 @@ describe('collection-service', () => {
     });
 
     it('should not collect data if data is already being collected', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'Google',
         type: EconomicEntityType.Business,
       });
@@ -234,7 +234,7 @@ describe('collection-service', () => {
     });
 
     it('should collect data if data is not being collected', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'Google',
         type: EconomicEntityType.Business,
       });
@@ -268,7 +268,7 @@ describe('collection-service', () => {
     });
 
     it('should start collection of data', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'Google',
         type: EconomicEntityType.Business,
       });
@@ -291,7 +291,7 @@ describe('collection-service', () => {
     });
 
     it(`should include a repetative command to collect tweets for type ${EconomicEntityType.Business}`, () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'Google',
         type: EconomicEntityType.Business,
       });
@@ -302,7 +302,7 @@ describe('collection-service', () => {
     });
 
     it(`should include a command to collect tweets for type ${EconomicEntityType.Business} immediately`, () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'Google',
         type: EconomicEntityType.Business,
       });
@@ -332,7 +332,7 @@ describe('collection-service', () => {
 
     it('should indicate failure if the date supplied is invalid', async () => {
       const utcDateTime = '1G';
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'Google',
         type: EconomicEntityType.Business,
       });
@@ -351,7 +351,7 @@ describe('collection-service', () => {
 
     it('should do nothing if tweets is empty', async () => {
       const utcDateTime = moment().utc().format();
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'Google',
         type: EconomicEntityType.Business,
       });
@@ -364,7 +364,7 @@ describe('collection-service', () => {
 
     it('should do nothing if tweets is not defined', async () => {
       const utcDateTime = moment().utc().format();
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'Google',
         type: EconomicEntityType.Business,
       });
@@ -380,7 +380,7 @@ describe('collection-service', () => {
 
     it('should store the tweets', async () => {
       const utcDateTime = moment().utc().format();
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'Google',
         type: EconomicEntityType.Business,
       });
@@ -402,7 +402,7 @@ describe('collection-service', () => {
 
     it('should wait for topic creation before adding to the message queue', async () => {
       const utcDateTime = moment().utc().format();
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'Google',
         type: EconomicEntityType.Business,
       });
@@ -436,7 +436,7 @@ describe('collection-service', () => {
 
     it('should add a message to the queue indicating what tweets were collected', async () => {
       const utcDateTime = moment().utc().format();
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'Google',
         type: EconomicEntityType.Business,
       });

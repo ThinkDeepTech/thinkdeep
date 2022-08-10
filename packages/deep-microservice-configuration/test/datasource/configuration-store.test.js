@@ -18,7 +18,7 @@ describe('configuration-store', () => {
   };
   const configuration = {
     observedEconomicEntities: [
-      EconomicEntityFactory.economicEntity({
+      EconomicEntityFactory.get({
         name: 'SomeBusiness',
         type: EconomicEntityType.Business,
       }),

@@ -8,7 +8,7 @@ const resolvers = {
       {dataSources, permissions}
     ) =>
       dataSources.collectionService.collectEconomicData(
-        EconomicEntityFactory.economicEntities(economicEntities),
+        EconomicEntityFactory.get(economicEntities),
         permissions
       ),
   },

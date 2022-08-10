@@ -71,7 +71,7 @@ class CollectionService {
           eachMessage: async ({message}) => {
             const msg = JSON.parse(message.value.toString());
 
-            const economicEntity = EconomicEntityFactory.economicEntity(
+            const economicEntity = EconomicEntityFactory.get(
               msg.economicEntity
             );
 
@@ -97,7 +97,7 @@ class CollectionService {
             const eventData = JSON.parse(message.value.toString());
 
             const utcDateTime = eventData.utcDateTime;
-            const economicEntity = EconomicEntityFactory.economicEntity(
+            const economicEntity = EconomicEntityFactory.get(
               eventData.economicEntity
             );
             const tweets = eventData.tweets;

@@ -7,28 +7,24 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 
 describe('economic-entity-factory', () => {
-  describe('economicEntity', () => {
+  describe('get', () => {
     it('should require a valid name', () => {
       const name = '';
       const type = EconomicEntityType.Business;
-      expect(() =>
-        EconomicEntityFactory.economicEntity({name, type})
-      ).to.throw();
+      expect(() => EconomicEntityFactory.get({name, type})).to.throw();
     });
 
     it('should require a valid type', () => {
       const name = '';
       const type = 'GOOGLE';
-      expect(() =>
-        EconomicEntityFactory.economicEntity({name, type})
-      ).to.throw();
+      expect(() => EconomicEntityFactory.get({name, type})).to.throw();
     });
 
     it('should freeze the object returned', () => {
       const name = 'Google';
       const type = EconomicEntityType.Business;
       expect(() => {
-        const economicEntity = EconomicEntityFactory.economicEntity({
+        const economicEntity = EconomicEntityFactory.get({
           name,
           type,
         });
@@ -40,51 +36,37 @@ describe('economic-entity-factory', () => {
     it('should return an economic entity', () => {
       const name = 'Google';
       const type = EconomicEntityType.Business;
-      expect(
-        EconomicEntityFactory.economicEntity({name, type}).constructor.name
-      ).to.equal('EconomicEntity');
+      expect(EconomicEntityFactory.get({name, type}).constructor.name).to.equal(
+        'EconomicEntity'
+      );
     });
-  });
 
-  describe('economicEntities', () => {
-    it('should throw if a non array is supplied', () => {
-      expect(() =>
-        EconomicEntityFactory.economicEntities(undefined)
-      ).to.throw();
+    it('should throw if an invalid input is supplied', () => {
+      expect(() => EconomicEntityFactory.get(undefined)).to.throw();
     });
 
     it('should return an empty array if an empty array is supplied', () => {
-      expect(EconomicEntityFactory.economicEntities([]).length).to.equal(0);
+      expect(EconomicEntityFactory.get([]).length).to.equal(0);
     });
 
     it('should throw if invalid economic entities are supplied', () => {
-      const economicEntity1 = EconomicEntityFactory.economicEntity({
+      const obj1 = EconomicEntityFactory.get({
         name: 'Google',
         type: EconomicEntityType.Business,
       });
-      const economicEntity2 = {name: 'Something', type: 'SOMETHING'};
+      const obj2 = {name: 'Something', type: 'SOMETHING'};
 
-      expect(() =>
-        EconomicEntityFactory.economicEntities([
-          economicEntity1,
-          economicEntity2,
-        ])
-      ).to.throw();
+      expect(() => EconomicEntityFactory.get([obj1, obj2])).to.throw();
     });
 
     it('should return valid economic entities if they are supplied', () => {
-      const economicEntity1 = EconomicEntityFactory.economicEntity({
+      const obj1 = EconomicEntityFactory.get({
         name: 'Google',
         type: EconomicEntityType.Business,
       });
-      const economicEntity2 = {name: 'Something', type: 'BUSINESS'};
+      const obj2 = {name: 'Something', type: 'BUSINESS'};
 
-      expect(() =>
-        EconomicEntityFactory.economicEntities([
-          economicEntity1,
-          economicEntity2,
-        ])
-      ).not.to.throw();
+      expect(() => EconomicEntityFactory.get([obj1, obj2])).not.to.throw();
     });
   });
 });
