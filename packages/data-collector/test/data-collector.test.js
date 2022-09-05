@@ -1,6 +1,3 @@
-import chai from 'chai';
-import {execute} from './execute.js';
-import moment from 'moment';
 import {
   EconomicEntityFactory,
   CollectionOperationType,
@@ -8,8 +5,13 @@ import {
   EconomicSectorFactory,
   EconomicSectorType,
 } from '@thinkdeep/model';
-
+import chai from 'chai';
+import {execute} from './execute.js';
+import moment from 'moment';
+import sinonChai from 'sinon-chai';
 const expect = chai.expect;
+
+chai.use(sinonChai);
 
 describe('data-collector', () => {
   /**
@@ -18,57 +20,19 @@ describe('data-collector', () => {
    */
   const modulePath = './src/data-collector.js';
 
-  it('should require the entity name', async () => {
-    const entityType = 'BUSINESS';
-    const operationType = CollectionOperationType.FetchTweets;
-
-    try {
-      await execute(
-        modulePath,
-        [
-          `--entity-type=${entityType}`,
-          `--operation-type=${operationType}`,
-          '--mock-run',
-        ],
-        {env: process.env}
-      );
-      chai.assert.fail('An error should have been thrown but was not.');
-    } catch (e) {
-      expect(e).to.include('Entity name is required');
-    }
-  });
-
-  it('should require the entity type', async () => {
-    const entityName = 'Google';
-    const operationType = CollectionOperationType.FetchTweets;
-
-    try {
-      await execute(
-        modulePath,
-        [
-          `--entity-name=${entityName}`,
-          `--operation-type=${operationType}`,
-          '--mock-run',
-        ],
-        {env: process.env}
-      );
-      chai.assert.fail('An error should have been thrown but was not.');
-    } catch (e) {
-      expect(e).to.include('Entity type is required');
-    }
-  });
-
   it('should require the operation type', async () => {
     const entityName = 'Google';
     const entityType = EconomicEntityType.Business;
-
+    const subject = EconomicEntityFactory.get({
+      name: entityName,
+      type: entityType,
+    });
     try {
       await execute(
         modulePath,
         [
-          `--entity-name=${entityName}`,
-          `--entity-type=${entityType}`,
-          '--mock-run',
+          `--economic-entity=${JSON.stringify(subject)}`,
+          `--mock-data={ "name": "something" }`,
         ],
         {env: process.env}
       );
@@ -81,15 +45,18 @@ describe('data-collector', () => {
   it('should use utc formatted time as event', async () => {
     const entityName = 'Google';
     const entityType = EconomicEntityType.Business;
+    const subject = EconomicEntityFactory.get({
+      name: entityName,
+      type: entityType,
+    });
     const operationType = CollectionOperationType.FetchTweets;
 
     const logMessage = await execute(
       modulePath,
       [
-        `--entity-name=${entityName}`,
-        `--entity-type=${entityType}`,
+        `--economic-entity=${JSON.stringify(subject)}`,
         `--operation-type=${operationType}`,
-        '--mock-run',
+        `--mock-data={ "name": "something" }`,
       ],
       {env: process.env}
     );
@@ -112,14 +79,17 @@ describe('data-collector', () => {
     const entityName = 'Google';
     const entityType = EconomicEntityType.Business;
     const operationType = CollectionOperationType.FetchTweets;
+    const subject = EconomicEntityFactory.get({
+      name: entityName,
+      type: entityType,
+    });
 
     const logMessage = await execute(
       modulePath,
       [
-        `--entity-name=${entityName}`,
-        `--entity-type=${entityType}`,
+        `--economic-entity=${JSON.stringify(subject)}`,
         `--operation-type=${operationType}`,
-        '--mock-run',
+        `--mock-data={ "name": "something" }`,
       ],
       {env: process.env}
     );
@@ -137,23 +107,9 @@ describe('data-collector', () => {
   });
 
   describe(`${CollectionOperationType.FetchTweets}`, () => {
-    it('should fetch tweets from the twitter API', async () => {
-      const entityName = 'Google';
-      const entityType = EconomicEntityType.Business;
-      const operationType = CollectionOperationType.FetchTweets;
-
-      const response = await execute(
-        modulePath,
-        [
-          `--entity-name=${entityName}`,
-          `--entity-type=${entityType}`,
-          `--operation-type=${operationType}`,
-          '--mock-run',
-        ],
-        {env: process.env}
-      );
-
-      const recentTweets = [
+    let mockData;
+    beforeEach(() => {
+      mockData = [
         {
           text: 'tweet 1',
         },
@@ -164,10 +120,30 @@ describe('data-collector', () => {
           text: 'tweet 3',
         },
       ];
-      expect(response.trim()).to.include('Querying recent tweets');
-      expect(response.trim()).to.include(
-        `Retrieved the following tweets: ${JSON.stringify(recentTweets)}`
+    });
+
+    it('should fetch tweets from the twitter API', async () => {
+      const entityName = 'Google';
+      const entityType = EconomicEntityType.Business;
+      const operationType = CollectionOperationType.FetchTweets;
+
+      const subject = EconomicEntityFactory.get({
+        name: entityName,
+        type: entityType,
+      });
+
+      const response = await execute(
+        modulePath,
+        [
+          `--economic-entity=${JSON.stringify(subject)}`,
+          `--operation-type=${operationType}`,
+          `--mock-data=${JSON.stringify(mockData)}`,
+        ],
+        {env: process.env}
       );
+
+      expect(response.trim()).to.include('Querying recent tweets');
+      expect(response.trim()).to.include(JSON.stringify(mockData));
     });
 
     it('should add the TWEETS_FETCHED event to kafka', async () => {
@@ -175,13 +151,17 @@ describe('data-collector', () => {
       const entityType = EconomicEntityType.Business;
       const operationType = CollectionOperationType.FetchTweets;
 
+      const subject = EconomicEntityFactory.get({
+        name: entityName,
+        type: entityType,
+      });
+
       const response = await execute(
         modulePath,
         [
-          `--entity-name=${entityName}`,
-          `--entity-type=${entityType}`,
+          `--economic-entity=${JSON.stringify(subject)}`,
           `--operation-type=${operationType}`,
-          '--mock-run',
+          `--mock-data=${JSON.stringify(mockData)}`,
         ],
         {env: process.env}
       );
@@ -191,18 +171,40 @@ describe('data-collector', () => {
   });
 
   describe(`${CollectionOperationType.ScrapeData}`, () => {
+    let mockData;
+    beforeEach(() => {
+      mockData = {};
+    });
+
     it('should scrape the competitors', async () => {
       const entityName = 'Google';
-      const entityType = EconomicEntityType.Business;
+      const entityType = EconomicSectorType.Business;
+      const subject = EconomicEntityFactory.get({
+        name: entityName,
+        type: entityType,
+      });
       const operationType = CollectionOperationType.ScrapeData;
 
       const data = {
-        subject: EconomicEntityFactory.get(),
-        owns: [EconomicEntityFactory.get()],
-        competitors: [EconomicEntityFactory.get()],
-        products: [EconomicEntityFactory.get()],
-        services: [EconomicEntityFactory.get()],
-        executives: [EconomicEntityFactory.get()],
+        subject: EconomicEntityFactory.get({
+          name: 'Alphabet',
+          type: EconomicEntityType.Business,
+        }),
+        owns: [
+          EconomicEntityFactory.get({
+            name: 'DeepMind',
+            type: EconomicEntityType.Business,
+          }),
+        ],
+        competitors: [
+          EconomicEntityFactory.get({
+            name: 'Amazon',
+            type: EconomicEntityType.Business,
+          }),
+        ],
+        products: [],
+        services: [],
+        executives: [],
         sectors: [
           EconomicSectorFactory.get({
             type: EconomicSectorType.InformationTechnology,
@@ -213,10 +215,9 @@ describe('data-collector', () => {
       const response = await execute(
         modulePath,
         [
-          `--entity-name=${entityName}`,
-          `--entity-type=${entityType}`,
+          `--economic-entity=${JSON.stringify(subject)}`,
           `--operation-type=${operationType}`,
-          '--mock-run',
+          `--mock-data=${JSON.stringify(mockData)}`,
         ],
         {env: process.env}
       );
@@ -232,13 +233,31 @@ describe('data-collector', () => {
       const entityType = EconomicEntityType.Business;
       const operationType = CollectionOperationType.ScrapeData;
 
+      const subject = EconomicEntityFactory.get({
+        name: entityName,
+        type: entityType,
+      });
+
       const data = {
-        subject: EconomicEntityFactory.get(),
-        owns: [EconomicEntityFactory.get()],
-        competitors: [EconomicEntityFactory.get()],
-        products: [EconomicEntityFactory.get()],
-        services: [EconomicEntityFactory.get()],
-        executives: [EconomicEntityFactory.get()],
+        subject: EconomicEntityFactory.get({
+          name: 'Alphabet',
+          type: EconomicEntityType.Business,
+        }),
+        owns: [
+          EconomicEntityFactory.get({
+            name: 'DeepMind',
+            type: EconomicEntityType.Business,
+          }),
+        ],
+        competitors: [
+          EconomicEntityFactory.get({
+            name: 'Amazon',
+            type: EconomicEntityType.Business,
+          }),
+        ],
+        products: [],
+        services: [],
+        executives: [],
         sectors: [
           EconomicSectorFactory.get({
             type: EconomicSectorType.InformationTechnology,
@@ -249,10 +268,9 @@ describe('data-collector', () => {
       const response = await execute(
         modulePath,
         [
-          `--entity-name=${entityName}`,
-          `--entity-type=${entityType}`,
+          `--economic-entity=${JSON.stringify(subject)}`,
           `--operation-type=${operationType}`,
-          '--mock-run',
+          `--mock-data=${JSON.stringify(mockData)}`,
         ],
         {env: process.env}
       );
@@ -267,13 +285,31 @@ describe('data-collector', () => {
       const entityType = EconomicEntityType.Business;
       const operationType = CollectionOperationType.ScrapeData;
 
+      const subject = EconomicEntityFactory.get({
+        name: entityName,
+        type: entityType,
+      });
+
       const data = {
-        subject: EconomicEntityFactory.get(),
-        owns: [EconomicEntityFactory.get()],
-        competitors: [EconomicEntityFactory.get()],
-        products: [EconomicEntityFactory.get()],
-        services: [EconomicEntityFactory.get()],
-        executives: [EconomicEntityFactory.get()],
+        subject: EconomicEntityFactory.get({
+          name: 'Alphabet',
+          type: EconomicEntityType.Business,
+        }),
+        owns: [
+          EconomicEntityFactory.get({
+            name: 'DeepMind',
+            type: EconomicEntityType.Business,
+          }),
+        ],
+        competitors: [
+          EconomicEntityFactory.get({
+            name: 'Amazon',
+            type: EconomicEntityType.Business,
+          }),
+        ],
+        products: [],
+        services: [],
+        executives: [],
         sectors: [
           EconomicSectorFactory.get({
             type: EconomicSectorType.InformationTechnology,
@@ -284,10 +320,9 @@ describe('data-collector', () => {
       const response = await execute(
         modulePath,
         [
-          `--entity-name=${entityName}`,
-          `--entity-type=${entityType}`,
+          `--economic-entity=${JSON.stringify(subject)}`,
           `--operation-type=${operationType}`,
-          '--mock-run',
+          `--mock-data=${JSON.stringify(mockData)}`,
         ],
         {env: process.env}
       );
@@ -303,13 +338,31 @@ describe('data-collector', () => {
       const entityType = EconomicEntityType.Business;
       const operationType = CollectionOperationType.ScrapeData;
 
+      const subject = EconomicEntityFactory.get({
+        name: entityName,
+        type: entityType,
+      });
+
       const data = {
-        subject: EconomicEntityFactory.get(),
-        owns: [EconomicEntityFactory.get()],
-        competitors: [EconomicEntityFactory.get()],
-        products: [EconomicEntityFactory.get()],
-        services: [EconomicEntityFactory.get()],
-        executives: [EconomicEntityFactory.get()],
+        subject: EconomicEntityFactory.get({
+          name: 'Alphabet',
+          type: EconomicEntityType.Business,
+        }),
+        owns: [
+          EconomicEntityFactory.get({
+            name: 'DeepMind',
+            type: EconomicEntityType.Business,
+          }),
+        ],
+        competitors: [
+          EconomicEntityFactory.get({
+            name: 'Amazon',
+            type: EconomicEntityType.Business,
+          }),
+        ],
+        products: [],
+        services: [],
+        executives: [],
         sectors: [
           EconomicSectorFactory.get({
             type: EconomicSectorType.InformationTechnology,
@@ -320,10 +373,9 @@ describe('data-collector', () => {
       const response = await execute(
         modulePath,
         [
-          `--entity-name=${entityName}`,
-          `--entity-type=${entityType}`,
+          `--economic-entity=${JSON.stringify(subject)}`,
           `--operation-type=${operationType}`,
-          '--mock-run',
+          `--mock-data=${JSON.stringify(mockData)}`,
         ],
         {env: process.env}
       );
@@ -339,13 +391,31 @@ describe('data-collector', () => {
       const entityType = EconomicEntityType.Business;
       const operationType = CollectionOperationType.ScrapeData;
 
+      const subject = EconomicEntityFactory.get({
+        name: entityName,
+        type: entityType,
+      });
+
       const data = {
-        subject: EconomicEntityFactory.get(),
-        owns: [EconomicEntityFactory.get()],
-        competitors: [EconomicEntityFactory.get()],
-        products: [EconomicEntityFactory.get()],
-        services: [EconomicEntityFactory.get()],
-        executives: [EconomicEntityFactory.get()],
+        subject: EconomicEntityFactory.get({
+          name: 'Alphabet',
+          type: EconomicEntityType.Business,
+        }),
+        owns: [
+          EconomicEntityFactory.get({
+            name: 'DeepMind',
+            type: EconomicEntityType.Business,
+          }),
+        ],
+        competitors: [
+          EconomicEntityFactory.get({
+            name: 'Amazon',
+            type: EconomicEntityType.Business,
+          }),
+        ],
+        products: [],
+        services: [],
+        executives: [],
         sectors: [
           EconomicSectorFactory.get({
             type: EconomicSectorType.InformationTechnology,
@@ -356,10 +426,9 @@ describe('data-collector', () => {
       const response = await execute(
         modulePath,
         [
-          `--entity-name=${entityName}`,
-          `--entity-type=${entityType}`,
+          `--economic-entity=${JSON.stringify(subject)}`,
           `--operation-type=${operationType}`,
-          '--mock-run',
+          `--mock-data=${JSON.stringify(mockData)}`,
         ],
         {env: process.env}
       );
@@ -375,13 +444,31 @@ describe('data-collector', () => {
       const entityType = EconomicEntityType.Business;
       const operationType = CollectionOperationType.ScrapeData;
 
+      const subject = EconomicEntityFactory.get({
+        name: entityName,
+        type: entityType,
+      });
+
       const data = {
-        subject: EconomicEntityFactory.get(),
-        owns: [EconomicEntityFactory.get()],
-        competitors: [EconomicEntityFactory.get()],
-        products: [EconomicEntityFactory.get()],
-        services: [EconomicEntityFactory.get()],
-        executives: [EconomicEntityFactory.get()],
+        subject: EconomicEntityFactory.get({
+          name: 'Alphabet',
+          type: EconomicEntityType.Business,
+        }),
+        owns: [
+          EconomicEntityFactory.get({
+            name: 'DeepMind',
+            type: EconomicEntityType.Business,
+          }),
+        ],
+        competitors: [
+          EconomicEntityFactory.get({
+            name: 'Amazon',
+            type: EconomicEntityType.Business,
+          }),
+        ],
+        products: [],
+        services: [],
+        executives: [],
         sectors: [
           EconomicSectorFactory.get({
             type: EconomicSectorType.InformationTechnology,
@@ -392,10 +479,9 @@ describe('data-collector', () => {
       const response = await execute(
         modulePath,
         [
-          `--entity-name=${entityName}`,
-          `--entity-type=${entityType}`,
+          `--economic-entity=${JSON.stringify(subject)}`,
           `--operation-type=${operationType}`,
-          '--mock-run',
+          `--mock-data=${JSON.stringify(mockData)}`,
         ],
         {env: process.env}
       );

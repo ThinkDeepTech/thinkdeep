@@ -24,6 +24,14 @@ class EconomicEntity {
   }
 
   /**
+   * Fetch relationship names.
+   * @return {Array<String>} Relationship names.
+   */
+  get relationships() {
+    return ['competitor'];
+  }
+
+  /**
    * Determine if an economic entity equals another.
    * @param {EconomicEntity} target
    * @return {Boolean} True if equivalent. False otherwise.
