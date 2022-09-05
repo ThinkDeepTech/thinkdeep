@@ -20,26 +20,45 @@ class DataScraper {
   /**
    * Scrape data for the associated subject.
    * @param {Object} subject Economic entity.
+   * @param {Object} [searchEngine = DDG] Search engine to use.
+   * @param {Function} [reqLib = axios] Library with which requests will be made.
+   * @param {Object} [robotsTxtParser = robotsParser] Parser to use to parse robots.txt.
    * @return {Object} Scraped data.
    */
-  async scrapeData(subject) {
-    await this._webSites(subject);
+  async scrapeData(
+    subject,
+    searchEngine = DDG,
+    reqLib = axios,
+    robotsTxtParser = robotsParser
+  ) {
+    const sites = await this._webSites(
+      subject,
+      searchEngine,
+      reqLib,
+      robotsTxtParser
+    );
 
     // TODO
-    // const data = this._scrapeData(subject, sites);
+    const data = this._scrapeData(subject, sites);
 
     // TODO
-    // return this._reduceScrapedData(data);
+    return this._reduceScrapedData(data);
   }
 
   /**
    * Gather safe websites.
    * @param {Object} subject Economic entity.
    * @param {Object} [searchEngine = DDG] Search engine to use.
-   * @param {Object} [reqLib = axios] Library with which requests will be made.
-   * @return {Array<Object>} Websites.
+   * @param {Function} [reqLib = axios] Library with which requests will be made.
+   * @param {Object} [robotsTxtParser = robotsParser] Parser to use to parse robots.txt.
+   * @return {Array<Object>} Scrapable websites or [].
    */
-  async _webSites(subject, searchEngine = DDG, reqLib = axios) {
+  async _webSites(
+    subject,
+    searchEngine = DDG,
+    reqLib = axios,
+    robotsTxtParser = robotsParser
+  ) {
     if (!validEconomicEntities([subject])) {
       throw new Error(`Subject was invalid. \n${JSON.stringify(subject)}`);
     }
@@ -51,35 +70,18 @@ class DataScraper {
     }
 
     const scrapableSites = [];
-    for (const field of subject.relationships) {
-      const searchResult = await searchEngine.search(
-        `${subject.type.toLowerCase()} ${subject.name} ${field.toLowerCase()}`,
-        {
-          safeSearch: searchEngine.SafeSearchType.STRICT,
+    for (const field of subject.relationships || []) {
+      const searchResults = await this._search(subject, field, searchEngine);
+
+      for (const searchResult of searchResults || []) {
+        const allowsScraping = await this._allowsScraping(
+          searchResult,
+          reqLib,
+          robotsTxtParser
+        );
+        if (allowsScraping) {
+          scrapableSites.push(searchResult.url);
         }
-      );
-
-      if (searchResult.noResults) continue;
-
-      for (const result of searchResult.results) {
-        const hostname = result.hostname || '';
-        if (!hostname) continue;
-
-        const baseUrl = `https://${hostname}`;
-        const robotsTxt = await this._robotsDotText(baseUrl, reqLib);
-
-        if (!robotsTxt) continue;
-
-        const dataUrl = result.url || '';
-        if (!dataUrl) continue;
-
-        const robots = robotsParser(baseUrl, robotsTxt);
-
-        if (!robots.isAllowed(dataUrl, 'duckduckbot')) continue;
-
-        this._logger.debug(`Allowing scraping of site: ${dataUrl}`);
-
-        scrapableSites.push(dataUrl);
       }
     }
 
@@ -87,13 +89,68 @@ class DataScraper {
   }
 
   /**
+   * Search a search engine for relevant websites.
+   * @param {Object} subject Economic entity.
+   * @param {String} field The search field.
+   * @param {Object} [searchEngine = DDG] Search engine to use.
+   * @return {Array<Object>} Search engine search results or [].
+   */
+  async _search(subject, field, searchEngine = DDG) {
+    const searchResult = await searchEngine.search(
+      `${subject.type.toLowerCase()} ${subject.name} ${field.toLowerCase()}`,
+      {
+        safeSearch: searchEngine.SafeSearchType.STRICT,
+      }
+    );
+
+    if (searchResult.noResults || !Array.isArray(searchResult.results))
+      return [];
+
+    return searchResult.results;
+  }
+
+  /**
+   * Determine whether a website allows scraping of a search engine result.
+   * @param {Object} searchResult The search engine search result.
+   * @param {Function} [reqLib = axios] Request library to use.
+   * @param {Function} [robotsTxtParser = robotsParser] Robots txt parser to use.
+   * @return {Boolean} True if scraping is acceptable. False otherwise.
+   */
+  async _allowsScraping(
+    searchResult,
+    reqLib = axios,
+    robotsTxtParser = robotsParser
+  ) {
+    const hostname = searchResult.hostname || '';
+    if (!hostname) return false;
+
+    const baseUrl = `https://${hostname}`;
+    const robotsTxt = await this._robotsDotText(baseUrl, reqLib);
+
+    if (!robotsTxt) return false;
+
+    const dataUrl = searchResult.url || '';
+    if (!dataUrl) return false;
+
+    const robots = robotsTxtParser(baseUrl, robotsTxt);
+
+    return robots.isAllowed(dataUrl, 'duckduckbot');
+  }
+
+  /**
    * Get the robots.txt.
    * @param {String} baseUrl
+   * @param {Object} [reqLib = axios] Library with which requests will be made.
    * @return {String} Robots.txt as a string or ''.
    */
-  async _robotsDotText(baseUrl) {
+  async _robotsDotText(baseUrl, reqLib = axios) {
     try {
-      const packet = await axios.get(`${baseUrl}/robots.txt`);
+      const packet = await reqLib.get(`${baseUrl}/robots.txt`);
+
+      this._logger.debug(
+        `Received robots.txt for url ${baseUrl}\n\n${packet.data}\n\n`
+      );
+
       return packet.data;
     } catch (e) {
       this._logger.warn(
