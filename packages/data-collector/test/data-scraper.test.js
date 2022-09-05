@@ -209,11 +209,9 @@ describe('data-scraper', () => {
         reqLib
       );
 
-      console.log(`ScrapableSites: ${JSON.stringify(scrapableSites)}`);
-
       expect(Array.isArray(scrapableSites)).to.equal(true);
       expect(scrapableSites.length).to.equal(1);
-      expect(scrapableSites).to.include(
+      expect(scrapableSites[0].url).to.include(
         `${baseUrl}/ask/answers/120314/who-are-googles-goog-main-competitors.asp`
       );
     });

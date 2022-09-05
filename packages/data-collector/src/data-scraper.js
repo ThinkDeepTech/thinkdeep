@@ -69,18 +69,31 @@ class DataScraper {
       );
     }
 
+    if (typeof robotsTxtParser !== 'function') {
+      throw new Error(
+        `Robots text parser was invalid. \n${JSON.stringify(robotsTxtParser)}`
+      );
+    }
+
     const scrapableSites = [];
     for (const field of subject.relationships || []) {
       const searchResults = await this._search(subject, field, searchEngine);
 
       for (const searchResult of searchResults || []) {
-        const allowsScraping = await this._allowsScraping(
+        const shouldScrape = await this._shouldScrape(
           searchResult,
           reqLib,
           robotsTxtParser
         );
-        if (allowsScraping) {
-          scrapableSites.push(searchResult.url);
+        if (shouldScrape) {
+          this._logger.debug(`Allowing scraping for url ${searchResult.url}`);
+          scrapableSites.push({
+            url: searchResult.url,
+          });
+        } else {
+          this._logger.debug(
+            `Disallowing scraping for url ${searchResult.url}`
+          );
         }
       }
     }
@@ -110,13 +123,13 @@ class DataScraper {
   }
 
   /**
-   * Determine whether a website allows scraping of a search engine result.
+   * Determine whether a website should be scraped.
    * @param {Object} searchResult The search engine search result.
    * @param {Function} [reqLib = axios] Request library to use.
    * @param {Function} [robotsTxtParser = robotsParser] Robots txt parser to use.
    * @return {Boolean} True if scraping is acceptable. False otherwise.
    */
-  async _allowsScraping(
+  async _shouldScrape(
     searchResult,
     reqLib = axios,
     robotsTxtParser = robotsParser
@@ -146,11 +159,6 @@ class DataScraper {
   async _robotsDotText(baseUrl, reqLib = axios) {
     try {
       const packet = await reqLib.get(`${baseUrl}/robots.txt`);
-
-      this._logger.debug(
-        `Received robots.txt for url ${baseUrl}\n\n${packet.data}\n\n`
-      );
-
       return packet.data;
     } catch (e) {
       this._logger.warn(
