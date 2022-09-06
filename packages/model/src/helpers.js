@@ -16,4 +16,20 @@ const validString = (str) => {
   return isString(str) && str.length > 0;
 };
 
-export {validString};
+/**
+ * Determine if a url is valid
+ * @param {String} subject
+ * @return {Boolean} True if valid. False otherwise.
+ */
+const validUrl = (subject) => {
+  let url;
+  try {
+    url = new URL(subject);
+  } catch (_) {
+    return false;
+  }
+
+  return url.protocol === 'http:' || url.protocol === 'https:';
+};
+
+export {validString, validUrl};

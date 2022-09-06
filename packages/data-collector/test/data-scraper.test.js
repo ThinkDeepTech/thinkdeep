@@ -228,4 +228,25 @@ describe('data-scraper', () => {
       expect(searchOptions.safeSearch).to.equal(DDG.SafeSearchType.STRICT);
     });
   });
+
+  describe('_scrapeData', () => {
+    it('should fetch markup associated with the specified websites', async () => {
+      const target = EconomicEntityFactory.get({
+        name: 'Google',
+        type: EconomicEntityType.Business,
+      });
+
+      await subject._scrapeData(target, [
+        {
+          url: 'https://somesite.com/some/public/article',
+        },
+      ]);
+
+      chai.assert.fail(`Not yet implemented.`);
+    });
+
+    it('should package data in the appropriate form', async () => {
+      chai.assert.fail(`Not yet implemented.`);
+    });
+  });
 });

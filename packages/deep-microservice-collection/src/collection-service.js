@@ -57,6 +57,10 @@ class CollectionService {
         replicationFactor: 1,
       },
       {
+        topic: 'DATA_SCRAPED',
+        replicationFactor: 1,
+      },
+      {
         topic: 'DATA_COLLECTION_STARTED',
         replicationFactor: 1,
       },
@@ -85,6 +89,11 @@ class CollectionService {
 
         await this._applicationConsumer.subscribe({
           topic: 'TWEETS_FETCHED',
+          fromBeginning: true,
+        });
+
+        await this._applicationConsumer.subscribe({
+          topic: 'DATA_SCRAPED',
           fromBeginning: true,
         });
 

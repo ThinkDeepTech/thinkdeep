@@ -1,4 +1,4 @@
-import {validEconomicEntities} from '@thinkdeep/model';
+import {validEconomicEntities, WebSiteFactory} from '@thinkdeep/model';
 import axios from 'axios';
 import DDG from 'duck-duck-scrape';
 import robotsParser from 'robots-parser';
@@ -31,18 +31,14 @@ class DataScraper {
     reqLib = axios,
     robotsTxtParser = robotsParser
   ) {
-    const sites = await this._webSites(
+    const urls = await this._webSites(
       subject,
       searchEngine,
       reqLib,
       robotsTxtParser
     );
 
-    // TODO
-    const data = this._scrapeData(subject, sites);
-
-    // TODO
-    return this._reduceScrapedData(data);
+    return this._scrapeData(subject, urls, reqLib);
   }
 
   /**
@@ -85,16 +81,14 @@ class DataScraper {
           reqLib,
           robotsTxtParser
         );
-        if (shouldScrape) {
-          this._logger.debug(`Allowing scraping for url ${searchResult.url}`);
-          scrapableSites.push({
-            url: searchResult.url,
-          });
-        } else {
-          this._logger.debug(
-            `Disallowing scraping for url ${searchResult.url}`
-          );
+
+        if (!shouldScrape) {
+          this._logger.debug(`Disabling scraping for url ${searchResult.url}`);
+          continue;
         }
+
+        this._logger.debug(`Enabling scraping for url ${searchResult.url}`);
+        scrapableSites.push(searchResult.url);
       }
     }
 
@@ -138,7 +132,7 @@ class DataScraper {
     if (!hostname) return false;
 
     const baseUrl = `https://${hostname}`;
-    const robotsTxt = await this._robotsDotText(baseUrl, reqLib);
+    const robotsTxt = await this._get(`${baseUrl}/robots.txt`, reqLib);
 
     if (!robotsTxt) return false;
 
@@ -151,18 +145,19 @@ class DataScraper {
   }
 
   /**
-   * Get the robots.txt.
-   * @param {String} baseUrl
+   * Get web content.
+   * @param {String} url
    * @param {Object} [reqLib = axios] Library with which requests will be made.
-   * @return {String} Robots.txt as a string or ''.
+   * @return {String} Url content as a string or ''.
    */
-  async _robotsDotText(baseUrl, reqLib = axios) {
+  async _get(url, reqLib = axios) {
     try {
-      const packet = await reqLib.get(`${baseUrl}/robots.txt`);
+      const packet = await reqLib.get(url);
+
       return packet.data;
     } catch (e) {
       this._logger.warn(
-        `Failed to fetch robots.txt from url ${baseUrl}\n${e.message}`
+        `Failed to fetch content from url ${url}\n${e.message}`
       );
       return '';
     }
@@ -170,12 +165,22 @@ class DataScraper {
 
   /**
    * Scrape data for associated subject.
-   * @param {Object} subject Economic entity.\
-   * @param {Array<Object>} sites Websites to target.
-   * @return {Object} Scraped data.
+   * @param {Object} subject Economic entity.
+   * @param {Array<String>} urls Websites to target.
+   * @param {Object} [reqLib = axios] Library with which requests will be made.
+   * @return {Object} Scraped data || [].
    */
-  _scrapeData(subject, sites) {
-    return {subject};
+  async _scrapeData(subject, urls, reqLib = axios) {
+    const results = [];
+    for (const url of urls) {
+      const data = await this._get(url);
+
+      if (!data) continue;
+
+      results.push(WebSiteFactory.get({url, body: data}));
+    }
+
+    return results;
   }
 
   /**
@@ -184,6 +189,7 @@ class DataScraper {
    * @return {Object} Reduced data.
    */
   _reduceScrapedData(data) {
+    // TODO
     return data;
   }
 }

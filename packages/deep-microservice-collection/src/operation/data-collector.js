@@ -17,8 +17,7 @@ class DataCollector extends Operation {
     super();
 
     this._imageName = imageName;
-    this._entityName = economicEntity.name;
-    this._entityType = economicEntity.type;
+    this._economicEntity = economicEntity;
     this._operationType = operationType;
   }
 
@@ -59,8 +58,7 @@ class DataCollector extends Operation {
   get args() {
     return [
       'src/data-collector.js',
-      `--entity-name=${this._entityName}`,
-      `--entity-type=${this._entityType}`,
+      `--economic-entity=${this._economicEntity}`,
       `--operation-type=${this._operationType}`,
     ];
   }

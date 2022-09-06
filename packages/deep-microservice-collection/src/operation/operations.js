@@ -18,6 +18,18 @@ class Operations {
       new DataCollector(economicEntity, CollectionOperationType.FetchTweets)
     );
   }
+
+  /**
+   * Scrape data operation.
+   *
+   * @param {Object} economicEntity Economic entity subject.
+   * @return {Operation} Frozen operation to perform.
+   */
+  ScrapeData(economicEntity) {
+    return Object.freeze(
+      new DataCollector(economicEntity, CollectionOperationType.ScrapeData)
+    );
+  }
 }
 
 const operations = new Operations();

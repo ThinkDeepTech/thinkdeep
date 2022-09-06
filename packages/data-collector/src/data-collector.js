@@ -61,6 +61,7 @@ try {
   const currentUtcDateTime = moment().utc().format();
 
   let kafkaClient;
+  let twitterClient;
   if (!options.mockData || Object.keys(options.mockData).length <= 0) {
     logger.info(`Creating kafka client.`);
     kafkaClient = new Kafka({
@@ -69,6 +70,9 @@ try {
         `${process.env.PREDECOS_KAFKA_HOST}:${process.env.PREDECOS_KAFKA_PORT}`,
       ],
     });
+
+    twitterClient = new TwitterApi(process.env.PREDECOS_TWITTER_BEARER)
+      .readOnly;
   } else {
     logger.info(`Creating mock kafka client.`);
     kafkaClient = {
@@ -83,22 +87,21 @@ try {
         disconnect: sinon.stub(),
       }),
     };
+
+    twitterClient = {
+      v2: {
+        get: sinon.stub().returns({
+          data: JSON.parse(options.mockData),
+        }),
+      },
+    };
   }
+
+  const collectDataClient = new Client(twitterClient, kafkaClient, logger);
 
   switch (options.operationType) {
     case CollectionOperationType.FetchTweets: {
       logger.info('Fetching tweets.');
-      const twitterClient = !options.mockData
-        ? new TwitterApi(process.env.PREDECOS_TWITTER_BEARER).readOnly
-        : {
-            v2: {
-              get: sinon.stub().returns({
-                data: JSON.parse(options.mockData),
-              }),
-            },
-          };
-
-      const collectDataClient = new Client(twitterClient, kafkaClient, logger);
 
       (async () => {
         logger.info('Connecting to data collection client.');
@@ -114,7 +117,7 @@ try {
 
         const data = {
           utcDateTime: currentUtcDateTime,
-          economicEntity: economicEntity.toObject(),
+          economicEntity,
           tweets: recentTweets,
         };
 
@@ -127,6 +130,9 @@ try {
     }
     case CollectionOperationType.ScrapeData: {
       (async () => {
+        logger.info('Connecting to data collection client.');
+        await collectDataClient.connect();
+
         logger.info(
           `Scraping data for ${economicEntity.type} ${economicEntity.name}.`
         );
@@ -135,15 +141,15 @@ try {
             ? new DataScraper(logger)
             : sinon.createStubInstance(DataScraper);
 
-        await scraper.scrapeData(economicEntity);
+        const scrapedData = await scraper.scrapeData(economicEntity);
 
-        // const data = {
-        //   utcDateTime: currentUtcDateTime,
-        //   economicEntity: economicEntity.toObject(),
-        //   data: scrapedData,
-        // };
+        const data = {
+          utcDateTime: currentUtcDateTime,
+          economicEntity,
+          data: scrapedData,
+        };
 
-        // await collectDataClient.emitEvent('DATA_SCRAPED', data);
+        await collectDataClient.emitEvent('DATA_SCRAPED', data);
       })();
 
       break;
