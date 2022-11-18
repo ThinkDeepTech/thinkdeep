@@ -1,4 +1,4 @@
-import {validString} from './helpers.js';
+import {validString} from '@thinkdeep/util';
 
 /**
  * Commander implementation for microservice use.

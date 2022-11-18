@@ -12,6 +12,9 @@ COPY src/ ./src/
 
 COPY package.json $BASE_DIRECTORY/
 
+COPY ./node_modules/@thinkdeep/model ../model/
+COPY ./node_modules/@thinkdeep/util ../util/
+
 RUN yarn install
 
 EXPOSE $PORT

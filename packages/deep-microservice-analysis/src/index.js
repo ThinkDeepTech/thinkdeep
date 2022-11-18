@@ -1,15 +1,14 @@
 import {buildSubgraphSchema} from '@apollo/subgraph';
-import {attachExitHandler} from '@thinkdeep/attach-exit-handler';
 import {Microservice} from './microservice.js';
 import {AnalysisService} from './analysis-service.js';
 import {ApolloServer} from 'apollo-server-express';
-import {SentimentStore} from './datasource/sentiment-store.js';
+import {Neo4jStore} from './datasource/neo4j-store.js';
 import express from 'express';
 import {getLogger} from './get-logger.js';
 import depthLimit from 'graphql-depth-limit';
 import {Kafka} from 'kafkajs';
 import {loggingPlugin} from './logging-plugin.js';
-import {MongoClient} from 'mongodb';
+import neo4j from 'neo4j-driver';
 import {resolvers} from './resolvers.js';
 import {typeDefs} from './schema.js';
 import Sentiment from 'sentiment';
@@ -17,18 +16,6 @@ import Sentiment from 'sentiment';
 const logger = getLogger();
 
 (async () => {
-  const mongoClient = new MongoClient(
-    process.env.PREDECOS_MONGODB_CONNECTION_STRING
-  );
-
-  await attachExitHandler(async () => {
-    logger.info('Closing MongoDB connection.');
-    await mongoClient.close();
-  });
-
-  logger.info('Connecting to MongoDB.');
-  await mongoClient.connect();
-
   const kafkaBroker = `${process.env.PREDECOS_KAFKA_HOST}:${process.env.PREDECOS_KAFKA_PORT}`;
   logger.info(`Creating kafka client with broker ${kafkaBroker}`);
   const kafkaClient = new Kafka({
@@ -36,12 +23,19 @@ const logger = getLogger();
     brokers: [kafkaBroker],
   });
 
-  const sentimentStore = new SentimentStore(
-    mongoClient.db('admin').collection('sentiments'),
-    logger
-  );
+  const neo4jStore = new Neo4jStore({
+    url: process.env.MICROSERVICE_ANALYSIS_NEO4J_URL,
+    authToken: neo4j.auth.basic(
+      process.env.MICROSERVICE_ANALYSIS_NEO4J_USERNAME,
+      process.env.MICROSERVICE_ANALYSIS_NEO4J_PASSWORD
+    ),
+    defaultDatabase: process.env.MICROSERVICE_ANALYSIS_NEO4J_DATABASE,
+    defaultAccessMode: neo4j.session.READ,
+    neo4j,
+  });
+
   const analysisService = new AnalysisService(
-    sentimentStore,
+    neo4jStore,
     new Sentiment(),
     kafkaClient,
     logger

@@ -1,6 +1,6 @@
 import {ApolloMutationController} from '@apollo-elements/core';
-import {GetOrCreateSiteConfiguration} from './graphql/GetOrCreateSiteConfiguration.mutation.graphql';
-import {UpdateConfiguration} from './graphql/UpdateConfiguration.mutation.graphql';
+import {GetOrCreateSiteConfiguration} from './graphql/GetOrCreateSiteConfiguration.mutation.graphql.js';
+import {UpdateConfiguration} from './graphql/UpdateConfiguration.mutation.graphql.js';
 import {LitElement} from 'lit';
 import {user} from './user.js';
 

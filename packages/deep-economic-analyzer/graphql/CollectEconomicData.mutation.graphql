@@ -1,5 +1,0 @@
-mutation CollectEconomicData($economicEntityName: String!, $economicEntityType: EconomicEntityType!){
-  collectEconomicData(economicEntityName: $economicEntityName, economicEntityType: $economicEntityType) {
-    success
-  }
-}

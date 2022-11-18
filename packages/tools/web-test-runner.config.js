@@ -8,11 +8,19 @@ import getPort from 'get-port';
 const graphql = fromRollup(rollupGraphQL);
 const injectEnv = fromRollup(rollupInjectEnv);
 
+const setBrowserContext = ({browser}) =>
+  browser.newContext({
+    viewport: {width: 1800, height: 1000},
+    browser: {width: 1800, height: 1000},
+    recordVideo: {dir: './video'},
+    ignoreHTTPSErrors: true,
+  });
+
 const browsers = {
   chromium: playwrightLauncher({
     product: 'chromium',
-    createBrowserContext: ({browser}) =>
-      browser.newContext({ignoreHTTPSErrors: true}),
+    createBrowserContext: setBrowserContext,
+    createPage: ({context}) => context.newPage(),
     launchOptions: {
       headless: true,
       devtools: true,
@@ -21,8 +29,8 @@ const browsers = {
   }),
   firefox: playwrightLauncher({
     product: 'firefox',
-    createBrowserContext: ({browser}) =>
-      browser.newContext({ignoreHTTPSErrors: true}),
+    createBrowserContext: setBrowserContext,
+    createPage: ({context}) => context.newPage(),
     launchOptions: {
       headless: true,
     },
@@ -33,7 +41,7 @@ const browsers = {
 const port = await getPort();
 
 export default {
-  files: ['test/**/*.test.js', 'test/**/*.test.js'],
+  // files: ['test/**/*.test.js'],
   nodeResolve: true,
   coverage: true,
   coverageConfig: {
@@ -46,12 +54,12 @@ export default {
   preserveSymlinks: true,
   concurrency: 1,
   browserStartTimeout: 60000,
-  testsStartTimeout: 20000,
-  testsFinishTimeout: 180000,
+  testsStartTimeout: 60000,
+  testsFinishTimeout: 240000,
   testFramework: {
     config: {
       ui: 'bdd',
-      timeout: 20000,
+      timeout: 30000,
     },
   },
   port,

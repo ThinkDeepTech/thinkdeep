@@ -1,4 +1,9 @@
 import {MongoDataSource} from 'apollo-datasource-mongodb';
+import {
+  EconomicEntityFactory,
+  objectifyEconomicEntities,
+  validEconomicEntities,
+} from '@thinkdeep/model';
 
 /**
  * Check whether the provided email is valid.
@@ -17,8 +22,11 @@ const validEmail = (userEmail) => {
 const validConfiguration = (configuration) => {
   return (
     !!configuration &&
+    typeof configuration === 'object' &&
+    Object.keys(configuration).length > 0 &&
     !!configuration?.observedEconomicEntities &&
-    !!Array.isArray(configuration?.observedEconomicEntities)
+    !!Array.isArray(configuration?.observedEconomicEntities) &&
+    validEconomicEntities(configuration?.observedEconomicEntities)
   );
 };
 
@@ -60,7 +68,13 @@ class ConfigurationStore extends MongoDataSource {
       );
 
     try {
-      await this.collection.insertOne({userEmail, ...configuration});
+      await this.collection.insertOne({
+        userEmail,
+        ...configuration,
+        observedEconomicEntities: objectifyEconomicEntities(
+          configuration.observedEconomicEntities
+        ),
+      });
     } catch (e) {
       throw new Error(`Configuration insertion failed: ${e.message}`);
     }
@@ -82,7 +96,7 @@ class ConfigurationStore extends MongoDataSource {
         .find({userEmail})
         .limit(1)
         .toArray();
-      return configurations[0];
+      return this._reduceConfigurations(configurations)[0];
     } catch (e) {
       throw new Error(`Configuration read failed: ${e.message}`);
     }
@@ -111,13 +125,36 @@ class ConfigurationStore extends MongoDataSource {
         {userEmail},
         {
           $set: {
-            observedEconomicEntities: configuration.observedEconomicEntities,
+            observedEconomicEntities: objectifyEconomicEntities(
+              configuration.observedEconomicEntities
+            ),
           },
         }
       );
     } catch (e) {
       throw new Error(`Configuration update failed: ${e.message}`);
     }
+  }
+
+  /**
+   * Reduce the configuration.
+   * @param {Array<Object>} configurations
+   * @return {Array<Object>} Reduced configurations.
+   */
+  _reduceConfigurations(configurations) {
+    const results = [];
+    for (const configuration of configurations) {
+      if (!Array.isArray(configuration?.observedEconomicEntities)) continue;
+
+      results.push({
+        ...configuration,
+        observedEconomicEntities: EconomicEntityFactory.economicEntities(
+          configuration.observedEconomicEntities
+        ),
+      });
+    }
+
+    return results;
   }
 }
 
