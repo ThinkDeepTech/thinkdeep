@@ -330,7 +330,7 @@ jobs:
             helm-version: "v3.7.2"
             namespace: "production"
             release-name: "v1"
-            values-to-override: "gateway.service.certificateId=9fe8414d-2b42-4029-b836-20c11a2abce9,subscription.service.certificateId=ebbf7f14-f13c-4568-bc5f-34fdc7d90c05,auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,collection.replicas=3,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,collection.data.collector.image=thinkdeeptech/data-collector:latest,replicas=1,global.docker.secretName=docker-secret,global.nodeEnv=production"
+            values-to-override: "gateway.service.certificateId=$PROD_MICROSERVICE_GATEWAY_CERTIFICATE_ID,subscription.service.certificateId=$PROD_MICROSERVICE_SUBSCRIPTION_CERTIFICATE_ID,auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,collection.replicas=3,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,collection.data.collector.image=thinkdeeptech/data-collector:latest,replicas=1,global.docker.secretName=docker-secret,global.nodeEnv=production"
             update-repositories: true
             timeout: "480s"
             wait: true
@@ -381,7 +381,7 @@ jobs:
             helm-version: "v3.7.2"
             namespace: "development"
             release-name: "v1"
-            values-to-override: "gateway.service.certificateId=c0d2677a-34f7-4f2b-b464-055f7015a3b0,subscription.service.certificateId=ecccde8a-2599-4103-a34f-52e8385b5053,auth.audience=$PREDECOS_TEST_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_TEST_AUTH_JWKS_URI,auth.issuer=$PREDECOS_TEST_AUTH_ISSUER,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,replicas=1,global.docker.secretName=docker-secret,analysis.container.image=thinkdeeptech/deep-microservice-analysis-dev:latest,collection.replicas=3,collection.container.image=thinkdeeptech/deep-microservice-collection-dev:latest,collection.data.collector.image=thinkdeeptech/data-collector-dev:latest,configuration.container.image=thinkdeeptech/deep-microservice-configuration-dev:latest,gateway.container.image=thinkdeeptech/deep-microservice-gateway-dev:latest,subscription.container.image=thinkdeeptech/deep-microservice-subscription-dev:latest,global.nodeEnv=development"
+            values-to-override: "gateway.service.certificateId=$DEV_MICROSERVICE_GATEWAY_CERTIFICATE_ID,subscription.service.certificateId=$DEV_MICROSERVICE_SUBSCRIPTION_CERTIFICATE_ID,auth.audience=$PREDECOS_TEST_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_TEST_AUTH_JWKS_URI,auth.issuer=$PREDECOS_TEST_AUTH_ISSUER,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,replicas=1,global.docker.secretName=docker-secret,analysis.container.image=thinkdeeptech/deep-microservice-analysis-dev:latest,collection.replicas=3,collection.container.image=thinkdeeptech/deep-microservice-collection-dev:latest,collection.data.collector.image=thinkdeeptech/data-collector-dev:latest,configuration.container.image=thinkdeeptech/deep-microservice-configuration-dev:latest,gateway.container.image=thinkdeeptech/deep-microservice-gateway-dev:latest,subscription.container.image=thinkdeeptech/deep-microservice-subscription-dev:latest,global.nodeEnv=development"
             update-repositories: true
             timeout: "480s"
             wait: true
