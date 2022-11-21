@@ -3,7 +3,7 @@ version: 2.1
 orbs:
     browser-tools: circleci/browser-tools@1.2.4
     k8s: digitalocean/k8s@0.1.1
-    helm: circleci/helm@1.2.0
+    helm: circleci/helm@2.0.1
     coveralls: coveralls/coveralls@1.0.6
 
 commands:
@@ -55,7 +55,7 @@ jobs:
 
     build_microservice_analysis:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/node:16.14.2'
 
       working_directory: ~/project
 
@@ -65,6 +65,16 @@ jobs:
             version: 20.10.7
             docker_layer_caching: true
         - login_docker
+        - restore_cache:
+            key: ms-analysis1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-analysis/package.json" }}
+        - run:
+            name: Installing package
+            command: yarn install
+            working_directory: ./packages/deep-microservice-analysis
+        - save_cache:
+            key: ms-analysis1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-analysis/package.json" }}
+            paths:
+              - "./packages/deep-microservice-analysis/node_modules"
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-analysis:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis:latest --build-arg PORT=$MICROSERVICE_ANALYSIS_PORT .
             working_directory: ./packages/deep-microservice-analysis
@@ -73,7 +83,7 @@ jobs:
 
     build_microservice_analysis_dev:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/node:16.14.2'
 
       working_directory: ~/project
 
@@ -83,6 +93,16 @@ jobs:
             version: 20.10.7
             docker_layer_caching: true
         - login_docker
+        - restore_cache:
+            key: ms-analysis1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-analysis/package.json" }}
+        - run:
+            name: Installing package
+            command: yarn install
+            working_directory: ./packages/deep-microservice-analysis
+        - save_cache:
+            key: ms-analysis1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-analysis/package.json" }}
+            paths:
+              - "./packages/deep-microservice-analysis/node_modules"
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-analysis-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-analysis-dev:latest --build-arg PORT=$MICROSERVICE_ANALYSIS_PORT .
             working_directory: ./packages/deep-microservice-analysis
@@ -91,7 +111,7 @@ jobs:
 
     build_microservice_collection:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/node:16.14.2'
 
       working_directory: ~/project
 
@@ -101,6 +121,16 @@ jobs:
             version: 20.10.7
             docker_layer_caching: true
         - login_docker
+        - restore_cache:
+            key: ms-collection1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-collection/package.json" }}
+        - run:
+            name: Installing package
+            command: yarn install
+            working_directory: ./packages/deep-microservice-collection
+        - save_cache:
+            key: ms-collection1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-collection/package.json" }}
+            paths:
+              - "./packages/deep-microservice-collection/node_modules"
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-collection:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-collection:latest --build-arg PORT=$MICROSERVICE_COLLECTION_PORT .
             working_directory: ./packages/deep-microservice-collection
@@ -110,7 +140,7 @@ jobs:
 
     build_microservice_collection_dev:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/node:16.14.2'
 
       working_directory: ~/project
 
@@ -120,6 +150,16 @@ jobs:
             version: 20.10.7
             docker_layer_caching: true
         - login_docker
+        - restore_cache:
+            key: ms-collection1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-collection/package.json" }}
+        - run:
+            name: Installing package
+            command: yarn install
+            working_directory: ./packages/deep-microservice-collection
+        - save_cache:
+            key: ms-collection1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-collection/package.json" }}
+            paths:
+              - "./packages/deep-microservice-collection/node_modules"
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-collection-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-collection-dev:latest --build-arg PORT=$MICROSERVICE_COLLECTION_PORT .
             working_directory: ./packages/deep-microservice-collection
@@ -128,7 +168,7 @@ jobs:
 
     build_microservice_configuration:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/node:16.14.2'
 
       working_directory: ~/project
 
@@ -138,6 +178,16 @@ jobs:
             version: 20.10.7
             docker_layer_caching: true
         - login_docker
+        - restore_cache:
+            key: ms-config1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-configuration/package.json" }}
+        - run:
+            name: Installing package
+            command: yarn install
+            working_directory: ./packages/deep-microservice-configuration
+        - save_cache:
+            key: ms-config1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-configuration/package.json" }}
+            paths:
+              - "./packages/deep-microservice-configuration/node_modules"
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-configuration:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-configuration:latest --build-arg PORT=$MICROSERVICE_CONFIGURATION_PORT .
             working_directory: ./packages/deep-microservice-configuration
@@ -146,7 +196,7 @@ jobs:
 
     build_microservice_configuration_dev:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/node:16.14.2'
 
       working_directory: ~/project
 
@@ -156,6 +206,16 @@ jobs:
             version: 20.10.7
             docker_layer_caching: true
         - login_docker
+        - restore_cache:
+            key: ms-config1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-configuration/package.json" }}
+        - run:
+            name: Installing package
+            command: yarn install
+            working_directory: ./packages/deep-microservice-configuration
+        - save_cache:
+            key: ms-config1-{{ .Branch }}-{{ checksum "./packages/deep-microservice-configuration/package.json" }}
+            paths:
+              - "./packages/deep-microservice-configuration/node_modules"
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-configuration-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-configuration-dev:latest --build-arg PORT=$MICROSERVICE_CONFIGURATION_PORT .
             working_directory: ./packages/deep-microservice-configuration
@@ -165,7 +225,7 @@ jobs:
 
     build_microservice_gateway:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/node:16.14.2'
 
       working_directory: ~/project
 
@@ -183,7 +243,7 @@ jobs:
 
     build_microservice_gateway_dev:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/node:16.14.2'
 
       working_directory: ~/project
 
@@ -202,7 +262,7 @@ jobs:
 
     build_microservice_subscription:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/node:16.14.2'
 
       working_directory: ~/project
       resource_class: large
@@ -214,6 +274,9 @@ jobs:
             docker_layer_caching: true
         - login_docker
         - run:
+            command: yarn install
+            working_directory: ./packages/deep-microservice-subscription
+        - run:
             command: docker build -t thinkdeeptech/deep-microservice-subscription:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-subscription:latest --build-arg PORT=$MICROSERVICE_SUBSCRIPTION_PORT .
             working_directory: ./packages/deep-microservice-subscription
         - run: docker push thinkdeeptech/deep-microservice-subscription:${CIRCLE_BUILD_NUM}
@@ -221,7 +284,7 @@ jobs:
 
     build_microservice_subscription_dev:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/node:16.14.2'
 
       working_directory: ~/project
       resource_class: large
@@ -232,6 +295,9 @@ jobs:
             version: 20.10.7
             docker_layer_caching: true
         - login_docker
+        - run:
+            command: yarn install
+            working_directory: ./packages/deep-microservice-subscription
         - run:
             command: docker build -t thinkdeeptech/deep-microservice-subscription-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/deep-microservice-subscription-dev:latest --build-arg PORT=$MICROSERVICE_SUBSCRIPTION_PORT .
             working_directory: ./packages/deep-microservice-subscription
@@ -241,7 +307,7 @@ jobs:
 
     build_data_collector:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/node:16.14.2'
 
       working_directory: ~/project
 
@@ -251,6 +317,16 @@ jobs:
             version: 20.10.7
             docker_layer_caching: true
         - login_docker
+        - restore_cache:
+            key: ms-datacollector-{{ .Branch }}-{{ checksum "./packages/data-collector/package.json" }}
+        - run:
+            name: Installing package
+            command: yarn install
+            working_directory: ./packages/data-collector
+        - save_cache:
+            key: ms-datacollector-{{ .Branch }}-{{ checksum "./packages/data-collector/package.json" }}
+            paths:
+              - "./packages/data-collector/node_modules"
         - run:
             command: docker build -t thinkdeeptech/data-collector:${CIRCLE_BUILD_NUM} -t thinkdeeptech/data-collector:latest .
             working_directory: ./packages/data-collector
@@ -259,7 +335,7 @@ jobs:
 
     build_data_collector_dev:
       docker:
-        - image: 'cimg/base:stable'
+        - image: 'cimg/node:16.14.2'
 
       working_directory: ~/project
 
@@ -269,6 +345,16 @@ jobs:
             version: 20.10.7
             docker_layer_caching: true
         - login_docker
+        - restore_cache:
+            key: ms-datacollector-{{ .Branch }}-{{ checksum "./packages/data-collector/package.json" }}
+        - run:
+            name: Installing package
+            command: yarn install
+            working_directory: ./packages/data-collector
+        - save_cache:
+            key: ms-datacollector-{{ .Branch }}-{{ checksum "./packages/data-collector/package.json" }}
+            paths:
+              - "./packages/data-collector/node_modules"
         - run:
             command: docker build -t thinkdeeptech/data-collector-dev:${CIRCLE_BUILD_NUM} -t thinkdeeptech/data-collector-dev:latest .
             working_directory: ./packages/data-collector
@@ -326,18 +412,16 @@ jobs:
             name: Download project dependencies
             command: helm dependency update
         - helm/upgrade-helm-chart:
+            add-repo: "."
             chart: "."
             helm-version: "v3.7.2"
             namespace: "production"
             release-name: "v1"
+            atomic: true
             values-to-override: "gateway.service.certificateId=$PROD_MICROSERVICE_GATEWAY_CERTIFICATE_ID,subscription.service.certificateId=$PROD_MICROSERVICE_SUBSCRIPTION_CERTIFICATE_ID,auth.audience=$PREDECOS_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_AUTH_JWKS_URI,auth.issuer=$PREDECOS_AUTH_ISSUER,collection.replicas=3,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,collection.data.collector.image=thinkdeeptech/data-collector:latest,replicas=1,global.docker.secretName=docker-secret,global.nodeEnv=production"
             update-repositories: true
             timeout: "480s"
             wait: true
-        - run:
-            name: Rolling deployment back.
-            command: helm rollback v1 -n production
-            when: on_fail
 
 
     deploy_microservices_dev:
@@ -377,19 +461,16 @@ jobs:
             name: Download project dependencies
             command: helm dependency update
         - helm/upgrade-helm-chart:
+            add-repo: "."
             chart: "."
             helm-version: "v3.7.2"
             namespace: "development"
             release-name: "v1"
-            values-to-override: "gateway.service.certificateId=$DEV_MICROSERVICE_GATEWAY_CERTIFICATE_ID,subscription.service.certificateId=$DEV_MICROSERVICE_SUBSCRIPTION_CERTIFICATE_ID,auth.audience=$PREDECOS_TEST_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_TEST_AUTH_JWKS_URI,auth.issuer=$PREDECOS_TEST_AUTH_ISSUER,collection.twitter.bearer=$PREDECOS_TWITTER_BEARER,replicas=1,global.docker.secretName=docker-secret,analysis.container.image=thinkdeeptech/deep-microservice-analysis-dev:latest,collection.replicas=3,collection.container.image=thinkdeeptech/deep-microservice-collection-dev:latest,collection.data.collector.image=thinkdeeptech/data-collector-dev:latest,configuration.container.image=thinkdeeptech/deep-microservice-configuration-dev:latest,gateway.container.image=thinkdeeptech/deep-microservice-gateway-dev:latest,subscription.container.image=thinkdeeptech/deep-microservice-subscription-dev:latest,global.nodeEnv=development"
+            atomic: true
+            values-to-override: "gateway.service.certificateId=$DEV_MICROSERVICE_GATEWAY_CERTIFICATE_ID,subscription.service.certificateId=$DEV_MICROSERVICE_SUBSCRIPTION_CERTIFICATE_ID,auth.audience=$PREDECOS_TEST_AUTH_AUDIENCE,auth.jwksUri=$PREDECOS_TEST_AUTH_JWKS_URI,auth.issuer=$PREDECOS_TEST_AUTH_ISSUER,collection.twitter.bearer=$DEV_PREDECOS_TWITTER_BEARER,replicas=1,global.docker.secretName=docker-secret,analysis.container.image=thinkdeeptech/deep-microservice-analysis-dev:latest,analysis.neo4j.neo4j.username=$DEV_MICROSERVICE_ANALYSIS_NEO4J_USERNAME,analysis.neo4j.neo4j.password=$DEV_MICROSERVICE_ANALYSIS_NEO4J_PASSWORD,analysis.neo4j.services.neo4j.enabled=true,analysis.neo4j.services.neo4j.annotations.service\.beta\.kubernetes\.io/do-loadbalancer-certificate-id=$DEV_ANALYSIS_NEO4J_LOADBALANCER_CERTIFICATE_ID,analysis.neo4j.config.dbms\.default_database=$DEV_MICROSERVICE_ANALYSIS_NEO4J_DATABASE,analysis.neo4j.config.dbms\.default_advertised_address=$DEV_MICROSERVICE_ANALYSIS_NEO4J_ADVERTISED_ADDRESS,collection.replicas=3,collection.container.image=thinkdeeptech/deep-microservice-collection-dev:latest,collection.data.collector.image=thinkdeeptech/data-collector-dev:latest,configuration.container.image=thinkdeeptech/deep-microservice-configuration-dev:latest,gateway.container.image=thinkdeeptech/deep-microservice-gateway-dev:latest,subscription.container.image=thinkdeeptech/deep-microservice-subscription-dev:latest,global.nodeEnv=development"
             update-repositories: true
             timeout: "480s"
             wait: true
-        - run:
-            name: Rolling deployment back.
-            command: helm rollback v1 -n development
-            when: on_fail
-
 
     deploy_ui_and_publish_coverage:
       docker:
@@ -454,6 +535,7 @@ workflows:
           requires:
             - build_microservice_analysis_dev
             - build_microservice_collection_dev
+            - build_data_collector_dev
             - build_microservice_configuration_dev
             - build_microservice_gateway_dev
             - build_microservice_subscription_dev
@@ -496,6 +578,7 @@ workflows:
           requires:
             - build_microservice_analysis
             - build_microservice_collection
+            - build_data_collector
             - build_microservice_configuration
             - build_microservice_gateway
             - build_microservice_subscription

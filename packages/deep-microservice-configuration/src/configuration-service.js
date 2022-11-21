@@ -48,7 +48,7 @@ class ConfigurationService {
   /**
    * Update a configuration.
    * @param {String} userEmail - Email for the user for whom a configuration is being fetched.
-   * @param {Array} observedEconomicEntities - Array of new observed economic entities to associate with the user.
+   * @param {Array<Object>} observedEconomicEntities - Array of new observed economic entities to associate with the user.
    * @param {Object} permissions - Permissions object containing the scope for user auth.
    * @param {Object} me - The object containing the current user making the request.
    * @return {Object} - The configuration associated with the user or a default of the form { observedEconomicEntities: []}.

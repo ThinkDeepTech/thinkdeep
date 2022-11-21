@@ -9,14 +9,11 @@ class Operations {
   /**
    * Fetch tweets operation.
    *
-   * @param {String} entityName Name of the economic entity (i.e, Google).
-   * @param {String} entityType Type of the economic entity (i.e, BUSINESS).
+   * @param {Object} economicEntity Economic entity subject.
    * @return {Operation} Frozen operation to perform.
    */
-  FetchTweets(entityName, entityType) {
-    return Object.freeze(
-      new DataCollector(entityName, entityType, 'fetch-tweets')
-    );
+  FetchTweets(economicEntity) {
+    return Object.freeze(new DataCollector(economicEntity, 'fetch-tweets'));
   }
 }
 

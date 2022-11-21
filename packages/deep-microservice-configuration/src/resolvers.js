@@ -1,3 +1,5 @@
+import {EconomicEntityFactory} from '@thinkdeep/model';
+
 const resolvers = {
   Mutation: {
     configuration: async (_, {userEmail}, {dataSources, permissions, me}) =>
@@ -14,7 +16,7 @@ const resolvers = {
     ) =>
       dataSources.configurationService.updateConfiguration(
         userEmail,
-        observedEconomicEntities,
+        EconomicEntityFactory.economicEntities(observedEconomicEntities),
         permissions,
         me
       ),

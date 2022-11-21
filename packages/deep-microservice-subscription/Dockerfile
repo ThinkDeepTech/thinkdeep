@@ -2,11 +2,15 @@ FROM nikolaik/python-nodejs:python3.9-nodejs16
 
 ARG PORT
 
-WORKDIR /usr/src/app
+ENV BASE_DIRECTORY=/usr/src/app
+
+WORKDIR $BASE_DIRECTORY
 
 COPY src/ ./src
 
 COPY package.json ./
+
+COPY ./node_modules/@thinkdeep/model ../model/
 
 RUN yarn install
 

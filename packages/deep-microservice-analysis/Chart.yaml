@@ -1,11 +1,18 @@
 apiVersion: "v2"
 appVersion: "4.4.12"
 dependencies:
+  # TODO: Delete mongo dependency?
   - name: "mongodb"
     alias: "analysismongodb"
     repository: "https://charts.bitnami.com/bitnami"
     tags:
       - "bitnami-mongodb"
     version: "11.0.3"
+  - name: "neo4j-standalone"
+    alias: "neo4j"
+    repository: "https://helm.neo4j.com/neo4j"
+    tags:
+      - "neo4j"
+    version: "5.1.1"
 name: "deep-microservice-analysis"
 version: "0.0.8"

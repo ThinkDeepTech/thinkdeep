@@ -58,7 +58,7 @@ class Client {
       `Creating event ${eventName} in kafka if it does not already exist.`
     );
     try {
-      await this._admin.createTopics({
+      const created = await this._admin.createTopics({
         waitForLeaders: true,
         topics: [
           {
@@ -67,6 +67,9 @@ class Client {
           },
         ],
       });
+      this._logger.debug(
+        created ? `Topic creation successful.` : `Topic already present.`
+      );
     } catch (e) {
       this._logger.warn(
         `An error occurred while creating the topic: ${e.message.toString()}`

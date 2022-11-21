@@ -3,6 +3,7 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
 import {ConfigurationService} from '../src/configuration-service.js';
+import {ConfigurationStore} from '../src/datasource/configuration-store.js';
 const expect = chai.expect;
 chai.use(sinonChai);
 
@@ -19,12 +20,7 @@ describe('configuration-service', () => {
   let configurationStore;
   let logger;
   beforeEach(() => {
-    configurationStore = {
-      configurationExists: sinon.stub(),
-      createConfigurationForUser: sinon.stub(),
-      readConfigurationForUser: sinon.stub(),
-      updateConfigurationForUser: sinon.stub(),
-    };
+    configurationStore = sinon.createStubInstance(ConfigurationStore);
 
     logger = {
       debug: sinon.stub(),

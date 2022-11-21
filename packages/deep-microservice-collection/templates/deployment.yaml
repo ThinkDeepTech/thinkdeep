@@ -6,6 +6,11 @@ metadata:
   labels:
     app: {{ printf "%s-deep-microservice-collection-deployment" .Release.Name | quote }}
 spec:
+  strategy:
+    type: "RollingUpdate"
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:

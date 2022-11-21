@@ -1,8 +1,0 @@
-mutation UpdateConfiguration ($userEmail: String!, $observedEconomicEntities: [EconomicEntityInput!]!){
-  updateConfiguration(userEmail: $userEmail, observedEconomicEntities: $observedEconomicEntities) {
-    observedEconomicEntities {
-      name
-      type
-    }
-  }
-}

@@ -1,9 +1,0 @@
-subscription UpdateSentiments($economicEntityName: String!, $economicEntityType: EconomicEntityType!) {
-  updateSentiments(economicEntityName: $economicEntityName, economicEntityType: $economicEntityType) {
-    timestamp
-    score
-    tweets{
-        text
-    }
-  }
-}

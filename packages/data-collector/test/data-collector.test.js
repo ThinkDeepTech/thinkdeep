@@ -1,5 +1,7 @@
 import chai from 'chai';
 import {execute} from './execute.js';
+import moment from 'moment';
+import {EconomicEntityFactory} from '@thinkdeep/model';
 
 const expect = chai.expect;
 
@@ -68,6 +70,66 @@ describe('data-collector', () => {
     } catch (e) {
       expect(e).to.include('Operation type is required');
     }
+  });
+
+  it('should use utc formatted time as event', async () => {
+    const entityName = 'Google';
+    const entityType = 'BUSINESS';
+    const operationType = 'fetch-tweets';
+
+    const logMessage = await execute(
+      modulePath,
+      [
+        `--entity-name=${entityName}`,
+        `--entity-type=${entityType}`,
+        `--operation-type=${operationType}`,
+        '--mock-run',
+      ],
+      {env: process.env}
+    );
+
+    let dataStr = '';
+    for (const entry of logMessage.split('\n')) {
+      if (entry.includes('Emitting event TWEETS_FETCHED. Data: ')) {
+        dataStr = entry.replace(/^.*Emitting event TWEETS_FETCHED. Data: /, '');
+      }
+    }
+
+    const data = JSON.parse(dataStr);
+
+    expect(moment.utc(data.utcDateTime).isValid()).to.equal(true);
+    expect(data.utcDateTime).to.include('T');
+    expect(data.utcDateTime).to.include('Z');
+  });
+
+  it('should pass valid economic entity in event', async () => {
+    const entityName = 'Google';
+    const entityType = 'BUSINESS';
+    const operationType = 'fetch-tweets';
+
+    const logMessage = await execute(
+      modulePath,
+      [
+        `--entity-name=${entityName}`,
+        `--entity-type=${entityType}`,
+        `--operation-type=${operationType}`,
+        '--mock-run',
+      ],
+      {env: process.env}
+    );
+
+    let dataStr = '';
+    for (const entry of logMessage.split('\n')) {
+      if (entry.includes('Emitting event TWEETS_FETCHED. Data: ')) {
+        dataStr = entry.replace(/^.*Emitting event TWEETS_FETCHED. Data: /, '');
+      }
+    }
+
+    const data = JSON.parse(dataStr);
+
+    expect(() =>
+      EconomicEntityFactory.economicEntity(data.economicEntity)
+    ).not.to.throw();
   });
 
   describe('fetch-tweets', () => {

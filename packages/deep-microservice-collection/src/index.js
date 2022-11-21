@@ -10,7 +10,7 @@ import {EconomicEntityMemo} from './datasource/economic-entity-memo.js';
 import {TweetStore} from './datasource/tweet-store.js';
 import express from 'express';
 import {getLogger} from './get-logger.js';
-import {Kafka} from 'kafkajs';
+import {Kafka, Partitioners} from 'kafkajs';
 import {loggingPlugin} from './logging-plugin.js';
 import {MongoClient} from 'mongodb';
 import process from 'process';
@@ -29,7 +29,9 @@ const startApolloServer = async () => {
     ],
   });
   const admin = kafka.admin();
-  const producer = kafka.producer();
+  const producer = kafka.producer({
+    createPartitioner: Partitioners.LegacyPartitioner,
+  });
   const scaleSyncConsumer = kafka.consumer({
     groupId: `deep-microservice-collection-${Date.now()}`,
   });

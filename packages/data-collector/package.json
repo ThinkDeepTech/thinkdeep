@@ -5,7 +5,7 @@
   "main": "src/data-collector.js",
   "type": "module",
   "scripts": {
-    "tests:integration": "c8 --clean mocha --timeout 10000 --exit"
+    "tests:integration": "c8 --clean mocha --timeout 10000 --recursive --exit"
   },
   "author": "Hayden McParlane",
   "devDependencies": {
@@ -17,9 +17,12 @@
   },
   "dependencies": {
     "@thinkdeep/attach-exit-handler": "^1.0.0",
+    "@thinkdeep/model": "file:./../model",
+    "@thinkdeep/util": "file:./../util",
     "commander": "^9.0.0",
-    "kafkajs": "^1.15.0",
+    "kafkajs": "^2.1.0",
     "log4js": "^6.3.0",
+    "moment": "^2.29.4",
     "sinon": "^12.0.1",
     "twitter-api-v2": "^1.11.0"
   },

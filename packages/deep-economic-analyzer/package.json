@@ -14,9 +14,8 @@
   },
   "scripts": {
     "start": "web-dev-server --config ./web-dev-server.config.js --esbuild-target auto",
-    "start:watch": "web-dev-server --config ./web-dev-server.config.js --watch --esbuild-target auto",
-    "tests:e2e": "web-test-runner --config ./web-test-runner.config.js",
-    "tests:e2e:watch": "web-test-runner --config ./web-test-runner.config.js --watch",
+    "tests:unit": "web-test-runner --config ./web-test-runner.config.js --files test/**/*.unit.test.js ",
+    "tests:e2e": "web-test-runner --config ./web-test-runner.config.js --files test/**/*.e2e.test.js ",
     "build": "rimraf build && rollup -c rollup.config.mjs"
   },
   "devDependencies": {
@@ -28,7 +27,6 @@
     "@web/dev-server-rollup": "^0.3.5",
     "@web/test-runner": "^0.13.15",
     "@web/test-runner-playwright": "^0.8.6",
-    "@web/test-runner-puppeteer": "^0.10.0",
     "chai": "^4.3.4",
     "jwt-decode": "^3.1.2",
     "mocha": "^9.0.2",
@@ -47,12 +45,16 @@
     "@material/mwc-textfield": "^0.25.3",
     "@material/mwc-top-app-bar-fixed": "^0.25.3",
     "@thinkdeep/deep-card": "^0.0.9-alpha.1",
+    "@thinkdeep/model": "file:../model",
+    "@vaadin/date-picker": "^23.1.4",
     "@vaadin/router": "^1.7.4",
     "@webcomponents/webcomponentsjs": "^2.5.0",
     "graphql": "^15.8.0",
+    "graphql-tag": "^2.12.6",
     "graphql-ws": "^5.5.5",
     "lit": "^2.0.2",
-    "lit-element-i18n": "ThinkDeepTech/lit-element-i18n#v0.0.4"
+    "lit-element-i18n": "ThinkDeepTech/lit-element-i18n#v0.0.4",
+    "moment": "^2.29.4"
   },
   "gitHead": "3b2ef77fc17f1e24ee753113410e2cf1bcabb134"
 }

@@ -1,16 +1,23 @@
+import {EconomicEntityFactory, EconomicEntityType} from '@thinkdeep/model';
 import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
 import {EconomicEntityMemo} from '../../src/datasource/economic-entity-memo.js';
 
+chai.use(chaiAsPromised);
 chai.use(sinonChai);
 const expect = chai.expect;
 
 describe('economic-entity-memo', () => {
   let mongoCollection;
   const entityName = 'firstbusiness';
-  const entityType = 'BUSINESS';
+  const entityType = EconomicEntityType.Business;
+  const economicEntity = EconomicEntityFactory.economicEntity({
+    name: entityName,
+    type: entityType,
+  });
   const databaseData = [
     {
       name: entityName,
@@ -43,116 +50,47 @@ describe('economic-entity-memo', () => {
     subject = new EconomicEntityMemo(mongoCollection, logger);
   });
 
+  afterEach(() => {
+    sinon.restore();
+  });
+
   describe('collectingData', () => {
     it('should return true if data is being collected for a given entity name and type', async () => {
-      expect(await subject.collectingData(entityName, entityType)).to.equal(
-        true
-      );
+      expect(await subject.collectingData(economicEntity)).to.equal(true);
     });
 
     it('should return false if data is not being collected for the specified entity name and type', async () => {
       mongoCollection.toArray.returns([]);
-      expect(
-        await subject.collectingData('firstbusiness', 'BUSINESS')
-      ).to.equal(false);
+      expect(await subject.collectingData(economicEntity)).to.equal(false);
     });
 
-    it('should throw an error if the entity name is empty', (done) => {
-      subject.collectingData('', entityType).then(
-        () => {
-          done('An error was not thrown when it should have been.');
-        },
-        () => {
-          done();
-        }
-      );
-    });
-
-    it('should throw an error if the entity name is not a string', (done) => {
-      subject.collectingData([], entityType).then(
-        () => {
-          done('An error was not thrown when it should have been.');
-        },
-        () => {
-          done();
-        }
-      );
-    });
-
-    it('should throw an error if the entity type is empty', (done) => {
-      subject.collectingData(entityName, '').then(
-        () => {
-          done('An error was not thrown when it should have been.');
-        },
-        () => {
-          done();
-        }
-      );
-    });
-
-    it('should throw an error if the entity type is not a string', (done) => {
-      subject.collectingData(entityName, 12.5).then(
-        () => {
-          done('An error was not thrown when it should have been.');
-        },
-        () => {
-          done();
-        }
-      );
+    it('should throw an error if the economic entity is invalid', async () => {
+      const invalidEconomicEntity = {name: '', type: ''};
+      await expect(
+        subject.collectingData(invalidEconomicEntity)
+      ).to.be.rejectedWith(Error);
     });
   });
 
   describe('memoizeDataCollection', () => {
-    it('should throw an error if the entity name is empty', (done) => {
-      subject.memoizeDataCollection('', entityType).then(
-        () => {
-          done('An error was not thrown when it should have been.');
-        },
-        () => {
-          done();
-        }
-      );
+    it('should throw an error if an invalid economic entity is supplied', async () => {
+      const invalidEconomicEntity = {name: '', type: ''};
+      await expect(
+        subject.memoizeDataCollection(invalidEconomicEntity)
+      ).to.be.rejectedWith(Error);
     });
 
-    it('should throw an error if the entity name is not a string', (done) => {
-      subject.memoizeDataCollection({}, entityType).then(
-        () => {
-          done('An error was not thrown when it should have been.');
-        },
-        () => {
-          done();
-        }
-      );
-    });
-
-    it('should throw an error if the entity type is empty', (done) => {
-      subject.memoizeDataCollection(entityName, '').then(
-        () => {
-          done('An error was not thrown when it should have been.');
-        },
-        () => {
-          done();
-        }
-      );
-    });
-
-    it('should throw an error if the entity name is not a string', (done) => {
-      subject.memoizeDataCollection(entityName, 1).then(
-        () => {
-          done('An error was not thrown when it should have been.');
-        },
-        () => {
-          done();
-        }
-      );
-    });
-
-    it('should only memoize an entity name and type if it has not been seen before', async () => {
-      await subject.memoizeDataCollection(entityName, entityType);
+    it('should only memoize an economic entity if it has not been seen before', async () => {
+      await subject.memoizeDataCollection(economicEntity);
       expect(mongoCollection.insertOne.callCount).to.equal(0);
 
       mongoCollection.toArray.returns([]);
-      await subject.memoizeDataCollection('somethingdifferent', entityType);
+      await subject.memoizeDataCollection(
+        EconomicEntityFactory.economicEntity({
+          name: 'somethingdifferent',
+          type: EconomicEntityType.Business,
+        })
+      );
       expect(mongoCollection.insertOne.callCount).to.be.greaterThan(0);
     });
   });
@@ -161,7 +99,7 @@ describe('economic-entity-memo', () => {
     it('should read all of the entries from the memo table', async () => {
       await subject.readEconomicEntities();
       const findArg = mongoCollection.find.getCall(0).args[0];
-      expect(Object.keys(findArg).length).to.equal(0);
+      expect(findArg).to.equal(undefined);
     });
 
     it('should return [] when an error is thrown by mongo', async () => {
@@ -172,67 +110,23 @@ describe('economic-entity-memo', () => {
   });
 
   describe('_readMemo', () => {
-    it('should throw an error if the entity name is empty', (done) => {
-      subject._readMemo('', entityType).then(
-        () => {
-          done('An error was not thrown when it should have been.');
-        },
-        () => {
-          done();
-        }
-      );
-    });
-
-    it('should throw an error if the entity name is not a string', (done) => {
-      subject._readMemo({}, entityType).then(
-        () => {
-          done('An error was not thrown when it should have been.');
-        },
-        () => {
-          done();
-        }
-      );
-    });
-
-    it('should throw an error if the entity type is empty', (done) => {
-      subject._readMemo(entityName, '').then(
-        () => {
-          done('An error was not thrown when it should have been.');
-        },
-        () => {
-          done();
-        }
-      );
-    });
-
-    it('should throw an error if the entity name is not a string', (done) => {
-      subject._readMemo(entityName, 1).then(
-        () => {
-          done('An error was not thrown when it should have been.');
-        },
-        () => {
-          done();
-        }
+    it('should throw an error if an invalid economic entity is supplied', async () => {
+      const invalidEconomicEntity = {name: '', type: ''};
+      await expect(subject._readMemo(invalidEconomicEntity)).to.be.rejectedWith(
+        Error
       );
     });
 
     it('should read only those entries in the database that have both the same name and type', async () => {
-      await subject._readMemo(entityName, entityType);
+      await subject._readMemo(economicEntity);
       const findArg = mongoCollection.find.getCall(0).args[0];
       expect(findArg.name).to.equal(entityName);
       expect(findArg.type).to.equal(entityType);
     });
 
-    it('should throw an error when the database access fails', (done) => {
+    it('should throw an error when the database access fails', async () => {
       mongoCollection.find.throws();
-      subject._readMemo(entityName, entityType).then(
-        () => {
-          done('An error was not thrown when it should have been.');
-        },
-        () => {
-          done();
-        }
-      );
+      await expect(subject._readMemo(economicEntity)).to.be.rejectedWith(Error);
     });
   });
 });

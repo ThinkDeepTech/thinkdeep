@@ -20,6 +20,26 @@
     container:
       image: "thinkdeeptech/deep-microservice-analysis:latest"
 
+    neo4j:
+      neo4j:
+        username: ""
+        password: ""
+
+      services:
+        neo4j:
+          enabled: false
+          annotations: {
+            # TODO: These values should be settable using helm set.
+            'service.beta.kubernetes.io/do-loadbalancer-certificate-id': 'e6bf1f8e-8afc-4500-88fb-749ed807f53a',
+            'service.beta.kubernetes.io/do-loadbalancer-protocol': 'http2',
+            'service.beta.kubernetes.io/do-loadbalancer-algorithm': 'round_robin',
+            'service.beta.kubernetes.io/do-loadbalancer-tls-ports': '443'
+          }
+
+      config:
+        dbms.default_database: ""
+        dbms.default_advertised_address: ""
+
   collection:
     graphql:
       port: "4002"
