@@ -29,8 +29,6 @@
         neo4j:
           enabled: false
           annotations: {
-            # TODO: These values should be settable using helm set.
-            'service.beta.kubernetes.io/do-loadbalancer-certificate-id': 'a01d4def-c1f5-4434-b1c7-c2ae3c0fb098',
             'service.beta.kubernetes.io/do-loadbalancer-protocol': 'http2',
             'service.beta.kubernetes.io/do-loadbalancer-algorithm': 'round_robin',
             'service.beta.kubernetes.io/do-loadbalancer-tls-ports': '443'
