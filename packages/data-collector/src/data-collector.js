@@ -1,7 +1,8 @@
-import {EconomicEntityFactory, EconomicEntityType} from '@thinkdeep/model';
+import {EconomicEntityFactory, CollectionOperationType} from '@thinkdeep/model';
 import {validString} from '@thinkdeep/util';
 import {Client} from './client.js';
 import {Command, Option} from 'commander';
+import {DataScraper} from './data-scraper.js';
 import {Kafka} from 'kafkajs';
 import log4js from 'log4js';
 import moment from 'moment';
@@ -20,105 +21,87 @@ try {
 
   program.addOption(
     new Option(
-      '-n, --entity-name <entity name>',
-      'Specify the name of the economic entity for which the operation will be performed.'
+      '-e, --economic-entity <economic entity>',
+      `Specify the economic entity (i.e, '{ "name": "Google", "type": "BUSINESS"}').`
     )
-  );
-
-  program.addOption(
-    new Option(
-      '-t, --entity-type <entity type>',
-      'Specify the type of the economic entity for which the operation will be performed.'
-    ).choices(['BUSINESS'])
   );
 
   program.addOption(
     new Option(
       '-o, --operation-type <operation type>',
       'Specify the type of data collection operation you would like to execute.'
-    ).choices(['fetch-tweets'])
+    ).choices(CollectionOperationType.types)
   );
 
   program.addOption(
     new Option(
-      '-m, --num-tweets [num tweets]',
-      'Specify the number of tweets to be fetched at once.'
-    ).default(10, 'The default number to fetch.')
+      '-l, --limit [limit]',
+      'Specify the limit associated with the operation.'
+    ).default(10, 'Defaults to 10.')
   );
 
-  program.addOption(new Option('--mock-run', 'Trigger mocking of the cli.'));
+  program.addOption(
+    new Option(
+      '-m, --mock-data <mock data>',
+      'Trigger mocking of the cli.'
+    ).default({}, 'An empty object')
+  );
 
   program.parse(process.argv);
 
   const options = program.opts();
 
+  const economicEntity = EconomicEntityFactory.get(
+    JSON.parse(options.economicEntity)
+  );
+
   if (!validString(options.operationType))
     throw new Error('Operation type is required');
 
-  if (!validString(options.entityName))
-    throw new Error(`Entity name is required`);
-
-  if (!validString(options.entityType))
-    throw new Error(`Entity type is required`);
-
-  if (!EconomicEntityType.valid(options.entityType))
-    throw new Error(`Entity type ${options.entityType} is invalid.`);
-
-  const economicEntity = EconomicEntityFactory.economicEntity({
-    name: options.entityName,
-    type: options.entityType,
-  });
-
   const currentUtcDateTime = moment().utc().format();
 
+  let kafkaClient;
+  let twitterClient;
+  if (!options.mockData || Object.keys(options.mockData).length <= 0) {
+    logger.info(`Creating kafka client.`);
+    kafkaClient = new Kafka({
+      clientId: 'collect-data',
+      brokers: [
+        `${process.env.PREDECOS_KAFKA_HOST}:${process.env.PREDECOS_KAFKA_PORT}`,
+      ],
+    });
+
+    twitterClient = new TwitterApi(process.env.PREDECOS_TWITTER_BEARER)
+      .readOnly;
+  } else {
+    logger.info(`Creating mock kafka client.`);
+    kafkaClient = {
+      admin: sinon.stub().returns({
+        connect: sinon.stub(),
+        createTopics: sinon.stub(),
+        disconnect: sinon.stub(),
+      }),
+      producer: sinon.stub().returns({
+        connect: sinon.stub(),
+        send: sinon.stub(),
+        disconnect: sinon.stub(),
+      }),
+    };
+
+    twitterClient = {
+      v2: {
+        get: sinon.stub().returns({
+          data: JSON.parse(options.mockData),
+        }),
+      },
+    };
+  }
+
+  const collectDataClient = new Client(twitterClient, kafkaClient, logger);
+
   switch (options.operationType) {
-    case 'fetch-tweets': {
+    case CollectionOperationType.FetchTweets: {
       logger.info('Fetching tweets.');
-      let twitterClient;
-      let kafkaClient;
-      if (!options.mockRun) {
-        twitterClient = new TwitterApi(process.env.PREDECOS_TWITTER_BEARER)
-          .readOnly;
-
-        kafkaClient = new Kafka({
-          clientId: 'collect-data',
-          brokers: [
-            `${process.env.PREDECOS_KAFKA_HOST}:${process.env.PREDECOS_KAFKA_PORT}`,
-          ],
-        });
-      } else {
-        twitterClient = {
-          v2: {
-            get: sinon.stub().returns({
-              data: [
-                {
-                  text: 'tweet 1',
-                },
-                {
-                  text: 'tweet 2',
-                },
-                {
-                  text: 'tweet 3',
-                },
-              ],
-            }),
-          },
-        };
-        kafkaClient = {
-          admin: sinon.stub().returns({
-            connect: sinon.stub(),
-            createTopics: sinon.stub(),
-            disconnect: sinon.stub(),
-          }),
-          producer: sinon.stub().returns({
-            connect: sinon.stub(),
-            send: sinon.stub(),
-            disconnect: sinon.stub(),
-          }),
-        };
-      }
-
-      const collectDataClient = new Client(twitterClient, kafkaClient, logger);
 
       (async () => {
         logger.info('Connecting to data collection client.');
@@ -126,7 +109,7 @@ try {
 
         const recentTweets = await collectDataClient.fetchRecentTweets({
           query: `${options.entityName} lang:en -is:retweet`,
-          max_results: options.numTweets,
+          max_results: options.limit,
         });
         logger.debug(
           `Retrieved the following tweets: ${JSON.stringify(recentTweets)}`
@@ -134,7 +117,7 @@ try {
 
         const data = {
           utcDateTime: currentUtcDateTime,
-          economicEntity: economicEntity.toObject(),
+          economicEntity,
           tweets: recentTweets,
         };
 
@@ -144,6 +127,37 @@ try {
       })();
 
       break;
+    }
+    case CollectionOperationType.ScrapeData: {
+      (async () => {
+        logger.info('Connecting to data collection client.');
+        await collectDataClient.connect();
+
+        logger.info(
+          `Scraping data for ${economicEntity.type} ${economicEntity.name}.`
+        );
+        const scraper =
+          !options.mockData || Object.keys(options.mockData).length <= 0
+            ? new DataScraper(logger)
+            : sinon.createStubInstance(DataScraper);
+
+        const scrapedData = await scraper.scrapeData(economicEntity);
+
+        const data = {
+          utcDateTime: currentUtcDateTime,
+          economicEntity,
+          data: scrapedData,
+        };
+
+        await collectDataClient.emitEvent('DATA_SCRAPED', data);
+      })();
+
+      break;
+    }
+    default: {
+      throw new Error(
+        `The specified operation ${options.operationType} isn't yet supported.`
+      );
     }
   }
 } catch (e) {

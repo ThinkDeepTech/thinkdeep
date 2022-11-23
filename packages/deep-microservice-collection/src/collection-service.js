@@ -57,6 +57,10 @@ class CollectionService {
         replicationFactor: 1,
       },
       {
+        topic: 'DATA_SCRAPED',
+        replicationFactor: 1,
+      },
+      {
         topic: 'DATA_COLLECTION_STARTED',
         replicationFactor: 1,
       },
@@ -71,7 +75,7 @@ class CollectionService {
           eachMessage: async ({message}) => {
             const msg = JSON.parse(message.value.toString());
 
-            const economicEntity = EconomicEntityFactory.economicEntity(
+            const economicEntity = EconomicEntityFactory.get(
               msg.economicEntity
             );
 
@@ -88,6 +92,11 @@ class CollectionService {
           fromBeginning: true,
         });
 
+        await this._applicationConsumer.subscribe({
+          topic: 'DATA_SCRAPED',
+          fromBeginning: true,
+        });
+
         await this._applicationConsumer.run({
           eachMessage: async ({message}) => {
             this._logger.debug(
@@ -97,7 +106,7 @@ class CollectionService {
             const eventData = JSON.parse(message.value.toString());
 
             const utcDateTime = eventData.utcDateTime;
-            const economicEntity = EconomicEntityFactory.economicEntity(
+            const economicEntity = EconomicEntityFactory.get(
               eventData.economicEntity
             );
             const tweets = eventData.tweets;

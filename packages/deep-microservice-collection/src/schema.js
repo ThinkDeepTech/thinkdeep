@@ -1,7 +1,7 @@
 import {gql} from 'apollo-server';
 import {EconomicEntityFactory, EconomicEntityType} from '@thinkdeep/model';
 
-const economicEntity = EconomicEntityFactory.economicEntity({
+const economicEntity = EconomicEntityFactory.get({
   name: 'dummy',
   type: EconomicEntityType.Business,
 });

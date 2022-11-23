@@ -11,6 +11,7 @@
   "devDependencies": {
     "c8": "^7.11.3",
     "chai": "^4.3.4",
+    "chai-as-promised": "^7.1.1",
     "concat-stream": "^2.0.0",
     "mocha": "^9.1.3",
     "sinon-chai": "^3.7.0"
@@ -19,10 +20,13 @@
     "@thinkdeep/attach-exit-handler": "^1.0.0",
     "@thinkdeep/model": "file:./../model",
     "@thinkdeep/util": "file:./../util",
+    "axios": "^0.27.2",
     "commander": "^9.0.0",
+    "duck-duck-scrape": "^2.2.1",
     "kafkajs": "^2.1.0",
     "log4js": "^6.3.0",
     "moment": "^2.29.4",
+    "robots-parser": "^3.0.0",
     "sinon": "^12.0.1",
     "twitter-api-v2": "^1.11.0"
   },

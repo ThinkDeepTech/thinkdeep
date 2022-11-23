@@ -46,7 +46,7 @@ describe('deep-analyzer-page-summary', () => {
     it('should pass the value in the watch text input into the mutation controller', () => {
       const companyName = 'Google';
       const input = element.shadowRoot.querySelector('mwc-textfield');
-      const expectedEconomicEntity = EconomicEntityFactory.economicEntity({
+      const expectedEconomicEntity = EconomicEntityFactory.get({
         name: companyName,
         type: EconomicEntityType.Business,
       });
@@ -65,7 +65,7 @@ describe('deep-analyzer-page-summary', () => {
 
   describe('_collectEconomicData', () => {
     it('should update the site configuration to include the necessary economic entity', () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'Google',
         type: EconomicEntityType.Business,
       });
@@ -87,7 +87,7 @@ describe('deep-analyzer-page-summary', () => {
     });
 
     it('should trigger collection of economic data', () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'Google',
         type: EconomicEntityType.Business,
       });

@@ -148,7 +148,7 @@ class ConfigurationStore extends MongoDataSource {
 
       results.push({
         ...configuration,
-        observedEconomicEntities: EconomicEntityFactory.economicEntities(
+        observedEconomicEntities: EconomicEntityFactory.get(
           configuration.observedEconomicEntities
         ),
       });

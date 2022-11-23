@@ -10,7 +10,7 @@ const resolvers = {
       {dataSources, permissions}
     ) =>
       dataSources.analysisService.sentiments(
-        EconomicEntityFactory.economicEntities(economicEntities),
+        EconomicEntityFactory.get(economicEntities),
         startDate,
         endDate,
         permissions

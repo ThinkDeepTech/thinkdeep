@@ -230,7 +230,7 @@ describe('neo4j-store', () => {
     });
 
     it('should throw if datas is not an array', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -242,7 +242,7 @@ describe('neo4j-store', () => {
     });
 
     it('should do nothing if an empty array is passed', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -254,7 +254,7 @@ describe('neo4j-store', () => {
     });
 
     it('should throw an error if invalid sentiment data is provided', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -270,7 +270,7 @@ describe('neo4j-store', () => {
     });
 
     it('should add the economic entity to the data store', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -296,7 +296,7 @@ describe('neo4j-store', () => {
     });
 
     it('should add the date to the economic entity', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -323,7 +323,7 @@ describe('neo4j-store', () => {
     });
 
     it('should add the sentiment', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -369,7 +369,7 @@ describe('neo4j-store', () => {
     });
 
     it('should throw if invalid start date is provided', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -382,7 +382,7 @@ describe('neo4j-store', () => {
     });
 
     it('should throw if invalid end date is provided', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -395,7 +395,7 @@ describe('neo4j-store', () => {
     });
 
     it('should accept a null end date', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -410,7 +410,7 @@ describe('neo4j-store', () => {
     });
 
     it('should not include end date in the query when end date is null', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -426,7 +426,7 @@ describe('neo4j-store', () => {
     });
 
     it('should include end date in the query when end date is specified', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -442,7 +442,7 @@ describe('neo4j-store', () => {
     });
 
     it('should reduce the query results before return', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -474,7 +474,7 @@ describe('neo4j-store', () => {
     });
 
     it('should reduce the query results before return', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });

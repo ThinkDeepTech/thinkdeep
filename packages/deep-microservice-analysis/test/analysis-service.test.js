@@ -118,7 +118,7 @@ describe('analysis-service', () => {
     });
 
     it('should compute the sentiment of each set of tweets collected', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -203,7 +203,7 @@ describe('analysis-service', () => {
     });
 
     it('should fail if an invalid utc start date is provided', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -216,7 +216,7 @@ describe('analysis-service', () => {
     });
 
     it('should fail if a null start date is provided', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -229,7 +229,7 @@ describe('analysis-service', () => {
     });
 
     it('should fail if an invalid end date is provided', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -266,7 +266,7 @@ describe('analysis-service', () => {
     });
 
     it('should map economic entities to the appropriate data', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -295,11 +295,11 @@ describe('analysis-service', () => {
     });
 
     it('should keep the order of the received economic entities in results', async () => {
-      const economicEntity1 = EconomicEntityFactory.economicEntity({
+      const economicEntity1 = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
-      const economicEntity2 = EconomicEntityFactory.economicEntity({
+      const economicEntity2 = EconomicEntityFactory.get({
         name: 'amazon',
         type: EconomicEntityType.Business,
       });
@@ -362,7 +362,7 @@ describe('analysis-service', () => {
     });
 
     it('should fail if an invalid utc start date is provided', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -375,7 +375,7 @@ describe('analysis-service', () => {
     });
 
     it('should fail if a null start date is provided', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -388,7 +388,7 @@ describe('analysis-service', () => {
     });
 
     it('should fail if an invalid end date is provided', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -401,7 +401,7 @@ describe('analysis-service', () => {
     });
 
     it('should accept a null for the end date', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -414,7 +414,7 @@ describe('analysis-service', () => {
     });
 
     it('should read sentiment', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -438,7 +438,7 @@ describe('analysis-service', () => {
     });
 
     it('should read most recent sentiments', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -449,7 +449,7 @@ describe('analysis-service', () => {
     });
 
     it('should preserve the order of the economic entities', async () => {
-      const economicEntity1 = EconomicEntityFactory.economicEntity({
+      const economicEntity1 = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -468,7 +468,7 @@ describe('analysis-service', () => {
         .withArgs(economicEntity1)
         .returns(economicEntity1ReturnValue);
 
-      const economicEntity2 = EconomicEntityFactory.economicEntity({
+      const economicEntity2 = EconomicEntityFactory.get({
         name: 'amazon',
         type: EconomicEntityType.Business,
       });
@@ -512,7 +512,7 @@ describe('analysis-service', () => {
     });
 
     it('should do nothing when empty datas are passed', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -522,7 +522,7 @@ describe('analysis-service', () => {
     });
 
     it('should do nothing when datas includes an invalid date', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -536,7 +536,7 @@ describe('analysis-service', () => {
     });
 
     it('should do nothing when datas includes a null date', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -550,7 +550,7 @@ describe('analysis-service', () => {
     });
 
     it('should do nothing when datas includes empty tweets', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -565,7 +565,7 @@ describe('analysis-service', () => {
     });
 
     it('should do nothing when datas includes null tweets', async () => {
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -581,7 +581,7 @@ describe('analysis-service', () => {
 
     it('should compute the sentiment for each tweet entry', async () => {
       const utcDateTime = moment().utc().format();
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -611,7 +611,7 @@ describe('analysis-service', () => {
 
     it('should add sentiments to the data store', async () => {
       const utcDateTime = moment().utc().format();
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });
@@ -649,7 +649,7 @@ describe('analysis-service', () => {
 
     it('should add a message to the queue indicating the sentiments computed', async () => {
       const utcDateTime = moment().utc().format();
-      const economicEntity = EconomicEntityFactory.economicEntity({
+      const economicEntity = EconomicEntityFactory.get({
         name: 'google',
         type: EconomicEntityType.Business,
       });

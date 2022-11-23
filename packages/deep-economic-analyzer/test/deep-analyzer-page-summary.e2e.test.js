@@ -66,6 +66,14 @@ describe('deep-analyzer-page-summary', () => {
   });
 
   it('should allow users to analyze collected data', async () => {
+    const businessName = 'Moosehead';
+
+    await input(collectDataInput(element), businessName);
+
+    await click(collectDataButton(element));
+
+    await select(analysisDropdownOption(element, businessName));
+
     const chart = sentimentChart(element);
 
     for (const coordinates of chart.rows) {
@@ -97,6 +105,14 @@ describe('deep-analyzer-page-summary', () => {
   });
 
   it('should display a graph of sentiment vs date', async () => {
+    const businessName = 'Moosehead';
+
+    await input(collectDataInput(element), businessName);
+
+    await click(collectDataButton(element));
+
+    await select(analysisDropdownOption(element, businessName));
+
     const chart = sentimentChart(element);
 
     const founds = chart.cols.map(
@@ -111,6 +127,14 @@ describe('deep-analyzer-page-summary', () => {
   });
 
   it('should redraw the sentiment graph when the screen is resized', async () => {
+    const businessName = 'Moosehead';
+
+    await input(collectDataInput(element), businessName);
+
+    await click(collectDataButton(element));
+
+    await select(analysisDropdownOption(element, businessName));
+
     const chart = sentimentChart(element);
 
     sinon.spy(chart, 'redraw');
@@ -137,7 +161,7 @@ describe('deep-analyzer-page-summary', () => {
 
       await select(unselectedDropdownOption);
 
-      const expectedEconomicEntity = EconomicEntityFactory.economicEntity({
+      const expectedEconomicEntity = EconomicEntityFactory.get({
         name: unselectedDropdownOption.value,
         type: EconomicEntityType.Business,
       });
@@ -158,7 +182,7 @@ describe('deep-analyzer-page-summary', () => {
 
       await select(unselectedDropdownOption);
 
-      const expectedEconomicEntity = EconomicEntityFactory.economicEntity({
+      const expectedEconomicEntity = EconomicEntityFactory.get({
         name: unselectedDropdownOption.value,
         type: EconomicEntityType.Business,
       });

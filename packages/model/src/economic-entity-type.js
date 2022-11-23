@@ -3,9 +3,9 @@
  */
 class EconomicEntityType {
   /**
-   * Determine if a type is an economic entity type.
+   * Determine if a type is valid.
    * @param {String} type
-   * @return {Boolean} True if the type is an economic entity type. False otherwise.
+   * @return {Boolean} True if the type is valid. False otherwise.
    */
   static valid(type) {
     return this.types.includes(type);

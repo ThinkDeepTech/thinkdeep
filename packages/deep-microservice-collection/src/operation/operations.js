@@ -1,4 +1,5 @@
 import {DataCollector} from './data-collector.js';
+import {CollectionOperationType} from '@thinkdeep/model';
 
 /**
  * Class holding all accessible operations.
@@ -13,7 +14,21 @@ class Operations {
    * @return {Operation} Frozen operation to perform.
    */
   FetchTweets(economicEntity) {
-    return Object.freeze(new DataCollector(economicEntity, 'fetch-tweets'));
+    return Object.freeze(
+      new DataCollector(economicEntity, CollectionOperationType.FetchTweets)
+    );
+  }
+
+  /**
+   * Scrape data operation.
+   *
+   * @param {Object} economicEntity Economic entity subject.
+   * @return {Operation} Frozen operation to perform.
+   */
+  ScrapeData(economicEntity) {
+    return Object.freeze(
+      new DataCollector(economicEntity, CollectionOperationType.ScrapeData)
+    );
   }
 }
 

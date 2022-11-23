@@ -30,12 +30,12 @@ const resolvers = {
             return false;
           }
 
-          for (const economicEntity of EconomicEntityFactory.economicEntities(
+          for (const economicEntity of EconomicEntityFactory.get(
             variables.economicEntities
           )) {
             if (
               economicEntity.equals(
-                EconomicEntityFactory.economicEntity(payload.economicEntity)
+                EconomicEntityFactory.get(payload.economicEntity)
               )
             ) {
               return true;

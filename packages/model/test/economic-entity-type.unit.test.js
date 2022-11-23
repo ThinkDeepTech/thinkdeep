@@ -21,14 +21,15 @@ describe('economic-entity-type', () => {
 
   describe('graphQLTypeDefinition', () => {
     it('should create the necessary graphql type', () => {
-      expect(EconomicEntityType.graphQLTypeDefinition()).to
-        .contain(`enum ${EconomicEntityType.graphQLType()} {
-                ${EconomicEntityType.types.map(
-                  (type) => `
-                  ${type}
-                `
-                )}
-            }`);
+      expect(EconomicEntityType.graphQLTypeDefinition()).to.contain(
+        `enum ${EconomicEntityType.graphQLType()}`
+      );
+      expect(EconomicEntityType.graphQLTypeDefinition()).to.contain(`{`);
+      for (const type of EconomicEntityType.types) {
+        expect(EconomicEntityType.graphQLTypeDefinition()).to.contain(type);
+      }
+      expect(EconomicEntityType.types.length).to.be.greaterThan(0);
+      expect(EconomicEntityType.graphQLTypeDefinition()).to.contain(`}`);
     });
   });
 });

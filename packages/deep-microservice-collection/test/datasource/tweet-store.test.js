@@ -15,7 +15,7 @@ describe('tweet-store', () => {
   let mongoCollection;
   const economicEntityName = 'somebusiness';
   const economicEntityType = EconomicEntityType.Business;
-  const economicEntity = EconomicEntityFactory.economicEntity({
+  const economicEntity = EconomicEntityFactory.get({
     name: economicEntityName,
     type: economicEntityType,
   });
