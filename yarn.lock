@@ -8454,9 +8454,9 @@ json-stringify-safe@^5.0.1, json-stringify-safe@~5.0.1:
   integrity sha512-ZClg6AaYvamvYEE82d3Iyd3vSSIjQ+odgjaTzRuO3s7toCdFKczob2i0zCh7JE8kWn17yvAWhUVxvqGwUalsRA==
 
 json5@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/json5/-/json5-1.0.1.tgz#779fb0018604fa854eacbf6252180d83543e3dbe"
-  integrity sha512-aKS4WQjPenRxiQsC93MNfjx+nbF4PAdYzmd/1JIj8HYzqfbu86beTuNgXDzPknWk0n0uARlyewZo4s++ES36Ow==
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/json5/-/json5-1.0.2.tgz#63d98d60f21b313b77c4d6da18bfa69d80e1d593"
+  integrity sha512-g1MWMLBiz8FKi1e4w0UyVL3w+iJceWAFBAaBnnGKOpNa5f8TLktkbre1+s6oICydWAm+HRUGTmI+//xv2hvXYA==
   dependencies:
     minimist "^1.2.0"
 
@@ -9632,7 +9632,7 @@ node-preload@^0.2.1:
     process-on-spawn "^1.0.0"
 
 node-rdkafka@^2.8.1:
-  version "2.14.2-1.HEAD"
+  version "2.14.0"
   resolved "https://registry.yarnpkg.com/node-rdkafka/-/node-rdkafka-2.14.0.tgz#e8a27bee62e2abf85a4fb3439692cc8203789574"
   integrity sha512-g/I6e1/07uuy3Tjeka7JKZDhbeKeDsX0P9Lj2gsZqsfqWXnwbEfLs3AaKs2/QPts62RWiXLoBhxI7W4cREZXyw==
   dependencies:
