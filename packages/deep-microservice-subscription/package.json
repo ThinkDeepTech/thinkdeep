@@ -25,7 +25,7 @@
     "sinon": "^12.0.1"
   },
   "dependencies": {
-    "@apollo/gateway": "^0.38.2",
+    "@apollo/gateway": "^2.2.0",
     "@graphql-tools/schema": "^8.3.1",
     "@thinkdeep/get-public-ip": "^1.0.0",
     "@thinkdeep/graphql-kafka-subscriptions": "^0.4.1",
