@@ -47,7 +47,7 @@
     "@thinkdeep/deep-card": "^0.0.9-alpha.1",
     "@thinkdeep/model": "file:../model",
     "@vaadin/date-picker": "^23.1.4",
-    "@vaadin/router": "^1.7.4",
+    "@vaadin/router": "^2.0.0",
     "@webcomponents/webcomponentsjs": "^2.5.0",
     "graphql": "^15.8.0",
     "graphql-tag": "^2.12.6",
