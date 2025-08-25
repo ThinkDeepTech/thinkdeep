@@ -28,14 +28,14 @@
     "sinon-chai": "^3.7.0"
   },
   "dependencies": {
-    "@apollo/subgraph": "^0.1.5",
+    "@apollo/subgraph": "^2.0.0",
     "@thinkdeep/apollo-datasource-neo4j": "^0.0.1-alpha.8",
     "@thinkdeep/get-public-ip": "^1.0.0",
     "@thinkdeep/model": "file:../model",
     "@thinkdeep/util": "file:./../util",
     "apollo-datasource-mongodb": "^0.5.2",
-    "apollo-server": "3.8.0",
-    "apollo-server-express": "^3.5.0",
+    "apollo-server": "3.13.0",
+    "apollo-server-express": "^3.13.0",
     "chai-as-promised": "^7.1.1",
     "express": "^4.17.1",
     "graphql": "^15.8.0",
